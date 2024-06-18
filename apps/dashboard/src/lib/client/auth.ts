@@ -1,4 +1,3 @@
-
 import { EmailPassReq } from "../../types/api-payloads"
 import { EmailPassRes } from "../../types/api-responses"
 import { postRequest } from "./common"
