@@ -1,5 +1,7 @@
-import { Spinner } from '@medusajs/icons';
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
+
+import { Spinner } from '@medusajs/icons';
+
 import { useMe } from '../../../hooks/api/users';
 import { SidebarProvider } from '../../../providers/sidebar-provider';
 
