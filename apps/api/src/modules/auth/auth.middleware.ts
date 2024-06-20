@@ -3,8 +3,6 @@ import httpStatus from 'http-status';
 import passport from 'passport';
 
 import ApiError from '../errors/ApiError';
-import { Role } from '../permissions/permission.interface';
-import { permissionService } from '../permissions/permission.service';
 import { IUserDoc } from '../user/user.interfaces';
 
 const verifyCallback =
@@ -15,18 +13,6 @@ const verifyCallback =
     }
 
     req.user = user;
-
-    const resourceKind = 'users';
-    const action = 'list';
-
-    if (!resourceKind || !action) {
-      return resolve();
-    }
-
-    const hasPermission = permissionService.checkPermissions(user.role as Role, action, resourceKind);
-    if (!hasPermission) {
-      return reject(new ApiError(httpStatus.FORBIDDEN, 'Forbidden'));
-    }
 
     resolve();
   };
