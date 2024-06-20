@@ -1,22 +1,39 @@
-/**
- * This is not a production server yet!
- * This is only a minimal backend to get started.
- */
+import mongoose from 'mongoose';
 
-import { Logger } from '@nestjs/common';
-import { NestFactory } from '@nestjs/core';
+import app from './app';
+import config from './config/config';
+import { logger } from './modules/logger';
 
-import { AppModule } from './app/app.module';
+let server: any;
+mongoose.connect(config.mongoose.url).then(() => {
+  logger.info('Connected to MongoDB');
+  server = app.listen(config.port, () => {
+    logger.info(`Listening to port ${config.port}`);
+  });
+});
 
-async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-  const globalPrefix = 'api';
-  app.setGlobalPrefix(globalPrefix);
-  const port = process.env.PORT || 3000;
-  await app.listen(port);
-  Logger.log(
-    `🚀 Application is running on: http://localhost:${port}/${globalPrefix}`
-  );
-}
+const exitHandler = () => {
+  if (server) {
+    server.close(() => {
+      logger.info('Server closed');
+      process.exit(1);
+    });
+  } else {
+    process.exit(1);
+  }
+};
 
-bootstrap();
+const unexpectedErrorHandler = (error: string) => {
+  logger.error(error);
+  exitHandler();
+};
+
+process.on('uncaughtException', unexpectedErrorHandler);
+process.on('unhandledRejection', unexpectedErrorHandler);
+
+process.on('SIGTERM', () => {
+  logger.info('SIGTERM received');
+  if (server) {
+    server.close();
+  }
+});

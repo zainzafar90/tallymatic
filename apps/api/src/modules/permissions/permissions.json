@@ -1,0 +1,31 @@
+{
+  "resourcePolicies": [
+    {
+      "version": "default",
+      "resource": "contact",
+      "rules": [
+        {
+          "actions": ["list", "read"],
+          "roles": ["admin", "user"],
+          "effect": "EFFECT_ALLOW"
+        },
+        {
+          "actions": ["create", "update", "delete"],
+          "roles": ["admin"],
+          "effect": "EFFECT_ALLOW"
+        }
+      ]
+    },
+    {
+      "version": "default",
+      "resource": "user",
+      "rules": [
+        {
+          "actions": ["*"],
+          "roles": ["admin"],
+          "effect": "EFFECT_ALLOW"
+        }
+      ]
+    }
+  ]
+}
