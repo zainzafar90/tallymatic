@@ -1,22 +1,22 @@
-/* eslint-disable jest/no-commented-out-tests */
-import { faker } from '@faker-js/faker';
-import mongoose from 'mongoose';
-import request from 'supertest';
-import httpStatus from 'http-status';
-import httpMocks from 'node-mocks-http';
-import moment from 'moment';
 import bcrypt from 'bcryptjs';
+import httpStatus from 'http-status';
+import moment from 'moment';
+import mongoose from 'mongoose';
+import httpMocks from 'node-mocks-http';
+import request from 'supertest';
+import { faker } from '@faker-js/faker';
 import { jest } from '@jest/globals';
+
 import app from '../../app';
-import setupTestDB from '../jest/setupTestDB';
-import User from '../user/user.model';
 import config from '../../config/config';
-import { NewRegisteredUser } from '../user/user.interfaces';
+import ApiError from '../errors/ApiError';
+import setupTestDB from '../jest/setupTestDB';
+import Token from '../token/token.model';
 import * as tokenService from '../token/token.service';
 import tokenTypes from '../token/token.types';
-import Token from '../token/token.model';
+import { IUserDoc, NewRegisteredUser } from '../user/user.interfaces';
+import User from '../user/user.model';
 import authMiddleware from './auth.middleware';
-import ApiError from '../errors/ApiError';
 
 setupTestDB();
 
@@ -27,7 +27,7 @@ const accessTokenExpires = moment().add(config.jwt.accessExpirationMinutes, 'min
 
 const userOne = {
   _id: new mongoose.Types.ObjectId(),
-  name: faker.name.findName(),
+  name: faker.person.fullName(),
   email: faker.internet.email().toLowerCase(),
   password,
   role: 'user',
@@ -45,7 +45,7 @@ describe('Auth routes', () => {
     let newUser: NewRegisteredUser;
     beforeEach(() => {
       newUser = {
-        name: faker.name.findName(),
+        name: faker.person.fullName(),
         email: faker.internet.email().toLowerCase(),
         password: 'password1',
       };
@@ -279,7 +279,6 @@ describe('Auth routes', () => {
       const dbUser = await User.findById(userOne._id);
       if (dbUser) {
         const isPasswordMatch = await bcrypt.compare('password2', dbUser.password);
-        // eslint-disable-next-line jest/no-conditional-expect
         expect(isPasswordMatch).toBe(true);
       }
 
@@ -432,7 +431,7 @@ describe('Auth middleware', () => {
     await authMiddleware()(req, httpMocks.createResponse(), next);
 
     expect(next).toHaveBeenCalledWith();
-    expect(req.user._id).toEqual(userOne._id);
+    expect((req.user as IUserDoc)._id).toEqual(userOne._id);
   });
 
   test('should call next with unauthorized error if access token is not found in header', async () => {
@@ -523,7 +522,7 @@ describe('Auth middleware', () => {
     const req = httpMocks.createRequest({ headers: { Authorization: `Bearer ${userOneAccessToken}` } });
     const next = jest.fn();
 
-    await authMiddleware('anyRight')(req, httpMocks.createResponse(), next);
+    await authMiddleware()(req, httpMocks.createResponse(), next);
 
     expect(next).toHaveBeenCalledWith(expect.any(ApiError));
     expect(next).toHaveBeenCalledWith(expect.objectContaining({ statusCode: httpStatus.FORBIDDEN, message: 'Forbidden' }));
@@ -537,7 +536,7 @@ describe('Auth middleware', () => {
     });
     const next = jest.fn();
 
-    await authMiddleware('anyRight')(req, httpMocks.createResponse(), next);
+    await authMiddleware()(req, httpMocks.createResponse(), next);
 
     expect(next).toHaveBeenCalledWith();
   });

@@ -1,4 +1,5 @@
 import { faker } from '@faker-js/faker';
+
 import { NewCreatedUser } from './user.interfaces';
 import User from './user.model';
 
@@ -7,7 +8,7 @@ describe('User model', () => {
     let newUser: NewCreatedUser;
     beforeEach(() => {
       newUser = {
-        name: faker.name.findName(),
+        name: faker.person.fullName(),
         email: faker.internet.email().toLowerCase(),
         password: 'password1',
         role: 'user',
@@ -47,7 +48,7 @@ describe('User model', () => {
   describe('User toJSON()', () => {
     test('should not return user password when toJSON is called', () => {
       const newUser = {
-        name: faker.name.findName(),
+        name: faker.person.fullName(),
         email: faker.internet.email().toLowerCase(),
         password: 'password1',
         role: 'user',

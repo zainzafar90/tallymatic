@@ -1,18 +1,19 @@
 import moment from 'moment';
 import mongoose from 'mongoose';
 import { faker } from '@faker-js/faker';
+
 import config from '../../config/config';
 import { NewToken } from './token.interfaces';
-import tokenTypes from './token.types';
 import Token from './token.model';
 import * as tokenService from './token.service';
+import tokenTypes from './token.types';
 
 const password = 'password1';
 const accessTokenExpires = moment().add(config.jwt.accessExpirationMinutes, 'minutes');
 
 const userOne = {
   _id: new mongoose.Types.ObjectId(),
-  name: faker.name.findName(),
+  name: faker.person.fullName(),
   email: faker.internet.email().toLowerCase(),
   password,
   role: 'user',
