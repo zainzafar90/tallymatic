@@ -2,7 +2,7 @@
  * Temporary types for API responses until we export them from `@medusajs/types`
  */
 
-import { Product, ProductOption, ProductType, ProductVariant, Store, User } from '@medusajs/medusa';
+import { Product, ProductOption, ProductType, ProductVariant, Store } from '@medusajs/medusa';
 
 type ListRes = {
   count: number;
@@ -17,19 +17,37 @@ type DeleteRes = {
 };
 
 // Auth
-export type EmailPassRes = { token: string };
+export type EmailPassRes = {
+  tokens: {
+    access: {
+      token: string;
+      expires: string;
+    };
+    refresh: {
+      token: string;
+      expires: string;
+    };
+  };
+};
 
 // Users
+type User = {
+  name: string;
+  email: string;
+  roles: 'user' | 'admin'[];
+  isEmailVerified: boolean;
+  id: string;
+};
 export type UserRes = { user: User };
 export type UserListRes = { users: User[] } & ListRes;
 export type UserDeleteRes = DeleteRes;
 
-// Product 
+// Product
 export type ProductRes = { product: Product };
 export type ProductListRes = { products: Product[] } & ListRes;
 export type ProductDeleteRes = DeleteRes;
 
-// Product Type 
+// Product Type
 export type ProductTypeRes = { product_type: ProductType };
 export type ProductTypeListRes = { product_types: ProductType[] } & ListRes;
 export type ProductTypeDeleteRes = DeleteRes;

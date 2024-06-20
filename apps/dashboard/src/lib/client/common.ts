@@ -25,9 +25,11 @@ function getOptions(options?: Omit<RequestInit, 'body'>, payload?: Record<string
     headers: {
       ...commonHeaders,
       ...options?.headers,
+      Authorization: `Bearer ${localStorage.getItem('token') || ''}`,
     },
     body,
-    credentials: 'include',
+    // TODO: enable it back when cookies are implemented
+    // credentials: 'include',
   };
 }
 

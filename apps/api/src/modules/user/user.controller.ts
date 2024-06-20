@@ -33,7 +33,7 @@ export const getUsers = catchAsync(async (req: Request, res: Response) => {
 });
 
 export const getMe = catchAsync(async (req: Request, res: Response) => {
-  res.send(req.user);
+  res.send({ user: req.user });
 });
 
 export const getUser = catchAsync(async (req: Request, res: Response) => {
