@@ -5,7 +5,7 @@ import { emailService } from '../email';
 import { tokenService } from '../token';
 import { userService } from '../user';
 import { IUserDoc } from '../user/user.interfaces';
-import catchAsync from '../utils/catchAsync';
+import { catchAsync } from '../utils/catchAsync';
 import * as authService from './auth.service';
 
 export const register = catchAsync(async (req: Request, res: Response) => {

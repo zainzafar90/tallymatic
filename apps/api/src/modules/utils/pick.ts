@@ -4,7 +4,7 @@
  * @param {string[]} keys
  * @returns {Object}
  */
-const pick = (object: Record<string, any>, keys: string[]) =>
+export const pick = (object: Record<string, any>, keys: string[]) =>
   keys.reduce((obj: any, key: string) => {
     if (object && Object.prototype.hasOwnProperty.call(object, key)) {
       // eslint-disable-next-line no-param-reassign
@@ -12,5 +12,3 @@ const pick = (object: Record<string, any>, keys: string[]) =>
     }
     return obj;
   }, {});
-
-export default pick;

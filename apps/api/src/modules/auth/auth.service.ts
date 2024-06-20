@@ -1,11 +1,12 @@
 import httpStatus from 'http-status';
 import mongoose from 'mongoose';
+
+import { ApiError } from '../errors/ApiError';
 import Token from '../token/token.model';
-import ApiError from '../errors/ApiError';
-import tokenTypes from '../token/token.types';
-import { getUserByEmail, getUserById, updateUserById } from '../user/user.service';
-import { IUserDoc, IUserWithTokens } from '../user/user.interfaces';
 import { generateAuthTokens, verifyToken } from '../token/token.service';
+import tokenTypes from '../token/token.types';
+import { IUserDoc, IUserWithTokens } from '../user/user.interfaces';
+import { getUserByEmail, getUserById, updateUserById } from '../user/user.service';
 
 /**
  * Login with username and password

@@ -2,11 +2,11 @@ import { Request, Response } from 'express';
 import httpStatus from 'http-status';
 import mongoose from 'mongoose';
 
-import ApiError from '../errors/ApiError';
+import { ApiError } from '../errors/ApiError';
 import { IOptions } from '../paginate/paginate';
 import { permissionService } from '../permissions/permission.service';
-import catchAsync from '../utils/catchAsync';
-import pick from '../utils/pick';
+import { catchAsync } from '../utils/catchAsync';
+import { pick } from '../utils/pick';
 import * as userService from './user.service';
 
 export const createUser = catchAsync(async (req: Request, res: Response) => {

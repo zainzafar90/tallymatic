@@ -9,7 +9,7 @@ import { jest } from '@jest/globals';
 
 import app from '../../app';
 import config from '../../config/config';
-import ApiError from '../errors/ApiError';
+import { ApiError } from '../errors/ApiError';
 import setupTestDB from '../jest/setupTestDB';
 import { Role } from '../permissions/permission.interface';
 import Token from '../token/token.model';

@@ -1,12 +1,13 @@
-import mongoose from 'mongoose';
 import httpStatus from 'http-status';
+import mongoose from 'mongoose';
 import httpMocks from 'node-mocks-http';
-import { jest } from '@jest/globals';
 import winston from 'winston';
-import { errorConverter, errorHandler } from './error';
-import ApiError from './ApiError';
+import { jest } from '@jest/globals';
+
 import config from '../../config/config';
 import logger from '../logger/logger';
+import { ApiError } from './ApiError';
+import { errorConverter, errorHandler } from './error';
 
 describe('Error middlewares', () => {
   describe('Error converter', () => {

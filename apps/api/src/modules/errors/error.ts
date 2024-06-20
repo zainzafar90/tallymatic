@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Request, Response, NextFunction } from 'express';
-import mongoose from 'mongoose';
+import { NextFunction, Request, Response } from 'express';
 import httpStatus from 'http-status';
+import mongoose from 'mongoose';
+
 import config from '../../config/config';
 import { logger } from '../logger';
-import ApiError from './ApiError';
+import { ApiError } from './ApiError';
 
 export const errorConverter = (err: any, _req: Request, _res: Response, next: NextFunction) => {
   let error = err;

@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import httpStatus from 'http-status';
 import passport from 'passport';
 
-import ApiError from '../errors/ApiError';
+import { ApiError } from '../errors/ApiError';
 import { IUserDoc } from '../user/user.interfaces';
 
 const verifyCallback =

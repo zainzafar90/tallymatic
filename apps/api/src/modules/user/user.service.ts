@@ -1,9 +1,10 @@
 import httpStatus from 'http-status';
 import mongoose from 'mongoose';
-import User from './user.model';
-import ApiError from '../errors/ApiError';
+
+import { ApiError } from '../errors/ApiError';
 import { IOptions, QueryResult } from '../paginate/paginate';
-import { NewCreatedUser, UpdateUserBody, IUserDoc, NewRegisteredUser } from './user.interfaces';
+import { IUserDoc, NewCreatedUser, NewRegisteredUser, UpdateUserBody } from './user.interfaces';
+import User from './user.model';
 
 /**
  * Create a user
