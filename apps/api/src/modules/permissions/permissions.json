@@ -8,6 +8,11 @@
           "actions": ["*"],
           "roles": ["admin"],
           "effect": "EFFECT_ALLOW"
+        },
+        {
+          "actions": ["view", "update"],
+          "roles": ["user"],
+          "effect": "EFFECT_ALLOW"
         }
       ]
     }
