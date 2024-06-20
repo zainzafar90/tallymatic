@@ -27,6 +27,10 @@ export const RouteMap: RouteObject[] = [
         element: <MainLayout />,
         children: [
           {
+            path: '/dashboard',
+            lazy: () => import('../../routes/dashboard'),
+          },
+          {
             path: '/products',
             handle: {
               crumb: () => 'Products',

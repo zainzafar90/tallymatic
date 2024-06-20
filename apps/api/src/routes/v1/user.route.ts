@@ -11,6 +11,8 @@ router
   .post(auth(), validate(userValidation.createUser), userController.createUser)
   .get(auth(), validate(userValidation.getUsers), userController.getUsers);
 
+router.get('/me', auth(), userController.getMe);
+
 router
   .route('/:userId')
   .get(auth(), validate(userValidation.getUser), userController.getUser)
@@ -153,6 +155,27 @@ export default router;
 
 /**
  * @swagger
+ * /users/me:
+ *  get:
+ *    summary: Get current user
+ *    description: Get the current logged in user
+ *    tags: [Users]
+ *    security:
+ *      - bearerAuth: []
+ *    responses:
+ *      "200":
+ *        description: OK
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/User'
+ *      "401":
+ *        $ref: '#/components/responses/Unauthorized'
+ *      "403":
+ *        $ref: '#/components/responses/Forbidden'
+ *      "404":
+ *         $ref: '#/components/responses/NotFound'
+ *
  * /users/{id}:
  *   get:
  *     summary: Get a user

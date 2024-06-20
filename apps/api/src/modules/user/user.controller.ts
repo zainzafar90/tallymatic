@@ -32,6 +32,10 @@ export const getUsers = catchAsync(async (req: Request, res: Response) => {
   res.send(result);
 });
 
+export const getMe = catchAsync(async (req: Request, res: Response) => {
+  res.send(req.user);
+});
+
 export const getUser = catchAsync(async (req: Request, res: Response) => {
   if (typeof req.params['userId'] === 'string') {
     const user = await userService.getUserById(new mongoose.Types.ObjectId(req.params['userId']));

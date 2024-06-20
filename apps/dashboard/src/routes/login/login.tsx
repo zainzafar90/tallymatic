@@ -1,8 +1,9 @@
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+
+import { useForm } from 'react-hook-form';
+import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Alert, Button, Heading, Input, Text } from '@medusajs/ui';
-import { useForm } from 'react-hook-form';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import * as z from 'zod';
 
 import { Divider } from '../../components/common/divider';
 import { Form } from '../../components/common/form';
@@ -19,7 +20,7 @@ export const Login = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const from = location.state?.from?.pathname || '/orders';
+  const from = location.state?.from?.pathname || '/dashboard';
 
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
@@ -77,10 +78,7 @@ export const Login = () => {
         </div>
         <div className="flex w-full flex-col gap-y-3">
           <Form {...form}>
-            <form
-              onSubmit={handleSubmit}
-              className="flex w-full flex-col gap-y-6"
-            >
+            <form onSubmit={handleSubmit} className="flex w-full flex-col gap-y-6">
               <div className="flex flex-col gap-y-4">
                 <Form.Field
                   control={form.control}
@@ -105,11 +103,7 @@ export const Login = () => {
                       <Form.Item>
                         <Form.Label>Password</Form.Label>
                         <Form.Control>
-                          <Input
-                            type="password"
-                            autoComplete="current-password"
-                            {...field}
-                          />
+                          <Input type="password" autoComplete="current-password" {...field} />
                         </Form.Control>
                         <Form.ErrorMessage />
                       </Form.Item>
