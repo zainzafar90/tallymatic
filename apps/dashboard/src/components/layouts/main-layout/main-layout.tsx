@@ -2,11 +2,10 @@ import { CurrencyDollar, ShoppingCart, Tag, Users } from '@medusajs/icons';
 import { Avatar, Text } from '@medusajs/ui';
 
 import { useStore } from '../../../hooks/api/store';
+import { Divider } from '../../common/divider';
 import { Skeleton } from '../../common/skeleton';
 import { NavItem, NavItemProps } from '../nav-item';
 import { Shell } from '../shell';
-
-import { Divider } from '../../common/divider';
 
 export const MainLayout = () => {
   return (
@@ -35,25 +34,22 @@ const MainSidebar = () => {
 const Header = () => {
   const { store, isError, error } = useStore();
 
-  const name = store?.name;
-  const fallback = store?.name?.slice(0, 1).toUpperCase();
+  const name = store?.name || 'Acme Store';
+  const fallback = name?.slice(0, 1).toUpperCase();
 
   if (isError) {
-    throw error;
+    // TODO: fix store endpoint
+    // throw error;
   }
 
   return (
     <div className="w-full px-3 py-2">
       <div className="flex items-center p-1 md:pr-2">
         <div className="flex items-center gap-x-3">
-          {fallback ? (
-            <Avatar variant="squared" fallback={fallback} />
-          ) : (
-            <Skeleton className="h-8 w-8 rounded-md" />
-          )}
+          {fallback ? <Avatar variant="squared" fallback={fallback} /> : <Skeleton className="h-8 w-8 rounded-md" />}
           {name ? (
             <Text size="small" weight="plus" leading="compact">
-              {store.name}
+              {name}
             </Text>
           ) : (
             <Skeleton className="h-[9px] w-[120px]" />
