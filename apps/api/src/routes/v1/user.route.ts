@@ -45,7 +45,7 @@ export default router;
  *               - name
  *               - email
  *               - password
- *               - role
+ *               - roles
  *             properties:
  *               name:
  *                 type: string
@@ -58,14 +58,14 @@ export default router;
  *                 format: password
  *                 minLength: 8
  *                 description: At least one number and one letter
- *               role:
- *                  type: string
+ *               roles:
+ *                  type: []
  *                  enum: [user, admin]
  *             example:
  *               name: fake name
  *               email: fake@example.com
  *               password: password1
- *               role: user
+ *               roles: [user]
  *     responses:
  *       "201":
  *         description: Created
@@ -93,10 +93,10 @@ export default router;
  *           type: string
  *         description: User name
  *       - in: query
- *         name: role
+ *         name: roles
  *         schema:
- *           type: string
- *         description: User role
+ *           type: []
+ *         description: User roles
  *       - in: query
  *         name: sortBy
  *         schema:

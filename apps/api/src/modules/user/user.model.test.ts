@@ -1,5 +1,6 @@
 import { faker } from '@faker-js/faker';
 
+import { Role } from '../permissions/permission.interface';
 import { NewCreatedUser } from './user.interfaces';
 import User from './user.model';
 
@@ -11,7 +12,7 @@ describe('User model', () => {
         name: faker.person.fullName(),
         email: faker.internet.email().toLowerCase(),
         password: 'password1',
-        role: 'user',
+        roles: [Role.User],
       };
     });
 
@@ -39,8 +40,9 @@ describe('User model', () => {
       await expect(new User(newUser).validate()).rejects.toThrow();
     });
 
-    test('should throw a validation error if role is unknown', async () => {
-      newUser.role = 'invalid';
+    test('should throw a validation error if roles are invalid', async () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      newUser.roles = 'invalid' as any;
       await expect(new User(newUser).validate()).rejects.toThrow();
     });
   });
@@ -51,7 +53,7 @@ describe('User model', () => {
         name: faker.person.fullName(),
         email: faker.internet.email().toLowerCase(),
         password: 'password1',
-        role: 'user',
+        roles: [Role.User],
       };
       expect(new User(newUser).toJSON()).not.toHaveProperty('password');
     });

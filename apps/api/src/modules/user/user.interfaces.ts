@@ -1,13 +1,14 @@
 import mongoose, { Document, Model } from 'mongoose';
 
 import { QueryResult } from '../paginate/paginate';
+import { Role } from '../permissions/permission.interface';
 import { AccessAndRefreshTokens } from '../token/token.interfaces';
 
 export interface IUser {
   name: string;
   email: string;
   password: string;
-  role: string;
+  roles: Role[];
   isEmailVerified: boolean;
 }
 
@@ -22,7 +23,7 @@ export interface IUserModel extends Model<IUserDoc> {
 
 export type UpdateUserBody = Partial<IUser>;
 
-export type NewRegisteredUser = Omit<IUser, 'role' | 'isEmailVerified'>;
+export type NewRegisteredUser = Omit<IUser, 'roles' | 'isEmailVerified'>;
 
 export type NewCreatedUser = Omit<IUser, 'isEmailVerified'>;
 

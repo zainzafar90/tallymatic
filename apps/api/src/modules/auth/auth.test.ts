@@ -11,6 +11,7 @@ import app from '../../app';
 import config from '../../config/config';
 import ApiError from '../errors/ApiError';
 import setupTestDB from '../jest/setupTestDB';
+import { Role } from '../permissions/permission.interface';
 import Token from '../token/token.model';
 import * as tokenService from '../token/token.service';
 import tokenTypes from '../token/token.types';
@@ -30,7 +31,7 @@ const userOne = {
   name: faker.person.fullName(),
   email: faker.internet.email().toLowerCase(),
   password,
-  role: 'user',
+  roles: [Role.User],
   isEmailVerified: false,
 };
 
@@ -59,13 +60,13 @@ describe('Auth routes', () => {
         id: expect.anything(),
         name: newUser.name,
         email: newUser.email,
-        role: 'user',
+        roles: [Role.User],
         isEmailVerified: false,
       });
 
       const dbUser = await User.findById(res.body.user.id);
       expect(dbUser).toBeDefined();
-      expect(dbUser).toMatchObject({ name: newUser.name, email: newUser.email, role: 'user', isEmailVerified: false });
+      expect(dbUser).toMatchObject({ name: newUser.name, email: newUser.email, roles: [Role.User], isEmailVerified: false });
 
       expect(res.body.tokens).toEqual({
         access: { token: expect.anything(), expires: expect.anything() },
@@ -117,7 +118,7 @@ describe('Auth routes', () => {
         id: expect.anything(),
         name: userOne.name,
         email: userOne.email,
-        role: userOne.role,
+        roles: userOne.roles,
         isEmailVerified: userOne.isEmailVerified,
       });
 
@@ -199,7 +200,7 @@ describe('Auth routes', () => {
         id: expect.anything(),
         name: userOne.name,
         email: userOne.email,
-        role: userOne.role,
+        roles: userOne.roles,
         isEmailVerified: userOne.isEmailVerified,
       });
 
@@ -373,7 +374,12 @@ describe('Auth routes', () => {
 
       const dbUser = await User.findById(userOne._id);
       expect(dbUser).toBeDefined();
-      expect(dbUser).toMatchObject({ name: userOne.name, email: userOne.email, role: userOne.role, isEmailVerified: true });
+      expect(dbUser).toMatchObject({
+        name: userOne.name,
+        email: userOne.email,
+        roles: userOne.roles,
+        isEmailVerified: true,
+      });
     });
 
     test('should return 400 if verify email token is missing', async () => {

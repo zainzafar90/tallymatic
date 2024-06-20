@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import { faker } from '@faker-js/faker';
 
 import config from '../../config/config';
+import { Role } from '../permissions/permission.interface';
 import { NewToken } from './token.interfaces';
 import Token from './token.model';
 import * as tokenService from './token.service';
@@ -16,7 +17,7 @@ const userOne = {
   name: faker.person.fullName(),
   email: faker.internet.email().toLowerCase(),
   password,
-  role: 'user',
+  roles: [Role.User],
   isEmailVerified: false,
 };
 

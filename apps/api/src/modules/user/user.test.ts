@@ -8,6 +8,7 @@ import { faker } from '@faker-js/faker';
 import app from '../../app';
 import config from '../../config/config';
 import setupTestDB from '../jest/setupTestDB';
+import { Role } from '../permissions/permission.interface';
 import * as tokenService from '../token/token.service';
 import tokenTypes from '../token/token.types';
 import { NewCreatedUser } from './user.interfaces';
@@ -25,7 +26,7 @@ const userOne = {
   name: faker.person.fullName(),
   email: faker.internet.email().toLowerCase(),
   password,
-  role: 'user',
+  roles: [Role.User],
   isEmailVerified: false,
 };
 
@@ -34,7 +35,7 @@ const userTwo = {
   name: faker.person.fullName(),
   email: faker.internet.email().toLowerCase(),
   password,
-  role: 'user',
+  roles: [Role.User],
   isEmailVerified: false,
 };
 
@@ -43,7 +44,7 @@ const admin = {
   name: faker.person.fullName(),
   email: faker.internet.email().toLowerCase(),
   password,
-  role: 'admin',
+  roles: [Role.Admin],
   isEmailVerified: false,
 };
 
@@ -63,7 +64,7 @@ describe('User routes', () => {
         name: faker.person.fullName(),
         email: faker.internet.email().toLowerCase(),
         password: 'password1',
-        role: 'user',
+        roles: [Role.User],
       };
     });
 
@@ -81,7 +82,7 @@ describe('User routes', () => {
         id: expect.anything(),
         name: newUser.name,
         email: newUser.email,
-        role: newUser.role,
+        roles: newUser.roles,
         isEmailVerified: false,
       });
 
@@ -90,12 +91,17 @@ describe('User routes', () => {
       if (!dbUser) return;
 
       expect(dbUser.password).not.toBe(newUser.password);
-      expect(dbUser).toMatchObject({ name: newUser.name, email: newUser.email, role: newUser.role, isEmailVerified: false });
+      expect(dbUser).toMatchObject({
+        name: newUser.name,
+        email: newUser.email,
+        roles: newUser.roles,
+        isEmailVerified: false,
+      });
     });
 
     test('should be able to create an admin as well', async () => {
       await insertUsers([admin]);
-      newUser.role = 'admin';
+      newUser.roles = [Role.Admin];
 
       const res = await request(app)
         .post('/v1/users')
@@ -103,12 +109,12 @@ describe('User routes', () => {
         .send(newUser)
         .expect(httpStatus.CREATED);
 
-      expect(res.body.role).toBe('admin');
+      expect(res.body.roles).toContain(Role.Admin);
 
       const dbUser = await User.findById(res.body.id);
       expect(dbUser).toBeDefined();
       if (!dbUser) return;
-      expect(dbUser.role).toBe('admin');
+      expect(dbUser.roles).toContain(Role.Admin);
     });
 
     test('should return 401 error if access token is missing', async () => {
@@ -211,7 +217,7 @@ describe('User routes', () => {
         id: userOne._id.toHexString(),
         name: userOne.name,
         email: userOne.email,
-        role: userOne.role,
+        roles: userOne.roles,
         isEmailVerified: userOne.isEmailVerified,
       });
     });
@@ -259,7 +265,7 @@ describe('User routes', () => {
       const res = await request(app)
         .get('/v1/users')
         .set('Authorization', `Bearer ${adminAccessToken}`)
-        .query({ role: 'user' })
+        .query({ role: Role.User })
         .send()
         .expect(httpStatus.OK);
 
@@ -281,7 +287,7 @@ describe('User routes', () => {
       const res = await request(app)
         .get('/v1/users')
         .set('Authorization', `Bearer ${adminAccessToken}`)
-        .query({ sortBy: 'role:desc' })
+        .query({ sortBy: 'email:desc' })
         .send()
         .expect(httpStatus.OK);
 
@@ -327,7 +333,7 @@ describe('User routes', () => {
       const res = await request(app)
         .get('/v1/users')
         .set('Authorization', `Bearer ${adminAccessToken}`)
-        .query({ sortBy: 'role:desc,name:asc' })
+        .query({ sortBy: 'email:desc,name:asc' })
         .send()
         .expect(httpStatus.OK);
 
@@ -341,10 +347,10 @@ describe('User routes', () => {
       expect(res.body.results).toHaveLength(3);
 
       const expectedOrder = [userOne, userTwo, admin].sort((a, b) => {
-        if (a.role! < b.role!) {
+        if (a.email < b.email) {
           return 1;
         }
-        if (a.role! > b.role!) {
+        if (a.email > b.email) {
           return -1;
         }
         return a.name < b.name ? -1 : 1;
@@ -414,7 +420,7 @@ describe('User routes', () => {
         id: userOne._id.toHexString(),
         email: userOne.email,
         name: userOne.name,
-        role: userOne.role,
+        roles: userOne.roles,
         isEmailVerified: userOne.isEmailVerified,
       });
     });

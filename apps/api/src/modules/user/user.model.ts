@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import validator from 'validator';
 
 import paginate from '../paginate/paginate';
+import { Role } from '../permissions/permission.interface';
 import toJSON from '../toJSON/toJSON';
 import { IUserDoc, IUserModel } from './user.interfaces';
 
@@ -37,11 +38,7 @@ const userSchema = new mongoose.Schema<IUserDoc, IUserModel>(
       },
       private: true, // used by the toJSON plugin
     },
-    role: {
-      type: String,
-      enum: Object.values(['user', 'admin' as const]),
-      default: 'user',
-    },
+    roles: { type: [String], enum: Role, default: [Role.User] },
     isEmailVerified: {
       type: Boolean,
       default: false,
@@ -73,11 +70,13 @@ userSchema.static('isEmailTaken', async function (email: string, excludeUserId: 
  * @returns {Promise<boolean>}
  */
 userSchema.method('isPasswordMatch', async function (password: string): Promise<boolean> {
+  // eslint-disable-next-line @typescript-eslint/no-this-alias
   const user = this;
   return bcrypt.compare(password, user.password);
 });
 
 userSchema.pre('save', async function (next) {
+  // eslint-disable-next-line @typescript-eslint/no-this-alias
   const user = this;
   if (user.isModified('password')) {
     user.password = await bcrypt.hash(user.password, 8);

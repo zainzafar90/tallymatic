@@ -1,12 +1,14 @@
 import Joi from 'joi';
-import { password, objectId } from '../validate/custom.validation';
+
+import { Role } from '../permissions/permission.interface';
+import { objectId, password } from '../validate/custom.validation';
 import { NewCreatedUser } from './user.interfaces';
 
 const createUserBody: Record<keyof NewCreatedUser, any> = {
   email: Joi.string().required().email(),
   password: Joi.string().required().custom(password),
   name: Joi.string().required(),
-  role: Joi.string().required().valid('user', 'admin'),
+  roles: Joi.array().items(Joi.string().valid(Role.User, Role.Admin)).required(),
 };
 
 export const createUser = {
