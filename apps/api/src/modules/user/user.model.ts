@@ -11,7 +11,7 @@ import {
   Table,
 } from 'sequelize-typescript';
 
-import { Token } from '../token/token.postgres.model';
+import { Token } from '../token/token.model';
 import { Role } from './role.model';
 import { UserRole } from './user-role.model';
 import { IUser } from './user.interfaces';

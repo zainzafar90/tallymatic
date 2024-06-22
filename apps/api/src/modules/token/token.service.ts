@@ -7,9 +7,9 @@ import { ApiError } from '@/common/errors/ApiError';
 
 import { userService } from '../user';
 import { IUser } from '../user/user.interfaces';
-import { User } from '../user/user.postgres.model';
+import { User } from '../user/user.model';
 import { AccessAndRefreshTokens, TokenType } from './token.interfaces';
-import { Token } from './token.postgres.model';
+import { Token } from './token.model';
 
 /**
  * Generate token

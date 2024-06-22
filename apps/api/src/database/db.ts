@@ -2,10 +2,10 @@ import { Dialect } from 'sequelize';
 import { Sequelize } from 'sequelize-typescript';
 
 import config from '@/config/config';
-import { Token } from '@/modules/token/token.postgres.model';
+import { Token } from '@/modules/token/token.model';
 import { Role } from '@/modules/user/role.model';
 import { UserRole } from '@/modules/user/user-role.model';
-import { User } from '@/modules/user/user.postgres.model';
+import { User } from '@/modules/user/user.model';
 
 export class Database {
   // Database name to connect e.g. tallymaticdb

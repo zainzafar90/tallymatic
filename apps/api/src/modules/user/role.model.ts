@@ -2,7 +2,7 @@ import { BelongsToMany, Column, DataType, DefaultScope, IsUUID, Model, PrimaryKe
 
 import { RoleType } from '../permissions/permission.interface';
 import { UserRole } from './user-role.model';
-import { User } from './user.postgres.model';
+import { User } from './user.model';
 
 @DefaultScope(() => ({
   attributes: { exclude: ['createdAt', 'updatedAt'] },

@@ -4,10 +4,10 @@ import { ApiError } from '@/common/errors/ApiError';
 
 import { tokenService } from '../token';
 import { TokenType } from '../token/token.interfaces';
-import { Token } from '../token/token.postgres.model';
+import { Token } from '../token/token.model';
 import { userService } from '../user';
 import { IUser, IUserWithTokens } from '../user/user.interfaces';
-import { isPasswordMatch } from '../user/user.postgres.model';
+import { isPasswordMatch } from '../user/user.model';
 import { getUserByEmail } from '../user/user.service';
 
 /**

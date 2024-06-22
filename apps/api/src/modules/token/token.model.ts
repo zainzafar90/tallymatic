@@ -1,6 +1,6 @@
 import { BelongsTo, Column, DataType, ForeignKey, IsUUID, Model, PrimaryKey, Table } from 'sequelize-typescript';
 
-import { User } from '../user/user.postgres.model';
+import { User } from '../user/user.model';
 import { TokenType } from './token.interfaces';
 
 @Table({ tableName: 'tokens', timestamps: true })

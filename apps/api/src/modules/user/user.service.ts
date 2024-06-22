@@ -7,7 +7,7 @@ import { IOptions, paginate, QueryResult } from '../paginate/paginate';
 import { RoleType } from '../permissions/permission.interface';
 import { Role } from './role.model';
 import { IUser, NewCreatedUser, NewRegisteredUser, UpdateUserBody } from './user.interfaces';
-import { hashPassword, User } from './user.postgres.model';
+import { hashPassword, User } from './user.model';
 
 /**
  * Check if email is taken

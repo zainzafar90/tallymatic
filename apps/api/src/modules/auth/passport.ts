@@ -1,9 +1,8 @@
 import { ExtractJwt, Strategy as JwtStrategy } from 'passport-jwt';
 
 import config from '../../config/config';
-import { IPayload } from '../token/token.interfaces';
-import tokenTypes from '../token/token.types';
-import { User } from '../user/user.postgres.model';
+import { IPayload, TokenType } from '../token/token.interfaces';
+import { User } from '../user/user.model';
 
 const jwtStrategy = new JwtStrategy(
   {
@@ -12,7 +11,7 @@ const jwtStrategy = new JwtStrategy(
   },
   async (payload: IPayload, done) => {
     try {
-      if (payload.type !== tokenTypes.ACCESS) {
+      if (payload.type !== TokenType.ACCESS) {
         throw new Error('Invalid token type');
       }
       const user = await User.findByPk(payload.sub);

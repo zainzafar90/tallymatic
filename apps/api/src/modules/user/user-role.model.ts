@@ -11,7 +11,7 @@ import {
 } from 'sequelize-typescript';
 
 import { Role } from './role.model';
-import { User } from './user.postgres.model';
+import { User } from './user.model';
 
 @DefaultScope(() => ({
   attributes: { exclude: ['createdAt', 'updatedAt', 'deletedAt'] },
