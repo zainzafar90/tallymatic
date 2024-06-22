@@ -5,7 +5,6 @@ import { ApiError } from '@/common/errors/ApiError';
 
 import { IOptions, paginate, QueryResult } from '../paginate/paginate';
 import { RoleType } from '../permissions/permission.interface';
-import { Role } from './role.model';
 import { IUser, NewCreatedUser, NewRegisteredUser, UpdateUserBody } from './user.interfaces';
 import { hashPassword, User } from './user.model';
 
@@ -37,10 +36,9 @@ export const createUser = async (userBody: NewCreatedUser): Promise<IUser> => {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
   }
 
-  const role = await Role.findOne({ where: { name: RoleType.User } });
   return User.create({
     ...userBody,
-    roles: [role],
+    roles: [RoleType.User],
     password: await hashPassword(userBody.password),
   });
 };
@@ -57,10 +55,9 @@ export const registerUser = async (userBody: NewRegisteredUser): Promise<IUser> 
     throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
   }
 
-  const role = await Role.findOne({ where: { name: RoleType.User } });
   return User.create({
     ...userBody,
-    roles: [role],
+    roles: [RoleType.User],
     password: await hashPassword(userBody.password),
   });
 };

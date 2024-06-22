@@ -6,7 +6,7 @@ module.exports = {
     await queryInterface.createTable('users', {
       id: {
         type: Sequelize.UUID,
-        defaultValue: Sequelize.UUID4,
+        defaultValue: Sequelize.UUIDV4,
         allowNull: false,
         primaryKey: true,
       },
@@ -30,7 +30,7 @@ module.exports = {
         validate: {
           min: 8,
           max: 128,
-          is: /^(?=.*[a-zA-Z])(?=.*[0-9])/, // Password must contain at least one letter and one number
+          is: /^(?=.*[a-zA-Z])(?=.*[0-9])/,
         },
       },
       isEmailVerified: {
@@ -38,10 +38,10 @@ module.exports = {
         allowNull: false,
         defaultValue: false,
       },
-      roles: {
-        type: Sequelize.ARRAY(Sequelize.ENUM('user', 'admin')),
+      role: {
+        type: Sequelize.ENUM('user', 'admin'),
         allowNull: false,
-        defaultValue: ['user'],
+        defaultValue: 'user',
       },
       createdAt: {
         allowNull: false,
@@ -52,7 +52,6 @@ module.exports = {
         type: Sequelize.DATE,
       },
       deletedAt: {
-        allowNull: true,
         type: Sequelize.DATE,
       },
     });

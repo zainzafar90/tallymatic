@@ -3,8 +3,6 @@ import { Sequelize } from 'sequelize-typescript';
 
 import config from '@/config/config';
 import { Token } from '@/modules/token/token.model';
-import { Role } from '@/modules/user/role.model';
-import { UserRole } from '@/modules/user/user-role.model';
 import { User } from '@/modules/user/user.model';
 
 export class Database {
@@ -48,7 +46,7 @@ export class Database {
       dialect: this.dbDialect,
       logging: false,
     });
-    this.database.addModels([Token, User, Role, UserRole]);
+    this.database.addModels([Token, User]);
   }
 
   connect() {
