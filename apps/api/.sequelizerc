@@ -15,6 +15,7 @@ function getModelsPath(dir) {
 }
 
 module.exports = {
+  config: path.resolve('src', 'database', 'config.js'),
   'models-path': getModelsPath(path.resolve('src')),
   'seeders-path': path.resolve('src', 'database', 'seeders'),
   'migrations-path': path.resolve('src', 'database', 'migrations'),

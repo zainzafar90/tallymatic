@@ -9,11 +9,8 @@ import app from './app';
 const database = new Database();
 database.connect().then(() => {
   logger.info('Connected to PostgreSQL');
-  database.sync().then(() => {
-    logger.info('Database synchronized');
-    app.listen(config.port, () => {
-      logger.info(`Listening to port ${config.port}`);
-    });
+  app.listen(config.port, () => {
+    logger.info(`Listening to port ${config.port}`);
   });
 });
 

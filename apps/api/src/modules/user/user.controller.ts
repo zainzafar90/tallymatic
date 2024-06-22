@@ -33,7 +33,11 @@ export const getUsers = catchAsync(async (req: Request, res: Response) => {
 });
 
 export const getMe = catchAsync(async (req: Request, res: Response) => {
-  res.send({ user: req.user });
+  const user = await userService.getUserById(req.user['id']);
+  if (!user) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
+  }
+  res.send(user);
 });
 
 export const getUser = catchAsync(async (req: Request, res: Response) => {

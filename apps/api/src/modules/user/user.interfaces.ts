@@ -1,13 +1,13 @@
-import { Role } from '../permissions/permission.interface';
 import { AccessAndRefreshTokens } from '../token/token.interfaces';
+import { Role } from './role.model';
 
 export interface IUser {
   id?: string;
   name: string;
   email: string;
   password: string;
-  roles: Role[];
   isEmailVerified: boolean;
+  roles: Role[];
 }
 
 export type UpdateUserBody = Partial<IUser>;

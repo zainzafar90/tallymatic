@@ -1,10 +1,30 @@
 import bcrypt from 'bcryptjs';
-import { Column, DataType, HasMany, IsUUID, Model, PrimaryKey, Table } from 'sequelize-typescript';
+import {
+  BelongsToMany,
+  Column,
+  DataType,
+  DefaultScope,
+  HasMany,
+  IsUUID,
+  Model,
+  PrimaryKey,
+  Table,
+} from 'sequelize-typescript';
 
-import { Role } from '../permissions/permission.interface';
 import { Token } from '../token/token.postgres.model';
+import { Role } from './role.model';
+import { UserRole } from './user-role.model';
 import { IUser } from './user.interfaces';
 
+@DefaultScope(() => ({
+  include: [
+    {
+      model: Role,
+      attributes: ['name'],
+      through: { attributes: [] },
+    },
+  ],
+}))
 @Table({ tableName: 'users', timestamps: true, paranoid: true })
 export class User extends Model<User> {
   @IsUUID(4)
@@ -34,11 +54,6 @@ export class User extends Model<User> {
   })
   email: string;
 
-  @Column({
-    type: DataType.ARRAY(DataType.ENUM(...Object.values(Role))),
-  })
-  roles: Role[];
-
   @Column({ type: DataType.STRING })
   contact: string;
 
@@ -57,6 +72,9 @@ export class User extends Model<User> {
 
   @HasMany(() => Token)
   tokens: Token[];
+
+  @BelongsToMany(() => Role, () => UserRole)
+  roles: Role[];
 }
 
 export const hashPassword = async function (password: string): Promise<string> {
