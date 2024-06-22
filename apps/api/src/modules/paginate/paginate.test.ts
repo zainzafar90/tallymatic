@@ -1,5 +1,7 @@
 import mongoose from 'mongoose';
-import setupTestDB from '../jest/setupTestDB';
+
+import setupTestDB from '@/common/jest/setupTestDB';
+
 import { toJSON } from '../toJSON';
 import paginate from './paginate';
 import { IProject, IProjectDoc, IProjectModel, ITaskDoc, ITaskModel } from './paginate.types';

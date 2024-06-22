@@ -5,9 +5,10 @@ import mongoose from 'mongoose';
 import request from 'supertest';
 import { faker } from '@faker-js/faker';
 
+import config from '@/config/config';
+import setupTestDB from '@/common/jest/setupTestDB';
+
 import app from '../../app';
-import config from '../../config/config';
-import setupTestDB from '../jest/setupTestDB';
 import { Role } from '../permissions/permission.interface';
 import * as tokenService from '../token/token.service';
 import tokenTypes from '../token/token.types';

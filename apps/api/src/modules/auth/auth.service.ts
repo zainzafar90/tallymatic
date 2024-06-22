@@ -1,7 +1,8 @@
 import httpStatus from 'http-status';
 import mongoose from 'mongoose';
 
-import { ApiError } from '../errors/ApiError';
+import { ApiError } from '@/common/errors/ApiError';
+
 import Token from '../token/token.model';
 import { generateAuthTokens, verifyToken } from '../token/token.service';
 import tokenTypes from '../token/token.types';

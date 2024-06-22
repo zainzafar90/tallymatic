@@ -2,7 +2,8 @@ import { NextFunction, Request, Response } from 'express';
 import httpStatus from 'http-status';
 import Joi from 'joi';
 
-import { ApiError } from '../errors/ApiError';
+import { ApiError } from '@/common/errors/ApiError';
+
 import { pick } from '../utils/pick';
 
 const validate =

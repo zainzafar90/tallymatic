@@ -2,7 +2,8 @@ import { Request, Response } from 'express';
 import httpStatus from 'http-status';
 import mongoose from 'mongoose';
 
-import { ApiError } from '../errors/ApiError';
+import { ApiError } from '@/common/errors/ApiError';
+
 import { IOptions } from '../paginate/paginate';
 import { permissionService } from '../permissions/permission.service';
 import { catchAsync } from '../utils/catchAsync';

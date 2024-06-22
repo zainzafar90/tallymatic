@@ -7,11 +7,11 @@ import httpStatus from 'http-status';
 import passport from 'passport';
 import xss from 'xss-clean';
 
-import { ApiError, errorConverter, errorHandler } from '@/modules/errors';
+import config from '@/config/config';
+import { ApiError, errorConverter, errorHandler } from '@/common/errors';
+import { morgan } from '@/common/logger';
 
-import config from './config/config';
 import { jwtStrategy } from './modules/auth';
-import { morgan } from './modules/logger';
 import { authLimiter } from './modules/utils';
 import routes from './routes/v1';
 

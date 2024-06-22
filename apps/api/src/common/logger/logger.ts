@@ -1,4 +1,5 @@
 import winston from 'winston';
+
 import config from '../../config/config';
 
 interface LoggingInfo {
@@ -13,7 +14,7 @@ const enumerateErrorFormat = winston.format((info: LoggingInfo) => {
   return info;
 });
 
-const logger = winston.createLogger({
+export const logger = winston.createLogger({
   level: config.env === 'development' ? 'debug' : 'info',
   format: winston.format.combine(
     enumerateErrorFormat(),
@@ -27,5 +28,3 @@ const logger = winston.createLogger({
     }),
   ],
 });
-
-export default logger;

@@ -4,8 +4,9 @@ import httpMocks from 'node-mocks-http';
 import winston from 'winston';
 import { jest } from '@jest/globals';
 
-import config from '../../config/config';
-import logger from '../logger/logger';
+import config from '@/config/config';
+import { logger } from '@/common/logger/logger';
+
 import { ApiError } from './ApiError';
 import { errorConverter, errorHandler } from './error';
 

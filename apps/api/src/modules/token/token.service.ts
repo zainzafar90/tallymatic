@@ -3,8 +3,9 @@ import jwt from 'jsonwebtoken';
 import moment, { Moment } from 'moment';
 import mongoose from 'mongoose';
 
-import config from '../../config/config';
-import { ApiError } from '../errors/ApiError';
+import config from '@/config/config';
+import { ApiError } from '@/common/errors/ApiError';
+
 import { userService } from '../user';
 import { IUserDoc } from '../user/user.interfaces';
 import { AccessAndRefreshTokens, ITokenDoc } from './token.interfaces';
