@@ -8,7 +8,8 @@ const createUserBody: Record<keyof NewCreatedUser, any> = {
   email: Joi.string().required().email(),
   password: Joi.string().required().custom(password),
   name: Joi.string().required(),
-  roles: Joi.array().items(Joi.string().valid(RoleType.User, RoleType.Admin)).required(),
+  contact: Joi.string().optional(),
+  role: Joi.string().valid(RoleType.User, RoleType.Admin).required(),
 };
 
 export const createUser = {

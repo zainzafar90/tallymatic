@@ -55,7 +55,7 @@ export class User extends Model<User> {
     allowNull: false,
     defaultValue: RoleType.User,
   })
-  role: RoleType[];
+  role: RoleType;
 
   @HasMany(() => Token)
   tokens: Token[];

@@ -9,6 +9,23 @@ import { IUser, NewCreatedUser, NewRegisteredUser, UpdateUserBody } from './user
 import { hashPassword, User } from './user.model';
 
 /**
+ * Convert User model to IUser
+ * @param {User} user
+ * @returns {IUser}
+ */
+export const userToIUser = (user: User): IUser => {
+  console.log(user);
+  return {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    contact: user.contact,
+    isEmailVerified: user.isEmailVerified,
+    role: user.role,
+  };
+};
+
+/**
  * Check if email is taken
  * @param {string} email - The user's email
  * @param {string} [excludeUserId] - The id of the user to be excluded from the check
@@ -36,11 +53,14 @@ export const createUser = async (userBody: NewCreatedUser): Promise<IUser> => {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
   }
 
-  return User.create({
+  const newHashedPassword = await hashPassword(userBody.password);
+  const user = await User.create({
     ...userBody,
-    roles: [RoleType.User],
-    password: await hashPassword(userBody.password),
+    role: RoleType.User,
+    password: newHashedPassword,
   });
+
+  return userToIUser(user);
 };
 
 /**
@@ -50,16 +70,18 @@ export const createUser = async (userBody: NewCreatedUser): Promise<IUser> => {
  */
 export const registerUser = async (userBody: NewRegisteredUser): Promise<IUser> => {
   const isEmailAlreadyTaken = await isEmailTaken(userBody.email);
-
   if (isEmailAlreadyTaken) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
   }
 
-  return User.create({
+  const newHashedPassword = await hashPassword(userBody.password);
+  const user = await User.create({
     ...userBody,
-    roles: [RoleType.User],
-    password: await hashPassword(userBody.password),
+    role: RoleType.User,
+    password: newHashedPassword,
   });
+
+  return userToIUser(user);
 };
 
 /**
@@ -77,12 +99,12 @@ export const queryUsers = async (filter: Record<string, any>, options: IOptions)
 /**
  * Get user by id
  * @param string id
- * @returns {Promise<User | null>}
+ * @returns {Promise<IUser | null>}
  */
-export const getUserById = async (id: string): Promise<User | null> => {
-  return User.findByPk(id, {
-    paranoid: true,
-  });
+export const getUserById = async (id: string): Promise<IUser | null> => {
+  const user = await User.findByPk(id);
+
+  return userToIUser(user);
 };
 
 /**
@@ -99,7 +121,7 @@ export const getUserByEmail = async (email: string): Promise<IUser | null> => Us
  * @returns {Promise<IUser | null>}
  */
 export const updateUserById = async (userId: string, updateBody: UpdateUserBody): Promise<IUser | null> => {
-  const user = await getUserById(userId);
+  const user = await User.findByPk(userId);
   if (!user) {
     throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
   }
@@ -110,7 +132,7 @@ export const updateUserById = async (userId: string, updateBody: UpdateUserBody)
   Object.assign(user, updateBody);
   await user.save();
 
-  return user;
+  return userToIUser(user);
 };
 
 /**
@@ -119,12 +141,12 @@ export const updateUserById = async (userId: string, updateBody: UpdateUserBody)
  * @returns {Promise<IUser | null>}
  */
 export const deleteUserById = async (userId: string): Promise<IUser | null> => {
-  const user = await getUserById(userId);
+  const user = await User.findByPk(userId);
   if (!user) {
     throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
   }
   await user.destroy();
-  return user;
+  return userToIUser(user);
 };
 
 /**
@@ -133,13 +155,13 @@ export const deleteUserById = async (userId: string): Promise<IUser | null> => {
  * @param {UpdateUserBody} updateBody
  * @returns {Promise<User | null>}
  */
-export const updateUserPassword = async (userId: string, updatedPassword: string): Promise<User | null> => {
-  const user = await getUserById(userId);
+export const updateUserPassword = async (userId: string, updatedPassword: string): Promise<IUser | null> => {
+  const user = await User.findByPk(userId);
   if (!user) {
     throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
   }
   const newHashedPassword = await hashPassword(updatedPassword);
   user.password = newHashedPassword;
   await user.save();
-  return user;
+  return userToIUser(user);
 };

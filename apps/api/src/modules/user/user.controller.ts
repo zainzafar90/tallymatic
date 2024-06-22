@@ -10,7 +10,7 @@ import { pick } from '../utils/pick';
 import * as userService from './user.service';
 
 export const createUser = catchAsync(async (req: Request, res: Response) => {
-  const isAllowed = permissionService.checkPermissions(req.user.roles, 'create', 'users');
+  const isAllowed = permissionService.checkPermissions(req.user.role, 'create', 'users');
   if (!isAllowed) {
     throw new ApiError(httpStatus.FORBIDDEN, 'You do not have permission to create users');
   }
@@ -23,7 +23,7 @@ export const getUsers = catchAsync(async (req: Request, res: Response) => {
   const filter = pick(req.query, ['name', 'roles']);
   const options: IOptions = pick(req.query, ['sortBy', 'limit', 'page', 'projectBy']);
   console.log(req.user);
-  const isAllowed = permissionService.checkPermissions(req.user.roles, 'list', 'users');
+  const isAllowed = permissionService.checkPermissions(req.user.role, 'list', 'users');
   if (!isAllowed) {
     throw new ApiError(httpStatus.FORBIDDEN, 'You do not have permission to list users');
   }

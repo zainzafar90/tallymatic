@@ -5,14 +5,15 @@ export interface IUser {
   id?: string;
   name: string;
   email: string;
-  password: string;
+  password?: string;
   isEmailVerified: boolean;
-  roles: RoleType[];
+  contact?: string;
+  role: RoleType;
 }
 
 export type UpdateUserBody = Partial<IUser>;
 
-export type NewRegisteredUser = Omit<IUser, 'id' | 'roles' | 'isEmailVerified'>;
+export type NewRegisteredUser = Omit<IUser, 'id' | 'role' | 'isEmailVerified'>;
 
 export type NewCreatedUser = Omit<IUser, 'id' | 'isEmailVerified'>;
 
