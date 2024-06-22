@@ -1,10 +1,19 @@
 import bcrypt from 'bcryptjs';
-import { Column, DataType, HasMany, IsUUID, Model, PrimaryKey, Table } from 'sequelize-typescript';
+import { Column, DataType, DefaultScope, HasMany, IsUUID, Model, PrimaryKey, Scopes, Table } from 'sequelize-typescript';
 
 import { RoleType } from '../permissions/permission.interface';
 import { Token } from '../token/token.model';
 import { IUser } from './user.interfaces';
 
+@DefaultScope(() => ({
+  attributes: { exclude: ['password'] },
+  paranoid: true,
+}))
+@Scopes(() => ({
+  withPassword: {
+    attributes: { include: ['password'] },
+  },
+}))
 @Table({ tableName: 'users', timestamps: true, paranoid: true })
 export class User extends Model<User> {
   @IsUUID(4)

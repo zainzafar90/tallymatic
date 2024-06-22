@@ -14,7 +14,6 @@ import { hashPassword, User } from './user.model';
  * @returns {IUser}
  */
 export const userToIUser = (user: User): IUser => {
-  console.log(user);
   return {
     id: user.id,
     name: user.name,
@@ -33,7 +32,7 @@ export const userToIUser = (user: User): IUser => {
  */
 const isEmailTaken = async (email: string, excludeUserId?: string): Promise<boolean> => {
   if (excludeUserId) {
-    const user = await User.findOne({ where: { email, id: { [Op.ne]: excludeUserId } } });
+    const user = await User.findOne({ where: { email, id: { [Op.ne]: excludeUserId } }, paranoid: true });
     return !!user;
   }
 
@@ -91,7 +90,6 @@ export const registerUser = async (userBody: NewRegisteredUser): Promise<IUser> 
  * @returns {Promise<QueryResult>}
  */
 export const queryUsers = async (filter: Record<string, any>, options: IOptions): Promise<QueryResult<User>> => {
-  // const users = await paginate(filter, options);
   const result = await paginate(User, filter, options);
   return result;
 };
@@ -113,6 +111,15 @@ export const getUserById = async (id: string): Promise<IUser | null> => {
  * @returns {Promise<IUser | null>}
  */
 export const getUserByEmail = async (email: string): Promise<IUser | null> => User.findOne({ where: { email } });
+
+/**
+ * Get user by email including password
+ * @param {string} email
+ * @returns {Promise<IUser | null>}
+ */
+export const getUserByEmailWithPassword = async (email: string): Promise<IUser | null> => {
+  return User.scope('withPassword').findOne({ where: { email } });
+};
 
 /**
  * Update user by id
