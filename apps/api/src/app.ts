@@ -7,12 +7,11 @@ import passport from 'passport';
 import xss from 'xss-clean';
 
 import config from '@/config/config';
+import routes from '@/routes/v1';
 import { ApiError, errorConverter, errorHandler } from '@/common/errors';
 import { morgan } from '@/common/logger';
-
-import { jwtStrategy } from './modules/auth';
-import { authLimiter } from './modules/utils';
-import routes from './routes/v1';
+import { jwtStrategy } from '@/modules/auth';
+import { authLimiter } from '@/utils';
 
 const app: Express = express();
 

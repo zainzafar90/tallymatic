@@ -1,7 +1,8 @@
 import Joi from 'joi';
 
+import { password, uuid } from '@/common/validate/custom.validation';
+
 import { RoleType } from '../permissions/permission.interface';
-import { password, uuid } from '../validate/custom.validation';
 import { NewCreatedUser } from './user.interfaces';
 
 const createUserBody: Record<keyof NewCreatedUser, any> = {
