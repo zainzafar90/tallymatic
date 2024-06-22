@@ -4,11 +4,10 @@ import passport from 'passport';
 
 import { ApiError } from '@/common/errors/ApiError';
 
-import { IUserDoc } from '../user/user.interfaces';
+import { IUser } from '../user/user.interfaces';
 
 const verifyCallback =
-  (req: Request, resolve: () => void, reject: (error: Error) => void) =>
-  async (err: Error, user: IUserDoc, info: string) => {
+  (req: Request, resolve: () => void, reject: (error: Error) => void) => async (err: Error, user: IUser, info: string) => {
     if (err || info || !user) {
       return reject(new ApiError(httpStatus.UNAUTHORIZED, 'Please authenticate'));
     }

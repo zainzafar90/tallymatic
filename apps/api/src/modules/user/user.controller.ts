@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 import httpStatus from 'http-status';
-import mongoose from 'mongoose';
 
 import { ApiError } from '@/common/errors/ApiError';
 
@@ -23,7 +22,7 @@ export const createUser = catchAsync(async (req: Request, res: Response) => {
 export const getUsers = catchAsync(async (req: Request, res: Response) => {
   const filter = pick(req.query, ['name', 'roles']);
   const options: IOptions = pick(req.query, ['sortBy', 'limit', 'page', 'projectBy']);
-
+  console.log(req.user);
   const isAllowed = permissionService.checkPermissions(req.user.roles, 'list', 'users');
   if (!isAllowed) {
     throw new ApiError(httpStatus.FORBIDDEN, 'You do not have permission to list users');
@@ -39,7 +38,7 @@ export const getMe = catchAsync(async (req: Request, res: Response) => {
 
 export const getUser = catchAsync(async (req: Request, res: Response) => {
   if (typeof req.params['userId'] === 'string') {
-    const user = await userService.getUserById(new mongoose.Types.ObjectId(req.params['userId']));
+    const user = await userService.getUserById(req.params['userId']);
     if (!user) {
       throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
     }
@@ -49,14 +48,14 @@ export const getUser = catchAsync(async (req: Request, res: Response) => {
 
 export const updateUser = catchAsync(async (req: Request, res: Response) => {
   if (typeof req.params['userId'] === 'string') {
-    const user = await userService.updateUserById(new mongoose.Types.ObjectId(req.params['userId']), req.body);
+    const user = await userService.updateUserById(req.params['userId'], req.body);
     res.send(user);
   }
 });
 
 export const deleteUser = catchAsync(async (req: Request, res: Response) => {
   if (typeof req.params['userId'] === 'string') {
-    await userService.deleteUserById(new mongoose.Types.ObjectId(req.params['userId']));
+    await userService.deleteUserById(req.params['userId']);
     res.status(httpStatus.NO_CONTENT).send();
   }
 });

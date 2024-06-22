@@ -1,6 +1,6 @@
 import winston from 'winston';
 
-import config from '../../config/config';
+import config from '@/config/config';
 
 interface LoggingInfo {
   level: string;

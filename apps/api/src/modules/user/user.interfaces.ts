@@ -1,10 +1,8 @@
-import mongoose, { Document, Model } from 'mongoose';
-
-import { QueryResult } from '../paginate/paginate';
 import { Role } from '../permissions/permission.interface';
 import { AccessAndRefreshTokens } from '../token/token.interfaces';
 
 export interface IUser {
+  id?: string;
   name: string;
   email: string;
   password: string;
@@ -12,22 +10,13 @@ export interface IUser {
   isEmailVerified: boolean;
 }
 
-export interface IUserDoc extends IUser, Document {
-  isPasswordMatch(password: string): Promise<boolean>;
-}
-
-export interface IUserModel extends Model<IUserDoc> {
-  isEmailTaken(email: string, excludeUserId?: mongoose.Types.ObjectId): Promise<boolean>;
-  paginate(filter: Record<string, any>, options: Record<string, any>): Promise<QueryResult>;
-}
-
 export type UpdateUserBody = Partial<IUser>;
 
-export type NewRegisteredUser = Omit<IUser, 'roles' | 'isEmailVerified'>;
+export type NewRegisteredUser = Omit<IUser, 'id' | 'roles' | 'isEmailVerified'>;
 
-export type NewCreatedUser = Omit<IUser, 'isEmailVerified'>;
+export type NewCreatedUser = Omit<IUser, 'id' | 'isEmailVerified'>;
 
 export interface IUserWithTokens {
-  user: IUserDoc;
+  user: IUser;
   tokens: AccessAndRefreshTokens;
 }

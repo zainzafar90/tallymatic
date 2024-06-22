@@ -1,0 +1,21 @@
+var path = require('path');
+var fs = require('fs');
+
+function getModelsPath(dir) {
+  var models = [];
+  fs.readdirSync(dir).forEach(function (file) {
+    var fullPath = path.join(dir, file);
+    if (fs.statSync(fullPath).isDirectory()) {
+      models.concat(getModelsPath(fullPath));
+    } else if (fullPath.endsWith('.postgres.model.ts')) {
+      models.push(fullPath);
+    }
+  });
+  return models;
+}
+
+module.exports = {
+  'models-path': getModelsPath(path.resolve('src')),
+  'seeders-path': path.resolve('src', 'database', 'seeders'),
+  'migrations-path': path.resolve('src', 'database', 'migrations'),
+};

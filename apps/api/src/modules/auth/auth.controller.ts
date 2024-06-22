@@ -4,7 +4,7 @@ import httpStatus from 'http-status';
 import { emailService } from '../email';
 import { tokenService } from '../token';
 import { userService } from '../user';
-import { IUserDoc } from '../user/user.interfaces';
+import { IUser } from '../user/user.interfaces';
 import { catchAsync } from '../utils/catchAsync';
 import * as authService from './auth.service';
 
@@ -38,18 +38,18 @@ export const forgotPassword = catchAsync(async (req: Request, res: Response) => 
 });
 
 export const resetPassword = catchAsync(async (req: Request, res: Response) => {
-  await authService.resetPassword(req.query['token'], req.body.password);
+  await authService.resetPassword(req.query['token'] as string, req.body.password);
   res.status(httpStatus.NO_CONTENT).send();
 });
 
 export const sendVerificationEmail = catchAsync(async (req: Request, res: Response) => {
-  const user = req.user as IUserDoc;
+  const user = req.user as IUser;
 
   if (!user) {
     throw new Error('User not found');
   }
 
-  const verifyEmailToken = await tokenService.generateVerifyEmailToken(user as IUserDoc);
+  const verifyEmailToken = await tokenService.generateVerifyEmailToken(user);
   await emailService.sendVerificationEmail(user.email, verifyEmailToken, user.name);
   res.status(httpStatus.NO_CONTENT).send();
 });

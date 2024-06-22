@@ -1,8 +1,9 @@
-/* eslint-disable no-param-reassign */
-import { Document, Model, Schema } from 'mongoose';
+import { FindAndCountOptions, Model, ModelStatic } from 'sequelize';
 
-export interface QueryResult {
-  results: Document[];
+import { logger } from '@/common/logger';
+
+export interface QueryResult<T> {
+  results: T[];
   page: number;
   limit: number;
   totalPages: number;
@@ -17,84 +18,74 @@ export interface IOptions {
   page?: number;
 }
 
-const paginate = <T extends Document, U extends Model<T>>(schema: Schema<T>): void => {
-  /**
-   * @typedef {Object} QueryResult
-   * @property {Document[]} results - Results found
-   * @property {number} page - Current page
-   * @property {number} limit - Maximum number of results per page
-   * @property {number} totalPages - Total number of pages
-   * @property {number} totalResults - Total number of documents
-   */
-  /**
-   * Query for documents with pagination
-   * @param {Object} [filter] - Mongo filter
-   * @param {Object} [options] - Query options
-   * @param {string} [options.sortBy] - Sorting criteria using the format: sortField:(desc|asc). Multiple sorting criteria should be separated by commas (,)
-   * @param {string} [options.populate] - Populate data fields. Hierarchy of fields should be separated by (.). Multiple populating criteria should be separated by commas (,)
-   * @param {number} [options.limit] - Maximum number of results per page (default = 10)
-   * @param {number} [options.page] - Current page (default = 1)
-   * @param {string} [options.projectBy] - Fields to hide or include (default = '')
-   * @returns {Promise<QueryResult>}
-   */
-  schema.static('paginate', async function (filter: Record<string, any>, options: IOptions): Promise<QueryResult> {
-    let sort = '';
-    if (options.sortBy) {
-      const sortingCriteria: any = [];
-      options.sortBy.split(',').forEach((sortOption: string) => {
-        const [key, order] = sortOption.split(':');
-        sortingCriteria.push((order === 'desc' ? '-' : '') + key);
-      });
-      sort = sortingCriteria.join(' ');
-    } else {
-      sort = 'createdAt';
-    }
-
-    let project = '';
-    if (options.projectBy) {
-      const projectionCriteria: string[] = [];
-      options.projectBy.split(',').forEach((projectOption) => {
-        const [key, include] = projectOption.split(':');
-        projectionCriteria.push((include === 'hide' ? '-' : '') + key);
-      });
-      project = projectionCriteria.join(' ');
-    } else {
-      project = '-createdAt -updatedAt';
-    }
-
-    const limit = options.limit && parseInt(options.limit.toString(), 10) > 0 ? parseInt(options.limit.toString(), 10) : 10;
-    const page = options.page && parseInt(options.page.toString(), 10) > 0 ? parseInt(options.page.toString(), 10) : 1;
-    const skip = (page - 1) * limit;
-
-    const countPromise = this.countDocuments(filter).exec();
-    let docsPromise = this.find(filter).sort(sort).skip(skip).limit(limit).select(project);
-
-    if (options.populate) {
-      options.populate.split(',').forEach((populateOption: any) => {
-        docsPromise = docsPromise.populate(
-          populateOption
-            .split('.')
-            .reverse()
-            .reduce((a: string, b: string) => ({ path: b, populate: a }))
-        );
-      });
-    }
-
-    docsPromise = docsPromise.exec();
-
-    return Promise.all([countPromise, docsPromise]).then((values) => {
-      const [totalResults, results] = values;
-      const totalPages = Math.ceil(totalResults / limit);
-      const result = {
-        results,
-        page,
-        limit,
-        totalPages,
-        totalResults,
-      };
-      return Promise.resolve(result);
-    });
-  });
+const getLimitAndOffset = (page: number, size: number) => {
+  const limit = size ? +size : 10; // default size is 10
+  const offset = page ? (page - 1) * limit : 0; // default page is 1
+  return { limit, offset };
 };
 
-export default paginate;
+const transformPagination = <T extends Model>(
+  data: {
+    count: number;
+    rows: T[];
+  },
+  page: number,
+  limit: number
+): QueryResult<T> => {
+  const { count: totalItems, rows } = data;
+  const currentPage = page ? +page : 1;
+  const totalPages = Math.ceil(totalItems / limit);
+
+  return { totalResults: totalItems, results: rows, totalPages, page: currentPage, limit };
+};
+
+export const paginate = async <T extends Model>(
+  model: ModelStatic<T>,
+  filter: Record<string, any>,
+  options: IOptions = {}
+): Promise<QueryResult<T>> => {
+  const page = options.page || 1;
+  const size = options.limit || 10;
+  const { limit, offset } = getLimitAndOffset(page, size);
+
+  const sort: any[] = options.sortBy
+    ? options.sortBy.split(',').map((sortOption) => {
+        const [key, order] = sortOption.split(':');
+        return [key, order === 'desc' ? 'DESC' : 'ASC'];
+      })
+    : [['createdAt', 'ASC']];
+
+  const attributes: any = options.projectBy
+    ? options.projectBy.split(',').map((projectOption) => {
+        const [key, include] = projectOption.split(':');
+        return include === 'hide' ? `-${key}` : key;
+      })
+    : { exclude: ['createdAt', 'updatedAt'] };
+
+  const findAndCountOptions: FindAndCountOptions = {
+    where: filter,
+    limit,
+    offset,
+    distinct: true,
+    order: sort,
+    attributes,
+  };
+
+  if (options.populate) {
+    findAndCountOptions.include = options.populate.split(',').map((populateOption) => {
+      return {
+        association: populateOption.split('.').reduce((acc, curr) => {
+          return { association: curr, include: acc ? [acc] : [] };
+        }, undefined as any),
+      };
+    });
+  }
+
+  try {
+    const { rows, count } = await model.findAndCountAll(findAndCountOptions);
+    return transformPagination({ count, rows }, page, limit);
+  } catch (error) {
+    logger.error(`Failed to paginate model: ${error.message}`);
+    throw error;
+  }
+};

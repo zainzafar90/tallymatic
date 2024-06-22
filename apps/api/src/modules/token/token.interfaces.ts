@@ -1,5 +1,12 @@
-import { Document, Model } from 'mongoose';
 import { JwtPayload } from 'jsonwebtoken';
+
+export enum TokenType {
+  ACCESS = 'access',
+  REFRESH = 'refresh',
+  RESET_PASSWORD = 'resetPassword',
+  VERIFY_EMAIL = 'verifyEmail',
+  INVITE = 'invite',
+}
 
 export interface IToken {
   token: string;
@@ -10,10 +17,6 @@ export interface IToken {
 }
 
 export type NewToken = Omit<IToken, 'blacklisted'>;
-
-export interface ITokenDoc extends IToken, Document {}
-
-export interface ITokenModel extends Model<ITokenDoc> {}
 
 export interface IPayload extends JwtPayload {
   sub: string;

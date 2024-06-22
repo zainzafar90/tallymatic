@@ -1,7 +1,7 @@
 import Joi from 'joi';
 
 import { Role } from '../permissions/permission.interface';
-import { objectId, password } from '../validate/custom.validation';
+import { password, uuid } from '../validate/custom.validation';
 import { NewCreatedUser } from './user.interfaces';
 
 const createUserBody: Record<keyof NewCreatedUser, any> = {
@@ -28,13 +28,13 @@ export const getUsers = {
 
 export const getUser = {
   params: Joi.object().keys({
-    userId: Joi.string().custom(objectId),
+    userId: Joi.string().custom(uuid),
   }),
 };
 
 export const updateUser = {
   params: Joi.object().keys({
-    userId: Joi.required().custom(objectId),
+    userId: Joi.required().custom(uuid),
   }),
   body: Joi.object()
     .keys({
@@ -47,6 +47,6 @@ export const updateUser = {
 
 export const deleteUser = {
   params: Joi.object().keys({
-    userId: Joi.string().custom(objectId),
+    userId: Joi.string().custom(uuid),
   }),
 };

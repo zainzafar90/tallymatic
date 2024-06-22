@@ -1,22 +1,15 @@
-import { Model, Document } from 'mongoose';
-import { QueryResult, IOptions } from './paginate';
-
-export interface IProject {
-  name: string;
-  milestones: number;
+export interface QueryResult<T> {
+  results: T[];
+  page: number;
+  limit: number;
+  totalPages: number;
+  totalResults: number;
 }
 
-export interface ITask {
-  name: string;
-  project: string;
-}
-
-export interface IProjectDoc extends IProject, Document {}
-export interface ITaskDoc extends ITask, Document {}
-
-export interface IProjectModel extends Model<IProjectDoc> {
-  paginate(filter: Record<string, any>, options: IOptions): Promise<QueryResult>;
-}
-export interface ITaskModel extends Model<ITaskDoc> {
-  paginate(filter: Record<string, any>, options: IOptions): Promise<QueryResult>;
+export interface IOptions {
+  sortBy?: string;
+  projectBy?: string;
+  populate?: string;
+  limit?: number;
+  page?: number;
 }

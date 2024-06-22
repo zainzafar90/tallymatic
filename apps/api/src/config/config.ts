@@ -6,7 +6,12 @@ const envVarsSchema = Joi.object()
   .keys({
     NODE_ENV: Joi.string().valid('production', 'development', 'test').required(),
     PORT: Joi.number().default(3000),
-    DATABASE_URL: Joi.string().required().description('Mongo DB url'),
+    DB_HOST: Joi.string().required().description('Database host name').default('localhost'),
+    DB_PORT: Joi.number().default(5432),
+    DB_NAME: Joi.string().required().description('Database name').default('tallymatic'),
+    DB_USER: Joi.string().required().description('Database user').default('postgres'),
+    DB_PASSWORD: Joi.string().required().description('Database password').default('password'),
+    DB_DIALECT: Joi.string().required().description('Database dialect').default('postgres'),
     JWT_SECRET: Joi.string().required().description('JWT secret key'),
     JWT_ACCESS_EXPIRATION_MINUTES: Joi.number().default(30).description('minutes after which access tokens expire'),
     JWT_REFRESH_EXPIRATION_DAYS: Joi.number().default(30).description('days after which refresh tokens expire'),
@@ -35,15 +40,12 @@ const config = {
   env: envVars.NODE_ENV,
   port: envVars.PORT,
   db: {
-    url: envVars.DATABASE_URL,
-  },
-  mongoose: {
-    url: envVars.DATABASE_URL + (envVars.NODE_ENV === 'test' ? '-test' : ''),
-    options: {
-      useCreateIndex: true,
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    },
+    host: envVars.DB_HOST,
+    port: envVars.DB_PORT,
+    name: envVars.DB_NAME,
+    user: envVars.DB_USER,
+    password: envVars.DB_PASSWORD,
+    dialect: envVars.DB_DIALECT,
   },
   jwt: {
     secret: envVars.JWT_SECRET,

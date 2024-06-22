@@ -1,17 +1,29 @@
-import mongoose from 'mongoose';
+// import mongoose from 'mongoose';
 
 import config from '@/config/config';
 import { logger } from '@/common/logger';
+import { Database } from '@/database/db';
 
 import app from './app';
 
-let server: any;
-mongoose.connect(config.mongoose.url).then(() => {
-  logger.info('Connected to MongoDB');
-  server = app.listen(config.port, () => {
-    logger.info(`Listening to port ${config.port}`);
+const database = new Database();
+database.connect().then(() => {
+  logger.info('Connected to PostgreSQL');
+  database.sync().then(() => {
+    logger.info('Database synchronized');
+    app.listen(config.port, () => {
+      logger.info(`Listening to port ${config.port}`);
+    });
   });
 });
+
+let server: any;
+// mongoose.connect(config.mongoose.url).then(() => {
+//   logger.info('Connected to MongoDB');
+//   server = app.listen(config.port, () => {
+//     logger.info(`Listening to port ${config.port}`);
+//   });
+// });
 
 const exitHandler = () => {
   if (server) {

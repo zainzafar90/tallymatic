@@ -1,7 +1,6 @@
 import compression from 'compression';
 import cors from 'cors';
 import express, { Express } from 'express';
-import ExpressMongoSanitize from 'express-mongo-sanitize';
 import helmet from 'helmet';
 import httpStatus from 'http-status';
 import passport from 'passport';
@@ -42,7 +41,6 @@ app.use(express.urlencoded({ extended: true }));
 
 // sanitize request data
 app.use(xss());
-app.use(ExpressMongoSanitize());
 
 // gzip compression
 app.use(compression());
