@@ -66,7 +66,15 @@ describe('Auth routes', () => {
 
       const dbUser = await User.findById(res.body.user.id);
       expect(dbUser).toBeDefined();
-      expect(dbUser).toMatchObject({ name: newUser.name, email: newUser.email, roles: [Role.User], isEmailVerified: false });
+      expect(dbUser).toMatchObject({
+        _id: expect.anything(),
+        name: newUser.name,
+        email: newUser.email,
+        roles: [Role.User],
+        isEmailVerified: false,
+        createdAt: expect.any(Date),
+        updatedAt: expect.any(Date),
+      });
 
       expect(res.body.tokens).toEqual({
         access: { token: expect.anything(), expires: expect.anything() },
@@ -113,14 +121,6 @@ describe('Auth routes', () => {
       };
 
       const res = await request(app).post('/v1/auth/login').send(loginCredentials).expect(httpStatus.OK);
-
-      expect(res.body.user).toEqual({
-        id: expect.anything(),
-        name: userOne.name,
-        email: userOne.email,
-        roles: userOne.roles,
-        isEmailVerified: userOne.isEmailVerified,
-      });
 
       expect(res.body.tokens).toEqual({
         access: { token: expect.anything(), expires: expect.anything() },

@@ -80,7 +80,7 @@ export const resetPassword = async (resetPasswordToken: any, newPassword: string
  * @param {string} verifyEmailToken
  * @returns {Promise<IUserDoc | null>}
  */
-export const verifyEmail = async (verifyEmailToken: any): Promise<IUserDoc | null> => {
+export const verifyEmail = async (verifyEmailToken: string): Promise<IUserDoc | null> => {
   try {
     const verifyEmailTokenDoc = await verifyToken(verifyEmailToken, tokenTypes.VERIFY_EMAIL);
     const user = await getUserById(new mongoose.Types.ObjectId(verifyEmailTokenDoc.user));

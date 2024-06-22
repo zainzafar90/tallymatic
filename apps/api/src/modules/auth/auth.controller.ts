@@ -55,6 +55,6 @@ export const sendVerificationEmail = catchAsync(async (req: Request, res: Respon
 });
 
 export const verifyEmail = catchAsync(async (req: Request, res: Response) => {
-  await authService.verifyEmail(req.query['token']);
+  await authService.verifyEmail(req.query['token'] as string);
   res.status(httpStatus.NO_CONTENT).send();
 });

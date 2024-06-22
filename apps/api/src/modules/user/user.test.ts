@@ -265,7 +265,7 @@ describe('User routes', () => {
       const res = await request(app)
         .get('/v1/users')
         .set('Authorization', `Bearer ${adminAccessToken}`)
-        .query({ role: Role.User })
+        .query({ roles: [Role.User] })
         .send()
         .expect(httpStatus.OK);
 
