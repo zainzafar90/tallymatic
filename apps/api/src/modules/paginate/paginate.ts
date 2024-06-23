@@ -4,10 +4,10 @@ import { logger } from '@/common/logger';
 
 export interface QueryResult<T> {
   results: T[];
-  page: number;
+  count: number;
+  offset: number;
   limit: number;
-  totalPages: number;
-  totalResults: number;
+  total: number;
 }
 
 export interface IOptions {
@@ -34,9 +34,9 @@ const transformPagination = <T extends Model>(
 ): QueryResult<T> => {
   const { count: totalItems, rows } = data;
   const currentPage = page ? +page : 1;
-  const totalPages = Math.ceil(totalItems / limit);
+  const count = Math.ceil(data.count / limit);
 
-  return { totalResults: totalItems, results: rows, totalPages, page: currentPage, limit };
+  return { total: totalItems, results: rows, count, offset: currentPage, limit };
 };
 
 export const paginate = async <T extends Model>(
