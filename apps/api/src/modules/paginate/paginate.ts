@@ -4,10 +4,10 @@ import { logger } from '@/common/logger';
 
 export interface QueryResult<T> {
   results: T[];
-  count: number;
+  pages: number;
   offset: number;
   limit: number;
-  total: number;
+  count: number;
 }
 
 export interface IOptions {
@@ -15,28 +15,12 @@ export interface IOptions {
   projectBy?: string;
   populate?: string;
   limit?: number;
-  page?: number;
+  offset?: number;
 }
 
-const getLimitAndOffset = (page: number, size: number) => {
-  const limit = size ? +size : 10; // default size is 10
-  const offset = page ? (page - 1) * limit : 0; // default page is 1
-  return { limit, offset };
-};
-
-const transformPagination = <T extends Model>(
-  data: {
-    count: number;
-    rows: T[];
-  },
-  page: number,
-  limit: number
-): QueryResult<T> => {
-  const { count: totalItems, rows } = data;
-  const currentPage = page ? +page : 1;
-  const count = Math.ceil(data.count / limit);
-
-  return { total: totalItems, results: rows, count, offset: currentPage, limit };
+const transformPagination = <T extends Model>(count: number, rows: T[], offset: number, limit: number): QueryResult<T> => {
+  const pages = Math.ceil(count / limit);
+  return { pages, count, offset, limit, results: rows };
 };
 
 export const paginate = async <T extends Model>(
@@ -44,9 +28,8 @@ export const paginate = async <T extends Model>(
   filter: Record<string, any>,
   options: IOptions = {}
 ): Promise<QueryResult<T>> => {
-  const page = options.page || 1;
-  const size = options.limit || 10;
-  const { limit, offset } = getLimitAndOffset(page, size);
+  const limit = Math.max(options.limit ? +options.limit : 10, 100);
+  const offset = options.offset ? +options.offset : 0;
 
   const sort: any[] = options.sortBy
     ? options.sortBy.split(',').map((sortOption) => {
@@ -60,7 +43,7 @@ export const paginate = async <T extends Model>(
         const [key, include] = projectOption.split(':');
         return include === 'hide' ? `-${key}` : key;
       })
-    : { exclude: ['createdAt', 'updatedAt'] };
+    : { exclude: ['createdAt', 'updatedAt', 'deletedAt'] };
 
   const findAndCountOptions: FindAndCountOptions = {
     where: filter,
@@ -83,7 +66,7 @@ export const paginate = async <T extends Model>(
 
   try {
     const { rows, count } = await model.findAndCountAll(findAndCountOptions);
-    return transformPagination({ count, rows }, page, limit);
+    return transformPagination(count, rows, offset, limit);
   } catch (error) {
     logger.error(`Failed to paginate model: ${error.message}`);
     throw error;
