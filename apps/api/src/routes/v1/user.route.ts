@@ -62,7 +62,7 @@ export default router;
  *                 description: At least one number and one letter
  *               role:
  *                  type: []
- *                  enum: [user, admin]
+ *                  enum: [user, admin, super-admin]
  *             example:
  *               name: fake name
  *               email: fake@example.com

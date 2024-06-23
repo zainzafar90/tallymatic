@@ -34,7 +34,7 @@ export type EmailPassRes = {
 type User = {
   name: string;
   email: string;
-  role: 'user' | 'admin';
+  role: 'user' | 'admin' | 'super-admin';
   isEmailVerified: boolean;
   id: string;
 };
