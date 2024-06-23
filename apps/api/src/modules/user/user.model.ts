@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs';
 import { Column, DataType, DefaultScope, HasMany, IsUUID, Model, PrimaryKey, Scopes, Table } from 'sequelize-typescript';
+import { RoleType } from '@shared';
 
-import { RoleType } from '../permissions/permission.interface';
 import { Token } from '../token/token.model';
 import { IUser } from './user.interfaces';
 

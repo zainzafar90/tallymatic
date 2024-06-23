@@ -1,4 +1,5 @@
-import { RoleType } from './permission.interface';
+import { RoleType } from '@shared';
+
 import permissions from './permissions.json';
 
 /**
@@ -10,7 +11,7 @@ import permissions from './permissions.json';
  *
  * @returns {boolean}
  */
-const checkPermissions = (role: RoleType, action: string, resourceKind: string) => {
+const checkPermissions = (role: RoleType, action: string, resourceKind: string): boolean => {
   const resourcePolicy = permissions.resourcePolicies.find((policy) => policy.resource === resourceKind);
   if (!resourcePolicy) {
     return false;

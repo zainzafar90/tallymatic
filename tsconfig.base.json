@@ -15,7 +15,9 @@
     "skipDefaultLibCheck": true,
     "resolveJsonModule": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@shared": ["libs/shared/index.ts"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }

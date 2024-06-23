@@ -3,6 +3,7 @@
  */
 
 import { Product, ProductOption, ProductType, ProductVariant, Store } from '@medusajs/medusa';
+import { RoleType } from '@shared';
 
 type ListRes = {
   count: number;
@@ -34,7 +35,7 @@ export type EmailPassRes = {
 type User = {
   name: string;
   email: string;
-  role: 'user' | 'admin' | 'super-admin';
+  role: RoleType;
   isEmailVerified: boolean;
   id: string;
 };

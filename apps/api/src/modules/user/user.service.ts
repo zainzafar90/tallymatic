@@ -1,10 +1,10 @@
 import httpStatus from 'http-status';
 import { Op } from 'sequelize';
+import { RoleType } from '@shared';
 
 import { ApiError } from '@/common/errors/ApiError';
 
 import { IOptions, paginate, QueryResult } from '../paginate/paginate';
-import { RoleType } from '../permissions/permission.interface';
 import { IUser, NewCreatedUser, NewRegisteredUser, UpdateUserBody } from './user.interfaces';
 import { hashPassword, User } from './user.model';
 

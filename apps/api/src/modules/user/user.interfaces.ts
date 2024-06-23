@@ -1,4 +1,5 @@
-import { RoleType } from '../permissions/permission.interface';
+import { RoleType } from '@shared';
+
 import { AccessAndRefreshTokens } from '../token/token.interfaces';
 
 export interface IUser {
