@@ -1,9 +1,9 @@
 export interface QueryResult<T> {
   results: T[];
-  page: number;
+  pages: number;
+  offset: number;
   limit: number;
-  totalPages: number;
-  totalResults: number;
+  count: number;
 }
 
 export interface IOptions {
@@ -11,5 +11,5 @@ export interface IOptions {
   projectBy?: string;
   populate?: string;
   limit?: number;
-  page?: number;
+  offset?: number;
 }

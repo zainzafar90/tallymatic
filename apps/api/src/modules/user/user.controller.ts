@@ -5,7 +5,7 @@ import { catchAsync } from '@/utils/catchAsync';
 import { pick } from '@/utils/pick';
 import { ApiError } from '@/common/errors/ApiError';
 
-import { IOptions } from '../paginate/paginate';
+import { IOptions } from '../paginate/paginate.types';
 import { permissionService } from '../permissions/permission.service';
 import * as userService from './user.service';
 

@@ -4,7 +4,8 @@ import { RoleType } from '@shared';
 
 import { ApiError } from '@/common/errors/ApiError';
 
-import { IOptions, paginate, QueryResult } from '../paginate/paginate';
+import { paginate } from '../paginate/paginate';
+import { IOptions, QueryResult } from '../paginate/paginate.types';
 import { IUser, NewCreatedUser, NewRegisteredUser, UpdateUserBody } from './user.interfaces';
 import { hashPassword, User } from './user.model';
 

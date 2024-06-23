@@ -5,6 +5,7 @@
     "module": "commonjs",
     "types": ["node", "express", "jest"],
     "skipLibCheck": true,
+    "composite": false,
     "baseUrl": "../../",
     "paths": {
       "@/*": ["apps/api/src/*"],

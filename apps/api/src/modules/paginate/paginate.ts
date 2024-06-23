@@ -2,21 +2,7 @@ import { FindAndCountOptions, Model, ModelStatic } from 'sequelize';
 
 import { logger } from '@/common/logger';
 
-export interface QueryResult<T> {
-  results: T[];
-  pages: number;
-  offset: number;
-  limit: number;
-  count: number;
-}
-
-export interface IOptions {
-  sortBy?: string;
-  projectBy?: string;
-  populate?: string;
-  limit?: number;
-  offset?: number;
-}
+import { IOptions, QueryResult } from './paginate.types';
 
 const transformPagination = <T extends Model>(count: number, rows: T[], offset: number, limit: number): QueryResult<T> => {
   const pages = Math.ceil(count / limit);
