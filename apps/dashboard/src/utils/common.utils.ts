@@ -1,4 +1,4 @@
-/** 
+/**
  * Base Environment Variable
  */
 export const env = import.meta.env;
@@ -17,3 +17,8 @@ export const isProd = env.PROD;
  * Check if the application is running in test mode
  */
 export const apiUrl = env.VITE_API_URL;
+
+/**
+ * API Token Key
+ */
+export const API_TOKEN_KEY = 'token';

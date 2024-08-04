@@ -1,12 +1,14 @@
 import { useMutation, UseMutationOptions } from '@tanstack/react-query';
 
+import { API_TOKEN_KEY } from '@/utils/common.utils';
+
 import { client } from '../../lib/client';
 import { EmailPassReq } from '../../types/api-payloads';
 import { EmailPassRes } from '../../types/api-responses';
 
 const handleAuthSuccess = async (data: EmailPassRes) => {
   if (data.tokens.access.token) {
-    localStorage.setItem('token', data.tokens.access.token);
+    localStorage.setItem(API_TOKEN_KEY, data.tokens.access.token);
   }
 };
 
@@ -25,7 +27,7 @@ export const useLogout = (options?: UseMutationOptions<void, Error>) => {
   return useMutation({
     mutationFn: () => client.auth.logout(),
     onSuccess: async (data, variables, context) => {
-      localStorage.removeItem('token');
+      localStorage.removeItem(API_TOKEN_KEY);
       options?.onSuccess?.(data, variables, context);
     },
     ...options,

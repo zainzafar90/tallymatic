@@ -7,6 +7,7 @@ import { SidebarProvider } from '../../../providers/sidebar-provider';
 
 export const ProtectedRoute = () => {
   const { user, isLoading } = useMe();
+  console.log({ user, isLoading });
   const location = useLocation();
 
   if (isLoading) {
@@ -16,6 +17,8 @@ export const ProtectedRoute = () => {
       </div>
     );
   }
+
+  console.log(user);
 
   if (!user) {
     return <Navigate to="/login" state={{ from: location }} replace />;

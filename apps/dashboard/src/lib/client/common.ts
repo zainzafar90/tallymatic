@@ -1,6 +1,6 @@
 import { stringify } from 'qs';
 
-import { apiUrl } from '../../utils/common.utils';
+import { API_TOKEN_KEY, apiUrl } from '../../utils/common.utils';
 
 const commonHeaders = {
   'Content-Type': 'application/json',
@@ -25,7 +25,7 @@ function getOptions(options?: Omit<RequestInit, 'body'>, payload?: Record<string
     headers: {
       ...commonHeaders,
       ...options?.headers,
-      Authorization: `Bearer ${localStorage.getItem('token') || ''}`,
+      Authorization: `Bearer ${localStorage.getItem(API_TOKEN_KEY) || ''}`,
     },
     body,
     // TODO: enable it back when cookies are implemented
@@ -47,7 +47,7 @@ async function makeRequest<
     const errorData = await response.json();
 
     // Temp: Add a better error type
-    throw new Error(`API error ${response.status}: ${errorData.message}`);
+    throw errorData;
   }
 
   return response.json();

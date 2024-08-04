@@ -20,7 +20,7 @@ export const useMe = (options?: UseQueryOptions<UserRes, Error, UserRes, QueryKe
   });
 
   return {
-    ...data,
+    user: data,
     ...rest,
   };
 };

@@ -9,7 +9,6 @@ import { Divider } from '../../components/common/divider';
 import { Form } from '../../components/common/form';
 import { LogoBox } from '../../components/common/logo-box';
 import { useEmailPassLogin } from '../../hooks/api/auth';
-import { isAxiosError } from '../../lib/is-axios-error';
 
 const LoginSchema = z.object({
   email: z.string().email(),
@@ -35,26 +34,26 @@ export const Login = () => {
 
   const handleSubmit = form.handleSubmit(async ({ email, password }) => {
     try {
-      await mutateAsync({
+      const res = await mutateAsync({
         email,
         password,
       });
 
+      localStorage.setItem('token', res.tokens.access.token);
+
       navigate(from, { replace: true });
-    } catch (error) {
-      if (isAxiosError(error)) {
-        if (error.response?.status === 401) {
-          form.setError('email', {
-            type: 'manual',
-          });
+    } catch (error: any) {
+      if (error.code === 401) {
+        form.setError('email', {
+          type: 'manual',
+        });
 
-          form.setError('password', {
-            type: 'manual',
-            message: 'Wrong email or password',
-          });
+        form.setError('password', {
+          type: 'manual',
+          message: 'Wrong email or password',
+        });
 
-          return;
-        }
+        return;
       }
 
       form.setError('root.serverError', {
