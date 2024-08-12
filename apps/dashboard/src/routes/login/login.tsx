@@ -43,7 +43,7 @@ export const Login = () => {
 
       navigate(from, { replace: true });
     } catch (error: any) {
-      if (error.code === 401) {
+      if (error?.code === 401) {
         form.setError('email', {
           type: 'manual',
         });
