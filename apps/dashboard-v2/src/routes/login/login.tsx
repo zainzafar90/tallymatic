@@ -1,4 +1,4 @@
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
@@ -6,9 +6,12 @@ import { zodResolver } from '@hookform/resolvers/zod';
 
 import { Alert } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Heading } from '@/components/ui/heading';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
+import { Text, TextLink } from '@/components/ui/text';
 
 import { LogoBox } from '../../components/common/logo-box';
 import { useEmailPassLogin } from '../../hooks/api/auth';
@@ -69,17 +72,17 @@ export const Login = () => {
   const serverError = form.formState.errors?.root?.serverError?.message;
 
   return (
-    <div className="flex flex-col min-h-dvh w-dvw items-center justify-center">
-      <Card className="mx-auto max-w-sm">
-        <CardHeader className="text-center space-y-3">
-          <LogoBox />
-          <CardTitle className="text-2xl">Login</CardTitle>
-          <CardDescription>Enter your email below to login to your account</CardDescription>
-        </CardHeader>
-        <CardContent>
+    <div className="flex flex-col min-h-dvh w-dvw items-center justify-center mx-auto max-w-md">
+      <div className="relative h-full w-full rounded-xl bg-white shadow-[0px_0px_0px_1px_rgba(9,9,11,0.07),0px_2px_2px_0px_rgba(9,9,11,0.05)] dark:bg-zinc-900 dark:shadow-[0px_0px_0px_1px_rgba(255,255,255,0.1)] dark:before:pointer-events-none dark:before:absolute dark:before:-inset-px dark:before:rounded-xl dark:before:shadow-[0px_2px_8px_0px_rgba(0,_0,_0,_0.20),_0px_1px_0px_0px_rgba(255,_255,_255,_0.06)_inset] forced-colors:outline">
+        <div className="grid h-full w-full justify-items-center overflow-hidden place-items-start p-6 py-8 sm:p-8 lg:p-12">
           <Form {...form}>
-            <form onSubmit={handleSubmit} className="flex w-full flex-col gap-y-6">
-              <div className="grid gap-4">
+            <form onSubmit={handleSubmit} className="w-full max-w-sm space-y-8">
+              <div className="flex items-center space-x-4">
+                <LogoBox className="w-6 h-6" />
+                <Heading className="text-lg capitalize">Tallymatic</Heading>
+              </div>
+              <Text>Enter your email below to login to your account</Text>
+              <div className="flex flex-col space-y-8">
                 <FormField
                   control={form.control}
                   name="email"
@@ -110,25 +113,39 @@ export const Login = () => {
                     );
                   }}
                 />
+
+                <div className="flex flex-wrap justify-between text-sm">
+                  <div className="flex items-center space-x-4">
+                    <Switch name="remember_me" />
+                    <Label htmlFor="remember_me">Remember me</Label>
+                  </div>
+                  <TextLink href="/forgot-password" className="underline">
+                    Forgot password?
+                  </TextLink>
+                </div>
+
                 {serverError && (
                   <Alert className="mt-4" onClose={() => console.log('closed')}>
                     {serverError}
                   </Alert>
                 )}
-                <Button type="submit" className="w-full">
+
+                <Button color="dark" type="submit" className="w-full">
                   Login
                 </Button>
               </div>
             </form>
           </Form>
           <div className="mt-4 text-center text-sm">
-            Don&apos;t have an account?{' '}
-            <Link to="/register" className="underline">
-              Sign up
-            </Link>
+            <Text>
+              Don&apos;t have an account?{' '}
+              <TextLink href="/register" className="underline">
+                Sign up
+              </TextLink>
+            </Text>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 };
