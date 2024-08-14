@@ -7,7 +7,6 @@ import { SidebarProvider } from '../../../providers/sidebar-provider';
 
 export const ProtectedRoute = () => {
   const { user, isLoading } = useMe();
-  console.log({ user, isLoading });
   const location = useLocation();
 
   if (isLoading) {
