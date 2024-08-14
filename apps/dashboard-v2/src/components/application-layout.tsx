@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 
 import {
@@ -70,8 +71,16 @@ function AccountDropdownMenu({ anchor }: { anchor: 'top start' | 'bottom end' })
   );
 }
 
-export function ApplicationLayout({ events }: { events: Awaited<ReturnType<typeof getEvents>> }) {
+export function ApplicationLayout() {
   const pathname = '/';
+
+  const [events, setEvents] = useState<Awaited<ReturnType<typeof getEvents>>>([]);
+
+  useEffect(() => {
+    (async () => {
+      setEvents(await getEvents());
+    })();
+  }, []);
 
   return (
     <SidebarLayout

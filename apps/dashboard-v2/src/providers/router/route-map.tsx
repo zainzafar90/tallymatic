@@ -3,7 +3,7 @@ import { RouteObject } from 'react-router-dom';
 import { ApplicationLayout } from '@/components/application-layout';
 import { ProtectedRoute } from '@/components/common/protected-route';
 
-import { ErrorBoundary } from '../../components/utilities/error-boundary';
+import { ErrorBoundary } from '../../components/common/error-boundary';
 
 export const RouteMap: RouteObject[] = [
   {
@@ -24,7 +24,7 @@ export const RouteMap: RouteObject[] = [
     children: [
       {
         path: '/',
-        element: <ApplicationLayout events={[]} />,
+        element: <ApplicationLayout />,
         children: [
           {
             path: '/dashboard',
