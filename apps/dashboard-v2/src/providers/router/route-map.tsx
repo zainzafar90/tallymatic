@@ -1,7 +1,7 @@
 import { RouteObject } from 'react-router-dom';
 
-import { ApplicationLayout } from '@/components/application-layout';
 import { ProtectedRoute } from '@/components/common/protected-route';
+import { MainLayout } from '@/components/layout/main-layout';
 
 import { ErrorBoundary } from '../../components/common/error-boundary';
 
@@ -24,7 +24,7 @@ export const RouteMap: RouteObject[] = [
     children: [
       {
         path: '/',
-        element: <ApplicationLayout />,
+        element: <MainLayout />,
         children: [
           {
             path: '/dashboard',

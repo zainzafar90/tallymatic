@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 
 import {
@@ -35,7 +34,6 @@ import {
   SidebarBody,
   SidebarFooter,
   SidebarHeader,
-  SidebarHeading,
   SidebarItem,
   SidebarLabel,
   SidebarSection,
@@ -68,7 +66,7 @@ function AccountDropdownMenu({ anchor }: { anchor: 'top start' | 'bottom end' })
   );
 }
 
-export function ApplicationLayout() {
+export const MainLayout = () => {
   const pathname = '/';
 
   return (
@@ -181,4 +179,4 @@ export function ApplicationLayout() {
       <Outlet />
     </SidebarLayout>
   );
-}
+};
