@@ -42,9 +42,6 @@ import {
   SidebarSpacer,
 } from '@/components/ui/sidebar';
 import { SidebarLayout } from '@/components/ui/sidebar-layout';
-import { getEvents } from '@/data';
-
-// import { getEvents } from '@/data';
 
 function AccountDropdownMenu({ anchor }: { anchor: 'top start' | 'bottom end' }) {
   return (
@@ -73,14 +70,6 @@ function AccountDropdownMenu({ anchor }: { anchor: 'top start' | 'bottom end' })
 
 export function ApplicationLayout() {
   const pathname = '/';
-
-  const [events, setEvents] = useState<Awaited<ReturnType<typeof getEvents>>>([]);
-
-  useEffect(() => {
-    (async () => {
-      setEvents(await getEvents());
-    })();
-  }, []);
 
   return (
     <SidebarLayout
@@ -150,17 +139,9 @@ export function ApplicationLayout() {
             </SidebarSection>
 
             <SidebarSection className="max-lg:hidden">
-              <SidebarHeading>Upcoming Events</SidebarHeading>
-              {events.length === 0 && (
-                <SidebarLabel className="mb-1 px-2 text-[10px]/4 font-medium text-zinc-500 dark:text-zinc-400">
-                  No upcoming events
-                </SidebarLabel>
-              )}
-              {events.map((event) => (
-                <SidebarItem key={event.id} href={event.url}>
-                  {event.name}
-                </SidebarItem>
-              ))}
+              <SidebarLabel className="mb-1 px-2 text-[10px]/4 font-medium text-zinc-500 dark:text-zinc-400">
+                No upcoming events
+              </SidebarLabel>
             </SidebarSection>
 
             <SidebarSpacer />
