@@ -7,6 +7,7 @@
  */
 
 import React from 'react';
+import { Link as ReactRouterLink } from 'react-router-dom';
 
 import * as Headless from '@headlessui/react';
 
@@ -16,7 +17,7 @@ export const Link = React.forwardRef(function Link(
 ) {
   return (
     <Headless.DataInteractive>
-      <a {...props} ref={ref} />
+      <ReactRouterLink {...props} to={props.href} ref={ref} />
     </Headless.DataInteractive>
   );
 });

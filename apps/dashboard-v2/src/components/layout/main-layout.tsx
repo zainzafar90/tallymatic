@@ -1,4 +1,4 @@
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 
 import {
   ArrowRightStartOnRectangleIcon,
@@ -67,7 +67,7 @@ function AccountDropdownMenu({ anchor }: { anchor: 'top start' | 'bottom end' })
 }
 
 export const MainLayout = () => {
-  const pathname = '/';
+  const { pathname } = useLocation();
 
   return (
     <SidebarLayout
@@ -118,7 +118,7 @@ export const MainLayout = () => {
 
           <SidebarBody>
             <SidebarSection>
-              <SidebarItem href="/" current={pathname === '/'}>
+              <SidebarItem href="/dashboard" current={pathname === '/dashboard'}>
                 <HomeIcon />
                 <SidebarLabel>Home</SidebarLabel>
               </SidebarItem>

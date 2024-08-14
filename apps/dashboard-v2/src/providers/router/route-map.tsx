@@ -2,6 +2,7 @@ import { RouteObject } from 'react-router-dom';
 
 import { ProtectedRoute } from '@/components/common/protected-route';
 import { MainLayout } from '@/components/layout/main-layout';
+import { Dashboard } from '@/routes/dashboard/dashboard';
 
 import { ErrorBoundary } from '../../components/common/error-boundary';
 
@@ -28,7 +29,15 @@ export const RouteMap: RouteObject[] = [
         children: [
           {
             path: '/dashboard',
-            lazy: () => import('../../routes/dashboard'),
+            element: <Dashboard />,
+          },
+          {
+            path: '/events',
+            lazy: () => import('../../routes/events'),
+          },
+          {
+            path: '/orders',
+            lazy: () => import('../../routes/orders'),
           },
           {
             path: '/settings',
