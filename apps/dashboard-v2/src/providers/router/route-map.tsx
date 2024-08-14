@@ -31,40 +31,16 @@ export const RouteMap: RouteObject[] = [
             lazy: () => import('../../routes/dashboard'),
           },
           {
+            path: '/settings',
+            lazy: () => import('../../routes/settings'),
+          },
+          {
             path: '/products',
             handle: {
               crumb: () => 'Products',
             },
           },
         ],
-      },
-    ],
-  },
-  {
-    element: <ProtectedRoute />,
-    errorElement: <ErrorBoundary />,
-    children: [
-      {
-        path: '/settings',
-        element: <div />,
-        // children: [
-        //   {
-        //     index: true,
-        //     lazy: () => import('../../routes/settings'),
-        //   },
-        //   {
-        //     path: 'profile',
-        //     lazy: () => import('../../routes/profile/profile-detail'),
-        //     handle: {
-        //       crumb: () => 'Profile',
-        //     },
-        //     children: [
-        //       {
-        //         path: 'edit',
-        //         lazy: () => import('../../routes/profile/profile-edit'),
-        //       },
-        //     ],
-        //   },
       },
     ],
   },

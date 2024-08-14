@@ -90,7 +90,7 @@ export const MainLayout = () => {
             <Dropdown>
               <DropdownButton as={SidebarItem}>
                 <Avatar src="/teams/catalyst.svg" />
-                <SidebarLabel>Catalyst</SidebarLabel>
+                <SidebarLabel>Noori Mobiles</SidebarLabel>
                 <ChevronDownIcon />
               </DropdownButton>
               <DropdownMenu className="min-w-80 lg:min-w-64" anchor="bottom start">
@@ -101,7 +101,7 @@ export const MainLayout = () => {
                 <DropdownDivider />
                 <DropdownItem href="#">
                   <Avatar slot="icon" src="/teams/catalyst.svg" />
-                  <DropdownLabel>Catalyst</DropdownLabel>
+                  <DropdownLabel>Noori Mobiles</DropdownLabel>
                 </DropdownItem>
                 <DropdownItem href="#">
                   <Avatar slot="icon" initials="BE" className="bg-purple-500 text-white" />
