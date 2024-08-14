@@ -3,7 +3,7 @@ import { QueryClientProvider } from '@tanstack/react-query';
 
 import { queryClient } from '@/lib/query-client';
 import { RouterProvider } from '@/providers/router';
-import { ThemeProvider } from '@/providers/theme/theme-provider';
+import { ThemeProvider } from '@/providers/theme';
 
 export function App() {
   return (
