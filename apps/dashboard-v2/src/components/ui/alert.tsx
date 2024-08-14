@@ -1,7 +1,8 @@
 import type React from 'react';
 
-import clsx from 'clsx';
 import * as Headless from '@headlessui/react';
+
+import { cn } from '@/utils/cn';
 
 import { Text } from './text';
 
@@ -50,7 +51,7 @@ export function Alert({
               leaveTo="opacity-0"
             >
               <Headless.DialogPanel
-                className={clsx(
+                className={cn(
                   className,
                   sizes[size],
                   'row-start-2 w-full rounded-2xl bg-white p-8 shadow-lg ring-1 ring-zinc-950/10 sm:rounded-2xl sm:p-6 dark:bg-zinc-900 dark:ring-white/10 forced-colors:outline'
@@ -70,7 +71,7 @@ export function AlertTitle({ className, ...props }: { className?: string } & Omi
   return (
     <Headless.DialogTitle
       {...props}
-      className={clsx(
+      className={cn(
         className,
         'text-balance text-center text-base/6 font-semibold text-zinc-950 sm:text-wrap sm:text-left sm:text-sm/6 dark:text-white'
       )}
@@ -83,19 +84,19 @@ export function AlertDescription({
   ...props
 }: { className?: string } & Omit<Headless.DescriptionProps<typeof Text>, 'className'>) {
   return (
-    <Headless.Description as={Text} {...props} className={clsx(className, 'mt-2 text-pretty text-center sm:text-left')} />
+    <Headless.Description as={Text} {...props} className={cn(className, 'mt-2 text-pretty text-center sm:text-left')} />
   );
 }
 
 export function AlertBody({ className, ...props }: React.ComponentPropsWithoutRef<'div'>) {
-  return <div {...props} className={clsx(className, 'mt-4')} />;
+  return <div {...props} className={cn(className, 'mt-4')} />;
 }
 
 export function AlertActions({ className, ...props }: React.ComponentPropsWithoutRef<'div'>) {
   return (
     <div
       {...props}
-      className={clsx(
+      className={cn(
         className,
         'mt-6 flex flex-col-reverse items-center justify-end gap-3 *:w-full sm:mt-4 sm:flex-row sm:*:w-auto'
       )}

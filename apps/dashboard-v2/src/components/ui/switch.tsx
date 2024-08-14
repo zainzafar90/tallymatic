@@ -1,14 +1,15 @@
 import type React from 'react';
 
-import { clsx } from 'clsx';
 import * as Headless from '@headlessui/react';
+
+import { cn } from '@/utils/cn';
 
 export function SwitchGroup({ className, ...props }: React.ComponentPropsWithoutRef<'div'>) {
   return (
     <div
       data-slot="control"
       {...props}
-      className={clsx(
+      className={cn(
         className,
         // Basic groups
         'space-y-3 [&_[data-slot=label]]:font-normal',
@@ -24,7 +25,7 @@ export function SwitchField({ className, ...props }: { className?: string } & Om
     <Headless.Field
       data-slot="field"
       {...props}
-      className={clsx(
+      className={cn(
         className,
         // Base layout
         'grid grid-cols-[1fr_auto] items-center gap-x-8 gap-y-1 sm:grid-cols-[1fr_auto]',
@@ -146,7 +147,7 @@ export function Switch({
     <Headless.Switch
       data-slot="control"
       {...props}
-      className={clsx(
+      className={cn(
         className,
         // Base styles
         'group relative isolate inline-flex h-6 w-10 cursor-default rounded-full p-[3px] sm:h-5 sm:w-8',
@@ -172,7 +173,7 @@ export function Switch({
     >
       <span
         aria-hidden="true"
-        className={clsx(
+        className={cn(
           // Basic layout
           'pointer-events-none relative inline-block size-[1.125rem] rounded-full sm:size-3.5',
           // Transition

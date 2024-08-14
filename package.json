@@ -86,6 +86,7 @@
     "@tanstack/react-table": "^8.17.3",
     "axios": "^1.7.2",
     "bcryptjs": "^2.4.3",
+    "class-variance-authority": "^0.7.0",
     "cmdk": "^1.0.0",
     "compression": "^1.7.4",
     "dotenv": "^16.4.5",

@@ -1,12 +1,13 @@
-import { clsx } from 'clsx';
 import * as Headless from '@headlessui/react';
+
+import { cn } from '@/utils/cn';
 
 export function RadioGroup({ className, ...props }: { className?: string } & Omit<Headless.RadioGroupProps, 'className'>) {
   return (
     <Headless.RadioGroup
       data-slot="control"
       {...props}
-      className={clsx(
+      className={cn(
         className,
         // Basic groups
         'space-y-3 [&_[data-slot=label]]:font-normal',
@@ -22,7 +23,7 @@ export function RadioField({ className, ...props }: { className?: string } & Omi
     <Headless.Field
       data-slot="field"
       {...props}
-      className={clsx(
+      className={cn(
         className,
         // Base layout
         'grid grid-cols-[1.125rem_1fr] items-center gap-x-4 gap-y-1 sm:grid-cols-[1rem_1fr]',
@@ -117,10 +118,10 @@ export function Radio({
   ...props
 }: { color?: Color; className?: string } & Omit<Headless.RadioProps, 'className' | 'children'>) {
   return (
-    <Headless.Radio data-slot="control" {...props} className={clsx(className, 'group inline-flex focus:outline-none')}>
-      <span className={clsx([base, colors[color]])}>
+    <Headless.Radio data-slot="control" {...props} className={cn(className, 'group inline-flex focus:outline-none')}>
+      <span className={cn([base, colors[color]])}>
         <span
-          className={clsx(
+          className={cn(
             'size-full rounded-full border-[4.5px] border-transparent bg-[--radio-indicator] bg-clip-padding',
             // Forced colors mode
             'forced-colors:border-[Canvas] forced-colors:group-data-[checked]:border-[Highlight]'
