@@ -5,7 +5,7 @@ import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Alert, Button, Heading, Input, Text } from '@medusajs/ui';
 
-import { Form } from '@/components/ui/form';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 
 import { Divider } from '../../components/common/divider';
 import { LogoBox } from '../../components/common/logo-box';
@@ -80,33 +80,33 @@ export const Login = () => {
           <Form {...form}>
             <form onSubmit={handleSubmit} className="flex w-full flex-col gap-y-6">
               <div className="flex flex-col gap-y-4">
-                <Form.Field
+                <FormField
                   control={form.control}
                   name="email"
                   render={({ field }) => {
                     return (
-                      <Form.Item>
-                        <Form.Label>Email</Form.Label>
-                        <Form.Control>
+                      <FormItem>
+                        <FormLabel>Email</FormLabel>
+                        <FormControl>
                           <Input autoComplete="email" {...field} />
-                        </Form.Control>
-                        <Form.ErrorMessage />
-                      </Form.Item>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
                     );
                   }}
                 />
-                <Form.Field
+                <FormField
                   control={form.control}
                   name="password"
                   render={({ field }) => {
                     return (
-                      <Form.Item>
-                        <Form.Label>Password</Form.Label>
-                        <Form.Control>
+                      <FormItem>
+                        <FormLabel>Password</FormLabel>
+                        <FormControl>
                           <Input type="password" autoComplete="current-password" {...field} />
-                        </Form.Control>
-                        <Form.ErrorMessage />
-                      </Form.Item>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
                     );
                   }}
                 />
