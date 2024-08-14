@@ -3,11 +3,13 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Alert, Button, Heading, Input, Text } from '@medusajs/ui';
 
+import { Alert } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
 
-import { Divider } from '../../components/common/divider';
 import { LogoBox } from '../../components/common/logo-box';
 import { useEmailPassLogin } from '../../hooks/api/auth';
 
@@ -67,19 +69,17 @@ export const Login = () => {
   const serverError = form.formState.errors?.root?.serverError?.message;
 
   return (
-    <div className="bg-ui-bg-base flex min-h-dvh w-dvw items-center justify-center">
-      <div className="m-4 flex w-full max-w-[300px] flex-col items-center">
-        <LogoBox className="mb-4" />
-        <div className="mb-4 flex flex-col items-center">
-          <Heading>Log in</Heading>
-          <Text size="small" className="text-ui-fg-subtle text-center">
-            to continue to Tallymatic
-          </Text>
-        </div>
-        <div className="flex w-full flex-col gap-y-3">
+    <div className="flex flex-col min-h-dvh w-dvw items-center justify-center">
+      <Card className="mx-auto max-w-sm">
+        <CardHeader className="text-center space-y-3">
+          <LogoBox />
+          <CardTitle className="text-2xl">Login</CardTitle>
+          <CardDescription>Enter your email below to login to your account</CardDescription>
+        </CardHeader>
+        <CardContent>
           <Form {...form}>
             <form onSubmit={handleSubmit} className="flex w-full flex-col gap-y-6">
-              <div className="flex flex-col gap-y-4">
+              <div className="grid gap-4">
                 <FormField
                   control={form.control}
                   name="email"
@@ -110,29 +110,25 @@ export const Login = () => {
                     );
                   }}
                 />
+                {serverError && (
+                  <Alert className="mt-4" onClose={() => console.log('closed')}>
+                    {serverError}
+                  </Alert>
+                )}
+                <Button type="submit" className="w-full">
+                  Login
+                </Button>
               </div>
-              <Button className="w-full" type="submit" isLoading={isPending}>
-                Continue
-              </Button>
             </form>
-            {serverError && (
-              <Alert className="mt-4" dismissible variant="error">
-                {serverError}
-              </Alert>
-            )}
           </Form>
-        </div>
-        <Divider variant="dashed" className="my-6" />
-        <span className="text-ui-fg-subtle txt-small">
-          <Link
-            key="reset-password-link"
-            to="/reset-password"
-            className="text-ui-fg-interactive transition-fg hover:text-ui-fg-interactive-hover focus-visible:text-ui-fg-interactive-hover outline-none"
-          >
-            Forgot password?
-          </Link>
-        </span>
-      </div>
+          <div className="mt-4 text-center text-sm">
+            Don&apos;t have an account?{' '}
+            <Link to="/register" className="underline">
+              Sign up
+            </Link>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };

@@ -8,7 +8,7 @@ import { ThemeProvider } from '@/providers/theme/theme-provider';
 export function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider>
+      <ThemeProvider storageKey="ui-theme" defaultTheme="system">
         <RouterProvider />
         <Toaster />
       </ThemeProvider>

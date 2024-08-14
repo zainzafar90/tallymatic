@@ -1,3 +1,5 @@
+import { Outlet } from 'react-router-dom';
+
 import {
   ArrowRightStartOnRectangleIcon,
   ChevronDownIcon,
@@ -68,13 +70,7 @@ function AccountDropdownMenu({ anchor }: { anchor: 'top start' | 'bottom end' })
   );
 }
 
-export function ApplicationLayout({
-  events,
-  children,
-}: {
-  events: Awaited<ReturnType<typeof getEvents>>;
-  children: React.ReactNode;
-}) {
+export function ApplicationLayout({ events }: { events: Awaited<ReturnType<typeof getEvents>> }) {
   const pathname = '/';
 
   return (
@@ -146,6 +142,11 @@ export function ApplicationLayout({
 
             <SidebarSection className="max-lg:hidden">
               <SidebarHeading>Upcoming Events</SidebarHeading>
+              {events.length === 0 && (
+                <SidebarLabel className="mb-1 px-2 text-[10px]/4 font-medium text-zinc-500 dark:text-zinc-400">
+                  No upcoming events
+                </SidebarLabel>
+              )}
               {events.map((event) => (
                 <SidebarItem key={event.id} href={event.url}>
                   {event.name}
@@ -187,7 +188,7 @@ export function ApplicationLayout({
         </Sidebar>
       }
     >
-      {children}
+      <Outlet />
     </SidebarLayout>
   );
 }

@@ -1,5 +1,6 @@
 import { RouteObject } from 'react-router-dom';
 
+import { ApplicationLayout } from '@/components/application-layout';
 import { ProtectedRoute } from '@/components/common/protected-route';
 
 import { ErrorBoundary } from '../../components/utilities/error-boundary';
@@ -13,17 +14,17 @@ export const RouteMap: RouteObject[] = [
     path: '/',
     lazy: () => import('../../routes/home'),
   },
-  // {
-  //   path: '*',
-  //   lazy: () => import('../../routes/no-match'),
-  // },
+  {
+    path: '*',
+    lazy: () => import('../../routes/no-match'),
+  },
   {
     element: <ProtectedRoute />,
     errorElement: <ErrorBoundary />,
     children: [
       {
         path: '/',
-        element: <div />,
+        element: <ApplicationLayout events={[]} />,
         children: [
           {
             path: '/dashboard',
