@@ -8,7 +8,7 @@ import { Select } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { getOrders } from '@/data';
 
-function Stat({ title, value, change }: { title: string; value: string; change: string }) {
+export function Stat({ title, value, change }: { title: string; value: string; change: string }) {
   return (
     <div>
       <Divider />

@@ -8,6 +8,7 @@ import {
   LightBulbIcon,
   PlusIcon,
   ShieldCheckIcon,
+  ShoppingBagIcon,
   UserCircleIcon,
 } from '@heroicons/react/16/solid';
 import {
@@ -129,6 +130,10 @@ export const MainLayout = () => {
               <SidebarItem href="/orders" current={pathname.startsWith('/orders')}>
                 <TicketIcon />
                 <SidebarLabel>Orders</SidebarLabel>
+              </SidebarItem>
+              <SidebarItem href="/products" current={pathname.startsWith('/products')}>
+                <ShoppingBagIcon />
+                <SidebarLabel>Products</SidebarLabel>
               </SidebarItem>
               <SidebarItem href="/settings" current={pathname.startsWith('/settings')}>
                 <Cog6ToothIcon />

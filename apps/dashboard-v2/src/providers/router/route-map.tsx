@@ -24,7 +24,7 @@ export const RouteMap: RouteObject[] = [
     errorElement: <ErrorBoundary />,
     children: [
       {
-        path: '/',
+        path: '',
         element: <MainLayout />,
         children: [
           {
@@ -48,38 +48,31 @@ export const RouteMap: RouteObject[] = [
             handle: {
               crumb: () => 'Products',
             },
-            // children: [
-            //   {
-            //     path: '',
-            //     lazy: () => import("../../routes/products/product-list"),
-            //     children: [
-            //       {
-            //         path: 'create',
-            //         lazy: () => import("../../routes/products/product-create"),
-            //       },
-            //     ],
-            //   },
-            //   {
-            //     path: ':id',
-            //     lazy: () => import("../../routes/products/product-detail"),
-            //     handle: {
-            //       crumb: (data: HttpTypes.AdminProductResponse) =>
-            //         data.product.title,
-            //     },
-            //     children: [
-            //       {
-            //         path: 'edit',
-            //         lazy: () => import("../../routes/products/product-edit"),
-            //       },
-            //     ],
-            //   },
-            // ],
-          },
-          {
-            path: '/products',
-            handle: {
-              crumb: () => 'Products',
-            },
+            children: [
+              {
+                path: '',
+                lazy: () => import('../../routes/products/product-list'),
+                // children: [
+                //   {
+                //     path: 'create',
+                //     lazy: () => import('../../routes/products/product-create'),
+                //   },
+                // ],
+              },
+              {
+                path: ':id',
+                lazy: () => import('../../routes/products/product-detail'),
+                handle: {
+                  crumb: (data: any) => data.product.title,
+                },
+                //     children: [
+                //       {
+                //         path: 'edit',
+                //         lazy: () => import("../../routes/products/product-edit"),
+                //       },
+                //     ],
+              },
+            ],
           },
         ],
       },
