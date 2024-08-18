@@ -43,13 +43,24 @@ export const getOrganization = catchAsync(async (req: Request, res: Response) =>
 
 export const updateOrganization = catchAsync(async (req: Request, res: Response) => {
   if (typeof req.params['organizationId'] === 'string') {
+    const isAllowed = permissionService.checkPermissions(req.user.role, 'update', 'organizations');
+    if (!isAllowed) {
+      throw new ApiError(httpStatus.FORBIDDEN, 'You do not have permission to update organization');
+    }
+
     const organization = await organizationService.updateOrganizationById(req.params['organizationId'], req.body);
     res.send(organization);
   }
 });
 
+/** TODO: THIS OPERATION SHOULDN"T BE PERMISSIBLE TO ANYONE admin or otherwise if it deletes then it should be soft delete */
 export const deleteOrganization = catchAsync(async (req: Request, res: Response) => {
   if (typeof req.params['organizationId'] === 'string') {
+    const isAllowed = permissionService.checkPermissions(req.user.role, 'delete', 'organizations');
+    if (!isAllowed) {
+      throw new ApiError(httpStatus.FORBIDDEN, 'You do not have permission to delete organization');
+    }
+
     await organizationService.deleteOrganizationById(req.params['organizationId']);
     res.status(httpStatus.NO_CONTENT).send();
   }

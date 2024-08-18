@@ -3,6 +3,7 @@ import express, { Router } from 'express';
 import config from '@/config/config';
 
 import authRoute from './auth.route';
+import organizationRoute from './organization.route';
 import storeRoute from './store.route';
 import docsRoute from './swagger.route';
 import userRoute from './user.route';
@@ -26,6 +27,10 @@ const defaultIRoute: IRoute[] = [
   {
     path: '/stores',
     route: storeRoute,
+  },
+  {
+    path: '/organizations',
+    route: organizationRoute,
   },
 ];
 
