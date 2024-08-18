@@ -137,7 +137,13 @@ export const updateUserById = async (userId: string, updateBody: UpdateUserBody)
   if (updateBody.email && (await isEmailTaken(updateBody.email, userId))) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
   }
-  Object.assign(user, updateBody);
+
+  const updatedHashPassword = await hashPassword(updateBody.password);
+
+  Object.assign(user, {
+    ...updateBody,
+    password: updatedHashPassword,
+  });
   await user.save();
 
   return userToIUser(user);

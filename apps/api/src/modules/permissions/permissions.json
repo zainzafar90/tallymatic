@@ -15,6 +15,22 @@
           "effect": "EFFECT_ALLOW"
         }
       ]
+    },
+    {
+      "version": "default",
+      "resource": "stores",
+      "rules": [
+        {
+          "actions": ["*"],
+          "roles": ["admin"],
+          "effect": "EFFECT_ALLOW"
+        },
+        {
+          "actions": ["view"],
+          "roles": ["user"],
+          "effect": "EFFECT_ALLOW"
+        }
+      ]
     }
   ]
 }

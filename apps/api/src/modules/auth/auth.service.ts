@@ -70,13 +70,13 @@ export const refreshAuth = async (refreshToken: string): Promise<IUserWithTokens
  */
 export const resetPassword = async (resetPasswordToken: string, newPassword: string): Promise<void> => {
   try {
-    const resetPasswordTokenDoc = await tokenService.verifyToken(resetPasswordToken, TokenType.RESET_PASSWORD);
+    const resetPasswordTokenDoc = await tokenService.verifyToken(resetPasswordToken, TokenType.ACCESS);
     const user = await userService.getUserById(resetPasswordTokenDoc.userId);
     if (!user) {
       throw new Error();
     }
     await userService.updateUserPassword(user.id, newPassword);
-    await Token.destroy({ where: { userId: user.id, type: TokenType.RESET_PASSWORD } });
+    await Token.destroy({ where: { userId: user.id, type: TokenType.ACCESS } });
   } catch (error) {
     throw new ApiError(httpStatus.UNAUTHORIZED, 'Password reset failed');
   }

@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import httpStatus from 'http-status';
+import { RoleType } from '@shared';
 
 import { catchAsync } from '@/utils/catchAsync';
 import { pick } from '@/utils/pick';
@@ -51,7 +52,19 @@ export const getUser = catchAsync(async (req: Request, res: Response) => {
 
 export const updateUser = catchAsync(async (req: Request, res: Response) => {
   if (typeof req.params['userId'] === 'string') {
-    const user = await userService.updateUserById(req.params['userId'], req.body);
+    const userId = req.params['userId'];
+    const currentUser = req.user;
+
+    const isAllowed = permissionService.checkPermissions(currentUser.role, 'update', 'users');
+    if (!isAllowed) {
+      throw new ApiError(httpStatus.FORBIDDEN, 'You do not have permission to update users');
+    }
+
+    if (userId !== currentUser['id'] && currentUser.role !== RoleType.Admin) {
+      throw new ApiError(httpStatus.FORBIDDEN, 'You can only update your own profile');
+    }
+
+    const user = await userService.updateUserById(userId, req.body);
     res.send(user);
   }
 });
