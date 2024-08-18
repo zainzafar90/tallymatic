@@ -1,7 +1,20 @@
 import bcrypt from 'bcryptjs';
-import { Column, DataType, DefaultScope, HasMany, IsUUID, Model, PrimaryKey, Scopes, Table } from 'sequelize-typescript';
+import {
+  BelongsTo,
+  Column,
+  DataType,
+  DefaultScope,
+  ForeignKey,
+  HasMany,
+  IsUUID,
+  Model,
+  PrimaryKey,
+  Scopes,
+  Table,
+} from 'sequelize-typescript';
 import { RoleType } from '@shared';
 
+import { Organization } from '../organization';
 import { Token } from '../token/token.model';
 import { IUser } from './user.interfaces';
 
@@ -66,8 +79,18 @@ export class User extends Model<User> {
   })
   role: RoleType;
 
+  @ForeignKey(() => Organization)
+  @Column({
+    type: DataType.UUID,
+    allowNull: false,
+  })
+  organizationId: string;
+
   @HasMany(() => Token)
   tokens: Token[];
+
+  @BelongsTo(() => Organization)
+  organization: Organization;
 }
 
 export const hashPassword = async function (password: string): Promise<string> {

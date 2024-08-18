@@ -21,6 +21,7 @@ export const userToIUser = (user: User): IUser => {
     email: user.email,
     contact: user.contact,
     isEmailVerified: user.isEmailVerified,
+    organizationId: user.organizationId,
     role: user.role,
   };
 };

@@ -1,4 +1,6 @@
-import { Column, DataType, IsUUID, Model, PrimaryKey, Table } from 'sequelize-typescript';
+import { BelongsTo, Column, DataType, ForeignKey, IsUUID, Model, PrimaryKey, Table } from 'sequelize-typescript';
+
+import { Organization } from '../organization/organization.model';
 
 @Table({
   timestamps: true,
@@ -17,10 +19,21 @@ export class Store extends Model {
     type: DataType.STRING,
     allowNull: false,
   })
-  name!: string;
+  name: string;
+
   @Column({
     type: DataType.STRING,
     allowNull: false,
   })
-  location!: string;
+  location: string;
+
+  @ForeignKey(() => Organization)
+  @Column({
+    type: DataType.UUID,
+    allowNull: false,
+  })
+  organizationId: string;
+
+  @BelongsTo(() => Organization)
+  organization: Organization;
 }

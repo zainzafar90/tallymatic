@@ -8,6 +8,7 @@ export interface IUser {
   email: string;
   password?: string;
   isEmailVerified: boolean;
+  organizationId: string;
   contact?: string;
   role: RoleType;
 }

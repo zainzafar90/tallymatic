@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "db:up": "cd apps/api && npm run db:drop && npm run db:create && npm run migrate:dev && npm run seed:dev",
+    "db:up": "cd apps/api && npx sequelize db:drop && npx sequelize db:create && npx sequelize db:migrate && npx sequelize db:seed:all",
     "db:drop": "cd apps/api && npx sequelize db:drop",
     "db:create": "cd apps/api && npx sequelize db:create",
     "create-migration:dev": "cd apps/api && npx sequelize migration:generate --name",
@@ -13,7 +13,6 @@
     "migrate:status:dev": "cd apps/api && npx sequelize db:migrate:status",
     "create-seeder:dev": "cd apps/api && npx sequelize seed:generate --name",
     "seed:dev": "cd apps/api && npx sequelize db:seed:all",
-    "seed:dev:questions": "cd apps/api && npx sequelize db:seed --seed 20231228081245-insert-questions.js",
     "seed:undo:dev": "cd apps/api && npx sequelize db:seed:undo:all"
   },
   "private": true,

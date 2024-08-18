@@ -9,6 +9,7 @@ const registerBody: Record<keyof NewRegisteredUser, any> = {
   password: Joi.string().required().custom(password),
   name: Joi.string().required(),
   contact: Joi.string().optional(),
+  organizationId: Joi.string().required(),
 };
 
 export const register = {
