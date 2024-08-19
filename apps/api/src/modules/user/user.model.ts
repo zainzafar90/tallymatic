@@ -49,7 +49,6 @@ export class User extends Model<User> {
     allowNull: false,
     validate: {
       isEmail: true,
-      message: 'Must be a valid email address',
     },
     set(value: string) {
       this.setDataValue('email', value.toLowerCase());
