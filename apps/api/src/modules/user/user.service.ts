@@ -4,6 +4,7 @@ import { RoleType } from '@shared';
 
 import { ApiError } from '@/common/errors/ApiError';
 
+import { Organization } from '../organization';
 import { paginate } from '../paginate/paginate';
 import { IOptions, QueryResult } from '../paginate/paginate.types';
 import { IUser, NewCreatedUser, NewRegisteredUser, UpdateUserBody } from './user.interfaces';
@@ -105,6 +106,32 @@ export const getUserById = async (id: string): Promise<IUser | null> => {
   const user = await User.findByPk(id);
 
   return userToIUser(user);
+};
+
+/**
+ * Get user self by id
+ * @param string id
+ * @returns {Promise<IUser | null>}
+ */
+export const getMe = async (id: string): Promise<Partial<IUser & { organization: Organization }> | null> => {
+  const user = await User.findByPk(id, {
+    include: [
+      {
+        model: Organization,
+        as: 'organization',
+      },
+    ],
+  });
+
+  return {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    contact: user.contact,
+    isEmailVerified: user.isEmailVerified,
+    organization: user.organization,
+    role: user.role,
+  };
 };
 
 /**

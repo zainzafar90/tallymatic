@@ -33,10 +33,16 @@ export const getUsers = catchAsync(async (req: Request, res: Response) => {
 });
 
 export const getMe = catchAsync(async (req: Request, res: Response) => {
-  const user = await userService.getUserById(req.user['id']);
+  const user = await userService.getMe(req.user['id']);
+
   if (!user) {
     throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
   }
+
+  if (req.user['id'] !== user['id']) {
+    throw new ApiError(httpStatus.FORBIDDEN, 'You can only get your own profile');
+  }
+
   res.send(user);
 });
 
