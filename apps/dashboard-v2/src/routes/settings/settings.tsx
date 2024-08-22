@@ -70,21 +70,6 @@ export const Settings = (props: SettingsProps) => {
 
       <Divider className="my-10" soft />
 
-      <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
-        <div className="space-y-1">
-          <Subheading>Currency</Subheading>
-          <Text>The currency that your organization will be collecting.</Text>
-        </div>
-        <div>
-          <Select aria-label="Currency" name="currency" defaultValue="cad">
-            <option value="cad">CAD - Canadian Dollar</option>
-            <option value="usd">USD - United States Dollar</option>
-          </Select>
-        </div>
-      </section>
-
-      <Divider className="my-10" soft />
-
       <div className="flex justify-end gap-4">
         <Button type="reset" plain>
           Reset

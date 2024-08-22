@@ -8,7 +8,7 @@ module.exports = {
       [
         {
           id: 'd3a3b4b6-4b7b-4b7b-9b4b-7b4b7b4b7b4b',
-          name: 'Omniflow',
+          name: 'Catalyst',
           status: 'active',
           description: '...',
           createdAt: new Date(),
@@ -16,7 +16,7 @@ module.exports = {
         },
         {
           id: 'd3a3b4b6-4b7b-4b7b-9b4b-7b4b7b4b7b4c',
-          name: 'Catalyst',
+          name: 'Omniflow',
           status: 'active',
           description: '...',
           createdAt: new Date(),

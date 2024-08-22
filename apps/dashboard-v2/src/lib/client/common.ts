@@ -75,6 +75,17 @@ export async function postRequest<
   });
 }
 
+export async function patchRequest<
+  TRes,
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  TPayload extends Record<string, any> | undefined = {}
+>(path: string, payload?: TPayload, options?: Omit<RequestInit, 'body' | 'method'>): Promise<TRes> {
+  return makeRequest<TRes, Record<string, any>, undefined>(path, payload, undefined, {
+    ...options,
+    method: 'PATCH',
+  });
+}
+
 export async function deleteRequest<TRes>(path: string, options?: Omit<RequestInit, 'body' | 'method'>): Promise<TRes> {
   return makeRequest<TRes, undefined, undefined>(path, undefined, undefined, {
     ...options,
