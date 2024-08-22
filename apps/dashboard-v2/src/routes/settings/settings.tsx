@@ -4,9 +4,9 @@ import { Divider } from '@/components/ui/divider';
 import { Heading, Subheading } from '@/components/ui/heading';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select } from '@/components/ui/select';
 import { Text } from '@/components/ui/text';
 import { Textarea } from '@/components/ui/textarea';
+import { useMe } from '@/hooks/api/users';
 
 import { Address } from './address';
 
@@ -15,6 +15,8 @@ interface SettingsProps {
 }
 
 export const Settings = (props: SettingsProps) => {
+  const { data } = useMe();
+
   return (
     <form method="post" className="mx-auto max-w-4xl">
       <Heading>Settings</Heading>
@@ -26,7 +28,7 @@ export const Settings = (props: SettingsProps) => {
           <Text>This will be displayed on your public profile.</Text>
         </div>
         <div>
-          <Input aria-label="Organization Name" name="name" defaultValue="Catalyst" />
+          <Input aria-label="Organization Name" name="name" defaultValue={data?.organization?.name || ''} />
         </div>
       </section>
 
@@ -38,7 +40,7 @@ export const Settings = (props: SettingsProps) => {
           <Text>This will be displayed on your public profile. Maximum 240 characters.</Text>
         </div>
         <div>
-          <Textarea aria-label="Organization Bio" name="bio" />
+          <Textarea aria-label="Organization Bio" name="bio" defaultValue={data?.organization?.description} />
         </div>
       </section>
 
