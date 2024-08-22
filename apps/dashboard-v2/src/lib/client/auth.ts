@@ -10,8 +10,8 @@ async function login(payload: EmailPassReq) {
   return postRequest<EmailPassRes>('/v1/auth/login', payload);
 }
 
-async function logout() {
-  return postRequest<void>('/v1/auth/logout');
+async function logout(payload: { token: string }) {
+  return postRequest<void>('/v1/auth/logout', payload);
 }
 
 export const auth = {

@@ -25,7 +25,7 @@ export const login = {
 
 export const logout = {
   body: Joi.object().keys({
-    refreshToken: Joi.string().required(),
+    token: Joi.string().required(),
   }),
 };
 

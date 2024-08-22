@@ -29,17 +29,17 @@ export const loginUserWithEmailAndPassword = async (email: string, password: str
  * @param {string} refreshToken
  * @returns {Promise<void>}
  */
-export const logout = async (refreshToken: string): Promise<void> => {
-  const refreshTokenDoc = await Token.findOne({
+export const logout = async (token: string): Promise<void> => {
+  const tokenDoc = await Token.findOne({
     where: {
-      token: refreshToken,
-      type: TokenType.REFRESH,
+      token: token,
+      type: TokenType.ACCESS,
     },
   });
-  if (!refreshTokenDoc) {
+  if (!tokenDoc) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Not found');
   }
-  await refreshTokenDoc.destroy();
+  await tokenDoc.destroy();
 };
 
 /**

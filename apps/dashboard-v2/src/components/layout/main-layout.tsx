@@ -1,4 +1,4 @@
-import { Outlet, useLocation } from 'react-router-dom';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 
 import {
   ArrowRightStartOnRectangleIcon,
@@ -40,8 +40,25 @@ import {
   SidebarSpacer,
 } from '@/components/ui/sidebar';
 import { SidebarLayout } from '@/components/ui/sidebar-layout';
+import { useLogout } from '@/hooks/api/auth';
+import { API_TOKEN_KEY } from '@/utils/common.utils';
 
 function AccountDropdownMenu({ anchor }: { anchor: 'top start' | 'bottom end' }) {
+  const navigate = useNavigate();
+  const { mutateAsync: logoutMutation } = useLogout();
+
+  const handleLogout = async () => {
+    const token = localStorage.getItem(API_TOKEN_KEY) || '';
+    await logoutMutation(
+      { token },
+      {
+        onSettled: () => {
+          navigate('/login');
+        },
+      }
+    );
+  };
+
   return (
     <DropdownMenu className="min-w-64" anchor={anchor}>
       <DropdownItem href="#">
@@ -58,7 +75,7 @@ function AccountDropdownMenu({ anchor }: { anchor: 'top start' | 'bottom end' })
         <DropdownLabel>Share feedback</DropdownLabel>
       </DropdownItem>
       <DropdownDivider />
-      <DropdownItem href="#">
+      <DropdownItem onClick={handleLogout}>
         <ArrowRightStartOnRectangleIcon />
         <DropdownLabel>Sign out</DropdownLabel>
       </DropdownItem>

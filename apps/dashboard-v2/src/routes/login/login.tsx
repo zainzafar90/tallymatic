@@ -12,6 +12,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Text, TextLink } from '@/components/ui/text';
+import { API_TOKEN_KEY } from '@/utils/common.utils';
 
 import { LogoBox } from '../../components/common/logo-box';
 import { useEmailPassLogin } from '../../hooks/api/auth';
@@ -45,7 +46,7 @@ export const Login = () => {
         password,
       });
 
-      localStorage.setItem('token', res.tokens.access.token);
+      localStorage.setItem(API_TOKEN_KEY, res.tokens.access.token);
 
       navigate(from, { replace: true });
     } catch (error: any) {
@@ -131,7 +132,7 @@ export const Login = () => {
                     </Alert>
                   )}
 
-                  <Button color="blue" type="submit" className="w-full">
+                  <Button color="blue" type="submit" className="w-full" disabled={isPending}>
                     Login
                   </Button>
                 </div>

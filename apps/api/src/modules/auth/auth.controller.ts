@@ -23,7 +23,7 @@ export const login = catchAsync(async (req: Request, res: Response) => {
 });
 
 export const logout = catchAsync(async (req: Request, res: Response) => {
-  await authService.logout(req.body.refreshToken);
+  await authService.logout(req.body.token);
   res.status(httpStatus.NO_CONTENT).send();
 });
 

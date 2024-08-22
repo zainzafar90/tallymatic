@@ -1,5 +1,6 @@
 import { useMutation, UseMutationOptions } from '@tanstack/react-query';
 
+import { queryClient } from '@/lib/query-client';
 import { API_TOKEN_KEY } from '@/utils/common.utils';
 
 import { client } from '../../lib/client';
@@ -23,12 +24,16 @@ export const useEmailPassLogin = (options?: UseMutationOptions<EmailPassRes, Err
   });
 };
 
-export const useLogout = (options?: UseMutationOptions<void, Error>) => {
+export const useLogout = (options?: UseMutationOptions<void, Error, { token: string }>) => {
   return useMutation({
-    mutationFn: () => client.auth.logout(),
-    onSuccess: async (data, variables, context) => {
+    mutationFn: (payload) => client.auth.logout(payload),
+    onSettled(data, error, variables, context) {
       localStorage.removeItem(API_TOKEN_KEY);
-      options?.onSuccess?.(data, variables, context);
+      options?.onSettled?.(data, error, variables, context);
+      /**
+       * When the user logs out, we want to clear the query cache
+       */
+      queryClient.clear();
     },
     ...options,
   });

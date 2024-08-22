@@ -45,12 +45,16 @@ async function makeRequest<
 
   if (!response.ok) {
     const errorData = await response.json();
-
     // Temp: Add a better error type
     throw errorData;
   }
 
-  return response.json();
+  const contentType = response.headers.get('content-type');
+  if (contentType && contentType.includes('application/json')) {
+    return response.json();
+  } else {
+    return {} as TRes;
+  }
 }
 
 export async function getRequest<
