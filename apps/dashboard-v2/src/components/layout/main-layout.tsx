@@ -41,7 +41,9 @@ import {
 } from '@/components/ui/sidebar';
 import { SidebarLayout } from '@/components/ui/sidebar-layout';
 import { useLogout } from '@/hooks/api/auth';
+import { useMe } from '@/hooks/api/users';
 import { API_TOKEN_KEY } from '@/utils/common.utils';
+import { getInitials } from '@/utils/string.utils';
 
 function AccountDropdownMenu({ anchor }: { anchor: 'top start' | 'bottom end' }) {
   const navigate = useNavigate();
@@ -85,6 +87,7 @@ function AccountDropdownMenu({ anchor }: { anchor: 'top start' | 'bottom end' })
 
 export const MainLayout = () => {
   const { pathname } = useLocation();
+  const { data: user } = useMe();
 
   return (
     <SidebarLayout
@@ -106,8 +109,8 @@ export const MainLayout = () => {
           <SidebarHeader>
             <Dropdown>
               <DropdownButton as={SidebarItem}>
-                <Avatar slot="icon" initials="NM" className="bg-blue-600 text-white" />
-                <SidebarLabel>Noori Mobiles</SidebarLabel>
+                <Avatar slot="icon" initials={getInitials(user?.organization?.name)} className="bg-blue-600 text-white" />
+                <SidebarLabel>{user?.organization?.name}</SidebarLabel>
                 <ChevronDownIcon />
               </DropdownButton>
               <DropdownMenu className="min-w-80 lg:min-w-64" anchor="bottom start">
@@ -169,11 +172,9 @@ export const MainLayout = () => {
                 <span className="flex min-w-0 items-center gap-3">
                   <Avatar src="/users/5.svg" className="size-10" square alt="" />
                   <span className="min-w-0">
-                    <span className="block truncate text-sm/5 font-medium text-zinc-950 dark:text-white">
-                      Admin Tallymatic
-                    </span>
+                    <span className="block truncate text-sm/5 font-medium text-zinc-950 dark:text-white">{user?.name}</span>
                     <span className="block truncate text-xs/5 font-normal text-zinc-500 dark:text-zinc-400">
-                      admin@tallymatic.com
+                      {user?.email}
                     </span>
                   </span>
                 </span>

@@ -31,6 +31,13 @@ export type EmailPassRes = {
   };
 };
 
+type Organization = {
+  name: string;
+  id: string;
+  description: string;
+  status: 'active' | 'inactive';
+};
+
 // Users
 type User = {
   name: string;
@@ -38,8 +45,10 @@ type User = {
   role: RoleType;
   isEmailVerified: boolean;
   id: string;
+  organization?: Organization;
 };
-export type UserRes = { user: User };
+
+export type UserRes = User;
 export type UserListRes = { users: User[] } & ListRes;
 export type UserDeleteRes = DeleteRes;
 

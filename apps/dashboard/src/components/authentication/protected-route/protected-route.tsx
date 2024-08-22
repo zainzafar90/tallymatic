@@ -6,7 +6,7 @@ import { useMe } from '../../../hooks/api/users';
 import { SidebarProvider } from '../../../providers/sidebar-provider';
 
 export const ProtectedRoute = () => {
-  const { user, isLoading } = useMe();
+  const { data, isLoading } = useMe();
   const location = useLocation();
 
   if (isLoading) {
@@ -17,9 +17,7 @@ export const ProtectedRoute = () => {
     );
   }
 
-  console.log(user);
-
-  if (!user) {
+  if (!data) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
