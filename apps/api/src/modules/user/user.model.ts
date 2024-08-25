@@ -75,7 +75,7 @@ export class User extends Model<User> {
   @Column({
     type: DataType.ENUM({ values: Object.values(RoleType) }),
     allowNull: false,
-    defaultValue: RoleType.User,
+    defaultValue: RoleType.Member,
   })
   role: RoleType;
 

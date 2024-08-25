@@ -1,0 +1,1403 @@
+{
+  "info": {
+    "_postman_id": "b6222fc7-febc-42ae-bdcd-30d1b1b46452",
+    "name": "Tallymatic",
+    "description": "# 🚀 Tallymatic API Collection\n\nThis collection contains requests for all resources in the Tallymatic API, including Products, Product Variants, Product Options, Categories, Product Categories, Users, Stores, Organizations, and Authentication endpoints.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "284772"
+  },
+  "item": [
+    {
+      "name": "Product Categories",
+      "item": [
+        {
+          "name": "Get All Product Categories",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TALLYMATIC_TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{TALLYMATIC_URL}}/api/product-categories",
+              "host": ["{{TALLYMATIC_URL}}"],
+              "path": ["api", "product-categories"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Product Category by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TALLYMATIC_TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{TALLYMATIC_URL}}/api/product-categories/:id",
+              "host": ["{{TALLYMATIC_URL}}"],
+              "path": ["api", "product-categories", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "pc1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Product Category",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TALLYMATIC_TOKEN}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"productId\": \"p1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6\",\n    \"categoryId\": \"c2b3c4d5-e6f7-g8h9-i0j1-k2l3m4n5o6p7\"\n}"
+            },
+            "url": {
+              "raw": "{{TALLYMATIC_URL}}/api/product-categories",
+              "host": ["{{TALLYMATIC_URL}}"],
+              "path": ["api", "product-categories"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Product Category",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TALLYMATIC_TOKEN}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"productId\": \"p1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6\",\n    \"categoryId\": \"c3d4e5f6-g7h8-i9j0-k1l2-m3n4o5p6q7r8\"\n}"
+            },
+            "url": {
+              "raw": "{{TALLYMATIC_URL}}/api/product-categories/:id",
+              "host": ["{{TALLYMATIC_URL}}"],
+              "path": ["api", "product-categories", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "pc1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Product Category",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TALLYMATIC_TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{TALLYMATIC_URL}}/api/product-categories/:id",
+              "host": ["{{TALLYMATIC_URL}}"],
+              "path": ["api", "product-categories", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "pc1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Categories",
+      "item": [
+        {
+          "name": "Get All Categories",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TALLYMATIC_TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{TALLYMATIC_URL}}/api/categories",
+              "host": ["{{TALLYMATIC_URL}}"],
+              "path": ["api", "categories"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Category by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TALLYMATIC_TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{TALLYMATIC_URL}}/api/categories/:id",
+              "host": ["{{TALLYMATIC_URL}}"],
+              "path": ["api", "categories", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "c1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Category",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TALLYMATIC_TOKEN}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Electronics\",\n    \"description\": \"Electronic devices and gadgets\",\n    \"parentCategoryId\": null,\n    \"status\": \"active\"\n}"
+            },
+            "url": {
+              "raw": "{{TALLYMATIC_URL}}/api/categories",
+              "host": ["{{TALLYMATIC_URL}}"],
+              "path": ["api", "categories"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Category",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TALLYMATIC_TOKEN}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Consumer Electronics\",\n    \"description\": \"Consumer electronic devices and gadgets\",\n    \"status\": \"active\"\n}"
+            },
+            "url": {
+              "raw": "{{TALLYMATIC_URL}}/api/categories/:id",
+              "host": ["{{TALLYMATIC_URL}}"],
+              "path": ["api", "categories", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "c1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Category",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TALLYMATIC_TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{TALLYMATIC_URL}}/api/categories/:id",
+              "host": ["{{TALLYMATIC_URL}}"],
+              "path": ["api", "categories", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "c1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Product Options",
+      "item": [
+        {
+          "name": "Get All Product Options",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TALLYMATIC_TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{TALLYMATIC_URL}}/api/product-options",
+              "host": ["{{TALLYMATIC_URL}}"],
+              "path": ["api", "product-options"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Product Option by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TALLYMATIC_TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{TALLYMATIC_URL}}/api/product-options/:id",
+              "host": ["{{TALLYMATIC_URL}}"],
+              "path": ["api", "product-options", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "o1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Product Option",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TALLYMATIC_TOKEN}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"productId\": \"p1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6\",\n    \"name\": \"Extended Warranty\",\n    \"description\": \"2-year extended warranty for Smartphone X\",\n    \"priceModifier\": 99.99,\n    \"status\": \"active\"\n}"
+            },
+            "url": {
+              "raw": "{{TALLYMATIC_URL}}/api/product-options",
+              "host": ["{{TALLYMATIC_URL}}"],
+              "path": ["api", "product-options"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Product Option",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TALLYMATIC_TOKEN}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Premium Extended Warranty\",\n    \"description\": \"3-year premium extended warranty for Smartphone X\",\n    \"priceModifier\": 149.99,\n    \"status\": \"active\"\n}"
+            },
+            "url": {
+              "raw": "{{TALLYMATIC_URL}}/api/product-options/:id",
+              "host": ["{{TALLYMATIC_URL}}"],
+              "path": ["api", "product-options", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "o1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Product Option",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TALLYMATIC_TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{TALLYMATIC_URL}}/api/product-options/:id",
+              "host": ["{{TALLYMATIC_URL}}"],
+              "path": ["api", "product-options", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "o1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Product Variants",
+      "item": [
+        {
+          "name": "Get All Product Variants",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TALLYMATIC_TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{TALLYMATIC_URL}}/api/product-variants",
+              "host": ["{{TALLYMATIC_URL}}"],
+              "path": ["api", "product-variants"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Product Variant by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TALLYMATIC_TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{TALLYMATIC_URL}}/api/product-variants/:id",
+              "host": ["{{TALLYMATIC_URL}}"],
+              "path": ["api", "product-variants", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "v1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Product Variant",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TALLYMATIC_TOKEN}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"productId\": \"p1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6\",\n    \"name\": \"Smartphone X - 128GB\",\n    \"sku\": \"SMX-128GB\",\n    \"price\": 799.99,\n    \"status\": \"active\"\n}"
+            },
+            "url": {
+              "raw": "{{TALLYMATIC_URL}}/api/product-variants",
+              "host": ["{{TALLYMATIC_URL}}"],
+              "path": ["api", "product-variants"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Product Variant",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TALLYMATIC_TOKEN}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Smartphone X - 256GB\",\n    \"sku\": \"SMX-256GB\",\n    \"price\": 899.99,\n    \"status\": \"active\"\n}"
+            },
+            "url": {
+              "raw": "{{TALLYMATIC_URL}}/api/product-variants/:id",
+              "host": ["{{TALLYMATIC_URL}}"],
+              "path": ["api", "product-variants", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "v1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Product Variant",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TALLYMATIC_TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{TALLYMATIC_URL}}/api/product-variants/:id",
+              "host": ["{{TALLYMATIC_URL}}"],
+              "path": ["api", "product-variants", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "v1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Products",
+      "item": [
+        {
+          "name": "Get All Products",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TALLYMATIC_TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{TALLYMATIC_URL}}/api/products",
+              "host": ["{{TALLYMATIC_URL}}"],
+              "path": ["api", "products"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Product by ID",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TALLYMATIC_TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{TALLYMATIC_URL}}/api/products/:id",
+              "host": ["{{TALLYMATIC_URL}}"],
+              "path": ["api", "products", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "p1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Product",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TALLYMATIC_TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Smartphone X\",\n    \"description\": \"Latest model smartphone with advanced features\",\n    \"price\": 799.99,\n    \"status\": \"active\",\n    \"organizationId\": \"d3a3b4b6-4b7b-4b7b-9b4b-7b4b7b4b7b4b\",\n    \"storeId\": \"d3a3b4b6-4b7b-4b7b-9b4b-7b4b7b4b7b4d\"\n}"
+            },
+            "url": {
+              "raw": "{{TALLYMATIC_URL}}/api/products",
+              "host": ["{{TALLYMATIC_URL}}"],
+              "path": ["api", "products"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Product",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TALLYMATIC_TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Updated Smartphone X\",\n    \"description\": \"Updated description for Smartphone X\",\n    \"price\": 849.99,\n    \"status\": \"active\"\n}"
+            },
+            "url": {
+              "raw": "{{TALLYMATIC_URL}}/api/products/:id",
+              "host": ["{{TALLYMATIC_URL}}"],
+              "path": ["api", "products", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "p1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Product",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TALLYMATIC_TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{TALLYMATIC_URL}}/api/products/:id",
+              "host": ["{{TALLYMATIC_URL}}"],
+              "path": ["api", "products", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "p1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "User",
+      "item": [
+        {
+          "name": "Get User",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TALLYMATIC_TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{TALLYMATIC_URL}}/users/:id",
+              "host": ["{{TALLYMATIC_URL}}"],
+              "path": ["users", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "d3a3b4b6-4b7b-4b7b-9b4b-7b4b7b4b7b1f"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Me",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TALLYMATIC_TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{TALLYMATIC_URL}}/users/me",
+              "host": ["{{TALLYMATIC_URL}}"],
+              "path": ["users", "me"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Users",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TALLYMATIC_TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{TALLYMATIC_URL}}/users",
+              "host": ["{{TALLYMATIC_URL}}"],
+              "path": ["users"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create User",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TALLYMATIC_TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"John Doe\",\n    \"email\": \"john.doe@example.com\",\n    \"password\": \"securePassword123\",\n    \"role\": \"user\",\n    \"organizationId\": \"d3a3b4b6-4b7b-4b7b-9b4b-7b4b7b4b7b4b\"\n}"
+            },
+            "url": {
+              "raw": "{{TALLYMATIC_URL}}/users",
+              "host": ["{{TALLYMATIC_URL}}"],
+              "path": ["users"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update User",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TALLYMATIC_TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"John Updated Doe\",\n    \"email\": \"john.updated@example.com\"\n}"
+            },
+            "url": {
+              "raw": "{{TALLYMATIC_URL}}/users/:id",
+              "host": ["{{TALLYMATIC_URL}}"],
+              "path": ["users", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "d3a3b4b6-4b7b-4b7b-9b4b-7b4b7b4b7b1f"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete User",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TALLYMATIC_TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{TALLYMATIC_URL}}/users/:id",
+              "host": ["{{TALLYMATIC_URL}}"],
+              "path": ["users", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "d3a3b4b6-4b7b-4b7b-9b4b-7b4b7b4b7b1f"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Store",
+      "item": [
+        {
+          "name": "Get Store",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TALLYMATIC_TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{TALLYMATIC_URL}}/stores/:id",
+              "host": ["{{TALLYMATIC_URL}}"],
+              "path": ["stores", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "d3a3b4b6-4b7b-4b7b-9b4b-7b4b7b4b7b4d"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Stores",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TALLYMATIC_TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{TALLYMATIC_URL}}/stores",
+              "host": ["{{TALLYMATIC_URL}}"],
+              "path": ["stores"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Store",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TALLYMATIC_TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Downtown Electronics\",\n    \"location\": \"123 Main St, Cityville\",\n    \"organizationId\": \"d3a3b4b6-4b7b-4b7b-9b4b-7b4b7b4b7b4b\"\n}"
+            },
+            "url": {
+              "raw": "{{TALLYMATIC_URL}}/stores",
+              "host": ["{{TALLYMATIC_URL}}"],
+              "path": ["stores"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Store",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TALLYMATIC_TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Downtown Electronics & Repair\",\n    \"location\": \"123 Main St, Suite 100, Cityville\"\n}"
+            },
+            "url": {
+              "raw": "{{TALLYMATIC_URL}}/stores/:id",
+              "host": ["{{TALLYMATIC_URL}}"],
+              "path": ["stores", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "d3a3b4b6-4b7b-4b7b-9b4b-7b4b7b4b7b4d"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Store",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TALLYMATIC_TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{TALLYMATIC_URL}}/stores/:id",
+              "host": ["{{TALLYMATIC_URL}}"],
+              "path": ["stores", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "d3a3b4b6-4b7b-4b7b-9b4b-7b4b7b4b7b4d"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Organization",
+      "item": [
+        {
+          "name": "Get Organization",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TALLYMATIC_TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{TALLYMATIC_URL}}/organizations/:id",
+              "host": ["{{TALLYMATIC_URL}}"],
+              "path": ["organizations", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "d3a3b4b6-4b7b-4b7b-9b4b-7b4b7b4b7b4b"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Organizations",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TALLYMATIC_TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{TALLYMATIC_URL}}/organizations",
+              "host": ["{{TALLYMATIC_URL}}"],
+              "path": ["organizations"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Organization",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TALLYMATIC_TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"TechCorp Industries\",\n    \"description\": \"Leading technology solutions provider\",\n    \"status\": \"active\"\n}"
+            },
+            "url": {
+              "raw": "{{TALLYMATIC_URL}}/organizations",
+              "host": ["{{TALLYMATIC_URL}}"],
+              "path": ["organizations"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Organization",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TALLYMATIC_TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"TechCorp Global Industries\",\n    \"description\": \"Worldwide leader in innovative technology solutions\"\n}"
+            },
+            "url": {
+              "raw": "{{TALLYMATIC_URL}}/organizations/:id",
+              "host": ["{{TALLYMATIC_URL}}"],
+              "path": ["organizations", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "d3a3b4b6-4b7b-4b7b-9b4b-7b4b7b4b7b4b"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Organization",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TALLYMATIC_TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{TALLYMATIC_URL}}/organizations/:id",
+              "host": ["{{TALLYMATIC_URL}}"],
+              "path": ["organizations", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "d3a3b4b6-4b7b-4b7b-9b4b-7b4b7b4b7b4b"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"New User\",\n    \"email\": \"newuser@example.com\",\n    \"password\": \"securePassword123\",\n    \"organizationId\": \"d3a3b4b6-4b7b-4b7b-9b4b-7b4b7b4b7b4b\"\n}"
+            },
+            "url": {
+              "raw": "{{TALLYMATIC_URL}}/auth/register",
+              "host": ["{{TALLYMATIC_URL}}"],
+              "path": ["auth", "register"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "pm.collectionVariables.set(\"TALLYMATIC_TOKEN\", jsonData.tokens.access.token);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"admin@tallymatic.com\",\n    \"password\": \"test1234\"\n}"
+            },
+            "url": {
+              "raw": "{{TALLYMATIC_URL}}/auth/login",
+              "host": ["{{TALLYMATIC_URL}}"],
+              "path": ["auth", "login"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TALLYMATIC_TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"refreshToken\": \"your-refresh-token-here\"\n}"
+            },
+            "url": {
+              "raw": "{{TALLYMATIC_URL}}/auth/logout",
+              "host": ["{{TALLYMATIC_URL}}"],
+              "path": ["auth", "logout"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Forgot Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"user@example.com\"\n}"
+            },
+            "url": {
+              "raw": "{{TALLYMATIC_URL}}/auth/forgot-password",
+              "host": ["{{TALLYMATIC_URL}}"],
+              "path": ["auth", "forgot-password"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Reset Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"password\": \"newSecurePassword123\"\n}"
+            },
+            "url": {
+              "raw": "{{TALLYMATIC_URL}}/auth/reset-password?token=reset-token-here",
+              "host": ["{{TALLYMATIC_URL}}"],
+              "path": ["auth", "reset-password"],
+              "query": [
+                {
+                  "key": "token",
+                  "value": "reset-token-here"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Send Verification Email",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{TALLYMATIC_TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"user@example.com\"\n}"
+            },
+            "url": {
+              "raw": "{{TALLYMATIC_URL}}/auth/send-verification-email",
+              "host": ["{{TALLYMATIC_URL}}"],
+              "path": ["auth", "send-verification-email"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Verify Email",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"user@example.com\"\n}"
+            },
+            "url": {
+              "raw": "{{TALLYMATIC_URL}}/auth/verify-email?token=verification-token-here",
+              "host": ["{{TALLYMATIC_URL}}"],
+              "path": ["auth", "verify-email"],
+              "query": [
+                {
+                  "key": "token",
+                  "value": "verification-token-here"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "TALLYMATIC_URL",
+      "value": "http://localhost:3000/v1"
+    },
+    {
+      "key": "TALLYMATIC_TOKEN",
+      "value": ""
+    }
+  ]
+}

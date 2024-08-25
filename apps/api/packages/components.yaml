@@ -12,12 +12,12 @@ components:
           type: string
         role:
           type: string
-          enum: [user, admin, super-admin]
+          enum: [member, admin, super-admin]
       example:
         id: 5ebac534954b54139806c112
         email: fake@example.com
         name: fake name
-        role: user
+        role: member
 
     Token:
       type: object

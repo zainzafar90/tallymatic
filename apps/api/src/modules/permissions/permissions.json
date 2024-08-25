@@ -6,12 +6,12 @@
       "rules": [
         {
           "actions": ["*"],
-          "roles": ["admin"],
+          "roles": ["admin", "super-admin"],
           "effect": "EFFECT_ALLOW"
         },
         {
           "actions": ["view", "update"],
-          "roles": ["user"],
+          "roles": ["member"],
           "effect": "EFFECT_ALLOW"
         }
       ]
@@ -22,12 +22,12 @@
       "rules": [
         {
           "actions": ["*"],
-          "roles": ["admin"],
+          "roles": ["admin", "super-admin"],
           "effect": "EFFECT_ALLOW"
         },
         {
           "actions": ["view"],
-          "roles": ["user"],
+          "roles": ["member"],
           "effect": "EFFECT_ALLOW"
         }
       ]
@@ -48,7 +48,112 @@
         },
         {
           "actions": ["view"],
-          "roles": ["user"],
+          "roles": ["member"],
+          "effect": "EFFECT_ALLOW"
+        }
+      ]
+    },
+    {
+      "version": "default",
+      "resource": "products",
+      "rules": [
+        {
+          "actions": ["*"],
+          "roles": ["super-admin"],
+          "effect": "EFFECT_ALLOW"
+        },
+        {
+          "actions": ["view", "list", "update"],
+          "roles": ["admin"],
+          "effect": "EFFECT_ALLOW"
+        },
+        {
+          "actions": ["view"],
+          "roles": ["member"],
+          "effect": "EFFECT_ALLOW"
+        }
+      ]
+    },
+    {
+      "version": "default",
+      "resource": "product_variants",
+      "rules": [
+        {
+          "actions": ["*"],
+          "roles": ["super-admin"],
+          "effect": "EFFECT_ALLOW"
+        },
+        {
+          "actions": ["view", "list", "update"],
+          "roles": ["admin"],
+          "effect": "EFFECT_ALLOW"
+        },
+        {
+          "actions": ["view"],
+          "roles": ["member"],
+          "effect": "EFFECT_ALLOW"
+        }
+      ]
+    },
+    {
+      "version": "default",
+      "resource": "product_options",
+      "rules": [
+        {
+          "actions": ["*"],
+          "roles": ["super-admin"],
+          "effect": "EFFECT_ALLOW"
+        },
+        {
+          "actions": ["view", "list", "update"],
+          "roles": ["admin"],
+          "effect": "EFFECT_ALLOW"
+        },
+        {
+          "actions": ["view"],
+          "roles": ["member"],
+          "effect": "EFFECT_ALLOW"
+        }
+      ]
+    },
+    {
+      "version": "default",
+      "resource": "categories",
+      "rules": [
+        {
+          "actions": ["*"],
+          "roles": ["super-admin"],
+          "effect": "EFFECT_ALLOW"
+        },
+        {
+          "actions": ["view", "list", "update"],
+          "roles": ["admin"],
+          "effect": "EFFECT_ALLOW"
+        },
+        {
+          "actions": ["view"],
+          "roles": ["member"],
+          "effect": "EFFECT_ALLOW"
+        }
+      ]
+    },
+    {
+      "version": "default",
+      "resource": "product_categories",
+      "rules": [
+        {
+          "actions": ["*"],
+          "roles": ["super-admin"],
+          "effect": "EFFECT_ALLOW"
+        },
+        {
+          "actions": ["view", "list", "update"],
+          "roles": ["admin"],
+          "effect": "EFFECT_ALLOW"
+        },
+        {
+          "actions": ["view"],
+          "roles": ["member"],
           "effect": "EFFECT_ALLOW"
         }
       ]

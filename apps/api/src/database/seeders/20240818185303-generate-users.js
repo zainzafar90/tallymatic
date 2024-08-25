@@ -33,12 +33,12 @@ module.exports = {
         {
           id: 'd3a3b4b6-4b7b-4b7b-9b4b-7b4b7b4b7b3f',
           organizationId: 'd3a3b4b6-4b7b-4b7b-9b4b-7b4b7b4b7b4b',
-          name: 'User',
-          email: 'user@tallymatic.com',
+          name: 'Member',
+          email: 'member@tallymatic.com',
           contact: '...',
           password: '$2a$08$tHoJggaL5aFhM/wEGpVlb.CUPuj5NqdO4EEtE.x37s.FA9U77haYG', // test1234
           isEmailVerified: true,
-          role: 'user',
+          role: 'member',
           createdAt: new Date(),
           updatedAt: new Date(),
         },

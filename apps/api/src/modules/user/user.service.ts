@@ -58,7 +58,7 @@ export const createUser = async (userBody: NewCreatedUser): Promise<IUser> => {
   const newHashedPassword = await hashPassword(userBody.password);
   const user = await User.create({
     ...userBody,
-    role: RoleType.User,
+    role: RoleType.Member,
     password: newHashedPassword,
   });
 
@@ -79,7 +79,7 @@ export const registerUser = async (userBody: NewRegisteredUser): Promise<IUser> 
   const newHashedPassword = await hashPassword(userBody.password);
   const user = await User.create({
     ...userBody,
-    role: RoleType.User,
+    role: RoleType.Member,
     password: newHashedPassword,
   });
 

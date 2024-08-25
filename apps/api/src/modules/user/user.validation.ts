@@ -10,7 +10,7 @@ const createUserBody: Record<keyof NewCreatedUser, any> = {
   password: Joi.string().required().custom(password),
   name: Joi.string().required(),
   contact: Joi.string().optional(),
-  role: Joi.string().valid(RoleType.User, RoleType.Admin).required(),
+  role: Joi.string().valid(RoleType.Member, RoleType.Admin).required(),
   organizationId: Joi.string().required().custom(uuid),
 };
 

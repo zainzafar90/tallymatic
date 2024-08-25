@@ -5,7 +5,7 @@ import permissions from './permissions.json';
 /**
  * Check if user has permission to perform action on resource
  *
- * @param {string} role - User role e.g. 'admin' or 'user' etc.
+ * @param {string} role - User role e.g. 'admin' or 'member' etc.
  * @param {string} action - Action to perform e.g. 'create' or 'read' etc.
  * @param {string} resourceKind - Resource kind e.g. 'product' or 'category' etc.
  *

@@ -39,9 +39,9 @@ module.exports = {
         defaultValue: false,
       },
       role: {
-        type: Sequelize.ENUM('user', 'admin', 'super-admin'),
+        type: Sequelize.ENUM('member', 'admin', 'super-admin'),
         allowNull: false,
-        defaultValue: 'user',
+        defaultValue: 'member',
       },
       organizationId: {
         type: Sequelize.UUID,
