@@ -7,29 +7,35 @@ import { IOptions, QueryResult } from '../paginate/paginate.types';
 import { IProductOption, NewCreatedProductOption, UpdateProductOptionBody } from './product-option.interfaces';
 import { ProductOption } from './product-option.model';
 
-export const createProductOption = async (optionBody: NewCreatedProductOption): Promise<IProductOption> => {
-  const option = await ProductOption.create(optionBody);
+export const createProductOption = async (
+  productId: string,
+  optionBody: NewCreatedProductOption
+): Promise<IProductOption> => {
+  const option = await ProductOption.create({ ...optionBody, productId });
   return option.toJSON();
 };
 
 export const queryProductOptions = async (
+  productId: string,
   filter: Record<string, any>,
   options: IOptions
 ): Promise<QueryResult<ProductOption>> => {
-  const result = await paginate(ProductOption, filter, options);
+  const finalFilter = { ...filter, productId };
+  const result = await paginate(ProductOption, finalFilter, options);
   return result;
 };
 
-export const getProductOptionById = async (id: string): Promise<IProductOption | null> => {
-  const option = await ProductOption.findByPk(id);
+export const getProductOptionById = async (productId: string, optionId: string): Promise<IProductOption | null> => {
+  const option = await ProductOption.findOne({ where: { id: optionId, productId } });
   return option ? option.toJSON() : null;
 };
 
 export const updateProductOptionById = async (
+  productId: string,
   optionId: string,
   updateBody: UpdateProductOptionBody
 ): Promise<IProductOption | null> => {
-  const option = await ProductOption.findByPk(optionId);
+  const option = await ProductOption.findOne({ where: { id: optionId, productId } });
   if (!option) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Product option not found');
   }
@@ -38,8 +44,8 @@ export const updateProductOptionById = async (
   return option.toJSON();
 };
 
-export const deleteProductOptionById = async (optionId: string): Promise<IProductOption | null> => {
-  const option = await ProductOption.findByPk(optionId);
+export const deleteProductOptionById = async (productId: string, optionId: string): Promise<IProductOption | null> => {
+  const option = await ProductOption.findOne({ where: { id: optionId, productId } });
   if (!option) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Product option not found');
   }

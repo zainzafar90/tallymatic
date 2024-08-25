@@ -41,14 +41,14 @@ const defaultIRoute: IRoute[] = [
     path: '/products',
     route: productRoute,
   },
-  {
-    path: '/product-variants',
-    route: productVariantRoute,
-  },
-  {
-    path: '/product-options',
-    route: productOptionRoute,
-  },
+  // {
+  //   path: '/product-variants',
+  //   route: productVariantRoute,
+  // },
+  // {
+  //   path: '/product-options',
+  //   route: productOptionRoute,
+  // },
   {
     path: '/categories',
     route: categoryRoute,

@@ -6,7 +6,6 @@ import { uuid } from '@/common/validate/custom.validation';
 import { NewCreatedProductVariant } from './product-variant.interfaces';
 
 const createProductVariantBody: Record<keyof NewCreatedProductVariant, any> = {
-  productId: Joi.string().custom(uuid).required(),
   name: Joi.string().required(),
   sku: Joi.string().required(),
   price: Joi.number().positive().required(),
@@ -14,12 +13,17 @@ const createProductVariantBody: Record<keyof NewCreatedProductVariant, any> = {
 };
 
 export const createProductVariant = {
+  params: Joi.object().keys({
+    productId: Joi.string().custom(uuid).required(),
+  }),
   body: Joi.object().keys(createProductVariantBody),
 };
 
 export const getProductVariants = {
-  query: Joi.object().keys({
+  params: Joi.object().keys({
     productId: Joi.string().custom(uuid).required(),
+  }),
+  query: Joi.object().keys({
     name: Joi.string(),
     sku: Joi.string(),
     status: Joi.string().valid(Status.ACTIVE, Status.INACTIVE),
@@ -32,13 +36,15 @@ export const getProductVariants = {
 
 export const getProductVariant = {
   params: Joi.object().keys({
-    variantId: Joi.string().custom(uuid),
+    productId: Joi.string().custom(uuid).required(),
+    variantId: Joi.string().custom(uuid).required(),
   }),
 };
 
 export const updateProductVariant = {
   params: Joi.object().keys({
-    variantId: Joi.required().custom(uuid),
+    productId: Joi.string().custom(uuid).required(),
+    variantId: Joi.string().custom(uuid).required(),
   }),
   body: Joi.object()
     .keys({
@@ -52,6 +58,7 @@ export const updateProductVariant = {
 
 export const deleteProductVariant = {
   params: Joi.object().keys({
-    variantId: Joi.string().custom(uuid),
+    productId: Joi.string().custom(uuid).required(),
+    variantId: Joi.string().custom(uuid).required(),
   }),
 };

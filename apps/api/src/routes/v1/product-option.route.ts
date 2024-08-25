@@ -4,7 +4,7 @@ import { validate } from '@/common/validate';
 import { auth } from '@/modules/auth';
 import { productOptionController, productOptionValidation } from '@/modules/product-option';
 
-const router: Router = express.Router();
+const router: Router = express.Router({ mergeParams: true });
 
 router
   .route('/')

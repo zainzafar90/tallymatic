@@ -2,7 +2,6 @@ import { Status } from '@shared';
 
 export interface IProductOption {
   id?: string;
-  productId: string;
   name: string;
   description?: string;
   priceModifier: number;
