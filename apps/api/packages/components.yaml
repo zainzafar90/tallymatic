@@ -47,6 +47,170 @@ components:
         tokens:
           $ref: '#/components/schemas/AuthTokens'
 
+    Category:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+        parentCategoryId:
+          type: string
+          format: uuid
+          nullable: true
+        status:
+          type: string
+          enum: [active, inactive]
+      example:
+        id: 00000000-0000-4000-8000-000000000001
+        name: Electronics
+        description: Electronic devices and accessories
+        parentCategoryId: null
+        status: active
+
+    ProductCategory:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        productId:
+          type: string
+          format: uuid
+        categoryId:
+          type: string
+          format: uuid
+      example:
+        id: 00000000-0000-4000-8000-000000000001
+        productId: 00000000-0000-4000-8000-000000000002
+        categoryId: 00000000-0000-4000-8000-000000000003
+
+    Product:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        organizationId:
+          type: string
+          format: uuid
+        storeId:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+          format: float
+        status:
+          type: string
+          enum: [active, inactive]
+      example:
+        id: 00000000-0000-4000-8000-000000000001
+        organizationId: 00000000-0000-4000-8000-000000000002
+        storeId: 00000000-0000-4000-8000-000000000003
+        name: Smartphone X
+        description: Latest model smartphone with advanced features
+        price: 999.99
+        status: active
+
+    ProductVariant:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        productId:
+          type: string
+          format: uuid
+        name:
+          type: string
+        sku:
+          type: string
+        price:
+          type: number
+          format: float
+        status:
+          type: string
+          enum: [active, inactive]
+      example:
+        id: 00000000-0000-4000-8000-000000000001
+        productId: 00000000-0000-4000-8000-000000000002
+        name: Blue 64GB
+        sku: SMRT-X-BLU-64
+        price: 1099.99
+        status: active
+
+    ProductOption:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        productId:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+        priceModifier:
+          type: number
+          format: float
+        status:
+          type: string
+          enum: [active, inactive]
+      example:
+        id: 00000000-0000-4000-8000-000000000001
+        productId: 00000000-0000-4000-8000-000000000002
+        name: Extended Warranty
+        description: 2-year extended warranty
+        priceModifier: 99.99
+        status: active
+
+    Organization:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        description:
+          type: string
+        status:
+          type: string
+          enum: [active, inactive]
+      example:
+        id: 00000000-0000-4000-8000-000000000001
+        name: Acme Corporation
+        description: A global leader in innovation
+        status: active
+
+    Store:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        location:
+          type: string
+        organizationId:
+          type: string
+          format: uuid
+      example:
+        id: 00000000-0000-4000-8000-000000000001
+        name: Main Street Store
+        location: 123 Main St, Anytown, USA
+        organizationId: 00000000-0000-4000-8000-000000000002
+
     Error:
       type: object
       properties:
