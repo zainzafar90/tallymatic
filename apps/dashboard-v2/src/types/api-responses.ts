@@ -19,15 +19,13 @@ type DeleteRes = {
 
 // Auth
 export type EmailPassRes = {
-  tokens: {
-    access: {
-      token: string;
-      expires: string;
-    };
-    refresh: {
-      token: string;
-      expires: string;
-    };
+  access: {
+    token: string;
+    expires: string;
+  };
+  refresh: {
+    token: string;
+    expires: string;
   };
 };
 

@@ -1,10 +1,9 @@
 import { NextFunction, Request, Response } from 'express';
 import httpStatus from 'http-status';
 import passport from 'passport';
+import { IUser } from '@shared';
 
 import { ApiError } from '@/common/errors/ApiError';
-
-import { IUser } from '../user/user.interfaces';
 
 const verifyCallback =
   (req: Request, resolve: () => void, reject: (error: Error) => void) => async (err: Error, user: IUser, info: string) => {

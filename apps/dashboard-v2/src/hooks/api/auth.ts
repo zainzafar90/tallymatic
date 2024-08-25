@@ -8,8 +8,8 @@ import { EmailPassReq } from '../../types/api-payloads';
 import { EmailPassRes } from '../../types/api-responses';
 
 const handleAuthSuccess = async (data: EmailPassRes) => {
-  if (data.tokens.access.token) {
-    localStorage.setItem(API_TOKEN_KEY, data.tokens.access.token);
+  if (data.access.token) {
+    localStorage.setItem(API_TOKEN_KEY, data.access.token);
   }
 };
 

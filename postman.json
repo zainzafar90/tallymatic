@@ -1203,7 +1203,7 @@
               "script": {
                 "exec": [
                   "var jsonData = pm.response.json();",
-                  "pm.collectionVariables.set(\"TALLYMATIC_TOKEN\", jsonData.tokens.access.token);"
+                  "pm.collectionVariables.set(\"TALLYMATIC_TOKEN\", jsonData.access.token);"
                 ],
                 "type": "text/javascript"
               }

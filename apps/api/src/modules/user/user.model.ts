@@ -12,11 +12,10 @@ import {
   Scopes,
   Table,
 } from 'sequelize-typescript';
-import { RoleType } from '@shared';
+import { IUser, RoleType } from '@shared';
 
 import { Organization } from '../organization';
 import { Token } from '../token/token.model';
-import { IUser } from './user.interfaces';
 
 @DefaultScope(() => ({
   attributes: { exclude: ['password'] },

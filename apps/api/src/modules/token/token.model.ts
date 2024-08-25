@@ -1,7 +1,7 @@
 import { BelongsTo, Column, DataType, ForeignKey, IsUUID, Model, PrimaryKey, Table } from 'sequelize-typescript';
+import { TokenType } from '@shared';
 
 import { User } from '../user/user.model';
-import { TokenType } from './token.interfaces';
 
 @Table({ tableName: 'tokens', timestamps: true })
 export class Token extends Model<Token> {

@@ -1,12 +1,11 @@
 import httpStatus from 'http-status';
+import { IUser, TokenType, UserAuthResponse } from '@shared';
 
 import { ApiError } from '@/common/errors/ApiError';
 
 import { tokenService } from '../token';
-import { TokenType } from '../token/token.interfaces';
 import { Token } from '../token/token.model';
 import { userService } from '../user';
-import { IUser, IUserWithTokens } from '../user/user.interfaces';
 import { isPasswordMatch } from '../user/user.model';
 import { getUserByEmailWithPassword } from '../user/user.service';
 
@@ -45,9 +44,9 @@ export const logout = async (token: string): Promise<void> => {
 /**
  * Refresh auth tokens
  * @param {string} refreshToken
- * @returns {Promise<IUserWithTokens>}
+ * @returns {Promise<UserAuthResponse>}
  */
-export const refreshAuth = async (refreshToken: string): Promise<IUserWithTokens> => {
+export const refreshAuth = async (refreshToken: string): Promise<UserAuthResponse> => {
   try {
     const refreshTokenDoc = await tokenService.verifyToken(refreshToken, TokenType.REFRESH);
     const user = await userService.getUserById(refreshTokenDoc.user.id);

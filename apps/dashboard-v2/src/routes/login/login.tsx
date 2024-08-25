@@ -46,7 +46,7 @@ export const Login = () => {
         password,
       });
 
-      localStorage.setItem(API_TOKEN_KEY, res.tokens.access.token);
+      localStorage.setItem(API_TOKEN_KEY, res.access.token);
 
       navigate(from, { replace: true });
     } catch (error: any) {

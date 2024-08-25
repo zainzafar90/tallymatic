@@ -39,7 +39,7 @@ export const Login = () => {
         password,
       });
 
-      localStorage.setItem('token', res.tokens.access.token);
+      localStorage.setItem('token', res.access.token);
 
       navigate(from, { replace: true });
     } catch (error: any) {

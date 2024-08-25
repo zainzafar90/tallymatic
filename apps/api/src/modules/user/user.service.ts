@@ -1,13 +1,12 @@
 import httpStatus from 'http-status';
 import { Op } from 'sequelize';
-import { RoleType } from '@shared';
+import { CreateUserReq, IUser, RegisterUserReq, RoleType, UpdateUserReq } from '@shared';
 
 import { ApiError } from '@/common/errors/ApiError';
 
 import { Organization } from '../organization';
 import { paginate } from '../paginate/paginate';
 import { IOptions, QueryResult } from '../paginate/paginate.types';
-import { IUser, NewCreatedUser, NewRegisteredUser, UpdateUserBody } from './user.interfaces';
 import { hashPassword, User } from './user.model';
 
 /**
@@ -45,10 +44,10 @@ const isEmailTaken = async (email: string, excludeUserId?: string): Promise<bool
 
 /**
  * Create a user
- * @param {NewCreatedUser} userBody
+ * @param {CreateUserReq} userBody
  * @returns {Promise<IUser>}
  */
-export const createUser = async (userBody: NewCreatedUser): Promise<IUser> => {
+export const createUser = async (userBody: CreateUserReq): Promise<IUser> => {
   const isEmailAlreadyTaken = await isEmailTaken(userBody.email);
 
   if (isEmailAlreadyTaken) {
@@ -67,10 +66,10 @@ export const createUser = async (userBody: NewCreatedUser): Promise<IUser> => {
 
 /**
  * Register a user
- * @param {NewRegisteredUser} userBody
+ * @param {RegisterUserReq} userBody
  * @returns {Promise<IUser>}
  */
-export const registerUser = async (userBody: NewRegisteredUser): Promise<IUser> => {
+export const registerUser = async (userBody: RegisterUserReq): Promise<IUser> => {
   const isEmailAlreadyTaken = await isEmailTaken(userBody.email);
   if (isEmailAlreadyTaken) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
@@ -153,10 +152,10 @@ export const getUserByEmailWithPassword = async (email: string): Promise<IUser |
 /**
  * Update user by id
  * @param {string}} userId
- * @param {UpdateUserBody} updateBody
+ * @param {UpdateUserReq} updateBody
  * @returns {Promise<IUser | null>}
  */
-export const updateUserById = async (userId: string, updateBody: UpdateUserBody): Promise<IUser | null> => {
+export const updateUserById = async (userId: string, updateBody: UpdateUserReq): Promise<IUser | null> => {
   const user = await User.findByPk(userId);
   if (!user) {
     throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
@@ -194,7 +193,7 @@ export const deleteUserById = async (userId: string): Promise<IUser | null> => {
 /**
  * Update user password
  * @param string userId
- * @param {UpdateUserBody} updateBody
+ * @param {UpdateUserReq} updateBody
  * @returns {Promise<User | null>}
  */
 export const updateUserPassword = async (userId: string, updatedPassword: string): Promise<IUser | null> => {
