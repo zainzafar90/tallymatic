@@ -1,11 +1,9 @@
 import Joi from 'joi';
-import { Status } from '@shared';
+import { CreateCategoryReq, Status } from '@shared';
 
 import { uuid } from '@/common/validate/custom.validation';
 
-import { NewCreatedCategory } from './category.interfaces';
-
-const createCategoryBody: Record<keyof NewCreatedCategory, any> = {
+const createCategoryBody: Record<keyof CreateCategoryReq, any> = {
   name: Joi.string().required(),
   description: Joi.string().optional(),
   parentCategoryId: Joi.string().custom(uuid).optional().allow(null),

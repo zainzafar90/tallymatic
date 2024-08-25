@@ -1,15 +1,14 @@
 import httpStatus from 'http-status';
-import { IOptions, ListResponse } from '@shared';
+import { CreateProductOptionReq, IOptions, IProductOption, ListResponse, UpdateProductOptionReq } from '@shared';
 
 import { ApiError } from '@/common/errors/ApiError';
 
 import { paginate } from '../paginate/paginate';
-import { IProductOption, NewCreatedProductOption, UpdateProductOptionBody } from './product-option.interfaces';
 import { ProductOption } from './product-option.model';
 
 export const createProductOption = async (
   productId: string,
-  optionBody: NewCreatedProductOption
+  optionBody: CreateProductOptionReq
 ): Promise<IProductOption> => {
   const option = await ProductOption.create({ ...optionBody, productId });
   return option.toJSON();
@@ -33,7 +32,7 @@ export const getProductOptionById = async (productId: string, optionId: string):
 export const updateProductOptionById = async (
   productId: string,
   optionId: string,
-  updateBody: UpdateProductOptionBody
+  updateBody: UpdateProductOptionReq
 ): Promise<IProductOption | null> => {
   const option = await ProductOption.findOne({ where: { id: optionId, productId } });
   if (!option) {

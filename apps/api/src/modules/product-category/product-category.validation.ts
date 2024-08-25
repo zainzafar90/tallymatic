@@ -1,10 +1,9 @@
 import Joi from 'joi';
+import { CreateProductCategoryReq } from '@shared';
 
 import { uuid } from '@/common/validate/custom.validation';
 
-import { NewCreatedProductCategory } from './product-category.interfaces';
-
-const createProductCategoryBody: Record<keyof NewCreatedProductCategory, any> = {
+const createProductCategoryBody: Record<keyof CreateProductCategoryReq, any> = {
   productId: Joi.string().custom(uuid).required(),
   categoryId: Joi.string().custom(uuid).required(),
 };

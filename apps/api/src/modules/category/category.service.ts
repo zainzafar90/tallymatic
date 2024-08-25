@@ -1,13 +1,12 @@
 import httpStatus from 'http-status';
-import { IOptions, ListResponse } from '@shared';
+import { CreateCategoryReq, ICategory, IOptions, ListResponse, UpdateCategoryReq } from '@shared';
 
 import { ApiError } from '@/common/errors/ApiError';
 
 import { paginate } from '../paginate/paginate';
-import { ICategory, NewCreatedCategory, UpdateCategoryBody } from './category.interfaces';
 import { Category } from './category.model';
 
-export const createCategory = async (categoryBody: NewCreatedCategory): Promise<ICategory> => {
+export const createCategory = async (categoryBody: CreateCategoryReq): Promise<ICategory> => {
   const category = await Category.create(categoryBody);
   return category.toJSON();
 };
@@ -22,7 +21,7 @@ export const getCategoryById = async (id: string): Promise<ICategory | null> => 
   return category ? category.toJSON() : null;
 };
 
-export const updateCategoryById = async (categoryId: string, updateBody: UpdateCategoryBody): Promise<ICategory | null> => {
+export const updateCategoryById = async (categoryId: string, updateBody: UpdateCategoryReq): Promise<ICategory | null> => {
   const category = await Category.findByPk(categoryId);
   if (!category) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Category not found');

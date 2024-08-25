@@ -1,18 +1,17 @@
 import httpStatus from 'http-status';
-import { IOptions, ListResponse } from '@shared';
+import { CreateStoreReq, IOptions, IStore, ListResponse, UpdateStoreReq } from '@shared';
 
 import { ApiError } from '@/common/errors/ApiError';
 
 import { paginate } from '../paginate/paginate';
-import { IStore, NewCreatedStore, UpdateStoreBody } from './store.interfaces';
 import { Store } from './store.model';
 
 /**
  * Create a store
- * @param {NewCreatedStore} storeBody
+ * @param {CreateStoreReq} storeBody
  * @returns {Promise<IStore>}
  */
-export const createStore = async (storeBody: NewCreatedStore): Promise<IStore> => {
+export const createStore = async (storeBody: CreateStoreReq): Promise<IStore> => {
   const store = await Store.create(storeBody);
   return store;
 };
@@ -41,10 +40,10 @@ export const getStoreById = async (id: string): Promise<IStore | null> => {
 /**
  * Update store by id
  * @param {string}} storeId
- * @param {UpdateStoreBody} updateBody
+ * @param {UpdateStoreReq} updateBody
  * @returns {Promise<IStore | null>}
  */
-export const updateStoreById = async (storeId: string, updateBody: UpdateStoreBody): Promise<IStore | null> => {
+export const updateStoreById = async (storeId: string, updateBody: UpdateStoreReq): Promise<IStore | null> => {
   const store = await Store.findByPk(storeId);
   if (!store) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Store not found');

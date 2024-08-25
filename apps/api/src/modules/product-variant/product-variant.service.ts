@@ -1,15 +1,14 @@
 import httpStatus from 'http-status';
-import { IOptions, ListResponse } from '@shared';
+import { CreateProductVariantReq, IOptions, IProductVariant, ListResponse, UpdateProductVariantReq } from '@shared';
 
 import { ApiError } from '@/common/errors/ApiError';
 
 import { paginate } from '../paginate/paginate';
-import { IProductVariant, NewCreatedProductVariant, UpdateProductVariantBody } from './product-variant.interfaces';
 import { ProductVariant } from './product-variant.model';
 
 export const createProductVariant = async (
   productId: string,
-  variantBody: NewCreatedProductVariant
+  variantBody: CreateProductVariantReq
 ): Promise<IProductVariant> => {
   const variant = await ProductVariant.create({ ...variantBody, productId });
   return variant.toJSON();
@@ -33,7 +32,7 @@ export const getProductVariantById = async (productId: string, variantId: string
 export const updateProductVariantById = async (
   productId: string,
   variantId: string,
-  updateBody: UpdateProductVariantBody
+  updateBody: UpdateProductVariantReq
 ): Promise<IProductVariant | null> => {
   const variant = await ProductVariant.findOne({ where: { id: variantId, productId } });
   if (!variant) {

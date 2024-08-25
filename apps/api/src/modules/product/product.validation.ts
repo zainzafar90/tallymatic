@@ -1,11 +1,9 @@
 import Joi from 'joi';
-import { Status } from '@shared';
+import { CreateProductReq, Status } from '@shared';
 
 import { uuid } from '@/common/validate/custom.validation';
 
-import { NewCreatedProduct } from './product.interfaces';
-
-const createProductBody: Record<keyof NewCreatedProduct, any> = {
+const createProductBody: Record<keyof CreateProductReq, any> = {
   organizationId: Joi.string().custom(uuid).required(),
   storeId: Joi.string().custom(uuid).required(),
   name: Joi.string().required(),

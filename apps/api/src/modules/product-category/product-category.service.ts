@@ -1,13 +1,12 @@
 import httpStatus from 'http-status';
-import { IOptions, ListResponse } from '@shared';
+import { CreateProductCategoryReq, IOptions, IProductCategory, ListResponse } from '@shared';
 
 import { ApiError } from '@/common/errors/ApiError';
 
 import { paginate } from '../paginate/paginate';
-import { IProductCategory, NewCreatedProductCategory } from './product-category.interfaces';
 import { ProductCategory } from './product-category.model';
 
-export const createProductCategory = async (productCategoryBody: NewCreatedProductCategory): Promise<IProductCategory> => {
+export const createProductCategory = async (productCategoryBody: CreateProductCategoryReq): Promise<IProductCategory> => {
   const productCategory = await ProductCategory.create(productCategoryBody);
   return productCategory.toJSON();
 };

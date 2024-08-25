@@ -1,18 +1,17 @@
 import httpStatus from 'http-status';
-import { IOptions, ListResponse } from '@shared';
+import { CreateOrganizationReq, IOptions, IOrganization, ListResponse, UpdateOrganizationReq } from '@shared';
 
 import { ApiError } from '@/common/errors/ApiError';
 
 import { paginate } from '../paginate/paginate';
-import { IOrganization, NewCreatedOrganization, UpdateOrganizationBody } from './organization.interfaces';
 import { Organization } from './organization.model';
 
 /**
  * Create an organization
- * @param {NewCreatedOrganization} organizationBody
+ * @param {CreateOrganizationReq} organizationBody
  * @returns {Promise<IOrganization>}
  */
-export const createOrganization = async (organizationBody: NewCreatedOrganization): Promise<IOrganization> => {
+export const createOrganization = async (organizationBody: CreateOrganizationReq): Promise<IOrganization> => {
   const organization = await Organization.create(organizationBody);
   return organization.toJSON();
 };
@@ -44,12 +43,12 @@ export const getOrganizationById = async (id: string): Promise<IOrganization | n
 /**
  * Update organization by id
  * @param {string}} organizationId
- * @param {UpdateOrganizationBody} updateBody
+ * @param {UpdateOrganizationReq} updateBody
  * @returns {Promise<IOrganization | null>}
  */
 export const updateOrganizationById = async (
   organizationId: string,
-  updateBody: UpdateOrganizationBody
+  updateBody: UpdateOrganizationReq
 ): Promise<IOrganization | null> => {
   const organization = await Organization.findByPk(organizationId);
   if (!organization) {

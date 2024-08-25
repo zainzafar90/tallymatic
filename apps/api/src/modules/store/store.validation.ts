@@ -1,10 +1,9 @@
 import Joi from 'joi';
+import { CreateStoreReq } from '@shared';
 
 import { uuid } from '@/common/validate/custom.validation';
 
-import { NewCreatedStore } from './store.interfaces';
-
-const createStoreBody: Record<keyof NewCreatedStore, any> = {
+const createStoreBody: Record<keyof CreateStoreReq, any> = {
   name: Joi.string().required(),
   location: Joi.string().required(),
   organizationId: Joi.string().custom(uuid),

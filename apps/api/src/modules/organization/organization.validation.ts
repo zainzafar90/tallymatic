@@ -1,11 +1,9 @@
 import Joi from 'joi';
-import { Status } from '@shared';
+import { CreateOrganizationReq, Status } from '@shared';
 
 import { uuid } from '@/common/validate/custom.validation';
 
-import { NewCreatedOrganization } from './organization.interfaces';
-
-const createOrganizationBody: Record<keyof NewCreatedOrganization, any> = {
+const createOrganizationBody: Record<keyof CreateOrganizationReq, any> = {
   name: Joi.string().required(),
   description: Joi.string().optional(),
   status: Joi.string().valid(Status.ACTIVE, Status.INACTIVE).required(),

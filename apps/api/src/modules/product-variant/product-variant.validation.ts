@@ -1,11 +1,9 @@
 import Joi from 'joi';
-import { Status } from '@shared';
+import { CreateProductVariantReq, Status } from '@shared';
 
 import { uuid } from '@/common/validate/custom.validation';
 
-import { NewCreatedProductVariant } from './product-variant.interfaces';
-
-const createProductVariantBody: Record<keyof NewCreatedProductVariant, any> = {
+const createProductVariantBody: Record<keyof CreateProductVariantReq, any> = {
   name: Joi.string().required(),
   sku: Joi.string().required(),
   price: Joi.number().positive().required(),

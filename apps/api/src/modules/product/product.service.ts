@@ -1,13 +1,12 @@
 import httpStatus from 'http-status';
-import { IOptions, ListResponse } from '@shared';
+import { CreateProductReq, IOptions, IProduct, ListResponse, UpdateProductReq } from '@shared';
 
 import { ApiError } from '@/common/errors/ApiError';
 
 import { paginate } from '../paginate/paginate';
-import { IProduct, NewCreatedProduct, UpdateProductBody } from './product.interfaces';
 import { Product } from './product.model';
 
-export const createProduct = async (productBody: NewCreatedProduct): Promise<IProduct> => {
+export const createProduct = async (productBody: CreateProductReq): Promise<IProduct> => {
   const product = await Product.create(productBody);
   return product.toJSON();
 };
@@ -22,7 +21,7 @@ export const getProductById = async (id: string): Promise<IProduct | null> => {
   return product ? product.toJSON() : null;
 };
 
-export const updateProductById = async (productId: string, updateBody: UpdateProductBody): Promise<IProduct | null> => {
+export const updateProductById = async (productId: string, updateBody: UpdateProductReq): Promise<IProduct | null> => {
   const product = await Product.findByPk(productId);
   if (!product) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Product not found');
