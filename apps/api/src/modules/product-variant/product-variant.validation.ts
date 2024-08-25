@@ -19,7 +19,7 @@ export const createProductVariant = {
 
 export const getProductVariants = {
   query: Joi.object().keys({
-    productId: Joi.string().custom(uuid),
+    productId: Joi.string().custom(uuid).required(),
     name: Joi.string(),
     sku: Joi.string(),
     status: Joi.string().valid(Status.ACTIVE, Status.INACTIVE),
