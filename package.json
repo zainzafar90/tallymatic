@@ -13,7 +13,8 @@
     "migrate:status:dev": "cd apps/api && npx sequelize db:migrate:status",
     "create-seeder:dev": "cd apps/api && npx sequelize seed:generate --name",
     "seed:dev": "cd apps/api && npx sequelize db:seed:all",
-    "seed:undo:dev": "cd apps/api && npx sequelize db:seed:undo:all"
+    "seed:undo:dev": "cd apps/api && npx sequelize db:seed:undo:all",
+    "generate:resource": "node scripts/generate-resource.ts"
   },
   "private": true,
   "devDependencies": {

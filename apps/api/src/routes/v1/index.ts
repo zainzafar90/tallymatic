@@ -3,7 +3,10 @@ import express, { Router } from 'express';
 import config from '@/config/config';
 
 import authRoute from './auth.route';
+import categoryRoute from './category.route';
 import organizationRoute from './organization.route';
+import productCategoriesRoute from './product-category.route';
+import productRoute from './product.route';
 import storeRoute from './store.route';
 import docsRoute from './swagger.route';
 import userRoute from './user.route';
@@ -31,6 +34,18 @@ const defaultIRoute: IRoute[] = [
   {
     path: '/organizations',
     route: organizationRoute,
+  },
+  {
+    path: '/products',
+    route: productRoute,
+  },
+  {
+    path: '/categories',
+    route: categoryRoute,
+  },
+  {
+    path: '/product-categories',
+    route: productCategoriesRoute,
   },
 ];
 
