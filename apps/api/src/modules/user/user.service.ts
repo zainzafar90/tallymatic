@@ -1,12 +1,20 @@
 import httpStatus from 'http-status';
 import { Op } from 'sequelize';
-import { CreateUserReq, IUser, RegisterUserReq, RoleType, UpdateUserReq } from '@shared';
+import {
+  CreateUserReq,
+  IOptions,
+  IUser,
+  RegisterUserReq,
+  RoleType,
+  UpdateUserReq,
+  UserListResponse,
+  UserProfileResponse,
+} from '@shared';
 
 import { ApiError } from '@/common/errors/ApiError';
 
 import { Organization } from '../organization';
 import { paginate } from '../paginate/paginate';
-import { IOptions, QueryResult } from '../paginate/paginate.types';
 import { hashPassword, User } from './user.model';
 
 /**
@@ -91,7 +99,7 @@ export const registerUser = async (userBody: RegisterUserReq): Promise<IUser> =>
  * @param {Object} options - Query options
  * @returns {Promise<QueryResult>}
  */
-export const queryUsers = async (filter: Record<string, any>, options: IOptions): Promise<QueryResult<User>> => {
+export const queryUsers = async (filter: Record<string, any>, options: IOptions): Promise<UserListResponse> => {
   const result = await paginate(User, filter, options);
   return result;
 };
@@ -112,7 +120,7 @@ export const getUserById = async (id: string): Promise<IUser | null> => {
  * @param string id
  * @returns {Promise<IUser | null>}
  */
-export const getMe = async (id: string): Promise<Partial<IUser & { organization: Organization }> | null> => {
+export const getMe = async (id: string): Promise<UserProfileResponse | null> => {
   const user = await User.findByPk(id, {
     include: [
       {
@@ -125,11 +133,12 @@ export const getMe = async (id: string): Promise<Partial<IUser & { organization:
   return {
     id: user.id,
     name: user.name,
+    role: user.role,
     email: user.email,
     contact: user.contact,
-    isEmailVerified: user.isEmailVerified,
     organization: user.organization,
-    role: user.role,
+    organizationId: user.organizationId,
+    isEmailVerified: user.isEmailVerified,
   };
 };
 

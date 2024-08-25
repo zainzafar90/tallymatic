@@ -1,9 +1,9 @@
 export type ListResponse<T> = {
   results: T[];
-  page: number;
+  pages: number;
+  offset: number;
   limit: number;
-  totalPages: number;
-  totalResults: number;
+  count: number;
 };
 
 export type SingleItemResponse<T> = {

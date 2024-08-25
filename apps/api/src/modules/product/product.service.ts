@@ -1,9 +1,9 @@
 import httpStatus from 'http-status';
+import { IOptions, ListResponse } from '@shared';
 
 import { ApiError } from '@/common/errors/ApiError';
 
 import { paginate } from '../paginate/paginate';
-import { IOptions, QueryResult } from '../paginate/paginate.types';
 import { IProduct, NewCreatedProduct, UpdateProductBody } from './product.interfaces';
 import { Product } from './product.model';
 
@@ -12,7 +12,7 @@ export const createProduct = async (productBody: NewCreatedProduct): Promise<IPr
   return product.toJSON();
 };
 
-export const queryProducts = async (filter: Record<string, any>, options: IOptions): Promise<QueryResult<Product>> => {
+export const queryProducts = async (filter: Record<string, any>, options: IOptions): Promise<ListResponse<Product>> => {
   const result = await paginate(Product, filter, options);
   return result;
 };

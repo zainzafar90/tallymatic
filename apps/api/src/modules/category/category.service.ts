@@ -1,9 +1,9 @@
 import httpStatus from 'http-status';
+import { IOptions, ListResponse } from '@shared';
 
 import { ApiError } from '@/common/errors/ApiError';
 
 import { paginate } from '../paginate/paginate';
-import { IOptions, QueryResult } from '../paginate/paginate.types';
 import { ICategory, NewCreatedCategory, UpdateCategoryBody } from './category.interfaces';
 import { Category } from './category.model';
 
@@ -12,7 +12,7 @@ export const createCategory = async (categoryBody: NewCreatedCategory): Promise<
   return category.toJSON();
 };
 
-export const queryCategories = async (filter: Record<string, any>, options: IOptions): Promise<QueryResult<Category>> => {
+export const queryCategories = async (filter: Record<string, any>, options: IOptions): Promise<ListResponse<Category>> => {
   const result = await paginate(Category, filter, options);
   return result;
 };

@@ -1,10 +1,9 @@
 import { FindAndCountOptions, Model, ModelStatic } from 'sequelize';
+import { IOptions, ListResponse } from '@shared';
 
 import { logger } from '@/common/logger';
 
-import { IOptions, QueryResult } from './paginate.types';
-
-const transformPagination = <T extends Model>(count: number, rows: T[], offset: number, limit: number): QueryResult<T> => {
+const transformPagination = <T extends Model>(count: number, rows: T[], offset: number, limit: number): ListResponse<T> => {
   const pages = Math.ceil(count / limit);
   return { pages, count, offset, limit, results: rows };
 };
@@ -13,7 +12,7 @@ export const paginate = async <T extends Model>(
   model: ModelStatic<T>,
   filter: Record<string, any>,
   options: IOptions = {}
-): Promise<QueryResult<T>> => {
+): Promise<ListResponse<T>> => {
   const limit = Math.max(options.limit ? +options.limit : 10, 100);
   const offset = options.offset ? +options.offset : 0;
 

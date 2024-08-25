@@ -1,16 +1,15 @@
 import { Request, Response } from 'express';
 import httpStatus from 'http-status';
-import { RoleType } from '@shared';
+import { IOptions, RoleType, UserDeleteResponse, UserListResponse, UserProfileResponse, UserResponse } from '@shared';
 
 import { catchAsync } from '@/utils/catchAsync';
 import { pick } from '@/utils/pick';
 import { ApiError } from '@/common/errors/ApiError';
 
-import { IOptions } from '../paginate/paginate.types';
 import { permissionService } from '../permissions/permission.service';
 import * as userService from './user.service';
 
-export const createUser = catchAsync(async (req: Request, res: Response) => {
+export const createUser = catchAsync(async (req: Request, res: Response<UserResponse>) => {
   const isAllowed = permissionService.checkPermissions(req.user.role, 'create', 'users');
   if (!isAllowed) {
     throw new ApiError(httpStatus.FORBIDDEN, 'You do not have permission to create users');
@@ -20,7 +19,7 @@ export const createUser = catchAsync(async (req: Request, res: Response) => {
   res.status(httpStatus.CREATED).send(user);
 });
 
-export const getUsers = catchAsync(async (req: Request, res: Response) => {
+export const getUsers = catchAsync(async (req: Request, res: Response<UserListResponse>) => {
   const filter = pick(req.query, ['name', 'roles']);
   const options: IOptions = pick(req.query, ['sortBy', 'limit', 'offset', 'projectBy']);
   const isAllowed = permissionService.checkPermissions(req.user.role, 'list', 'users');
@@ -32,7 +31,7 @@ export const getUsers = catchAsync(async (req: Request, res: Response) => {
   res.send(result);
 });
 
-export const getMe = catchAsync(async (req: Request, res: Response) => {
+export const getMe = catchAsync(async (req: Request, res: Response<UserProfileResponse>) => {
   const user = await userService.getMe(req.user['id']);
 
   if (!user) {
@@ -46,7 +45,7 @@ export const getMe = catchAsync(async (req: Request, res: Response) => {
   res.send(user);
 });
 
-export const getUser = catchAsync(async (req: Request, res: Response) => {
+export const getUser = catchAsync(async (req: Request, res: Response<UserResponse>) => {
   if (typeof req.params['userId'] === 'string') {
     const user = await userService.getUserById(req.params['userId']);
     if (!user) {
@@ -56,7 +55,7 @@ export const getUser = catchAsync(async (req: Request, res: Response) => {
   }
 });
 
-export const updateUser = catchAsync(async (req: Request, res: Response) => {
+export const updateUser = catchAsync(async (req: Request, res: Response<UserResponse>) => {
   if (typeof req.params['userId'] === 'string') {
     const userId = req.params['userId'];
     const currentUser = req.user;
@@ -75,7 +74,7 @@ export const updateUser = catchAsync(async (req: Request, res: Response) => {
   }
 });
 
-export const deleteUser = catchAsync(async (req: Request, res: Response) => {
+export const deleteUser = catchAsync(async (req: Request, res: Response<UserDeleteResponse>) => {
   if (typeof req.params['userId'] === 'string') {
     await userService.deleteUserById(req.params['userId']);
     res.status(httpStatus.NO_CONTENT).send();

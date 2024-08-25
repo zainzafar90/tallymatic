@@ -1,9 +1,9 @@
 import httpStatus from 'http-status';
+import { IOptions, ListResponse } from '@shared';
 
 import { ApiError } from '@/common/errors/ApiError';
 
 import { paginate } from '../paginate/paginate';
-import { IOptions, QueryResult } from '../paginate/paginate.types';
 import { IOrganization, NewCreatedOrganization, UpdateOrganizationBody } from './organization.interfaces';
 import { Organization } from './organization.model';
 
@@ -21,12 +21,12 @@ export const createOrganization = async (organizationBody: NewCreatedOrganizatio
  * Query for organizations
  * @param {Object} filter - filter
  * @param {Object} options - Query options
- * @returns {Promise<QueryResult>}
+ * @returns {Promise<ListResult>}
  */
 export const queryOrganizations = async (
   filter: Record<string, any>,
   options: IOptions
-): Promise<QueryResult<Organization>> => {
+): Promise<ListResponse<Organization>> => {
   const result = await paginate(Organization, filter, options);
   return result;
 };
