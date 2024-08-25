@@ -7,6 +7,7 @@ import { NewCreatedStore } from './store.interfaces';
 const createStoreBody: Record<keyof NewCreatedStore, any> = {
   name: Joi.string().required(),
   location: Joi.string().required(),
+  organizationId: Joi.string().custom(uuid),
 };
 
 export const createStore = {

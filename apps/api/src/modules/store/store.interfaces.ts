@@ -2,6 +2,7 @@ export interface IStore {
   id?: string;
   name: string;
   location: string;
+  organizationId: string;
 }
 
 export type UpdateStoreBody = Partial<IStore>;
