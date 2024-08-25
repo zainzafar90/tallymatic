@@ -1,17 +1,15 @@
 import Joi from 'joi';
+import { Status } from '@shared';
 
 import { uuid } from '@/common/validate/custom.validation';
 
 import { NewCreatedCategory } from './category.interfaces';
-import { CategoryStatus } from './category.model';
 
 const createCategoryBody: Record<keyof NewCreatedCategory, any> = {
   name: Joi.string().required(),
   description: Joi.string().optional(),
   parentCategoryId: Joi.string().custom(uuid).optional().allow(null),
-  status: Joi.string()
-    .valid(...Object.values(CategoryStatus))
-    .required(),
+  status: Joi.string().valid(Status.ACTIVE, Status.INACTIVE).required(),
 };
 
 export const createCategory = {
@@ -22,7 +20,7 @@ export const getCategories = {
   query: Joi.object().keys({
     name: Joi.string(),
     parentCategoryId: Joi.string().custom(uuid),
-    status: Joi.string().valid(...Object.values(CategoryStatus)),
+    status: Joi.string().valid(Status.ACTIVE, Status.INACTIVE),
     sortBy: Joi.string(),
     projectBy: Joi.string(),
     limit: Joi.number().integer(),
@@ -45,7 +43,7 @@ export const updateCategory = {
       name: Joi.string(),
       description: Joi.string(),
       parentCategoryId: Joi.string().custom(uuid).allow(null),
-      status: Joi.string().valid(...Object.values(CategoryStatus)),
+      status: Joi.string().valid(Status.ACTIVE, Status.INACTIVE),
     })
     .min(1),
 };

@@ -1,18 +1,16 @@
 import Joi from 'joi';
+import { Status } from '@shared';
 
 import { uuid } from '@/common/validate/custom.validation';
 
 import { NewCreatedProductOption } from './product-option.interfaces';
-import { ProductOptionStatus } from './product-option.model';
 
 const createProductOptionBody: Record<keyof NewCreatedProductOption, any> = {
   productId: Joi.string().custom(uuid).required(),
   name: Joi.string().required(),
   description: Joi.string().optional(),
   priceModifier: Joi.number().required(),
-  status: Joi.string()
-    .valid(...Object.values(ProductOptionStatus))
-    .required(),
+  status: Joi.string().valid(Status.ACTIVE, Status.INACTIVE).required(),
 };
 
 export const createProductOption = {
@@ -23,7 +21,7 @@ export const getProductOptions = {
   query: Joi.object().keys({
     productId: Joi.string().custom(uuid),
     name: Joi.string(),
-    status: Joi.string().valid(...Object.values(ProductOptionStatus)),
+    status: Joi.string().valid(Status.ACTIVE, Status.INACTIVE),
     sortBy: Joi.string(),
     projectBy: Joi.string(),
     limit: Joi.number().integer(),
@@ -46,7 +44,7 @@ export const updateProductOption = {
       name: Joi.string(),
       description: Joi.string(),
       priceModifier: Joi.number(),
-      status: Joi.string().valid(...Object.values(ProductOptionStatus)),
+      status: Joi.string().valid(Status.ACTIVE, Status.INACTIVE),
     })
     .min(1),
 };

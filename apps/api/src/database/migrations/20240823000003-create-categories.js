@@ -21,6 +21,8 @@ module.exports = {
       parentCategoryId: {
         type: Sequelize.UUID,
         allowNull: true,
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
         references: {
           model: 'categories',
           key: 'id',

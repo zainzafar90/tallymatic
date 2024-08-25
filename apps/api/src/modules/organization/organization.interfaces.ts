@@ -1,10 +1,10 @@
-import { OrganizationStatus } from './organization.model';
+import { Status } from '@shared';
 
 export interface IOrganization {
   id?: string;
   name: string;
   description?: string;
-  status: OrganizationStatus;
+  status: Status;
 }
 
 export type UpdateOrganizationBody = Partial<IOrganization>;

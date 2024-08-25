@@ -1,18 +1,14 @@
 import { Column, DataType, HasMany, IsUUID, Model, PrimaryKey, Table } from 'sequelize-typescript';
+import { Status } from '@shared';
 
 import { Store } from '../store';
 import { User } from '../user';
-
-export enum OrganizationStatus {
-  ACTIVE = 'active',
-  INACTIVE = 'inactive',
-}
 
 @Table({
   timestamps: true,
   tableName: 'organizations',
 })
-export class Organization extends Model {
+export class Organization extends Model<Organization> {
   @IsUUID(4)
   @PrimaryKey
   @Column({
@@ -34,11 +30,11 @@ export class Organization extends Model {
   description: string;
 
   @Column({
-    type: DataType.ENUM(...Object.values(OrganizationStatus)),
+    type: DataType.ENUM({ values: Object.values(Status) }),
     allowNull: false,
-    defaultValue: OrganizationStatus.ACTIVE,
+    defaultValue: Status.ACTIVE,
   })
-  status: OrganizationStatus;
+  status: Status;
 
   @HasMany(() => Store)
   stores: Store[];

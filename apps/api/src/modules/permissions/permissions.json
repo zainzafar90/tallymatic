@@ -76,7 +76,7 @@
     },
     {
       "version": "default",
-      "resource": "product_variants",
+      "resource": "product-variants",
       "rules": [
         {
           "actions": ["*"],
@@ -97,7 +97,7 @@
     },
     {
       "version": "default",
-      "resource": "product_options",
+      "resource": "product-options",
       "rules": [
         {
           "actions": ["*"],
@@ -139,7 +139,7 @@
     },
     {
       "version": "default",
-      "resource": "product_categories",
+      "resource": "product-categories",
       "rules": [
         {
           "actions": ["*"],

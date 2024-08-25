@@ -1,4 +1,4 @@
-import { ProductStatus } from './product.model';
+import { Status } from '@shared';
 
 export interface IProduct {
   id?: string;
@@ -7,7 +7,7 @@ export interface IProduct {
   name: string;
   description?: string;
   price: number;
-  status: ProductStatus;
+  status: Status;
 }
 
 export type UpdateProductBody = Partial<IProduct>;

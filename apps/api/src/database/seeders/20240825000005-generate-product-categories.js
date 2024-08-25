@@ -15,21 +15,21 @@ module.exports = {
       'product_categories',
       [
         {
-          id: uuidv4(),
+          id: '00000000-0000-4000-8000-000000000001',
           productId: productRows[0].id,
           categoryId: categoryRows[1].id,
           createdAt: new Date(),
           updatedAt: new Date(),
         },
         {
-          id: uuidv4(),
+          id: '00000000-0000-4000-8000-000000000002',
           productId: productRows[1].id,
           categoryId: categoryRows[2].id,
           createdAt: new Date(),
           updatedAt: new Date(),
         },
         {
-          id: uuidv4(),
+          id: '00000000-0000-4000-8000-000000000003',
           productId: productRows[2].id,
           categoryId: categoryRows[0].id,
           createdAt: new Date(),

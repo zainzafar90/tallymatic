@@ -7,18 +7,19 @@ module.exports = {
       'stores',
       [
         {
-          id: 'd3a3b4b6-4b7b-4b7b-9b4b-7b4b7b4b7b4d',
+          id: '00000000-0000-4000-8000-000000000001',
           name: 'Store A',
           location: '...',
-          organizationId: 'd3a3b4b6-4b7b-4b7b-9b4b-7b4b7b4b7b4b',
+          organizationId: '00000000-0000-4000-8000-000000000001',
           createdAt: new Date(),
           updatedAt: new Date(),
         },
         {
-          id: 'd3a3b4b6-4b7b-4b7b-9b4b-7b4b7b4b7b4e',
+          id: '00000000-0000-4000-8000-000000000002',
+
           name: 'Store B',
           location: '...',
-          organizationId: 'd3a3b4b6-4b7b-4b7b-9b4b-7b4b7b4b7b4c',
+          organizationId: '00000000-0000-4000-8000-000000000001',
           createdAt: new Date(),
           updatedAt: new Date(),
         },

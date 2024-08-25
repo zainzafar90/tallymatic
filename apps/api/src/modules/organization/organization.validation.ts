@@ -1,16 +1,14 @@
 import Joi from 'joi';
+import { Status } from '@shared';
 
 import { uuid } from '@/common/validate/custom.validation';
 
 import { NewCreatedOrganization } from './organization.interfaces';
-import { OrganizationStatus } from './organization.model';
 
 const createOrganizationBody: Record<keyof NewCreatedOrganization, any> = {
   name: Joi.string().required(),
   description: Joi.string().optional(),
-  status: Joi.string()
-    .valid(...Object.values(OrganizationStatus))
-    .required(),
+  status: Joi.string().valid(Status.ACTIVE, Status.INACTIVE).required(),
 };
 
 export const createOrganization = {
@@ -20,7 +18,7 @@ export const createOrganization = {
 export const getOrganizations = {
   query: Joi.object().keys({
     name: Joi.string(),
-    status: Joi.string().valid(...Object.values(OrganizationStatus)),
+    status: Joi.string().valid(Status.ACTIVE, Status.INACTIVE),
     sortBy: Joi.string(),
     projectBy: Joi.string(),
     limit: Joi.number().integer(),
@@ -42,7 +40,7 @@ export const updateOrganization = {
     .keys({
       name: Joi.string(),
       description: Joi.string(),
-      status: Joi.string().valid(...Object.values(OrganizationStatus)),
+      status: Joi.string().valid(Status.ACTIVE, Status.INACTIVE),
     })
     .min(1),
 };

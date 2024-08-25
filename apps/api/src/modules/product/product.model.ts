@@ -9,16 +9,12 @@ import {
   PrimaryKey,
   Table,
 } from 'sequelize-typescript';
+import { Status } from '@shared';
 
 import { Category } from '../category';
 import { Organization } from '../organization/organization.model';
 import { ProductCategory } from '../product-category';
 import { Store } from '../store/store.model';
-
-export enum ProductStatus {
-  ACTIVE = 'active',
-  INACTIVE = 'inactive',
-}
 
 @Table({
   timestamps: true,
@@ -72,11 +68,11 @@ export class Product extends Model {
   price: number;
 
   @Column({
-    type: DataType.ENUM(...Object.values(ProductStatus)),
+    type: DataType.ENUM({ values: Object.values(Status) }),
     allowNull: false,
-    defaultValue: ProductStatus.ACTIVE,
+    defaultValue: Status.ACTIVE,
   })
-  status: ProductStatus;
+  status: Status;
 
   @BelongsToMany(() => Category, () => ProductCategory)
   categories: Category[];

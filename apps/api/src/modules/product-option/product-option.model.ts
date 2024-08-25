@@ -1,11 +1,7 @@
 import { BelongsTo, Column, DataType, ForeignKey, IsUUID, Model, PrimaryKey, Table } from 'sequelize-typescript';
+import { Status } from '@shared';
 
 import { Product } from '../product/product.model';
-
-export enum ProductOptionStatus {
-  ACTIVE = 'active',
-  INACTIVE = 'inactive',
-}
 
 @Table({
   timestamps: true,
@@ -24,6 +20,8 @@ export class ProductOption extends Model {
   @Column({
     type: DataType.UUID,
     allowNull: false,
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
   })
   productId: string;
 
@@ -49,9 +47,9 @@ export class ProductOption extends Model {
   priceModifier: number;
 
   @Column({
-    type: DataType.ENUM(...Object.values(ProductOptionStatus)),
+    type: DataType.ENUM({ values: Object.values(Status) }),
     allowNull: false,
-    defaultValue: ProductOptionStatus.ACTIVE,
+    defaultValue: Status.ACTIVE,
   })
-  status: ProductOptionStatus;
+  status: Status;
 }

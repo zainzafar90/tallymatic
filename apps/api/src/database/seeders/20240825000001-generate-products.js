@@ -15,7 +15,7 @@ module.exports = {
       'products',
       [
         {
-          id: uuidv4(),
+          id: '00000000-0000-4000-8000-000000000001',
           organizationId: organizationRows[0].id,
           storeId: storeRows[0].id,
           name: 'Product A',
@@ -26,7 +26,7 @@ module.exports = {
           updatedAt: new Date(),
         },
         {
-          id: uuidv4(),
+          id: '00000000-0000-4000-8000-000000000002',
           organizationId: organizationRows[0].id,
           storeId: storeRows[0].id,
           name: 'Product B',
@@ -37,7 +37,7 @@ module.exports = {
           updatedAt: new Date(),
         },
         {
-          id: uuidv4(),
+          id: '00000000-0000-4000-8000-000000000003',
           organizationId: organizationRows[1].id,
           storeId: storeRows[1].id,
           name: 'Product C',

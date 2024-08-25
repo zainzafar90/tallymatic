@@ -1,11 +1,13 @@
 'use strict';
 
-const { v4: uuidv4 } = require('uuid');
-
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface) {
-    const categoryIds = [uuidv4(), uuidv4(), uuidv4()];
+    const categoryIds = [
+      '00000000-0000-4000-8000-000000000001',
+      '00000000-0000-4000-8000-000000000002',
+      '00000000-0000-4000-8000-000000000003',
+    ];
 
     await queryInterface.bulkInsert(
       'categories',

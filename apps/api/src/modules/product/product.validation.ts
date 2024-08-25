@@ -1,9 +1,9 @@
 import Joi from 'joi';
+import { Status } from '@shared';
 
 import { uuid } from '@/common/validate/custom.validation';
 
 import { NewCreatedProduct } from './product.interfaces';
-import { ProductStatus } from './product.model';
 
 const createProductBody: Record<keyof NewCreatedProduct, any> = {
   organizationId: Joi.string().custom(uuid).required(),
@@ -11,9 +11,7 @@ const createProductBody: Record<keyof NewCreatedProduct, any> = {
   name: Joi.string().required(),
   description: Joi.string().optional(),
   price: Joi.number().positive().required(),
-  status: Joi.string()
-    .valid(...Object.values(ProductStatus))
-    .required(),
+  status: Joi.string().valid(Status.ACTIVE, Status.INACTIVE).required(),
 };
 
 export const createProduct = {
@@ -25,7 +23,7 @@ export const getProducts = {
     organizationId: Joi.string().custom(uuid).required(),
     storeId: Joi.string().custom(uuid),
     name: Joi.string(),
-    status: Joi.string().valid(...Object.values(ProductStatus)),
+    status: Joi.string().valid(Status.ACTIVE, Status.INACTIVE),
     sortBy: Joi.string(),
     projectBy: Joi.string(),
     limit: Joi.number().integer(),
@@ -48,7 +46,7 @@ export const updateProduct = {
       name: Joi.string(),
       description: Joi.string(),
       price: Joi.number().positive(),
-      status: Joi.string().valid(...Object.values(ProductStatus)),
+      status: Joi.string().valid(Status.ACTIVE, Status.INACTIVE),
     })
     .min(1),
 };

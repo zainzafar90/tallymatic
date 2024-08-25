@@ -1,11 +1,11 @@
-import { CategoryStatus } from './category.model';
+import { Status } from '@shared';
 
 export interface ICategory {
   id?: string;
   name: string;
   description?: string;
   parentCategoryId?: string | null;
-  status: CategoryStatus;
+  status: Status;
 }
 
 export type UpdateCategoryBody = Partial<ICategory>;

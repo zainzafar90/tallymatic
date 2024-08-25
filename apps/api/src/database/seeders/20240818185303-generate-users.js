@@ -7,8 +7,8 @@ module.exports = {
       'users',
       [
         {
-          id: 'd3a3b4b6-4b7b-4b7b-9b4b-7b4b7b4b7b1f',
-          organizationId: 'd3a3b4b6-4b7b-4b7b-9b4b-7b4b7b4b7b4b',
+          id: '00000000-0000-4000-8000-000000000001',
+          organizationId: '00000000-0000-4000-8000-000000000001',
           name: 'Super Admin',
           email: 'superadmin@tallymatic.com',
           contact: '...',
@@ -19,8 +19,8 @@ module.exports = {
           updatedAt: new Date(),
         },
         {
-          id: 'd3a3b4b6-4b7b-4b7b-9b4b-7b4b7b4b7b2f',
-          organizationId: 'd3a3b4b6-4b7b-4b7b-9b4b-7b4b7b4b7b4b',
+          id: '00000000-0000-4000-8000-000000000002',
+          organizationId: '00000000-0000-4000-8000-000000000001',
           name: 'Admin',
           email: 'admin@tallymatic.com',
           contact: '...',
@@ -31,8 +31,8 @@ module.exports = {
           updatedAt: new Date(),
         },
         {
-          id: 'd3a3b4b6-4b7b-4b7b-9b4b-7b4b7b4b7b3f',
-          organizationId: 'd3a3b4b6-4b7b-4b7b-9b4b-7b4b7b4b7b4b',
+          id: '00000000-0000-4000-8000-000000000003',
+          organizationId: '00000000-0000-4000-8000-000000000001',
           name: 'Member',
           email: 'member@tallymatic.com',
           contact: '...',

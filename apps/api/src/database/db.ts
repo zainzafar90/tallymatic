@@ -2,7 +2,12 @@ import { Dialect } from 'sequelize';
 import { Sequelize } from 'sequelize-typescript';
 
 import config from '@/config/config';
+import { Category } from '@/modules/category';
 import { Organization } from '@/modules/organization';
+import { Product } from '@/modules/product';
+import { ProductCategory } from '@/modules/product-category';
+import { ProductOption } from '@/modules/product-option';
+import { ProductVariant } from '@/modules/product-variant';
 import { Store } from '@/modules/store';
 import { Token } from '@/modules/token/token.model';
 import { User } from '@/modules/user/user.model';
@@ -48,7 +53,17 @@ export class Database {
       dialect: this.dbDialect,
       logging: false,
     });
-    this.database.addModels([Token, User, Store, Organization]);
+    this.database.addModels([
+      Token,
+      User,
+      Store,
+      Organization,
+      Product,
+      ProductOption,
+      ProductVariant,
+      Category,
+      ProductCategory,
+    ]);
   }
 
   connect() {

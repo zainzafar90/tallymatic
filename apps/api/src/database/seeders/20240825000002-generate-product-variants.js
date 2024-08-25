@@ -12,7 +12,7 @@ module.exports = {
       'product_variants',
       [
         {
-          id: uuidv4(),
+          id: '00000000-0000-4000-8000-000000000001',
           productId: productRows[0].id,
           name: 'Variant A1',
           sku: 'SKU-A1',
@@ -22,7 +22,7 @@ module.exports = {
           updatedAt: new Date(),
         },
         {
-          id: uuidv4(),
+          id: '00000000-0000-4000-8000-000000000002',
           productId: productRows[0].id,
           name: 'Variant A2',
           sku: 'SKU-A2',
@@ -32,7 +32,7 @@ module.exports = {
           updatedAt: new Date(),
         },
         {
-          id: uuidv4(),
+          id: '00000000-0000-4000-8000-000000000003',
           productId: productRows[1].id,
           name: 'Variant B1',
           sku: 'SKU-B1',

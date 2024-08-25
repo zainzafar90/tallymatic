@@ -10,14 +10,10 @@ import {
   PrimaryKey,
   Table,
 } from 'sequelize-typescript';
+import { Status } from '@shared';
 
 import { Product } from '../product';
 import { ProductCategory } from '../product-category';
-
-export enum CategoryStatus {
-  ACTIVE = 'active',
-  INACTIVE = 'inactive',
-}
 
 @Table({
   timestamps: true,
@@ -48,6 +44,8 @@ export class Category extends Model {
   @Column({
     type: DataType.UUID,
     allowNull: true,
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
   })
   parentCategoryId: string | null;
 
@@ -58,11 +56,11 @@ export class Category extends Model {
   childCategories: Category[];
 
   @Column({
-    type: DataType.ENUM(...Object.values(CategoryStatus)),
+    type: DataType.ENUM({ values: Object.values(Status) }),
     allowNull: false,
-    defaultValue: CategoryStatus.ACTIVE,
+    defaultValue: Status.ACTIVE,
   })
-  status: CategoryStatus;
+  status: Status;
 
   @BelongsToMany(() => Product, () => ProductCategory)
   products: Product[];

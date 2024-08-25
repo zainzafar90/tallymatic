@@ -7,7 +7,7 @@ module.exports = {
       'organizations',
       [
         {
-          id: 'd3a3b4b6-4b7b-4b7b-9b4b-7b4b7b4b7b4b',
+          id: '00000000-0000-4000-8000-000000000001',
           name: 'Catalyst Solutions',
           status: 'active',
           description: '...',
@@ -15,7 +15,7 @@ module.exports = {
           updatedAt: new Date(),
         },
         {
-          id: 'd3a3b4b6-4b7b-4b7b-9b4b-7b4b7b4b7b4c',
+          id: '00000000-0000-4000-8000-000000000002',
           name: 'Omniflow Technologies',
           status: 'active',
           description: '...',

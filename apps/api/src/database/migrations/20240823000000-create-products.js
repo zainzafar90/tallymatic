@@ -13,6 +13,8 @@ module.exports = {
       organizationId: {
         type: Sequelize.UUID,
         allowNull: false,
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
         references: {
           model: 'organizations',
           key: 'id',

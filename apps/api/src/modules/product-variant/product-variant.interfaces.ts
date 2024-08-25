@@ -1,4 +1,4 @@
-import { ProductVariantStatus } from './product-variant.model';
+import { Status } from '@shared';
 
 export interface IProductVariant {
   id?: string;
@@ -6,7 +6,7 @@ export interface IProductVariant {
   name: string;
   sku: string;
   price: number;
-  status: ProductVariantStatus;
+  status: Status;
 }
 
 export type UpdateProductVariantBody = Partial<IProductVariant>;
