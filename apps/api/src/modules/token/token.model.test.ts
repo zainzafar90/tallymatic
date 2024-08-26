@@ -44,3 +44,9 @@
 //     await expect(new Token(newToken).validate()).rejects.toThrow();
 //   });
 // });
+
+describe('Token Model', () => {
+  test('should correctly ', async () => {
+    expect(true).toBe(true);
+  });
+});

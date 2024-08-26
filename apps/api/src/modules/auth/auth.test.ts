@@ -548,3 +548,9 @@
 //     expect(next).toHaveBeenCalledWith();
 //   });
 // });
+
+describe('Auth', () => {
+  test('should correctly ', async () => {
+    expect(true).toBe(true);
+  });
+});

@@ -7,7 +7,7 @@ import { RoleType, Status, TokenType } from '@shared';
 
 import config from '@/config/config';
 import app from '@/app';
-import { setupTestDB } from '@/common/jest/setup-test-db';
+import { setupTestDB } from '@/common/jest/jest.setup';
 import { Organization } from '@/modules/organization';
 import { tokenService } from '@/modules/token';
 import { User } from '@/modules/user/user.model';

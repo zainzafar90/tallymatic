@@ -44,7 +44,7 @@ export const userToIUser = (user: User): IUser => {
  * @param {string} [excludeUserId] - The id of the user to be excluded from the check
  * @returns {Promise<boolean>}
  */
-const isEmailTaken = async (email: string, excludeUserId?: string): Promise<boolean> => {
+export const isEmailTaken = async (email: string, excludeUserId?: string): Promise<boolean> => {
   if (excludeUserId) {
     const user = await User.findOne({ where: { email, id: { [Op.ne]: excludeUserId } }, paranoid: true });
     return !!user;

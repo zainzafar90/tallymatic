@@ -67,8 +67,11 @@ export class Database {
     ]);
   }
 
+  isConnected() {
+    return this.database.isDefined;
+  }
+
   connect() {
-    this.database.sync();
     return this.database.authenticate();
   }
 
