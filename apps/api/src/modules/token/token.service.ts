@@ -4,7 +4,7 @@ import moment, { Moment } from 'moment';
 import { AuthResponse, IToken, IUser, TokenType } from '@shared';
 
 import config from '@/config/config';
-import { ApiError } from '@/common/errors/ApiError';
+import { ApiError } from '@/common/errors/api-error';
 
 import { userService } from '../user';
 import { User } from '../user/user.model';

@@ -11,7 +11,7 @@ import {
   UserProfileResponse,
 } from '@shared';
 
-import { ApiError } from '@/common/errors/ApiError';
+import { ApiError } from '@/common/errors/api-error';
 
 import { Organization } from '../organization';
 import { paginate } from '../paginate/paginate';

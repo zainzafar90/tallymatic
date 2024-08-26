@@ -1,7 +1,7 @@
 import httpStatus from 'http-status';
 import { CreateProductCategoryReq, IOptions, IProductCategory, ListResponse } from '@shared';
 
-import { ApiError } from '@/common/errors/ApiError';
+import { ApiError } from '@/common/errors/api-error';
 
 import { paginate } from '../paginate/paginate';
 import { ProductCategory } from './product-category.model';

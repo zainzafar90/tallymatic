@@ -1,7 +1,7 @@
 import httpStatus from 'http-status';
 import { IUser, TokenType, UserAuthResponse } from '@shared';
 
-import { ApiError } from '@/common/errors/ApiError';
+import { ApiError } from '@/common/errors/api-error';
 
 import { tokenService } from '../token';
 import { Token } from '../token/token.model';

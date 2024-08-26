@@ -6,7 +6,7 @@ import { Error } from 'sequelize';
 import config from '@/config/config';
 import { logger } from '@/common/logger';
 
-import { ApiError } from './ApiError';
+import { ApiError } from './api-error';
 
 export const errorConverter = (err: any, _req: Request, _res: Response, next: NextFunction) => {
   let error = err;

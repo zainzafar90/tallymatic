@@ -2,9 +2,9 @@ import { Request, Response } from 'express';
 import httpStatus from 'http-status';
 import { IOptions, RoleType, UserDeleteResponse, UserListResponse, UserProfileResponse, UserResponse } from '@shared';
 
-import { catchAsync } from '@/utils/catchAsync';
+import { catchAsync } from '@/utils/catch-async';
 import { pick } from '@/utils/pick';
-import { ApiError } from '@/common/errors/ApiError';
+import { ApiError } from '@/common/errors/api-error';
 
 import { permissionService } from '../permissions/permission.service';
 import * as userService from './user.service';

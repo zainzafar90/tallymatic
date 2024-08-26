@@ -1,7 +1,7 @@
 import httpStatus from 'http-status';
 import { CreateOrganizationReq, IOptions, IOrganization, ListResponse, UpdateOrganizationReq } from '@shared';
 
-import { ApiError } from '@/common/errors/ApiError';
+import { ApiError } from '@/common/errors/api-error';
 
 import { paginate } from '../paginate/paginate';
 import { Organization } from './organization.model';

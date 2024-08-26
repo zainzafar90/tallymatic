@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import httpStatus from 'http-status';
 import { AuthResponse, IUser, UserAuthResponse } from '@shared';
 
-import { catchAsync } from '@/utils/catchAsync';
+import { catchAsync } from '@/utils/catch-async';
 
 import { emailService } from '../email';
 import { tokenService } from '../token';

@@ -1,7 +1,7 @@
 import httpStatus from 'http-status';
 import { CreateStoreReq, IOptions, IStore, ListResponse, UpdateStoreReq } from '@shared';
 
-import { ApiError } from '@/common/errors/ApiError';
+import { ApiError } from '@/common/errors/api-error';
 
 import { paginate } from '../paginate/paginate';
 import { Store } from './store.model';

@@ -1,7 +1,7 @@
 import httpStatus from 'http-status';
 import { CreateProductOptionReq, IOptions, IProductOption, ListResponse, UpdateProductOptionReq } from '@shared';
 
-import { ApiError } from '@/common/errors/ApiError';
+import { ApiError } from '@/common/errors/api-error';
 
 import { paginate } from '../paginate/paginate';
 import { ProductOption } from './product-option.model';

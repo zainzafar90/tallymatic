@@ -3,7 +3,7 @@ import httpStatus from 'http-status';
 import Joi from 'joi';
 
 import { pick } from '@/utils/pick';
-import { ApiError } from '@/common/errors/ApiError';
+import { ApiError } from '@/common/errors/api-error';
 
 const validate =
   (schema: Record<string, any>) =>

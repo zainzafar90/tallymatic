@@ -3,7 +3,7 @@ import httpStatus from 'http-status';
 import passport from 'passport';
 import { IUser } from '@shared';
 
-import { ApiError } from '@/common/errors/ApiError';
+import { ApiError } from '@/common/errors/api-error';
 
 const verifyCallback =
   (req: Request, resolve: () => void, reject: (error: Error) => void) => async (err: Error, user: IUser, info: string) => {

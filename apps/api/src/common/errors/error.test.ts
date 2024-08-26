@@ -6,7 +6,7 @@ import { jest } from '@jest/globals';
 import config from '@/config/config';
 import { logger } from '@/common/logger/logger';
 
-import { ApiError } from './ApiError';
+import { ApiError } from './api-error';
 import { errorConverter, errorHandler } from './error';
 
 describe('Error middlewares', () => {
