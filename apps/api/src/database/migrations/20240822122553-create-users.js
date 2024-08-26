@@ -27,11 +27,7 @@ module.exports = {
       },
       password: {
         type: Sequelize.STRING,
-        validate: {
-          min: 8,
-          max: 128,
-          is: /^(?=.*[a-zA-Z])(?=.*[0-9])/,
-        },
+        allowNull: false,
       },
       isEmailVerified: {
         type: Sequelize.BOOLEAN,
@@ -65,6 +61,18 @@ module.exports = {
         type: Sequelize.DATE,
       },
     });
+
+    await queryInterface.sequelize.query(`
+      ALTER TABLE users
+      ADD CONSTRAINT check_password_length
+      CHECK (LENGTH(password) >= 8 AND LENGTH(password) <= 128);
+    `);
+
+    await queryInterface.sequelize.query(`
+      ALTER TABLE users
+      ADD CONSTRAINT check_password_complexity
+      CHECK (password ~ '^(?=.*[a-zA-Z])(?=.*[0-9])');
+    `);
   },
 
   async down(queryInterface) {

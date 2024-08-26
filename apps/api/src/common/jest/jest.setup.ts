@@ -4,9 +4,7 @@ const database = new Database();
 
 export const setupTestDB = () => {
   beforeAll(async () => {
-    if (!database.isConnected()) {
-      await database.connect();
-    }
+    await database.connect();
   });
 
   afterAll(async () => {
@@ -15,7 +13,7 @@ export const setupTestDB = () => {
   });
 
   afterEach(async () => {
-    // await database.sync();
+    await database.sync();
   });
 };
 

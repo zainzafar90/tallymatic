@@ -61,9 +61,12 @@ export class User extends Model<User> {
   @Column({
     type: DataType.STRING,
     validate: {
-      min: 8,
-      max: 128,
-      is: /^(?=.*[a-zA-Z])(?=.*[0-9])/, // Password must contain at least one letter and one number
+      len: [8, 128],
+      customValidator(value: string) {
+        if (!/(?=.*[a-zA-Z])(?=.*[0-9])/.test(value)) {
+          throw new Error('Password must contain at least one letter and one number');
+        }
+      },
     },
   })
   password: string;
@@ -90,6 +93,12 @@ export class User extends Model<User> {
 
   @BelongsTo(() => Organization)
   organization: Organization;
+
+  toJSON(): object {
+    const values = Object.assign({}, this.get());
+    delete values.password;
+    return values;
+  }
 }
 
 export const hashPassword = async function (password: string): Promise<string> {

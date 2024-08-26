@@ -3,7 +3,7 @@ import httpStatus from 'http-status';
 import moment from 'moment';
 import request from 'supertest';
 import { faker } from '@faker-js/faker';
-import { RoleType, Status, TokenType } from '@shared';
+import { IUser, RoleType, Status, TokenType } from '@shared';
 
 import config from '@/config/config';
 import app from '@/app';
@@ -20,7 +20,7 @@ const hashedPassword = bcrypt.hashSync(password, salt);
 const accessTokenExpires = moment().add(config.jwt.accessExpirationMinutes, 'minutes');
 
 describe('User routes', () => {
-  let userOne: any, userTwo: any, userThree, admin: any, userOneAccessToken: string, adminAccessToken: string;
+  let userOne: IUser, userTwo: IUser, userThree, admin: IUser, userOneAccessToken: string, adminAccessToken: string;
 
   beforeEach(async () => {
     await User.destroy({ where: {}, force: true });
