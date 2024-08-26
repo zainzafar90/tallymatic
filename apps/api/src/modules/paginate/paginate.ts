@@ -13,7 +13,7 @@ export const paginate = async <T extends Model>(
   filter: Record<string, any>,
   options: IOptions = {}
 ): Promise<ListResponse<T>> => {
-  const limit = Math.max(options.limit ? +options.limit : 10, 100);
+  const limit = Math.max(options.limit ? +options.limit : 10, 1);
   const offset = options.offset ? +options.offset : 0;
 
   const sort: any[] = options.sortBy

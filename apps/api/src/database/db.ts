@@ -53,6 +53,7 @@ export class Database {
       dialect: this.dbDialect,
       logging: false,
     });
+
     this.database.addModels([
       Token,
       User,
@@ -76,5 +77,9 @@ export class Database {
       alter: true,
       force: true,
     });
+  }
+
+  close() {
+    return this.database.close();
   }
 }

@@ -76,6 +76,12 @@ export const updateUser = catchAsync(async (req: Request, res: Response<UserResp
 
 export const deleteUser = catchAsync(async (req: Request, res: Response<UserDeleteResponse>) => {
   if (typeof req.params['userId'] === 'string') {
+    const currentUser = req.user;
+    const isAllowed = permissionService.checkPermissions(currentUser.role, 'delete', 'users');
+    if (!isAllowed) {
+      throw new ApiError(httpStatus.FORBIDDEN, 'You do not have permission to delete users');
+    }
+
     await userService.deleteUserById(req.params['userId']);
     res.status(httpStatus.NO_CONTENT).send();
   }

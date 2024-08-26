@@ -23,6 +23,10 @@ import { hashPassword, User } from './user.model';
  * @returns {IUser}
  */
 export const userToIUser = (user: User): IUser => {
+  if (!user) {
+    return null;
+  }
+
   return {
     id: user.id,
     name: user.name,

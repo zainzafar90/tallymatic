@@ -1,5 +1,3 @@
-// import mongoose from 'mongoose';
-
 import config from '@/config/config';
 import { logger } from '@/common/logger';
 import { Database } from '@/database/db';
@@ -15,17 +13,14 @@ database.connect().then(() => {
 });
 
 let server: any;
-// mongoose.connect(config.mongoose.url).then(() => {
-//   logger.info('Connected to MongoDB');
-//   server = app.listen(config.port, () => {
-//     logger.info(`Listening to port ${config.port}`);
-//   });
-// });
 
 const exitHandler = () => {
+  console.log('Exit Handler');
   if (server) {
-    server.close(() => {
+    console.log('Server Close');
+    server.close(async () => {
       logger.info('Server closed');
+      await database.close();
       process.exit(1);
     });
   } else {
