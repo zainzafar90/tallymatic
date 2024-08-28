@@ -22,11 +22,7 @@ module.exports = {
       },
       storeId: {
         type: Sequelize.UUID,
-        allowNull: false,
-        references: {
-          model: 'stores',
-          key: 'id',
-        },
+        allowNull: true,
       },
       name: {
         type: Sequelize.STRING,

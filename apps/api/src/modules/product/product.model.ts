@@ -39,15 +39,11 @@ export class Product extends Model {
   @BelongsTo(() => Organization)
   organization: Organization;
 
-  @ForeignKey(() => Store)
   @Column({
     type: DataType.UUID,
-    allowNull: false,
+    allowNull: true,
   })
   storeId: string;
-
-  @BelongsTo(() => Store)
-  store: Store;
 
   @Column({
     type: DataType.STRING,
