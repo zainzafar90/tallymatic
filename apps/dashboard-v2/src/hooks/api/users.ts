@@ -1,21 +1,17 @@
+import { UserDeleteResponse, UserListResponse, UserProfileResponse, UserResponse } from '@shared';
 import { QueryKey, useMutation, UseMutationOptions, useQuery, UseQueryOptions } from '@tanstack/react-query';
 
-import { client } from '../../lib/client';
-import { queryClient } from '../../lib/query-client';
-import { queryKeysFactory } from '../../lib/query-key-factory';
-import { UpdateUserReq } from '../../types/api-payloads';
-import { UserDeleteRes, UserListRes, UserRes } from '../../types/api-responses';
+import { client } from '@/lib/client';
+import { queryClient } from '@/lib/query-client';
+import { createQueryKeys } from '@/lib/query-key-factory';
+import { UpdateUserReq } from '@/types/api-payloads';
 
-const USERS_QUERY_KEY = 'users' as const;
-const usersQueryKeys = {
-  ...queryKeysFactory(USERS_QUERY_KEY),
-  me: () => [USERS_QUERY_KEY, 'me'],
-};
+const usersQueryKeys = createQueryKeys('users');
 
-export const useMe = (options?: UseQueryOptions<UserRes, Error, UserRes, QueryKey>) => {
+export const useMe = (options?: UseQueryOptions<UserProfileResponse, Error, UserProfileResponse, QueryKey>) => {
   const { data, ...rest } = useQuery({
     queryFn: () => client.users.me(),
-    queryKey: usersQueryKeys.me(),
+    queryKey: usersQueryKeys.detail('me'),
     ...options,
   });
 
@@ -28,7 +24,7 @@ export const useMe = (options?: UseQueryOptions<UserRes, Error, UserRes, QueryKe
 export const useUser = (
   id: string,
   query?: Record<string, any>,
-  options?: Omit<UseQueryOptions<UserRes, Error, UserRes, QueryKey>, 'queryFn' | 'queryKey'>
+  options?: Omit<UseQueryOptions<UserResponse, Error, UserResponse, QueryKey>, 'queryFn' | 'queryKey'>
 ) => {
   const { data, ...rest } = useQuery({
     queryFn: () => client.users.retrieve(id, query),
@@ -41,7 +37,7 @@ export const useUser = (
 
 export const useUsers = (
   query?: Record<string, any>,
-  options?: Omit<UseQueryOptions<UserListRes, Error, UserListRes, QueryKey>, 'queryFn' | 'queryKey'>
+  options?: Omit<UseQueryOptions<UserListResponse, Error, UserListResponse, QueryKey>, 'queryFn' | 'queryKey'>
 ) => {
   const { data, ...rest } = useQuery({
     queryFn: () => client.users.list(query),
@@ -52,15 +48,15 @@ export const useUsers = (
   return { ...data, ...rest };
 };
 
-export const useUpdateUser = (id: string, options?: UseMutationOptions<UserRes, Error, UpdateUserReq>) => {
+export const useUpdateUser = (id: string, options?: UseMutationOptions<UserResponse, Error, UpdateUserReq>) => {
   return useMutation({
     mutationFn: (payload) => client.users.update(id, payload),
     onSuccess: (data, variables, context) => {
       queryClient.invalidateQueries({ queryKey: usersQueryKeys.detail(id) });
-      queryClient.invalidateQueries({ queryKey: usersQueryKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: usersQueryKeys.list() });
 
       // We invalidate the me query in case the user updates their own profile
-      queryClient.invalidateQueries({ queryKey: usersQueryKeys.me() });
+      queryClient.invalidateQueries({ queryKey: usersQueryKeys.detail('me') });
 
       options?.onSuccess?.(data, variables, context);
     },
@@ -68,15 +64,15 @@ export const useUpdateUser = (id: string, options?: UseMutationOptions<UserRes, 
   });
 };
 
-export const useDeleteUser = (id: string, options?: UseMutationOptions<UserDeleteRes, Error, void>) => {
+export const useDeleteUser = (id: string, options?: UseMutationOptions<UserDeleteResponse, Error, void>) => {
   return useMutation({
     mutationFn: () => client.users.delete(id),
     onSuccess: (data, variables, context) => {
       queryClient.invalidateQueries({ queryKey: usersQueryKeys.detail(id) });
-      queryClient.invalidateQueries({ queryKey: usersQueryKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: usersQueryKeys.list() });
 
       // We invalidate the me query in case the user updates their own profile
-      queryClient.invalidateQueries({ queryKey: usersQueryKeys.me() });
+      queryClient.invalidateQueries({ queryKey: usersQueryKeys.detail('me') });
 
       options?.onSuccess?.(data, variables, context);
     },

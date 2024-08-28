@@ -14,8 +14,13 @@ async function logout(payload: { token: string }) {
   return postRequest<void>('/v1/auth/logout', payload);
 }
 
+async function refreshToken(payload: { token: string }) {
+  return postRequest<EmailPassRes>('/v1/auth/refresh-token', payload);
+}
+
 export const auth = {
   register,
   login,
   logout,
+  refreshToken,
 };

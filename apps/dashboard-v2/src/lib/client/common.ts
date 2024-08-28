@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/ban-types */
 import { stringify } from 'qs';
 
 import { API_TOKEN_KEY, apiUrl } from '../../utils/common.utils';
@@ -57,33 +59,33 @@ async function makeRequest<
   }
 }
 
-export async function getRequest<
-  TRes,
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  TQuery extends Record<string, any> | undefined = {}
->(path: string, query?: TQuery, options?: Omit<RequestInit, 'body' | 'method'>): Promise<TRes> {
+export async function getRequest<TRes, TQuery extends Record<string, any> | undefined = {}>(
+  path: string,
+  query?: TQuery,
+  options?: Omit<RequestInit, 'body' | 'method'>
+): Promise<TRes> {
   return makeRequest<TRes, undefined, Record<string, any>>(path, undefined, query, {
     ...options,
     method: 'GET',
   });
 }
 
-export async function postRequest<
-  TRes,
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  TPayload extends Record<string, any> | undefined = {}
->(path: string, payload?: TPayload, options?: Omit<RequestInit, 'body' | 'method'>): Promise<TRes> {
+export async function postRequest<TRes, TPayload extends Record<string, any> | undefined = {}>(
+  path: string,
+  payload?: TPayload,
+  options?: Omit<RequestInit, 'body' | 'method'>
+): Promise<TRes> {
   return makeRequest<TRes, Record<string, any>, undefined>(path, payload, undefined, {
     ...options,
     method: 'POST',
   });
 }
 
-export async function patchRequest<
-  TRes,
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  TPayload extends Record<string, any> | undefined = {}
->(path: string, payload?: TPayload, options?: Omit<RequestInit, 'body' | 'method'>): Promise<TRes> {
+export async function patchRequest<TRes, TPayload extends Record<string, any> | undefined = {}>(
+  path: string,
+  payload?: TPayload,
+  options?: Omit<RequestInit, 'body' | 'method'>
+): Promise<TRes> {
   return makeRequest<TRes, Record<string, any>, undefined>(path, payload, undefined, {
     ...options,
     method: 'PATCH',

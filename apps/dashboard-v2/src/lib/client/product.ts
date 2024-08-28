@@ -1,3 +1,5 @@
+import { ProductListResponse } from '@shared';
+
 import {
   CreateProductOptionReq,
   CreateProductReq,
@@ -9,7 +11,6 @@ import {
 } from '@/types/api-payloads';
 import {
   ProductDeleteRes,
-  ProductListRes,
   ProductOptionDeleteRes,
   ProductOptionRes,
   ProductRes,
@@ -25,7 +26,7 @@ async function retrieveProduct(id: string, query?: Record<string, any>) {
 }
 
 async function listProducts(query?: Record<string, any>) {
-  return getRequest<ProductListRes>(`/v1/products`, query);
+  return getRequest<ProductListResponse>(`/v1/products`, query);
 }
 
 async function createProduct(payload: CreateProductReq) {

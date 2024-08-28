@@ -1,18 +1,18 @@
 import { MutationOptions, QueryKey, useMutation, useQuery, UseQueryOptions } from '@tanstack/react-query';
 
+import { createQueryKeys } from '@/lib/query-key-factory';
+
 import { client } from '../../lib/client';
 import { queryClient } from '../../lib/query-client';
-import { queryKeysFactory } from '../../lib/query-key-factory';
 import { UpdateStoreReq } from '../../types/api-payloads';
 import { StoreRes } from '../../types/api-responses';
 
-const STORE_QUERY_KEY = 'store' as const;
-export const storeQueryKeys = queryKeysFactory(STORE_QUERY_KEY);
+const storeQueryKeys = createQueryKeys('store');
 
 export const useStore = (options?: Omit<UseQueryOptions<StoreRes, Error, StoreRes, QueryKey>, 'queryFn' | 'queryKey'>) => {
   const { data, ...rest } = useQuery({
     queryFn: () => client.stores.retrieve(),
-    queryKey: storeQueryKeys.details(),
+    queryKey: storeQueryKeys.detail(),
     ...options,
   });
 
@@ -26,7 +26,7 @@ export const useUpdateStore = (id: string, options?: MutationOptions<StoreRes, E
   return useMutation({
     mutationFn: (payload) => client.stores.update(id, payload),
     onSuccess: (data, variables, context) => {
-      queryClient.invalidateQueries({ queryKey: storeQueryKeys.details() });
+      queryClient.invalidateQueries({ queryKey: storeQueryKeys.detail() });
       options?.onSuccess?.(data, variables, context);
     },
     ...options,

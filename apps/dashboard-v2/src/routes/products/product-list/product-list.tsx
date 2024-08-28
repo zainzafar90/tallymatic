@@ -1,6 +1,6 @@
-import { Button } from '@/components/ui/button';
 import { Heading } from '@/components/ui/heading';
 
+import { CreateProductDialog } from './components/create-product.dialog';
 import { ProductListTable } from './components/product-list-table';
 
 export const ProductList = () => {
@@ -8,9 +8,9 @@ export const ProductList = () => {
     <div>
       <div className="flex items-end justify-between gap-4">
         <Heading>Products</Heading>
-        <Button className="-my-0.5" color="blue">
+        <CreateProductDialog outline amount="80">
           Create Product
-        </Button>
+        </CreateProductDialog>
       </div>
       <ProductListTable />
     </div>

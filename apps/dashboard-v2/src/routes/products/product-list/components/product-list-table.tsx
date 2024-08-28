@@ -1,44 +1,48 @@
-import { useEffect, useState } from 'react';
-
-import { Avatar } from '@/components/ui/avatar';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { getOrders } from '@/data';
+import { useProducts } from '@/hooks/api/products';
+import { useMe } from '@/hooks/api/users';
+
+import { ProductListSkeleton } from './product-list-skeleton';
 
 export const ProductListTable = () => {
-  const [orders, setOrders] = useState<Awaited<ReturnType<typeof getOrders>>>([]);
+  const { data } = useMe();
 
-  useEffect(() => {
-    (async () => {
-      setOrders(await getOrders());
-    })();
-  }, []);
+  const {
+    results = [],
+    isLoading,
+    isError,
+    error,
+  } = useProducts({
+    organizationId: data?.organizationId || '',
+  });
+
+  if (isError) {
+    throw error;
+  }
 
   return (
-    <Table className="mt-8 [--gutter:theme(spacing.6)] lg:[--gutter:theme(spacing.10)]">
+    <Table className="table-fixed mt-8 [--gutter:theme(spacing.6)] lg:[--gutter:theme(spacing.10)]">
       <TableHead>
         <TableRow>
-          <TableHeader>Order number</TableHeader>
-          <TableHeader>Purchase date</TableHeader>
-          <TableHeader>Customer</TableHeader>
-          <TableHeader>Event</TableHeader>
-          <TableHeader className="text-right">Amount</TableHeader>
+          <TableHeader>Name</TableHeader>
+          <TableHeader className="hidden sm:block">Description</TableHeader>
+          <TableHeader className="text-right">Price</TableHeader>
         </TableRow>
       </TableHead>
       <TableBody>
-        {orders.map((order) => (
-          <TableRow key={order.id} href={order.url} title={`Order #${order.id}`}>
-            <TableCell>{order.id}</TableCell>
-            <TableCell className="text-zinc-500">{order.date}</TableCell>
-            <TableCell>{order.customer.name}</TableCell>
-            <TableCell>
-              <div className="flex items-center gap-2">
-                <Avatar src={order.event.thumbUrl} className="size-6" />
-                <span>{order.event.name}</span>
-              </div>
-            </TableCell>
-            <TableCell className="text-right">US{order.amount.usd}</TableCell>
-          </TableRow>
-        ))}
+        {isLoading ? (
+          <ProductListSkeleton />
+        ) : (
+          results.map((product) => (
+            <TableRow key={product.id}>
+              <TableCell>{product.name}</TableCell>
+              <TableCell className="hidden sm:block truncate">
+                <div className="truncate max-w-xs">{product.description}</div>
+              </TableCell>
+              <TableCell className="text-right">{product.price}</TableCell>
+            </TableRow>
+          ))
+        )}
       </TableBody>
     </Table>
   );
