@@ -18,7 +18,6 @@ export const createProduct = {
 
 export const getProducts = {
   query: Joi.object().keys({
-    organizationId: Joi.string().custom(uuid).required(),
     storeId: Joi.string().custom(uuid),
     name: Joi.string(),
     status: Joi.string().valid(Status.ACTIVE, Status.INACTIVE),

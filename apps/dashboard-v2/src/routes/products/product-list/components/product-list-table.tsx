@@ -4,11 +4,10 @@ import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReact
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useProducts } from '@/hooks/api/products';
-import { useMe } from '@/hooks/api/users';
 
 import { ProductListSkeleton } from './product-list-skeleton';
 
-const PAGE_SIZE = 20;
+const PAGE_SIZE = 10;
 
 const columns: ColumnDef<ProductResponse>[] = [
   {
@@ -28,8 +27,6 @@ const columns: ColumnDef<ProductResponse>[] = [
 ];
 
 export const ProductListTable = () => {
-  const { data } = useMe();
-
   const {
     results = [],
     isLoading,
@@ -38,7 +35,7 @@ export const ProductListTable = () => {
     count,
   } = useProducts(
     {
-      organizationId: data?.organizationId || '',
+      offset: 0,
       limit: PAGE_SIZE,
     },
     {

@@ -19,7 +19,12 @@ export const createProduct = catchAsync(async (req: Request, res: Response) => {
 });
 
 export const getProducts = catchAsync(async (req: Request, res: Response) => {
-  const filter = pick(req.query, ['organizationId', 'storeId', 'name', 'status']);
+  const filter = pick({ ...req.query, organizationId: req.user.organizationId }, [
+    'organizationId',
+    'storeId',
+    'name',
+    'status',
+  ]);
   const options: IOptions = pick(req.query, ['sortBy', 'limit', 'offset', 'projectBy']);
   const isAllowed = permissionService.checkPermissions(req.user.role, 'list', 'products');
   if (!isAllowed) {
