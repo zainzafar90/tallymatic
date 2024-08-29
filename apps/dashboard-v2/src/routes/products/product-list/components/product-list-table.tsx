@@ -1,5 +1,3 @@
-import { useLoaderData } from 'react-router-dom';
-
 import { ProductResponse } from '@shared';
 import { keepPreviousData } from '@tanstack/react-query';
 import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
@@ -8,15 +6,29 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { useProducts } from '@/hooks/api/products';
 import { useMe } from '@/hooks/api/users';
 
-import { productsLoader } from '../loader';
 import { ProductListSkeleton } from './product-list-skeleton';
 
 const PAGE_SIZE = 20;
 
+const columns: ColumnDef<ProductResponse>[] = [
+  {
+    accessorKey: 'name',
+    header: 'Name',
+  },
+  {
+    accessorKey: 'description',
+    header: () => <div className="hidden sm:flex">Description</div>,
+    cell: ({ getValue }) => <div className="truncate max-w-xs hidden sm:block">{getValue() as string}</div>,
+  },
+  {
+    accessorKey: 'price',
+    header: () => <div className="text-right">Price</div>,
+    cell: ({ getValue }) => <div className="text-right">{getValue() as number}</div>,
+  },
+];
+
 export const ProductListTable = () => {
   const { data } = useMe();
-
-  const initialData = useLoaderData() as Awaited<ReturnType<ReturnType<typeof productsLoader>>>;
 
   const {
     results = [],
@@ -30,32 +42,15 @@ export const ProductListTable = () => {
       limit: PAGE_SIZE,
     },
     {
-      initialData,
       placeholderData: keepPreviousData,
     }
   );
 
-  const columns: ColumnDef<ProductResponse>[] = [
-    {
-      accessorKey: 'name',
-      header: 'Name',
-    },
-    {
-      accessorKey: 'description',
-      header: () => <div className="hidden sm:flex">Description</div>,
-      cell: ({ getValue }) => <div className="truncate max-w-xs hidden sm:block">{getValue() as string}</div>,
-    },
-    {
-      accessorKey: 'price',
-      header: () => <div className="text-right">Price</div>,
-      cell: ({ getValue }) => <div className="text-right">{getValue() as number}</div>,
-    },
-  ];
-
   const table = useReactTable({
     data: results,
     columns,
-    pageCount: count,
+    rowCount: count,
+    manualPagination: true,
     initialState: {
       pagination: {
         pageIndex: 0,
