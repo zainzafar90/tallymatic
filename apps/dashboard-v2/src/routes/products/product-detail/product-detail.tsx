@@ -2,11 +2,11 @@ import { useEffect, useState } from 'react';
 
 import { BanknotesIcon, CalendarIcon, ChevronLeftIcon, CreditCardIcon } from '@heroicons/react/16/solid';
 
-import { Divider } from '@/components/common/divider';
 import { Avatar } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { DescriptionDetails, DescriptionList, DescriptionTerm } from '@/components/ui/description-list';
+import { Divider } from '@/components/ui/divider';
 import { Heading, Subheading } from '@/components/ui/heading';
 import { Link } from '@/components/ui/link';
 import { getOrder } from '@/data';

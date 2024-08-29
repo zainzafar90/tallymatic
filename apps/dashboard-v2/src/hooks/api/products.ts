@@ -6,7 +6,7 @@ import { client } from '@/lib/client';
 import { FetchError } from '@/lib/is-fetch-error';
 import { createQueryKeys } from '@/lib/query-key-factory';
 
-const productQueryKeys = createQueryKeys('products');
+export const productsQueryKeys = createQueryKeys('products');
 
 export const useProducts = (
   query?: Record<string, any>,
@@ -14,7 +14,7 @@ export const useProducts = (
 ) => {
   const { data, ...rest } = useQuery({
     queryFn: () => client.products.list(query),
-    queryKey: productQueryKeys.list(query),
+    queryKey: productsQueryKeys.list(query),
     ...options,
   });
 

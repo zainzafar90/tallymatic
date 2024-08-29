@@ -136,9 +136,9 @@ export const MainLayout = () => {
                 <TicketIcon />
                 <SidebarLabel>Orders</SidebarLabel>
               </SidebarItem>
-              <SidebarItem href="/products" current={pathname.startsWith('/products')}>
+              <SidebarItem href="/sale" current={pathname.startsWith('/sale')}>
                 <ShoppingBagIcon />
-                <SidebarLabel>Products</SidebarLabel>
+                <SidebarLabel>Sale</SidebarLabel>
               </SidebarItem>
               <SidebarItem href="/settings" current={pathname.startsWith('/settings')}>
                 <Cog6ToothIcon />
