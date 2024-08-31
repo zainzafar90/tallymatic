@@ -1,5 +1,3 @@
-'use client';
-
 import React, { Fragment, useId } from 'react';
 
 import { LayoutGroup, motion } from 'framer-motion';

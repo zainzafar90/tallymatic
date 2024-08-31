@@ -1,7 +1,6 @@
-'use client';
+import React from 'react';
 
-import type React from 'react';
-
+import { Check } from 'lucide-react';
 import * as Headless from '@headlessui/react';
 
 import { cn } from '@/utils/cn';
@@ -179,3 +178,25 @@ export function DropdownShortcut({
     </Headless.Description>
   );
 }
+
+export const DropdownMenuCheckboxItem = React.forwardRef<
+  HTMLDivElement,
+  React.PropsWithChildren<{
+    checked?: boolean;
+    onCheckedChange?: (checked: boolean) => void;
+    className?: string;
+  }>
+>(({ className, children, checked, onCheckedChange, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn(
+      'relative flex cursor-default select-none items-center rounded-sm pl-8 text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
+      className
+    )}
+    onClick={() => onCheckedChange?.(!checked)}
+    {...props}
+  >
+    <span className="absolute left-0 flex items-center justify-center">{checked && <Check className="h-4 w-4" />}</span>
+    {children}
+  </div>
+));
