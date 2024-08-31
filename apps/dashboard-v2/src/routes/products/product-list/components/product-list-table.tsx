@@ -7,7 +7,6 @@ import {
   ColumnFiltersState,
   flexRender,
   getCoreRowModel,
-  getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
   OnChangeFn,
@@ -41,6 +40,7 @@ export const ProductListTable = () => {
   const offsetKey = `offset`;
   const offset = searchParams.get(offsetKey);
 
+  const [globalFilter, setGlobalFilter] = React.useState('');
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
@@ -50,7 +50,6 @@ export const ProductListTable = () => {
     pageSize: PAGE_SIZE,
   });
 
-  console.log('Sorting:', sorting);
   const {
     results = [],
     isLoading,
@@ -62,6 +61,7 @@ export const ProductListTable = () => {
       offset: offset ? Number(offset) : 0,
       limit: PAGE_SIZE,
       sortBy: sorting.map((sort) => `${sort.id}:${sort.desc ? 'desc' : 'asc'}`).join(',') || 'createdAt:desc',
+      name: searchParams.has('name') ? searchParams.get('name') : undefined,
     },
     {
       placeholderData: keepPreviousData,
@@ -99,8 +99,6 @@ export const ProductListTable = () => {
   const onSortChange = (updater: (old: SortingState) => SortingState) => {
     const state = updater(sorting);
 
-    console.log(state);
-
     setSearchParams((prev) => {
       if (!state.length) {
         prev.delete('sortBy');
@@ -117,27 +115,43 @@ export const ProductListTable = () => {
     return state;
   };
 
+  const onGlobalFilterChange = (value: string) => {
+    setSearchParams((prev) => {
+      if (!value) {
+        prev.delete('name');
+        return prev;
+      }
+
+      const newSearch = new URLSearchParams(prev);
+      newSearch.set('name', value);
+
+      return newSearch;
+    });
+
+    setGlobalFilter(value);
+  };
+
   const table = useReactTable({
-    data: results,
     columns,
+    data: results,
     rowCount: count,
-    manualPagination: true,
     manualSorting: true,
-    onSortingChange: onSortChange as OnChangeFn<SortingState>,
-    onColumnFiltersChange: setColumnFilters,
+    manualFiltering: true,
+    manualPagination: true,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
+    getSortedRowModel: getSortedRowModel(),
+    onColumnFiltersChange: setColumnFilters,
+    onColumnVisibilityChange: setColumnVisibility,
+    getPaginationRowModel: getPaginationRowModel(),
+    onSortingChange: onSortChange as OnChangeFn<SortingState>,
     onPaginationChange: onPaginationChange as OnChangeFn<PaginationState>,
     state: {
       sorting,
+      pagination,
+      rowSelection,
       columnFilters,
       columnVisibility,
-      rowSelection,
-      pagination,
     },
   });
 
@@ -154,10 +168,12 @@ export const ProductListTable = () => {
       <div className="flex items-center gap-2 py-4">
         <Input
           placeholder="Filter products..."
-          value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
-          onChange={(event) => table.getColumn('name')?.setFilterValue(event.target.value)}
+          value={globalFilter ?? ''}
+          onChange={(e) => onGlobalFilterChange(String(e.target.value))}
           className="max-w-sm"
         />
+
+        {globalFilter}
         <Dropdown>
           <DropdownButton outline aria-label="More options">
             Columns <ChevronDown className="ml-2 h-4 w-4" />
