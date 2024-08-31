@@ -126,6 +126,7 @@ export const ProductListTable = () => {
 
       const newSearch = new URLSearchParams(prev);
       newSearch.set('name', value);
+      newSearch.delete(offsetKey);
 
       return newSearch;
     });
@@ -174,8 +175,6 @@ export const ProductListTable = () => {
           onChange={(e) => onGlobalFilterChange(String(e.target.value))}
           className="max-w-sm"
         />
-
-        {globalFilter}
         <Dropdown>
           <DropdownButton outline aria-label="More options">
             Columns <ChevronDown className="ml-2 h-4 w-4" />

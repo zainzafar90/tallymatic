@@ -14,7 +14,7 @@ export const useProductTableColumns = () => {
       id: 'select',
       header: ({ table }) => (
         <Checkbox
-          className="w-6 h-6"
+          className="w-0"
           checked={table.getIsAllPageRowsSelected()}
           onChange={(value) => table.toggleAllPageRowsSelected(!!value)}
           aria-label="Select all"
@@ -22,7 +22,7 @@ export const useProductTableColumns = () => {
       ),
       cell: ({ row }) => (
         <Checkbox
-          className="w-6"
+          className="w-0"
           checked={row.getIsSelected()}
           onChange={(value) => row.toggleSelected(!!value)}
           aria-label="Select row"
