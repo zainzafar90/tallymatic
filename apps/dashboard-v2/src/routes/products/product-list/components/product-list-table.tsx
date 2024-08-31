@@ -32,12 +32,12 @@ import { useProducts } from '@/hooks/api/products';
 import { useProductTableColumns } from '../hooks/use-product-table-columns';
 import { ProductListSkeleton } from './product-list-skeleton';
 
-const PAGE_SIZE = 20;
+const PAGE_SIZE = 10;
 
 export const ProductListTable = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const offsetKey = `offset`;
+  const offsetKey = 'offset';
   const offset = searchParams.get(offsetKey);
 
   const [globalFilter, setGlobalFilter] = React.useState('');
@@ -201,7 +201,7 @@ export const ProductListTable = () => {
           </DropdownMenu>
         </Dropdown>
       </div>
-      <Table className="mt-8 [--gutter:theme(spacing.6)] lg:[--gutter:theme(spacing.10)]">
+      <Table dense className="mt-8 [--gutter:theme(spacing.6)] lg:[--gutter:theme(spacing.10)]">
         <TableHead>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>

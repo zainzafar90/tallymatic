@@ -4,7 +4,7 @@ import { createColumnHelper } from '@tanstack/react-table';
 
 import { Checkbox } from '@/components/ui/checkbox';
 
-import { ProductActions } from './use-product-table-actions';
+import { ProductActions } from '../components/use-product-table-actions';
 
 const columnHelper = createColumnHelper<ProductResponse>();
 
