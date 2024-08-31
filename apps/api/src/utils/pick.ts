@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 /**
  * Create an object composed of the picked object properties
  * @param {Record<string, any>} object

@@ -1,4 +1,4 @@
-import { FindAndCountOptions, Model, ModelStatic } from 'sequelize';
+import { FindAndCountOptions, Model, ModelStatic, Op } from 'sequelize';
 import { IOptions, ListResponse } from '@shared';
 
 import { logger } from '@/common/logger';
@@ -11,7 +11,8 @@ const transformPagination = <T extends Model>(count: number, rows: T[], offset: 
 export const paginate = async <T extends Model>(
   model: ModelStatic<T>,
   filter: Record<string, any>,
-  options: IOptions = {}
+  options: IOptions = {},
+  wildcardFields: string[] = []
 ): Promise<ListResponse<T>> => {
   const limit = Math.max(options.limit ? +options.limit : 10, 1);
   const offset = options.offset ? +options.offset : 0;
@@ -30,8 +31,17 @@ export const paginate = async <T extends Model>(
       })
     : { exclude: ['createdAt', 'updatedAt', 'deletedAt'] };
 
+  const where = {};
+  for (const [key, value] of Object.entries(filter)) {
+    if (wildcardFields.includes(key)) {
+      where[key] = { [Op.like]: `%${value}%` };
+    } else {
+      where[key] = value;
+    }
+  }
+
   const findAndCountOptions: FindAndCountOptions = {
-    where: filter,
+    where,
     limit,
     offset,
     distinct: true,
@@ -50,6 +60,7 @@ export const paginate = async <T extends Model>(
   }
 
   try {
+    console.log('Final findAndCountOptions:', JSON.stringify(findAndCountOptions, null, 2));
     const { rows, count } = await model.findAndCountAll(findAndCountOptions);
     return transformPagination(count, rows, offset, limit);
   } catch (error) {

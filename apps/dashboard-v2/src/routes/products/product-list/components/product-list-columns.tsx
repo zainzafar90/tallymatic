@@ -46,6 +46,7 @@ export const columns: ColumnDef<ProductResponse>[] = [
       );
     },
     cell: ({ row }) => <div>{row.getValue('name')}</div>,
+    enableHiding: false,
   },
   {
     accessorKey: 'price',
@@ -75,6 +76,7 @@ export const columns: ColumnDef<ProductResponse>[] = [
   // },
   {
     id: 'actions',
+    enableHiding: false,
     cell: ({ row }) => {
       const product = row.original;
       return (

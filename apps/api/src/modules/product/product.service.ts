@@ -11,8 +11,12 @@ export const createProduct = async (productBody: CreateProductReq): Promise<IPro
   return product.toJSON();
 };
 
-export const queryProducts = async (filter: Record<string, any>, options: IOptions): Promise<ListResponse<Product>> => {
-  const result = await paginate(Product, filter, options);
+export const queryProducts = async (
+  filter: Record<string, any>,
+  options: IOptions,
+  wildcardFields: string[] = []
+): Promise<ListResponse<Product>> => {
+  const result = await paginate(Product, filter, options, wildcardFields);
   return result;
 };
 

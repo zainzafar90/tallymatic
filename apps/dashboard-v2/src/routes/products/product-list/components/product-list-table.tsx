@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 
 import { ChevronDown } from 'lucide-react';
 import { keepPreviousData } from '@tanstack/react-query';
@@ -9,6 +10,8 @@ import {
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
+  OnChangeFn,
+  PaginationState,
   SortingState,
   useReactTable,
   VisibilityState,
@@ -30,14 +33,24 @@ import { useProducts } from '@/hooks/api/products';
 import { columns } from './product-list-columns';
 import { ProductListSkeleton } from './product-list-skeleton';
 
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 20;
 
 export const ProductListTable = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const offsetKey = `offset`;
+  const offset = searchParams.get(offsetKey);
+
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
+  const [{ pageIndex, pageSize }, setPagination] = useState<PaginationState>({
+    pageIndex: offset ? Math.ceil(Number(offset) / PAGE_SIZE) : 0,
+    pageSize: PAGE_SIZE,
+  });
 
+  console.log('Sorting:', sorting);
   const {
     results = [],
     isLoading,
@@ -46,20 +59,71 @@ export const ProductListTable = () => {
     count,
   } = useProducts(
     {
-      offset: 0,
+      offset: offset ? Number(offset) : 0,
       limit: PAGE_SIZE,
+      sortBy: sorting.map((sort) => `${sort.id}:${sort.desc ? 'desc' : 'asc'}`).join(',') || 'createdAt:desc',
     },
     {
       placeholderData: keepPreviousData,
     }
   );
 
+  const pagination = useMemo(
+    () => ({
+      pageIndex,
+      pageSize,
+    }),
+    [pageIndex, pageSize]
+  );
+
+  const onPaginationChange = (updater: (old: PaginationState) => PaginationState) => {
+    const state = updater(pagination);
+    const { pageIndex, pageSize } = state;
+
+    setSearchParams((prev) => {
+      if (!pageIndex) {
+        prev.delete(offsetKey);
+        return prev;
+      }
+
+      const newSearch = new URLSearchParams(prev);
+      newSearch.set(offsetKey, String(pageIndex * pageSize));
+
+      return newSearch;
+    });
+
+    setPagination(state);
+    return state;
+  };
+
+  const onSortChange = (updater: (old: SortingState) => SortingState) => {
+    const state = updater(sorting);
+
+    console.log(state);
+
+    setSearchParams((prev) => {
+      if (!state.length) {
+        prev.delete('sortBy');
+        return prev;
+      }
+
+      const newSearch = new URLSearchParams(prev);
+      newSearch.set('sortBy', state.map((sort) => `${sort.id}:${sort.desc ? 'desc' : 'asc'}`).join(','));
+
+      return newSearch;
+    });
+
+    setSorting(state);
+    return state;
+  };
+
   const table = useReactTable({
     data: results,
     columns,
     rowCount: count,
     manualPagination: true,
-    onSortingChange: setSorting,
+    manualSorting: true,
+    onSortingChange: onSortChange as OnChangeFn<SortingState>,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -67,17 +131,13 @@ export const ProductListTable = () => {
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
+    onPaginationChange: onPaginationChange as OnChangeFn<PaginationState>,
     state: {
       sorting,
       columnFilters,
       columnVisibility,
       rowSelection,
-    },
-    initialState: {
-      pagination: {
-        pageIndex: 0,
-        pageSize: PAGE_SIZE,
-      },
+      pagination,
     },
   });
 
