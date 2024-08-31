@@ -1,9 +1,9 @@
-import { MoreHorizontal, Pencil, Trash } from 'lucide-react';
+import { Pencil, Trash } from 'lucide-react';
 import { toast } from 'sonner';
 import { IProduct } from '@shared';
 
+import { ActionMenu } from '@/components/common/action-menu';
 import { usePrompt } from '@/components/common/use-prompt';
-import { Dropdown, DropdownButton, DropdownItem, DropdownLabel, DropdownMenu } from '@/components/ui/dropdown';
 import { useDeleteProduct } from '@/hooks/api/products';
 
 export const ProductActions = ({ product }: { product: IProduct }) => {
@@ -41,25 +41,20 @@ export const ProductActions = ({ product }: { product: IProduct }) => {
 
   return (
     <div className="text-right">
-      <Dropdown>
-        <DropdownButton outline aria-label="More Options" className="h-8 w-8 p-0">
-          <MoreHorizontal className="h-6 w-6" />
-        </DropdownButton>
-        <DropdownMenu anchor="top end">
-          <DropdownItem href={`/products/${product.id}/edit`}>
-            <DropdownLabel className="flex items-center gap-2">
-              <Pencil className="w-4 h-4" />
-              Edit
-            </DropdownLabel>
-          </DropdownItem>
-          <DropdownItem onClick={handleDelete}>
-            <DropdownLabel className="flex items-center gap-2">
-              <Trash className="w-4 h-4" />
-              Delete
-            </DropdownLabel>
-          </DropdownItem>
-        </DropdownMenu>
-      </Dropdown>
+      <ActionMenu
+        actions={[
+          {
+            icon: <Pencil className="w-4 h-4" />,
+            label: 'Edit',
+            to: `/products/${product.id}/edit`,
+          },
+          {
+            icon: <Trash className="w-4 h-4" />,
+            label: 'Delete',
+            onClick: handleDelete,
+          },
+        ]}
+      />
 
       <PromptDialog />
     </div>
