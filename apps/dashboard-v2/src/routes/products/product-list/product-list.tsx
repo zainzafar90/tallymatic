@@ -1,7 +1,6 @@
 import { Heading } from '@/components/ui/heading';
 
 import { CreateProductDialog } from './components/create-product.dialog';
-import { DataTableDemo } from './components/demo';
 import { ProductListTable } from './components/product-list-table';
 
 export const ProductList = () => {
@@ -14,7 +13,6 @@ export const ProductList = () => {
         </CreateProductDialog>
       </div>
       <ProductListTable />
-      <DataTableDemo />
     </div>
   );
 };

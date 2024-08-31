@@ -29,7 +29,7 @@ import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useProducts } from '@/hooks/api/products';
 
-import { columns } from './product-list-columns';
+import { useProductTableColumns } from '../hooks/use-product-table-columns';
 import { ProductListSkeleton } from './product-list-skeleton';
 
 const PAGE_SIZE = 20;
@@ -67,6 +67,8 @@ export const ProductListTable = () => {
       placeholderData: keepPreviousData,
     }
   );
+
+  const columns = useProductTableColumns();
 
   const pagination = useMemo(
     () => ({

@@ -1,4 +1,4 @@
-import { ProductListResponse } from '@shared';
+import { ProductDeleteResponse, ProductListResponse } from '@shared';
 
 import {
   CreateProductOptionReq,
@@ -10,7 +10,6 @@ import {
   UpdateProductVariantReq,
 } from '@/types/api-payloads';
 import {
-  ProductDeleteRes,
   ProductOptionDeleteRes,
   ProductOptionRes,
   ProductRes,
@@ -38,7 +37,7 @@ async function updateProduct(id: string, payload: UpdateProductReq) {
 }
 
 async function deleteProduct(id: string) {
-  return deleteRequest<ProductDeleteRes>(`/v1/products/${id}`);
+  return deleteRequest<ProductDeleteResponse>(`/v1/products/${id}`);
 }
 
 async function createProductOption(productId: string, payload: CreateProductOptionReq) {
