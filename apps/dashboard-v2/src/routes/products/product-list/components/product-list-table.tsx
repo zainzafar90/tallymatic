@@ -1,30 +1,13 @@
-import { ProductResponse } from '@shared';
 import { keepPreviousData } from '@tanstack/react-query';
-import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
+import { flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useProducts } from '@/hooks/api/products';
 
+import { columns } from './product-list-columns';
 import { ProductListSkeleton } from './product-list-skeleton';
 
 const PAGE_SIZE = 10;
-
-const columns: ColumnDef<ProductResponse>[] = [
-  {
-    accessorKey: 'name',
-    header: 'Name',
-  },
-  {
-    accessorKey: 'description',
-    header: () => <div className="hidden sm:flex">Description</div>,
-    cell: ({ getValue }) => <div className="truncate max-w-xs hidden sm:block">{getValue() as string}</div>,
-  },
-  {
-    accessorKey: 'price',
-    header: () => <div className="text-right">Price</div>,
-    cell: ({ getValue }) => <div className="text-right">{getValue() as number}</div>,
-  },
-];
 
 export const ProductListTable = () => {
   const {
