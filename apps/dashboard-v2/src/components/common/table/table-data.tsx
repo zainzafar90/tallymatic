@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 import {
@@ -57,8 +57,8 @@ export const useDataTable = <TData,>({
 
   const [sorting, setSorting] = useState<SortingState>([]);
   const [{ pageIndex, pageSize }, setPagination] = useState<PaginationState>({
-    pageIndex: offset ? Math.ceil(Number(offset) / _pageSize) : 0,
-    pageSize: _pageSize,
+    pageIndex: enablePagination ? (offset ? Math.ceil(Number(offset) / _pageSize) : 0) : 0,
+    pageSize: enablePagination ? _pageSize : data.length,
   });
   const pagination = useMemo(
     () => ({
@@ -71,24 +71,9 @@ export const useDataTable = <TData,>({
   const rowSelection = _rowSelection?.state ?? localRowSelection;
   const setRowSelection = _rowSelection?.updater ?? setLocalRowSelection;
 
-  useEffect(() => {
-    if (!enablePagination) {
-      return;
-    }
-
-    const index = offset ? Math.ceil(Number(offset) / _pageSize) : 0;
-
-    if (index === pageIndex) {
-      return;
-    }
-
-    setPagination((prev) => ({
-      ...prev,
-      pageIndex: index,
-    }));
-  }, [offset, enablePagination, _pageSize, pageIndex]);
-
   const onPaginationChange = (updater: (old: PaginationState) => PaginationState) => {
+    if (!enablePagination) return { pageIndex: 0, pageSize: data.length };
+
     const state = updater(pagination);
     const { pageIndex, pageSize } = state;
 
@@ -132,7 +117,7 @@ export const useDataTable = <TData,>({
     columns,
     state: {
       rowSelection: rowSelection, // We always pass a selection state to the table even if it's not enabled
-      pagination: enablePagination ? pagination : undefined,
+      pagination: enablePagination ? pagination : { pageIndex: 0, pageSize: data.length },
       sorting: enableSorting ? sorting : undefined,
     },
     rowCount,

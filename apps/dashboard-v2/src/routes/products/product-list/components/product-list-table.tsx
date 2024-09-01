@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
-import { sortBy } from 'lodash';
 import { keepPreviousData } from '@tanstack/react-query';
 import { flexRender } from '@tanstack/react-table';
 
@@ -17,7 +16,7 @@ import { useProductTableQuery } from '../hooks/use-product-table-query';
 import { ProductListSkeleton } from './product-list-skeleton';
 
 export const ProductListTable = () => {
-  const offsetKey = 'offset';
+  // const offsetKey = 'offset';
   const columns = useProductTableColumns();
   const [globalFilter, setGlobalFilter] = useState('');
   // const [searchParams, setSearchParams] = useSearchParams();
