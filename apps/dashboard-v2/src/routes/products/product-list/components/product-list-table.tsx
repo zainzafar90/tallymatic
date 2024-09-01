@@ -1,6 +1,3 @@
-import { useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
-
 import { keepPreviousData } from '@tanstack/react-query';
 import { flexRender } from '@tanstack/react-table';
 
@@ -16,47 +13,18 @@ import { useProductTableQuery } from '../hooks/use-product-table-query';
 import { ProductListSkeleton } from './product-list-skeleton';
 
 export const ProductListTable = () => {
-  // const offsetKey = 'offset';
   const columns = useProductTableColumns();
-  const [globalFilter, setGlobalFilter] = useState('');
-  // const [searchParams, setSearchParams] = useSearchParams();
   const { searchParams } = useProductTableQuery({});
 
-  console.log('searchParams', searchParams);
-
-  // TODO: fix offset, limit, and sorting
   const {
     results = [],
     isLoading,
     isError,
     error,
     count,
-  } = useProducts(
-    {
-      ...searchParams,
-      // name: searchParams.has('name') ? searchParams.get('name') : undefined,
-    },
-    {
-      placeholderData: keepPreviousData,
-    }
-  );
-
-  const onGlobalFilterChange = (value: string) => {
-    // setSearchParams((prev) => {
-    //   if (!value) {
-    //     prev.delete('name');
-    //     return prev;
-    //   }
-
-    //   const newSearch = new URLSearchParams(prev);
-    //   newSearch.set('name', value);
-    //   newSearch.delete(offsetKey);
-
-    //   return newSearch;
-    // });
-
-    setGlobalFilter(value);
-  };
+  } = useProducts(searchParams, {
+    placeholderData: keepPreviousData,
+  });
 
   const table = useDataTable({
     columns,
@@ -66,6 +34,7 @@ export const ProductListTable = () => {
     enableFiltering: true,
     enablePagination: true,
     enableRowSelection: true,
+    globalFilterField: 'name',
   });
 
   if (isError) {
@@ -81,8 +50,8 @@ export const ProductListTable = () => {
       <div className="flex items-center gap-2 py-4">
         <Input
           placeholder="Filter products..."
-          value={globalFilter ?? ''}
-          onChange={(e) => onGlobalFilterChange(String(e.target.value))}
+          value={table.getState().globalFilter ?? ''}
+          onChange={(e) => table.setGlobalFilter(e.target.value)}
           className="max-w-sm"
         />
 

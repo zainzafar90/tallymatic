@@ -5,6 +5,7 @@ import {
   ColumnDef,
   getCoreRowModel,
   getExpandedRowModel,
+  getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
   OnChangeFn,
@@ -33,6 +34,8 @@ type UseDataTableProps<TData> = {
   enableExpandableRows?: boolean;
   getRowId?: (original: TData, index: number) => string;
   getSubRows?: (original: TData) => TData[];
+  onGlobalFilterChange?: (value: string) => void;
+  globalFilterField?: string;
 };
 
 const DEFAULT_PAGE_SIZE = 10;
@@ -50,9 +53,12 @@ export const useDataTable = <TData,>({
   rowSelection: _rowSelection,
   getSubRows,
   getRowId,
+  onGlobalFilterChange: _onGlobalFilterChange,
+  globalFilterField,
 }: UseDataTableProps<TData>) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const offsetKey = 'offset';
+  const sortingKey = 'sortBy';
   const offset = searchParams.get(offsetKey);
 
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -70,6 +76,12 @@ export const useDataTable = <TData,>({
   const [localRowSelection, setLocalRowSelection] = useState({});
   const rowSelection = _rowSelection?.state ?? localRowSelection;
   const setRowSelection = _rowSelection?.updater ?? setLocalRowSelection;
+
+  const globalFilter = globalFilterField ? searchParams.get(globalFilterField) || '' : '';
+
+  const onGlobalFilterChangeInternal = (value: string) => {
+    onGlobalFilterChange?.(value);
+  };
 
   const onPaginationChange = (updater: (old: PaginationState) => PaginationState) => {
     if (!enablePagination) return { pageIndex: 0, pageSize: data.length };
@@ -98,18 +110,36 @@ export const useDataTable = <TData,>({
 
     setSearchParams((prev) => {
       if (!state.length) {
-        prev.delete('sortBy');
+        prev.delete(sortingKey);
         return prev;
       }
 
       const newSearch = new URLSearchParams(prev);
-      newSearch.set('sortBy', state.map((sort) => `${sort.id}:${sort.desc ? 'desc' : 'asc'}`).join(','));
+      newSearch.set(sortingKey, state.map((sort) => `${sort.id}:${sort.desc ? 'desc' : 'asc'}`).join(','));
 
       return newSearch;
     });
 
     setSorting(state);
     return state;
+  };
+
+  const onGlobalFilterChange = (value: string) => {
+    setSearchParams((prev) => {
+      const newSearch = new URLSearchParams(prev);
+
+      if (!globalFilterField) return newSearch;
+
+      if (!value) {
+        newSearch.delete(globalFilterField);
+      } else {
+        newSearch.set(globalFilterField, value);
+      }
+
+      newSearch.delete(offsetKey);
+
+      return newSearch;
+    });
   };
 
   return useReactTable({
@@ -119,6 +149,7 @@ export const useDataTable = <TData,>({
       rowSelection: rowSelection, // We always pass a selection state to the table even if it's not enabled
       pagination: enablePagination ? pagination : { pageIndex: 0, pageSize: data.length },
       sorting: enableSorting ? sorting : undefined,
+      globalFilter,
     },
     rowCount,
     enableRowSelection,
@@ -134,5 +165,7 @@ export const useDataTable = <TData,>({
     manualPagination: enablePagination ? true : undefined,
     manualFiltering: enableFiltering ? true : undefined,
     manualSorting: enableSorting ? true : undefined,
+    onGlobalFilterChange: onGlobalFilterChangeInternal,
+    getFilteredRowModel: enableFiltering ? getFilteredRowModel() : undefined,
   });
 };
