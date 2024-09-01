@@ -29,7 +29,7 @@ export const ActionMenu = ({ actions }: ActionGroup) => {
       <DropdownButton outline aria-label="More Options" className="h-8 w-8 p-0">
         <MoreHorizontal className="h-6 w-6" />
       </DropdownButton>
-      <DropdownMenu anchor="top end">
+      <DropdownMenu anchor="bottom end">
         {actions.map((action, actionIndex) => {
           if (action.to) {
             return (
