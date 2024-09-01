@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
-import { ChevronDown } from 'lucide-react';
+import { IProduct } from '@shared';
 import { keepPreviousData } from '@tanstack/react-query';
 import {
   ColumnFiltersState,
@@ -16,15 +16,8 @@ import {
   VisibilityState,
 } from '@tanstack/react-table';
 
+import { ToggleColumns } from '@/components/common/table/toggle-columns';
 import { Button } from '@/components/ui/button';
-import {
-  Dropdown,
-  DropdownButton,
-  DropdownHeading,
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownSection,
-} from '@/components/ui/dropdown';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useProducts } from '@/hooks/api/products';
@@ -175,31 +168,8 @@ export const ProductListTable = () => {
           onChange={(e) => onGlobalFilterChange(String(e.target.value))}
           className="max-w-sm"
         />
-        <Dropdown>
-          <DropdownButton outline aria-label="More options">
-            Columns <ChevronDown className="ml-2 h-4 w-4" />
-          </DropdownButton>
-          <DropdownMenu anchor="top end">
-            <DropdownSection>
-              <DropdownHeading>Toggle Columns</DropdownHeading>
-              {table
-                .getAllColumns()
-                .filter((column) => column.getCanHide())
-                .map((column) => {
-                  return (
-                    <DropdownMenuCheckboxItem
-                      key={column.id}
-                      className="capitalize"
-                      checked={column.getIsVisible()}
-                      onCheckedChange={(value) => column.toggleVisibility(!!value)}
-                    >
-                      {column.id}
-                    </DropdownMenuCheckboxItem>
-                  );
-                })}
-            </DropdownSection>
-          </DropdownMenu>
-        </Dropdown>
+
+        <ToggleColumns table={table} />
       </div>
       <Table dense className="mt-8 [--gutter:theme(spacing.6)] lg:[--gutter:theme(spacing.10)]">
         <TableHead>
