@@ -1,4 +1,4 @@
-import { keepPreviousData } from '@tanstack/react-query';
+import { IProduct } from '@shared';
 import { flexRender } from '@tanstack/react-table';
 
 import { useDataTable } from '@/components/common/table/table-data';
@@ -6,30 +6,26 @@ import { ToggleColumns } from '@/components/common/table/toggle-columns';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { useProducts } from '@/hooks/api/products';
+import { FetchError } from '@/lib/is-fetch-error';
 
 import { useProductTableColumns } from '../hooks/use-product-table-columns';
-import { useProductTableQuery } from '../hooks/use-product-table-query';
 import { ProductListSkeleton } from './product-list-skeleton';
 
-export const ProductListTable = () => {
-  const columns = useProductTableColumns();
-  const { searchParams } = useProductTableQuery({});
+type ProductListTableProps = {
+  results: IProduct[];
+  count: number;
+  isLoading: boolean;
+  isError: boolean;
+  error: FetchError | null;
+};
 
-  const {
-    results = [],
-    isLoading,
-    isError,
-    error,
-    count,
-  } = useProducts(searchParams, {
-    placeholderData: keepPreviousData,
-  });
+export const ProductListTable = (props: ProductListTableProps) => {
+  const columns = useProductTableColumns();
 
   const table = useDataTable({
     columns,
-    data: results,
-    rowCount: count,
+    data: props.results || [],
+    rowCount: props.count,
     enableSorting: true,
     enableFiltering: true,
     enablePagination: true,
@@ -37,11 +33,11 @@ export const ProductListTable = () => {
     globalFilterField: 'name',
   });
 
-  if (isError) {
-    throw error;
+  if (props.isError) {
+    throw props.error;
   }
 
-  if (isLoading) {
+  if (props.isLoading) {
     return <ProductListSkeleton />;
   }
 
