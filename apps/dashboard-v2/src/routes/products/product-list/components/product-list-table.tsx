@@ -1,6 +1,7 @@
 import { IProduct } from '@shared';
 
 import { TableData } from '@/components/common/table/table-data';
+import { TableListSkeleton } from '@/components/common/table/table-list-selecton';
 import { DataTablePagination } from '@/components/common/table/table-pagination';
 import { ToggleColumns } from '@/components/common/table/toggle-columns';
 import { useDataTable } from '@/components/common/table/use-table-data';
@@ -8,7 +9,6 @@ import { Input } from '@/components/ui/input';
 import { FetchError } from '@/lib/is-fetch-error';
 
 import { useProductTableColumns } from '../hooks/use-product-table-columns';
-import { ProductListSkeleton } from './product-list-skeleton';
 
 type ProductListTableProps = {
   results: IProduct[];
@@ -37,7 +37,7 @@ export const ProductListTable = (props: ProductListTableProps) => {
   }
 
   if (props.isLoading) {
-    return <ProductListSkeleton />;
+    return <TableListSkeleton />;
   }
 
   return (
