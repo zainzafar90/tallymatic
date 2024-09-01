@@ -34,7 +34,7 @@ export const paginate = async <T extends Model>(
   const where = {};
   for (const [key, value] of Object.entries(filter)) {
     if (wildcardFields.includes(key)) {
-      where[key] = { [Op.like]: `%${value}%` };
+      where[key] = { [Op.iLike]: `%${value}%` };
     } else {
       where[key] = value;
     }
@@ -60,7 +60,6 @@ export const paginate = async <T extends Model>(
   }
 
   try {
-    console.log('Final findAndCountOptions:', JSON.stringify(findAndCountOptions, null, 2));
     const { rows, count } = await model.findAndCountAll(findAndCountOptions);
     return transformPagination(count, rows, offset, limit);
   } catch (error) {
