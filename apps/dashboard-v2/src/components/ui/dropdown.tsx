@@ -67,7 +67,7 @@ export function DropdownItem({
     'text-left text-base/6 text-zinc-950 sm:text-sm/6 dark:text-white forced-colors:text-[CanvasText]',
     // Focus
     destructive
-      ? 'data-[focus]:bg-red-500 data-[focus]:text-white text-red-500'
+      ? 'data-[focus]:bg-red-500 data-[focus]:dark:bg-red-600 data-[focus]:text-white'
       : 'data-[focus]:bg-blue-500 data-[focus]:text-white',
     // Disabled state
     'data-[disabled]:opacity-50',
