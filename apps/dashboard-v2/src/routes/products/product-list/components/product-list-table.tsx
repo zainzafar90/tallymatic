@@ -1,11 +1,10 @@
 import { IProduct } from '@shared';
-import { flexRender } from '@tanstack/react-table';
 
-import { useDataTable } from '@/components/common/table/table-data';
+import { TableData } from '@/components/common/table/table-data';
+import { DataTablePagination } from '@/components/common/table/table-pagination';
 import { ToggleColumns } from '@/components/common/table/toggle-columns';
-import { Button } from '@/components/ui/button';
+import { useDataTable } from '@/components/common/table/use-table-data';
 import { Input } from '@/components/ui/input';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { FetchError } from '@/lib/is-fetch-error';
 
 import { useProductTableColumns } from '../hooks/use-product-table-columns';
@@ -53,41 +52,9 @@ export const ProductListTable = (props: ProductListTableProps) => {
 
         <ToggleColumns table={table} />
       </div>
-      <Table dense bleed className="mt-8 [--gutter:theme(spacing.6)] lg:[--gutter:theme(spacing.10)]">
-        <TableHead>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id}>
-              {headerGroup.headers.map((header) => (
-                <TableHeader key={header.id}>
-                  {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                </TableHeader>
-              ))}
-            </TableRow>
-          ))}
-        </TableHead>
-        <TableBody>
-          {table.getRowModel().rows.map((row) => (
-            <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
-              {row.getVisibleCells().map((cell) => (
-                <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
-              ))}
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-      <div className="flex items-center justify-end space-x-2 py-4">
-        <div className="flex-1 text-sm text-muted-foreground">
-          {table.getFilteredSelectedRowModel().rows.length} of {table.getFilteredRowModel().rows.length} row(s) selected.
-        </div>
-        <div className="space-x-2">
-          <Button onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()}>
-            Previous
-          </Button>
-          <Button onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
-            Next
-          </Button>
-        </div>
-      </div>
+
+      <TableData table={table} />
+      <DataTablePagination table={table} />
     </div>
   );
 };
