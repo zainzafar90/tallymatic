@@ -53,8 +53,9 @@ export function DropdownMenu({
 
 export function DropdownItem({
   className,
+  destructive = false,
   ...props
-}: { className?: string } & (
+}: { className?: string; destructive?: boolean } & (
   | Omit<React.ComponentPropsWithoutRef<typeof Link>, 'className'>
   | Omit<React.ComponentPropsWithoutRef<'button'>, 'className'>
 )) {
@@ -65,7 +66,9 @@ export function DropdownItem({
     // Text styles
     'text-left text-base/6 text-zinc-950 sm:text-sm/6 dark:text-white forced-colors:text-[CanvasText]',
     // Focus
-    'data-[focus]:bg-blue-500 data-[focus]:text-white',
+    destructive
+      ? 'data-[focus]:bg-red-500 data-[focus]:text-white text-red-500'
+      : 'data-[focus]:bg-blue-500 data-[focus]:text-white',
     // Disabled state
     'data-[disabled]:opacity-50',
     // Forced colors mode

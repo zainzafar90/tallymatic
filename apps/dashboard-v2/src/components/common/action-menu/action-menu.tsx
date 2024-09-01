@@ -46,6 +46,7 @@ export const ActionMenu = ({ actions }: ActionGroup) => {
             <DropdownItem
               key={actionIndex}
               disabled={action.disabled}
+              destructive={action.label === 'Delete'}
               onClick={(e: React.MouseEvent) => {
                 e.stopPropagation();
                 action.onClick?.();
