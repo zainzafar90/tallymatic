@@ -4,6 +4,7 @@ import {
   Column,
   DataType,
   ForeignKey,
+  HasMany,
   IsUUID,
   Model,
   PrimaryKey,
@@ -14,6 +15,7 @@ import { Status } from '@shared';
 import { Category } from '../category';
 import { Organization } from '../organization/organization.model';
 import { ProductCategory } from '../product-category';
+import { ProductVariant } from '../product-variant';
 
 @Table({
   timestamps: true,
@@ -65,4 +67,7 @@ export class Product extends Model {
 
   @BelongsToMany(() => Category, () => ProductCategory)
   categories: Category[];
+
+  @HasMany(() => ProductVariant)
+  variants: ProductVariant[];
 }

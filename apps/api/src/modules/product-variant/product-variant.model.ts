@@ -44,8 +44,23 @@ export class ProductVariant extends Model {
   @Column({
     type: DataType.DECIMAL(10, 2),
     allowNull: false,
+    defaultValue: 0,
   })
   price: number;
+
+  @Column({
+    type: DataType.DECIMAL(10, 2),
+    allowNull: false,
+    defaultValue: 0,
+  })
+  costPrice: number;
+
+  @Column({
+    type: DataType.NUMBER,
+    allowNull: false,
+    defaultValue: 0,
+  })
+  stock: number;
 
   @Column({
     type: DataType.ENUM({ values: Object.values(Status) }),

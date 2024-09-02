@@ -52,6 +52,7 @@ export interface IProduct {
   name: string;
   description?: string;
   status: Status;
+  variants: IProductVariant[];
 }
 
 export interface ICategory {
@@ -81,5 +82,7 @@ export interface IProductVariant {
   name: string;
   sku: string;
   price: number;
+  costPrice: number;
+  stock: number;
   status: Status;
 }

@@ -7,6 +7,8 @@ const createProductVariantBody: Record<keyof CreateProductVariantReq, any> = {
   name: Joi.string().required(),
   sku: Joi.string().required(),
   price: Joi.number().positive().required(),
+  costPrice: Joi.number().positive().required(),
+  stock: Joi.number().positive().required(),
   status: Joi.string().valid(Status.ACTIVE, Status.INACTIVE).required(),
 };
 

@@ -8,6 +8,7 @@ export const ProductSchema = z.object({
   variants: z
     .array(
       z.object({
+        name: z.string().min(1, 'Name is required'),
         sku: z.string().min(1, 'SKU is required'),
         price: z.number().min(0, 'Price must be non-negative'),
         costPrice: z.number().min(0, 'Cost price must be non-negative'),

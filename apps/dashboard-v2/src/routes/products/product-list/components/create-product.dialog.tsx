@@ -4,7 +4,7 @@ import { CircleMinus, CirclePlus, X } from 'lucide-react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Status } from '@shared';
+import { IProductVariant, Status } from '@shared';
 
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogActions, DialogBody, DialogDescription, DialogTitle } from '@/components/ui/dialog';
@@ -46,7 +46,13 @@ export function CreateProductDialog({
       status: 'active',
       categoryId: '',
       variants: [
-        { sku: generateSKU('SKU', `SKU-${Math.floor(1000 + Math.random() * 9000)}-1`), price: 0, costPrice: 0, stock: 0 },
+        {
+          name: 'Default',
+          sku: generateSKU('SKU', `SKU-${Math.floor(1000 + Math.random() * 9000)}-1`),
+          price: 0,
+          costPrice: 0,
+          stock: 0,
+        },
       ],
     },
   });
@@ -62,6 +68,17 @@ export function CreateProductDialog({
       name: data.name,
       description: data.description,
       status: data.status as Status,
+      variants: data.variants.map(
+        (variant) =>
+          ({
+            name: variant.name,
+            sku: variant.sku,
+            price: variant.price,
+            costPrice: variant.costPrice,
+            stock: variant.stock,
+            status: 'active',
+          } as IProductVariant)
+      ),
     });
     setIsOpen(false);
     form.reset();
@@ -79,7 +96,7 @@ export function CreateProductDialog({
   const addVariant = () => {
     const productName = form.getValues('name');
     const newSKU = generateSKU(productName, `SKU-${Math.floor(1000 + Math.random() * 9000)}-${fields.length + 1}`);
-    append({ sku: newSKU, price: 0, costPrice: 0, stock: 0 });
+    append({ name: 'Default', sku: newSKU, price: 0, costPrice: 0, stock: 0 });
   };
 
   const removeVariant = (index: number) => {

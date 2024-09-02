@@ -3,10 +3,20 @@ import { CreateProductReq, Status } from '@shared';
 
 import { uuid } from '@/common/validate/custom.validation';
 
+const createProductVariantBody = {
+  name: Joi.string().required(),
+  sku: Joi.string().required(),
+  price: Joi.number().positive().required(),
+  costPrice: Joi.number().positive().required(),
+  stock: Joi.number().positive().required(),
+  status: Joi.string().valid(Status.ACTIVE, Status.INACTIVE).required(),
+};
+
 const createProductBody: Record<keyof CreateProductReq, any> = {
   name: Joi.string().required(),
   description: Joi.string().optional(),
   status: Joi.string().valid(Status.ACTIVE, Status.INACTIVE).required(),
+  variants: Joi.array().items(Joi.object().keys(createProductVariantBody)).min(1).required(),
 };
 
 export const createProduct = {

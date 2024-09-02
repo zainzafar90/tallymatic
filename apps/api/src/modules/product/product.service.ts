@@ -3,12 +3,28 @@ import { CreateProductReq, IOptions, IProduct, ListResponse, UpdateProductReq } 
 
 import { ApiError } from '@/common/errors/api-error';
 
-import { paginate } from '../paginate/paginate';
+import { paginate } from '../paginate';
+import { ProductVariant } from '../product-variant/product-variant.model';
 import { Product } from './product.model';
 
 export const createProduct = async (productBody: CreateProductReq): Promise<IProduct> => {
-  const product = await Product.create(productBody);
-  return product.toJSON();
+  const { variants, ...productData } = productBody;
+
+  const product = await Product.create(productData);
+
+  if (variants && variants.length > 0) {
+    const variantsWithProductId = variants.map((variant) => ({
+      ...variant,
+      productId: product.id,
+    }));
+    await ProductVariant.bulkCreate(variantsWithProductId);
+  }
+
+  const createdProduct = await Product.findByPk(product.id, {
+    include: [{ model: ProductVariant, as: 'variants' }],
+  });
+
+  return createdProduct.toJSON();
 };
 
 export const queryProducts = async (
@@ -16,12 +32,14 @@ export const queryProducts = async (
   options: IOptions,
   wildcardFields: string[] = []
 ): Promise<ListResponse<Product>> => {
-  const result = await paginate(Product, filter, options, wildcardFields);
+  const result = await paginate(Product, filter, options, wildcardFields, [{ model: ProductVariant, as: 'variants' }]);
   return result;
 };
 
 export const getProductById = async (id: string): Promise<IProduct | null> => {
-  const product = await Product.findByPk(id);
+  const product = await Product.findByPk(id, {
+    include: [{ model: ProductVariant, as: 'variants' }],
+  });
   return product ? product.toJSON() : null;
 };
 
