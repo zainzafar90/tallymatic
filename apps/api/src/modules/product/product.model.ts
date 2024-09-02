@@ -14,7 +14,6 @@ import { Status } from '@shared';
 import { Category } from '../category';
 import { Organization } from '../organization/organization.model';
 import { ProductCategory } from '../product-category';
-import { Store } from '../store/store.model';
 
 @Table({
   timestamps: true,

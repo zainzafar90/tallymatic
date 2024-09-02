@@ -71,11 +71,11 @@ export const useProductTableColumns = () => {
       },
       cell: ({ row }) => {
         const price = parseFloat(row.getValue('price'));
-        const formatted = new Intl.NumberFormat('en-US', {
-          style: 'currency',
-          currency: 'USD',
-        }).format(price);
-        return <div className="text-right font-medium">{formatted}</div>;
+        return (
+          <div className="text-right font-medium">
+            <small>&#x20A8;</small> {price}
+          </div>
+        );
       },
     }),
     columnHelper.display({
