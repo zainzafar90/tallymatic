@@ -57,18 +57,6 @@ export class Product extends Model {
   description: string;
 
   @Column({
-    type: DataType.DECIMAL(10, 2),
-    allowNull: false,
-  })
-  basePrice: number;
-
-  @Column({
-    type: DataType.DECIMAL(10, 2),
-    allowNull: false,
-  })
-  costPrice: number;
-
-  @Column({
     type: DataType.ENUM({ values: Object.values(Status) }),
     allowNull: false,
     defaultValue: Status.ACTIVE,

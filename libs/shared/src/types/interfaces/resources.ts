@@ -53,8 +53,6 @@ export interface IProduct {
   storeId: string;
   name: string;
   description?: string;
-  basePrice: number;
-  costPrice: number;
   status: Status;
 }
 

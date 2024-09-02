@@ -8,8 +8,6 @@ const createProductBody: Record<keyof CreateProductReq, any> = {
   storeId: Joi.string().custom(uuid).required(),
   name: Joi.string().required(),
   description: Joi.string().optional(),
-  basePrice: Joi.number().positive().required(),
-  costPrice: Joi.number().positive().required(),
   status: Joi.string().valid(Status.ACTIVE, Status.INACTIVE).required(),
 };
 

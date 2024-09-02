@@ -32,14 +32,6 @@ module.exports = {
         type: Sequelize.TEXT,
         allowNull: true,
       },
-      basePrice: {
-        type: Sequelize.DECIMAL(10, 2),
-        allowNull: false,
-      },
-      costPrice: {
-        type: Sequelize.DECIMAL(10, 2),
-        allowNull: false,
-      },
       status: {
         type: Sequelize.ENUM('active', 'inactive'),
         allowNull: false,
