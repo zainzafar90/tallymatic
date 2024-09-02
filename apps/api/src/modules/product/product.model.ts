@@ -60,7 +60,13 @@ export class Product extends Model {
     type: DataType.DECIMAL(10, 2),
     allowNull: false,
   })
-  price: number;
+  basePrice: number;
+
+  @Column({
+    type: DataType.DECIMAL(10, 2),
+    allowNull: false,
+  })
+  costPrice: number;
 
   @Column({
     type: DataType.ENUM({ values: Object.values(Status) }),

@@ -52,12 +52,12 @@ export const useProductTableColumns = () => {
       cell: ({ row }) => <div>{row.getValue('name')}</div>,
       enableHiding: false,
     }),
-    columnHelper.accessor('price', {
+    columnHelper.accessor('basePrice', {
       header: ({ column }) => {
         return (
           <button className="table-cell w-full" onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
             <div className="flex items-center justify-end space-x-2">
-              Price
+              Sale
               {column.getIsSorted() === 'asc' ? (
                 <ArrowDown className="ml-2 h-4 w-4" />
               ) : column.getIsSorted() === 'desc' ? (
@@ -70,7 +70,33 @@ export const useProductTableColumns = () => {
         );
       },
       cell: ({ row }) => {
-        const price = parseFloat(row.getValue('price'));
+        const price = parseFloat(row.getValue('basePrice'));
+        return (
+          <div className="text-right font-medium">
+            <small>&#x20A8;</small> {price}
+          </div>
+        );
+      },
+    }),
+    columnHelper.accessor('costPrice', {
+      header: ({ column }) => {
+        return (
+          <button className="table-cell w-full" onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+            <div className="flex items-center justify-end space-x-2">
+              Cost
+              {column.getIsSorted() === 'asc' ? (
+                <ArrowDown className="ml-2 h-4 w-4" />
+              ) : column.getIsSorted() === 'desc' ? (
+                <ArrowUp className="ml-2 h-4 w-4" />
+              ) : (
+                <ArrowUpDown className="ml-2 h-4 w-4" />
+              )}
+            </div>
+          </button>
+        );
+      },
+      cell: ({ row }) => {
+        const price = parseFloat(row.getValue('costPrice'));
         return (
           <div className="text-right font-medium">
             <small>&#x20A8;</small> {price}
