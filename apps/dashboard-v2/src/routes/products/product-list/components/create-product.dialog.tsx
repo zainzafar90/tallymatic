@@ -16,15 +16,17 @@ import { ProductSchema } from './create-product.schema';
 
 type ProductFormValues = z.infer<typeof ProductSchema>;
 
-const generateSKU = (productName: string, variantIndex: number) => {
+const generateSKU = (productName: string, existingSKU: string) => {
   const prefix = productName.slice(0, 3).toUpperCase();
-  const randomNum = Math.floor(1000 + Math.random() * 9000);
+  const existingParts = existingSKU.split('-');
+  const randomPart = existingParts[1] || Math.floor(1000 + Math.random() * 9000).toString();
+  const indexPart = existingParts[2] || '1';
 
   if (!prefix) {
-    return `SKU-${randomNum}-${variantIndex + 1}`;
+    return `SKU-${randomPart}-${indexPart}`;
   }
 
-  return `${prefix}-${randomNum}-${variantIndex + 1}`;
+  return `${prefix}-${randomPart}-${indexPart}`;
 };
 
 export function CreateProductDialog({
@@ -40,13 +42,16 @@ export function CreateProductDialog({
       description: '',
       status: 'active',
       categoryId: '',
-      variants: [{ sku: 'SKU-0000-1', price: 0, costPrice: 0, stock: 0 }],
+      variants: [
+        { sku: generateSKU('SKU', `SKU-${Math.floor(1000 + Math.random() * 9000)}-1`), price: 0, costPrice: 0, stock: 0 },
+      ],
     },
   });
 
   const { fields, append, remove } = useFieldArray({
     control: form.control,
     name: 'variants',
+    rules: { minLength: 1 },
   });
 
   const handleSubmit = form.handleSubmit(async (data) => {
@@ -55,11 +60,25 @@ export function CreateProductDialog({
     setIsOpen(false);
   });
 
+  const updateSKUs = (productName: string) => {
+    const updatedVariants = form.getValues('variants').map((variant) => ({
+      ...variant,
+      sku: generateSKU(productName, variant.sku),
+    }));
+    form.setValue('variants', updatedVariants);
+  };
+
   // Function to add a new variant with auto-generated SKU
   const addVariant = () => {
     const productName = form.getValues('name');
-    const newSKU = generateSKU(productName, fields.length);
+    const newSKU = generateSKU(productName, `SKU-${Math.floor(1000 + Math.random() * 9000)}-${fields.length + 1}`);
     append({ sku: newSKU, price: 0, costPrice: 0, stock: 0 });
+  };
+
+  const removeVariant = (index: number) => {
+    if (fields.length > 1) {
+      remove(index);
+    }
   };
 
   return (
@@ -82,7 +101,15 @@ export function CreateProductDialog({
                       <FormItem>
                         <FormLabel>Product Name</FormLabel>
                         <FormControl>
-                          <Input {...field} placeholder="Enter product name" autoFocus />
+                          <Input
+                            {...field}
+                            placeholder="Enter product name"
+                            autoFocus
+                            onChange={(e) => {
+                              field.onChange(e);
+                              updateSKUs(e.target.value);
+                            }}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -128,14 +155,14 @@ export function CreateProductDialog({
                   }}
                 />
 
-                <Fieldset className="flex justify-between">
+                <Fieldset className="flex justify-between gap-x-2">
                   <div>
                     <Label>Variants</Label>
                     <Description>
                       Add variants for different options like size, color, etc. Each variant can have its own price, cost
                     </Description>
                   </div>
-                  <Button color="zinc" onClick={addVariant}>
+                  <Button color="dark/zinc" onClick={addVariant}>
                     <CirclePlus className="w-6 h-6" />
                   </Button>
                 </Fieldset>
@@ -216,28 +243,30 @@ export function CreateProductDialog({
                           );
                         }}
                       />
-                      <FormField
-                        control={form.control}
-                        name={`variants.${index}.sku`}
-                        render={({ field }) => {
-                          return (
-                            <FormItem>
-                              <FormLabel>SKU</FormLabel>
-                              <FormControl>
-                                <Input {...field} placeholder="Auto-generated SKU" />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          );
-                        }}
-                      />
+                      <div className="flex items-center gap-2">
+                        <FormField
+                          control={form.control}
+                          name={`variants.${index}.sku`}
+                          render={({ field }) => {
+                            return (
+                              <FormItem className="w-full">
+                                <FormLabel>SKU</FormLabel>
+                                <FormControl>
+                                  <Input {...field} readOnly placeholder="Auto-generated SKU" />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            );
+                          }}
+                        />
 
-                      <Fieldset className="space-y-2">
-                        <Label>&nbsp;</Label>
-                        <Button plain onClick={() => remove(index)}>
-                          <CircleMinus className="w-6 h-6 text-red-500" />
-                        </Button>
-                      </Fieldset>
+                        <Fieldset className="space-y-2">
+                          <Label>&nbsp;</Label>
+                          <Button plain onClick={() => removeVariant(index)} disabled={fields.length === 1}>
+                            <CircleMinus className="w-6 h-6 text-red-500" />
+                          </Button>
+                        </Fieldset>
+                      </div>
                     </div>
                     <div className="flex flex-col sm:flex-row gap-x-4 w-full flex-1"></div>
                   </FieldGroup>

@@ -5,12 +5,14 @@ export const ProductSchema = z.object({
   description: z.string().optional(),
   status: z.enum(['active', 'inactive']),
   categoryId: z.string().min(1, 'Category is required'),
-  variants: z.array(
-    z.object({
-      sku: z.string().min(1, 'SKU is required'),
-      price: z.number().min(0, 'Price must be non-negative'),
-      costPrice: z.number().min(0, 'Cost price must be non-negative'),
-      stock: z.number().int().min(0, 'Stock must be non-negative'),
-    })
-  ),
+  variants: z
+    .array(
+      z.object({
+        sku: z.string().min(1, 'SKU is required'),
+        price: z.number().min(0, 'Price must be non-negative'),
+        costPrice: z.number().min(0, 'Cost price must be non-negative'),
+        stock: z.number().int().min(0, 'Stock must be non-negative'),
+      })
+    )
+    .min(1, 'At least one variant is required'),
 });
