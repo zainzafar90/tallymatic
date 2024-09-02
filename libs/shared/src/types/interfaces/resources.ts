@@ -49,8 +49,6 @@ export interface IStore {
 
 export interface IProduct {
   id?: string;
-  organizationId: string;
-  storeId: string;
   name: string;
   description?: string;
   status: Status;

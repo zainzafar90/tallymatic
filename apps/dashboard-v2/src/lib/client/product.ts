@@ -1,8 +1,7 @@
-import { ProductDeleteResponse, ProductListResponse } from '@shared';
+import { CreateProductReq, ProductDeleteResponse, ProductListResponse, ProductResponse } from '@shared';
 
 import {
   CreateProductOptionReq,
-  CreateProductReq,
   CreateProductVariantReq,
   UpdateProductOptionReq,
   UpdateProductReq,
@@ -29,11 +28,11 @@ async function listProducts(query?: Record<string, any>) {
 }
 
 async function createProduct(payload: CreateProductReq) {
-  return postRequest<ProductRes>('/v1/products', payload);
+  return postRequest<ProductResponse>('/v1/products', payload);
 }
 
 async function updateProduct(id: string, payload: UpdateProductReq) {
-  return postRequest<ProductRes>(`/v1/products/${id}`, payload);
+  return postRequest<ProductResponse>(`/v1/products/${id}`, payload);
 }
 
 async function deleteProduct(id: string) {

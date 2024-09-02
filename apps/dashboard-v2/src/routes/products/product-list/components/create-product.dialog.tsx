@@ -4,6 +4,7 @@ import { CircleMinus, CirclePlus, X } from 'lucide-react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Status } from '@shared';
 
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogActions, DialogBody, DialogDescription, DialogTitle } from '@/components/ui/dialog';
@@ -11,6 +12,7 @@ import { Description, FieldGroup, Fieldset, Label } from '@/components/ui/fields
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Select } from '@/components/ui/select';
+import { useCreateProduct } from '@/hooks/api/products';
 
 import { ProductSchema } from './create-product.schema';
 
@@ -34,6 +36,7 @@ export function CreateProductDialog({
   ...props
 }: { amount: string } & React.ComponentPropsWithoutRef<typeof Button>) {
   const [isOpen, setIsOpen] = useState(false);
+  const { mutateAsync, isPending } = useCreateProduct();
 
   const form = useForm<ProductFormValues>({
     resolver: zodResolver(ProductSchema),
@@ -55,9 +58,13 @@ export function CreateProductDialog({
   });
 
   const handleSubmit = form.handleSubmit(async (data) => {
-    // Handle form submission
-    console.log(data);
+    await mutateAsync({
+      name: data.name,
+      description: data.description,
+      status: data.status as Status,
+    });
     setIsOpen(false);
+    form.reset();
   });
 
   const updateSKUs = (productName: string) => {
@@ -276,7 +283,7 @@ export function CreateProductDialog({
                 <Button plain onClick={() => setIsOpen(false)}>
                   Cancel
                 </Button>
-                <Button type="submit" color="blue">
+                <Button type="submit" color="blue" disabled={isPending}>
                   Create
                 </Button>
               </DialogActions>

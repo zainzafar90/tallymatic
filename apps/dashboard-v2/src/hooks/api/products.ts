@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ProductDeleteResponse, ProductListResponse } from '@shared';
+import { CreateProductReq, ProductDeleteResponse, ProductListResponse, ProductResponse } from '@shared';
 import { QueryKey, useMutation, UseMutationOptions, useQuery, UseQueryOptions } from '@tanstack/react-query';
 
 import { client } from '@/lib/client';
@@ -20,6 +20,17 @@ export const useProducts = (
   });
 
   return { ...data, ...rest };
+};
+
+export const useCreateProduct = (options?: UseMutationOptions<ProductResponse, Error, CreateProductReq>) => {
+  return useMutation({
+    mutationFn: (payload: CreateProductReq) => client.products.create(payload),
+    onSuccess: (data: any, variables: any, context: any) => {
+      queryClient.invalidateQueries({ queryKey: productsQueryKeys.list() });
+      options?.onSuccess?.(data, variables, context);
+    },
+    ...options,
+  });
 };
 
 export const useDeleteProduct = (

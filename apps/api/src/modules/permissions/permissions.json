@@ -59,12 +59,7 @@
       "rules": [
         {
           "actions": ["*"],
-          "roles": ["super-admin"],
-          "effect": "EFFECT_ALLOW"
-        },
-        {
-          "actions": ["view", "list", "update"],
-          "roles": ["admin"],
+          "roles": ["super-admin", "admin"],
           "effect": "EFFECT_ALLOW"
         },
         {

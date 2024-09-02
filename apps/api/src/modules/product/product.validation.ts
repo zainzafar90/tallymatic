@@ -4,8 +4,6 @@ import { CreateProductReq, Status } from '@shared';
 import { uuid } from '@/common/validate/custom.validation';
 
 const createProductBody: Record<keyof CreateProductReq, any> = {
-  organizationId: Joi.string().custom(uuid).required(),
-  storeId: Joi.string().custom(uuid).required(),
   name: Joi.string().required(),
   description: Joi.string().optional(),
   status: Joi.string().valid(Status.ACTIVE, Status.INACTIVE).required(),

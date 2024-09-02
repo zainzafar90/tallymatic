@@ -14,7 +14,7 @@ export const createProduct = catchAsync(async (req: Request, res: Response) => {
   if (!isAllowed) {
     throw new ApiError(httpStatus.FORBIDDEN, 'You do not have permission to create products');
   }
-  const product = await productService.createProduct(req.body);
+  const product = await productService.createProduct({ ...req.body, organizationId: req.user.organizationId });
   res.status(httpStatus.CREATED).send(product);
 });
 
@@ -59,6 +59,6 @@ export const deleteProduct = catchAsync(async (req: Request, res: Response) => {
       throw new ApiError(httpStatus.FORBIDDEN, 'You do not have permission to delete product');
     }
     await productService.deleteProductById(req.params['productId']);
-    res.status(httpStatus.NO_CONTENT).send();
+    res.status(httpStatus.OK).send({});
   }
 });
