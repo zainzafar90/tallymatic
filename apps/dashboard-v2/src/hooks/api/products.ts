@@ -5,9 +5,10 @@ import { QueryKey, useMutation, UseMutationOptions, useQuery, UseQueryOptions } 
 import { client } from '@/lib/client';
 import { FetchError } from '@/lib/is-fetch-error';
 import { queryClient } from '@/lib/query-client';
-import { createQueryKeys } from '@/lib/query-key-factory';
+import { queryKeysFactory } from '@/lib/query-key-factory';
 
-export const productsQueryKeys = createQueryKeys('products');
+const PRODUCTS_QUERY_KEY = 'products' as const;
+export const productsQueryKeys = queryKeysFactory(PRODUCTS_QUERY_KEY);
 
 export const useProducts = (
   query?: Record<string, any>,
@@ -26,7 +27,7 @@ export const useCreateProduct = (options?: UseMutationOptions<ProductResponse, E
   return useMutation({
     mutationFn: (payload: CreateProductReq) => client.products.create(payload),
     onSuccess: (data: any, variables: any, context: any) => {
-      queryClient.invalidateQueries({ queryKey: productsQueryKeys.list() });
+      queryClient.invalidateQueries({ queryKey: productsQueryKeys.lists() });
       options?.onSuccess?.(data, variables, context);
     },
     ...options,
@@ -40,7 +41,7 @@ export const useDeleteProduct = (
   return useMutation({
     mutationFn: () => client.products.delete(id),
     onSuccess: (data: any, variables: any, context: any) => {
-      queryClient.invalidateQueries({ queryKey: productsQueryKeys.list() });
+      queryClient.invalidateQueries({ queryKey: productsQueryKeys.lists() });
       queryClient.invalidateQueries({ queryKey: productsQueryKeys.detail(id) });
 
       options?.onSuccess?.(data, variables, context);

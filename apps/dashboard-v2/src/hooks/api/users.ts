@@ -3,10 +3,11 @@ import { QueryKey, useMutation, UseMutationOptions, useQuery, UseQueryOptions } 
 
 import { client } from '@/lib/client';
 import { queryClient } from '@/lib/query-client';
-import { createQueryKeys } from '@/lib/query-key-factory';
+import { queryKeysFactory } from '@/lib/query-key-factory';
 import { UpdateUserReq } from '@/types/api-payloads';
 
-const usersQueryKeys = createQueryKeys('users');
+const USERS_QUERY_KEY = 'users' as const;
+export const usersQueryKeys = queryKeysFactory(USERS_QUERY_KEY);
 
 export const useMe = (options?: UseQueryOptions<UserProfileResponse, Error, UserProfileResponse, QueryKey>) => {
   const { data, ...rest } = useQuery({
