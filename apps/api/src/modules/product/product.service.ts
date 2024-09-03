@@ -3,7 +3,7 @@ import { CreateProductReq, IOptions, IProduct, ListResponse, UpdateProductReq } 
 
 import { ApiError } from '@/common/errors/api-error';
 
-import { paginate } from '../paginate';
+import { buildPaginationOptions, transformPagination } from '../paginate/paginate';
 import { ProductVariant } from '../product-variant/product-variant.model';
 import { Product } from './product.model';
 
@@ -32,8 +32,14 @@ export const queryProducts = async (
   options: IOptions,
   wildcardFields: string[] = []
 ): Promise<ListResponse<Product>> => {
-  const result = await paginate(Product, filter, options, wildcardFields, [{ model: ProductVariant, as: 'variants' }]);
-  return result;
+  const paginationOptions = buildPaginationOptions(filter, options, wildcardFields);
+  const result = await Product.findAndCountAll({
+    ...paginationOptions,
+    include: [{ model: ProductVariant, as: 'variants' }],
+  });
+
+  const results = transformPagination(result.count, result.rows, paginationOptions.offset, paginationOptions.limit);
+  return results;
 };
 
 export const getProductById = async (id: string): Promise<IProduct | null> => {

@@ -21,10 +21,10 @@ module.exports = {
       updatedAt: new Date(),
     }));
 
-    await queryInterface.bulkInsert('product_variants', productVariants, {});
+    await queryInterface.bulkInsert('variants', productVariants, {});
   },
 
   async down(queryInterface) {
-    await queryInterface.bulkDelete('product_variants', null, {});
+    await queryInterface.bulkDelete('variants', null, {});
   },
 };

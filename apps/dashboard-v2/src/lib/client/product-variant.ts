@@ -10,7 +10,7 @@ async function retrieveProductVariant(productId: string, variantId: string, quer
 }
 
 async function listProductVariants(productId: string, query?: Record<string, any>) {
-  return getRequest<{ product_variants: ProductVariantListRes }>(`/v1/products/${productId}/product-variants`, query);
+  return getRequest<{ variants: ProductVariantListRes }>(`/v1/products/${productId}/product-variants`, query);
 }
 
 export const productVariants = {

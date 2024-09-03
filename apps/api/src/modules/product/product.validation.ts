@@ -51,6 +51,7 @@ export const updateProduct = {
       description: Joi.string(),
       price: Joi.number().positive(),
       status: Joi.string().valid(Status.ACTIVE, Status.INACTIVE),
+      variants: Joi.array().items(Joi.object().keys(createProductVariantBody)).min(1).required(),
     })
     .min(1),
 };

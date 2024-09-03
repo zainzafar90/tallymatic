@@ -49,8 +49,9 @@ export const updateProductVariant = {
   body: Joi.object()
     .keys({
       name: Joi.string(),
-      sku: Joi.string(),
       price: Joi.number().positive(),
+      costPrice: Joi.number().positive().required(),
+      stock: Joi.number().positive().required(),
       status: Joi.string().valid(Status.ACTIVE, Status.INACTIVE),
     })
     .min(1),

@@ -1,4 +1,4 @@
-import { FindAndCountOptions, Includeable, Model, ModelStatic, Op } from 'sequelize';
+import { FindAndCountOptions, Model, ModelStatic, Op } from 'sequelize';
 import { IOptions, ListResponse } from '@shared';
 
 import { logger } from '@/common/logger';
@@ -13,13 +13,11 @@ export const transformPagination = <T extends Model>(
   return { pages, count, offset, limit, results: rows };
 };
 
-export const paginate = async <T extends Model>(
-  model: ModelStatic<T>,
+export const buildPaginationOptions = (
   filter: Record<string, any>,
   options: IOptions = {},
-  wildcardFields: string[] = [],
-  include: Includeable[] = []
-): Promise<ListResponse<T>> => {
+  wildcardFields: string[] = []
+): FindAndCountOptions => {
   const limit = Math.max(options.limit ? +options.limit : 10, 1);
   const offset = options.offset ? +options.offset : 0;
 
@@ -46,7 +44,7 @@ export const paginate = async <T extends Model>(
     }
   }
 
-  const findAndCountOptions: FindAndCountOptions = {
+  return {
     where,
     limit,
     offset,
@@ -54,26 +52,22 @@ export const paginate = async <T extends Model>(
     order: sort,
     attributes,
   };
+};
 
-  if (options.populate) {
-    findAndCountOptions.include = options.populate.split(',').map((populateOption) => {
-      return {
-        association: populateOption.split('.').reduce((acc, curr) => {
-          return { association: curr, include: acc ? [acc] : [] };
-        }, undefined as any),
-      };
-    });
-  }
-
-  // if (include.length > 0) {
-  //   findAndCountOptions.include = include;
-  // }
+export const paginate = async <T extends Model>(
+  model: ModelStatic<T>,
+  filter: Record<string, any>,
+  options: IOptions = {},
+  wildcardFields: string[] = []
+): Promise<ListResponse<T>> => {
+  const findAndCountOptions = buildPaginationOptions(filter, options, wildcardFields);
 
   try {
     const { rows, count } = await model.findAndCountAll(findAndCountOptions);
-    return transformPagination(count, rows, offset, limit);
+    return transformPagination(count, rows, findAndCountOptions.offset, findAndCountOptions.limit);
   } catch (error) {
     logger.error(`Failed to paginate model: ${error.message}`);
+    logger.error(`Error stack: ${error.stack}`);
     throw error;
   }
 };

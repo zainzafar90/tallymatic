@@ -3,6 +3,7 @@ import {
   BelongsToMany,
   Column,
   DataType,
+  DefaultScope,
   ForeignKey,
   HasMany,
   IsUUID,
@@ -17,11 +18,14 @@ import { Organization } from '../organization/organization.model';
 import { ProductCategory } from '../product-category';
 import { ProductVariant } from '../product-variant';
 
+@DefaultScope(() => ({
+  attributes: { include: ['createdAt', 'updatedAt'] },
+}))
 @Table({
   timestamps: true,
   tableName: 'products',
 })
-export class Product extends Model {
+export class Product extends Model<Product> {
   @IsUUID(4)
   @PrimaryKey
   @Column({

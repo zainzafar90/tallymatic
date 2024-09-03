@@ -66,8 +66,8 @@ export type ProductOptionListRes = { product_options: ProductOption[] } & ListRe
 export type ProductOptionDeleteRes = DeleteRes;
 
 // Product Variant
-export type ProductVariantRes = { product_variant: ProductVariant };
-export type ProductVariantListRes = { product_variants: ProductVariant[] } & ListRes;
+export type ProductVariantRes = { variant: ProductVariant };
+export type ProductVariantListRes = { variants: ProductVariant[] } & ListRes;
 export type ProductVariantDeleteRes = DeleteRes;
 
 // Stores

@@ -5,7 +5,7 @@ import { Product } from '../product/product.model';
 
 @Table({
   timestamps: true,
-  tableName: 'product_variants',
+  tableName: 'variants',
 })
 export class ProductVariant extends Model {
   @IsUUID(4)
