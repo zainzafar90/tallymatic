@@ -2,7 +2,8 @@ import { Navigate, useLocation, useRouteError } from 'react-router-dom';
 
 import { ExclamationCircle } from '@medusajs/icons';
 import { Text } from '@medusajs/ui';
-import { isFetchError } from '../../../lib/is-fetch-error';
+
+import { isAxiosError } from '@/lib/is-axios-error';
 
 // WIP - Need to allow wrapping <Outlet> with ErrorBoundary for more granular error handling.
 export const ErrorBoundary = () => {
@@ -11,7 +12,11 @@ export const ErrorBoundary = () => {
 
   let code: number | null = null;
 
-  if (isFetchError(error)) {
+  if ((error as any)?.code === 401) {
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+
+  if (isAxiosError(error)) {
     if (error.status === 401) {
       return <Navigate to="/login" state={{ from: location }} replace />;
     }
