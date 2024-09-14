@@ -15,7 +15,6 @@ import { Status } from '@shared';
 
 import { Category } from '../category';
 import { Organization } from '../organization/organization.model';
-import { ProductCategory } from '../product-category';
 import { ProductVariant } from '../product-variant';
 
 @DefaultScope(() => ({
@@ -40,6 +39,13 @@ export class Product extends Model<Product> {
     allowNull: false,
   })
   organizationId: string;
+
+  @ForeignKey(() => Category)
+  @Column({
+    type: DataType.UUID,
+    allowNull: true,
+  })
+  categoryId: string;
 
   @BelongsTo(() => Organization)
   organization: Organization;
@@ -69,8 +75,8 @@ export class Product extends Model<Product> {
   })
   status: Status;
 
-  @BelongsToMany(() => Category, () => ProductCategory)
-  categories: Category[];
+  @BelongsTo(() => Category)
+  category: Category;
 
   @HasMany(() => ProductVariant)
   variants: ProductVariant[];

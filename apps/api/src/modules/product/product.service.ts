@@ -3,6 +3,7 @@ import { CreateProductReq, IOptions, IProduct, ListResponse, UpdateProductReq } 
 
 import { ApiError } from '@/common/errors/api-error';
 
+import { Category } from '../category';
 import { buildPaginationOptions, transformPagination } from '../paginate/paginate';
 import { ProductVariant } from '../product-variant/product-variant.model';
 import { Product } from './product.model';
@@ -21,7 +22,10 @@ export const createProduct = async (productBody: CreateProductReq): Promise<IPro
   }
 
   const createdProduct = await Product.findByPk(product.id, {
-    include: [{ model: ProductVariant, as: 'variants' }],
+    include: [
+      { model: ProductVariant, as: 'variants' },
+      { model: Category, as: 'category' },
+    ],
   });
 
   return createdProduct.toJSON();

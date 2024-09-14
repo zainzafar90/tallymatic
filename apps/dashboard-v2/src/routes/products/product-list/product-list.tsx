@@ -1,7 +1,7 @@
 import { keepPreviousData } from '@tanstack/react-query';
 
 import { Heading } from '@/components/ui/heading';
-import { useProducts } from '@/hooks/api/products';
+import { useProducts } from '@/hooks/api/products.hooks';
 
 import { CreateProductDialog } from './components/create-product.dialog';
 import { ProductListTable } from './components/product-list-table';

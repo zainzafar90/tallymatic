@@ -5,7 +5,6 @@ import config from '@/config/config';
 import { Category } from '@/modules/category';
 import { Organization } from '@/modules/organization';
 import { Product } from '@/modules/product';
-import { ProductCategory } from '@/modules/product-category';
 import { ProductOption } from '@/modules/product-option';
 import { ProductVariant } from '@/modules/product-variant';
 import { Store } from '@/modules/store';
@@ -54,17 +53,7 @@ export class Database {
       logging: false,
     });
 
-    this.database.addModels([
-      Token,
-      User,
-      Store,
-      Organization,
-      Product,
-      ProductOption,
-      ProductVariant,
-      Category,
-      ProductCategory,
-    ]);
+    this.database.addModels([Token, User, Store, Organization, Product, ProductOption, ProductVariant, Category]);
   }
 
   isConnected() {

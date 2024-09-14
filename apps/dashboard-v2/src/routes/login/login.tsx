@@ -15,7 +15,7 @@ import { Text, TextLink } from '@/components/ui/text';
 import { API_TOKEN_KEY } from '@/utils/common.utils';
 
 import { LogoBox } from '../../components/common/logo-box';
-import { useEmailPassLogin } from '../../hooks/api/auth';
+import { useEmailPassLogin } from '../../hooks/api/auth.hooks';
 
 const LoginSchema = z.object({
   email: z.string().email(),

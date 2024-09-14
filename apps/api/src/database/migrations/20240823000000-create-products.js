@@ -20,6 +20,14 @@ module.exports = {
           key: 'id',
         },
       },
+      categoryId: {
+        type: Sequelize.UUID,
+        allowNull: true,
+        references: {
+          model: 'categories',
+          key: 'id',
+        },
+      },
       storeId: {
         type: Sequelize.UUID,
         allowNull: true,

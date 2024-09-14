@@ -3,7 +3,7 @@ import { CreateProductVariantReq, Status } from '@shared';
 
 import { uuid } from '@/common/validate/custom.validation';
 
-const createProductVariantBody: Record<keyof CreateProductVariantReq, any> = {
+export const createProductVariantBody: Record<keyof CreateProductVariantReq, any> = {
   name: Joi.string().required(),
   sku: Joi.string().required(),
   price: Joi.number().positive().required(),

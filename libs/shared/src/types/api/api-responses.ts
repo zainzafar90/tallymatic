@@ -3,7 +3,6 @@ import {
   ICategory,
   IOrganization,
   IProduct,
-  IProductCategory,
   IProductOption,
   IProductVariant,
   IStore,
@@ -35,10 +34,6 @@ export type ProductDeleteResponse = DeleteResponse;
 export type CategoryResponse = ResourceResponse<ICategory>;
 export type CategoryListResponse = ResourceListResponse<ICategory>;
 export type CategoryDeleteResponse = DeleteResponse;
-
-export type ProductCategoryResponse = ResourceResponse<IProductCategory>;
-export type ProductCategoryListResponse = ResourceListResponse<IProductCategory>;
-export type ProductCategoryDeleteResponse = DeleteResponse;
 
 export type ProductOptionResponse = ResourceResponse<IProductOption>;
 export type ProductOptionListResponse = ResourceListResponse<IProductOption>;

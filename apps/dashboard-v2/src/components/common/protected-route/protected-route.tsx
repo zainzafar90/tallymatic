@@ -2,7 +2,7 @@ import { Fragment } from 'react/jsx-runtime';
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
 
 import { Spinner } from '@/components/ui/spinner';
-import { useMe } from '@/hooks/api/users';
+import { useMe } from '@/hooks/api/users.hooks';
 
 // import { SidebarProvider } from '../../../providers/sidebar-provider';
 

@@ -52,6 +52,7 @@ export interface IProduct {
   name: string;
   description?: string;
   status: Status;
+  categoryId?: string;
   variants: IProductVariant[];
 }
 
@@ -61,12 +62,6 @@ export interface ICategory {
   description?: string;
   parentCategoryId?: string | null;
   status: Status;
-}
-
-export interface IProductCategory {
-  id?: string;
-  productId: string;
-  categoryId: string;
 }
 
 export interface IProductOption {

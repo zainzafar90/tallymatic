@@ -71,23 +71,6 @@ components:
         parentCategoryId: null
         status: active
 
-    ProductCategory:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        productId:
-          type: string
-          format: uuid
-        categoryId:
-          type: string
-          format: uuid
-      example:
-        id: 00000000-0000-4000-8000-000000000001
-        productId: 00000000-0000-4000-8000-000000000002
-        categoryId: 00000000-0000-4000-8000-000000000003
-
     Product:
       type: object
       properties:

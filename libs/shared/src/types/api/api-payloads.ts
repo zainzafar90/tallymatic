@@ -1,13 +1,4 @@
-import {
-  ICategory,
-  IOrganization,
-  IProduct,
-  IProductCategory,
-  IProductOption,
-  IProductVariant,
-  IStore,
-  IUser,
-} from '../interfaces/resources';
+import { ICategory, IOrganization, IProduct, IProductOption, IProductVariant, IStore, IUser } from '../interfaces/resources';
 
 // Auth
 export type EmailPassReq = {
@@ -35,10 +26,6 @@ export type UpdateProductReq = Partial<Omit<IProduct, 'id'>>;
 // Category
 export type CreateCategoryReq = Omit<ICategory, 'id'>;
 export type UpdateCategoryReq = Partial<Omit<ICategory, 'id'>>;
-
-// ProductCategory
-export type CreateProductCategoryReq = Omit<IProductCategory, 'id'>;
-export type UpdateProductCategoryReq = Partial<Omit<IProductCategory, 'id'>>;
 
 // ProductOption
 export type CreateProductOptionReq = Omit<IProductOption, 'id'>;

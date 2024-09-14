@@ -40,8 +40,8 @@ import {
   SidebarSpacer,
 } from '@/components/ui/sidebar';
 import { SidebarLayout } from '@/components/ui/sidebar-layout';
-import { useLogout } from '@/hooks/api/auth';
-import { useMe } from '@/hooks/api/users';
+import { useLogout } from '@/hooks/api/auth.hooks';
+import { useMe } from '@/hooks/api/users.hooks';
 import { API_TOKEN_KEY } from '@/utils/common.utils';
 import { getInitials } from '@/utils/string.utils';
 

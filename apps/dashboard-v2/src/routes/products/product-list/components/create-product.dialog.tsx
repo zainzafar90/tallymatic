@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { CircleMinus, CirclePlus, X } from 'lucide-react';
+import { CircleMinus, CirclePlus } from 'lucide-react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -12,7 +12,8 @@ import { Description, FieldGroup, Fieldset, Label } from '@/components/ui/fields
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Select } from '@/components/ui/select';
-import { useCreateProduct } from '@/hooks/api/products';
+import { useCategories } from '@/hooks/api/category.hooks';
+import { useCreateProduct } from '@/hooks/api/products.hooks';
 
 import { ProductSchema } from './create-product.schema';
 
@@ -37,6 +38,7 @@ export function CreateProductDialog({
 }: { amount: string } & React.ComponentPropsWithoutRef<typeof Button>) {
   const [isOpen, setIsOpen] = useState(false);
   const { mutateAsync, isPending } = useCreateProduct();
+  const { results: categories, isLoading: isCategoriesLoading } = useCategories();
 
   const form = useForm<ProductFormValues>({
     resolver: zodResolver(ProductSchema),
@@ -68,6 +70,7 @@ export function CreateProductDialog({
       name: data.name,
       description: data.description,
       status: data.status as Status,
+      categoryId: data.categoryId,
       variants: data.variants.map(
         (variant) =>
           ({
@@ -164,14 +167,15 @@ export function CreateProductDialog({
                       <FormItem>
                         <FormLabel>Category</FormLabel>
                         <FormControl>
-                          <Select {...field}>
+                          <Select {...field} disabled={isCategoriesLoading}>
                             <option value="" disabled>
                               Select a category&hellip;
                             </option>
-                            <option value="electronics">Electronics</option>
-                            <option value="apparel">Apparel</option>
-                            <option value="home_goods">Home Goods</option>
-                            <option value="other">Other</option>
+                            {categories?.map((category) => (
+                              <option key={category.id} value={category.id}>
+                                {category.name}
+                              </option>
+                            ))}
                           </Select>
                         </FormControl>
                       </FormItem>

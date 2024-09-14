@@ -4,7 +4,7 @@ import { IProduct } from '@shared';
 
 import { ActionMenu } from '@/components/common/action-menu';
 import { usePrompt } from '@/components/common/use-prompt';
-import { useDeleteProduct } from '@/hooks/api/products';
+import { useDeleteProduct } from '@/hooks/api/products.hooks';
 
 export const ProductActions = ({ product }: { product: IProduct }) => {
   const { prompt, PromptDialog } = usePrompt();

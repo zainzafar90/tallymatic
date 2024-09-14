@@ -1,17 +1,13 @@
-import { auth } from "./auth"
-import { users } from "./users"
-import { stores } from "./stores"
-import { products } from "./product"
-import { productTypes } from "./product-type"
-import { productOptions } from "./product-option"
-import { productVariants } from "./product-variant"
+import { auth } from './auth.requests';
+import { categories } from './category.requests';
+import { products } from './product.requests';
+import { stores } from './stores.requests';
+import { users } from './users.requests';
 
 export const client = {
   auth,
   users,
   stores,
   products,
-  productTypes,
-  productOptions,
-  productVariants,
-}
+  categories,
+};

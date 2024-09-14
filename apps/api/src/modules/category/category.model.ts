@@ -1,19 +1,7 @@
-import {
-  BelongsTo,
-  BelongsToMany,
-  Column,
-  DataType,
-  ForeignKey,
-  HasMany,
-  IsUUID,
-  Model,
-  PrimaryKey,
-  Table,
-} from 'sequelize-typescript';
+import { BelongsTo, Column, DataType, ForeignKey, HasMany, IsUUID, Model, PrimaryKey, Table } from 'sequelize-typescript';
 import { Status } from '@shared';
 
 import { Product } from '../product';
-import { ProductCategory } from '../product-category';
 
 @Table({
   timestamps: true,
@@ -62,6 +50,6 @@ export class Category extends Model {
   })
   status: Status;
 
-  @BelongsToMany(() => Product, () => ProductCategory)
+  @HasMany(() => Product)
   products: Product[];
 }

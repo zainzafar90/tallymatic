@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Text } from '@/components/ui/text';
 import { Textarea } from '@/components/ui/textarea';
-import { useMe } from '@/hooks/api/users';
+import { useMe } from '@/hooks/api/users.hooks';
 
 import { Address } from './address';
 
