@@ -1,7 +1,9 @@
 import { keepPreviousData } from '@tanstack/react-query';
 
+import { Button } from '@/components/ui/button';
 import { Heading } from '@/components/ui/heading';
 import { useProducts } from '@/hooks/api/products.hooks';
+import { useToggleState } from '@/hooks/use-toggle-state';
 
 import { CreateProductDialog } from './components/create-product.dialog';
 import { NoProducts } from './components/no-products';
@@ -10,6 +12,7 @@ import { useProductTableQuery } from './hooks/use-product-table-query';
 
 export const ProductList = () => {
   const { searchParams } = useProductTableQuery({});
+  const [createOpen, showCreateModal, closeCreateModal] = useToggleState();
 
   const {
     results = [],
@@ -29,11 +32,13 @@ export const ProductList = () => {
     <>
       <div className="flex items-end justify-between gap-4">
         <Heading>Products</Heading>
-        <CreateProductDialog outline amount="80">
+        <Button color="blue" onClick={() => showCreateModal()}>
           Create Product
-        </CreateProductDialog>
+        </Button>
       </div>
+
       <ProductListTable results={results} count={count} isLoading={isLoading} isError={isError} error={error} />
+      <CreateProductDialog isOpen={createOpen} onClose={closeCreateModal} />
     </>
   );
 };
