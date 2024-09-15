@@ -138,30 +138,54 @@ export function CreateProductDialog({
           <Form {...form}>
             <form onSubmit={handleSubmit}>
               <FieldGroup>
-                <FormField
-                  control={form.control}
-                  name="name"
-                  render={({ field }) => {
-                    return (
-                      <FormItem>
-                        <FormLabel>Product Name</FormLabel>
-                        <FormControl>
-                          <Input
-                            {...field}
-                            placeholder="Enter product name"
-                            autoFocus
-                            onChange={(e) => {
-                              field.onChange(e);
-                              updateSKUs(e.target.value);
-                            }}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    );
-                  }}
-                />
-
+                <div className="flex gap-4 w-full flex-col md:flex-row">
+                  <FormField
+                    name="name"
+                    control={form.control}
+                    render={({ field }) => {
+                      return (
+                        <FormItem className="w-full">
+                          <FormLabel>Product Name</FormLabel>
+                          <FormControl>
+                            <Input
+                              {...field}
+                              placeholder="Enter product name"
+                              autoFocus
+                              onChange={(e) => {
+                                field.onChange(e);
+                                updateSKUs(e.target.value);
+                              }}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      );
+                    }}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="categoryId"
+                    render={({ field }) => {
+                      return (
+                        <FormItem className="w-full">
+                          <FormLabel>Category</FormLabel>
+                          <FormControl>
+                            <Select {...field} disabled={isCategoriesLoading}>
+                              <option value="" disabled>
+                                Select a category&hellip;
+                              </option>
+                              {categories?.map((category) => (
+                                <option key={category.id} value={category.id}>
+                                  {category.name}
+                                </option>
+                              ))}
+                            </Select>
+                          </FormControl>
+                        </FormItem>
+                      );
+                    }}
+                  />
+                </div>
                 <FormField
                   control={form.control}
                   name="description"
@@ -171,30 +195,6 @@ export function CreateProductDialog({
                         <FormLabel>Description</FormLabel>
                         <FormControl>
                           <Input {...field} placeholder="Enter product description" />
-                        </FormControl>
-                      </FormItem>
-                    );
-                  }}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="categoryId"
-                  render={({ field }) => {
-                    return (
-                      <FormItem>
-                        <FormLabel>Category</FormLabel>
-                        <FormControl>
-                          <Select {...field} disabled={isCategoriesLoading}>
-                            <option value="" disabled>
-                              Select a category&hellip;
-                            </option>
-                            {categories?.map((category) => (
-                              <option key={category.id} value={category.id}>
-                                {category.name}
-                              </option>
-                            ))}
-                          </Select>
                         </FormControl>
                       </FormItem>
                     );

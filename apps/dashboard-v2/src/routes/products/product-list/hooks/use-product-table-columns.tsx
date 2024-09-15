@@ -60,7 +60,7 @@ export const useProductTableColumns = () => {
       header: 'Category',
       cell: ({ getValue }) => <div>{getValue()?.name || '-'}</div>,
     }),
-    columnHelper.accessor((row) => row.variants.map((v) => parseFloat(v.costPrice)), {
+    columnHelper.accessor((row) => row.variants.map((v) => parseFloat(v.price)), {
       id: 'price',
       header: () => {
         return <div className="flex items-center justify-end space-x-2">Price</div>;
@@ -77,13 +77,47 @@ export const useProductTableColumns = () => {
         );
       },
     }),
+    columnHelper.accessor((row) => row.variants.map((v) => parseFloat(v.costPrice)), {
+      id: 'costPrice',
+      header: () => {
+        return <div className="flex items-center justify-end space-x-2">Cost</div>;
+      },
+      cell: ({ getValue }) => {
+        const prices = getValue();
+        const min = Math.min(...prices);
+        const max = Math.max(...prices);
+        const formattedPrice = min === max ? `${min}` : `${min} - ${max}`;
+        return (
+          <div className="text-right font-medium">
+            <small>&#x20A8;</small> {formattedPrice}
+          </div>
+        );
+      },
+    }),
     columnHelper.accessor((row) => row.variants.map((v) => v.stock), {
       id: 'stock',
-      header: 'Stock',
+      header: () => {
+        return <div className="flex items-center space-x-2">Stock</div>;
+      },
       cell: ({ getValue }) => {
         const stocks = getValue();
         const totalStock = stocks.reduce((acc, stock) => acc + stock, 0);
-        return <div>{totalStock ? <Badge color="lime">Available</Badge> : <Badge color="red">Out of stock</Badge>}</div>;
+        return (
+          <div className="flex items-center space-x-2">
+            {totalStock ? <Badge color="lime">In stock</Badge> : <Badge color="red">Out of stock</Badge>}
+          </div>
+        );
+      },
+    }),
+    columnHelper.accessor((row) => row.variants.map((v) => v.stock), {
+      id: 'stock',
+      header: () => {
+        return <div className="flex items-center space-x-2">Stock</div>;
+      },
+      cell: ({ getValue }) => {
+        const stocks = getValue();
+        const totalStock = stocks.reduce((acc, stock) => acc + stock, 0);
+        return <div className="flex items-center space-x-2">{totalStock === 0 ? '' : totalStock}</div>;
       },
     }),
     columnHelper.display({
