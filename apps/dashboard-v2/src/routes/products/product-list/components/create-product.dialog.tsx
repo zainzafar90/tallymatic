@@ -14,6 +14,7 @@ import { Input } from '@/components/ui/input';
 import { Select } from '@/components/ui/select';
 import { useCategories } from '@/hooks/api/category.hooks';
 import { useCreateProduct } from '@/hooks/api/products.hooks';
+import { parseFloat } from '@/utils/number-utils'; // Add this utility function
 
 import { ProductSchema } from './create-product.schema';
 
@@ -51,8 +52,8 @@ export function CreateProductDialog({
         {
           name: 'Default',
           sku: generateSKU('SKU', `SKU-${Math.floor(1000 + Math.random() * 9000)}-1`),
-          price: 0,
-          costPrice: 0,
+          price: 1,
+          costPrice: 1,
           stock: 0,
         },
       ],
@@ -211,6 +212,7 @@ export function CreateProductDialog({
                                   inputMode="decimal"
                                   type="number"
                                   placeholder="$0.00"
+                                  value={typeof field.value === 'string' ? field.value : field.value.toString()}
                                   onChange={(e) => {
                                     const value = e.target.value;
                                     field.onChange(parseFloat(value) || 0);
@@ -236,6 +238,7 @@ export function CreateProductDialog({
                                   inputMode="decimal"
                                   type="number"
                                   placeholder="$0.00"
+                                  value={typeof field.value === 'string' ? field.value : field.value.toString()}
                                   onChange={(e) => {
                                     const value = e.target.value;
                                     field.onChange(parseFloat(value) || 0);

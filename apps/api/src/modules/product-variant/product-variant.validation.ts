@@ -6,9 +6,9 @@ import { uuid } from '@/common/validate/custom.validation';
 export const createProductVariantBody: Record<keyof CreateProductVariantReq, any> = {
   name: Joi.string().required(),
   sku: Joi.string().required(),
-  price: Joi.number().positive().required(),
-  costPrice: Joi.number().positive().required(),
-  stock: Joi.number().positive().required(),
+  price: Joi.number().min(0).precision(2).required(),
+  costPrice: Joi.number().min(0).precision(2).required(),
+  stock: Joi.number().integer().min(0).required(),
   status: Joi.string().valid(Status.ACTIVE, Status.INACTIVE).required(),
 };
 

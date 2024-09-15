@@ -3,6 +3,7 @@ import { ProductResponse } from '@shared';
 import { createColumnHelper } from '@tanstack/react-table';
 
 import { Badge } from '@/components/ui/badge';
+import { parseFloat } from '@/utils/number-utils';
 
 // import { Checkbox } from '@/components/ui/checkbox';
 
@@ -59,7 +60,7 @@ export const useProductTableColumns = () => {
       header: 'Category',
       cell: ({ getValue }) => <div>{getValue()?.name || '-'}</div>,
     }),
-    columnHelper.accessor((row) => row.variants.map((v) => v.costPrice), {
+    columnHelper.accessor((row) => row.variants.map((v) => parseFloat(v.costPrice)), {
       id: 'price',
       header: () => {
         return <div className="flex items-center justify-end space-x-2">Price</div>;
