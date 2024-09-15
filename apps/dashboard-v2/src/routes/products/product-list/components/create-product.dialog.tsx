@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 
 import { CircleMinus, CirclePlus } from 'lucide-react';
 import { useFieldArray, useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { IProductVariant, Status } from '@shared';
@@ -67,23 +68,39 @@ export function CreateProductDialog({
   });
 
   const handleSubmit = form.handleSubmit(async (data) => {
-    await mutateAsync({
-      name: data.name,
-      description: data.description,
-      status: data.status as Status,
-      categoryId: data.categoryId ? data.categoryId : undefined,
-      variants: data.variants.map(
-        (variant) =>
-          ({
-            name: variant.name,
-            sku: variant.sku,
-            price: variant.price,
-            costPrice: variant.costPrice,
-            stock: variant.stock,
-            status: 'active',
-          } as IProductVariant)
-      ),
-    });
+    await mutateAsync(
+      {
+        name: data.name,
+        description: data.description,
+        status: data.status as Status,
+        categoryId: data.categoryId ? data.categoryId : undefined,
+        variants: data.variants.map(
+          (variant) =>
+            ({
+              name: variant.name,
+              sku: variant.sku,
+              price: variant.price,
+              costPrice: variant.costPrice,
+              stock: variant.stock,
+              status: 'active',
+            } as IProductVariant)
+        ),
+      },
+      {
+        onSuccess: () => {
+          toast.success('Product created', {
+            description: `${data.name} was successfully created`,
+            closeButton: true,
+          });
+        },
+        onError: (e) => {
+          toast.error('Failed to created product', {
+            description: e.message,
+            closeButton: true,
+          });
+        },
+      }
+    );
     setIsOpen(false);
     form.reset();
   });
