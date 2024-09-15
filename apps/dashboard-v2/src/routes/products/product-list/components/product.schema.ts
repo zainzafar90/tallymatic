@@ -1,9 +1,10 @@
 import * as z from 'zod';
+import { Status } from '@shared';
 
 export const ProductSchema = z.object({
   name: z.string().min(1, 'Name is required'),
   description: z.string().optional(),
-  status: z.enum(['active', 'inactive']),
+  status: z.enum([Status.ACTIVE, Status.INACTIVE]),
   categoryId: z.string().optional(),
   variants: z
     .array(
