@@ -1,10 +1,11 @@
 import config from '@/config/config';
 import { logger } from '@/common/logger';
-import { Database } from '@/database/db';
+import { getDatabaseInstance } from '@/database/db';
 
 import app from './app';
 
-const database = new Database();
+const database = getDatabaseInstance();
+
 database.connect().then(() => {
   logger.info('Connected to PostgreSQL');
   app.listen(config.port, () => {
@@ -12,6 +13,7 @@ database.connect().then(() => {
   });
 });
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let server: any;
 
 const exitHandler = () => {

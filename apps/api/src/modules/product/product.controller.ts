@@ -15,7 +15,6 @@ export const createProduct = catchAsync(async (req: Request, res: Response) => {
     throw new ApiError(httpStatus.FORBIDDEN, 'You do not have permission to create products');
   }
 
-  console.log('HERE');
   const product = await productService.createProduct({ ...req.body, organizationId: req.user.organizationId });
   res.status(httpStatus.CREATED).send(product);
 });

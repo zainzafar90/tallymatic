@@ -2,6 +2,7 @@ import httpStatus from 'http-status';
 import { CreateProductReq, IOptions, IProduct, ListResponse, UpdateProductReq } from '@shared';
 
 import { ApiError } from '@/common/errors/api-error';
+import { getDatabaseInstance } from '@/database/db';
 
 import { Category } from '../category';
 import { buildPaginationOptions, transformPagination } from '../paginate/paginate';
@@ -11,24 +12,34 @@ import { Product } from './product.model';
 export const createProduct = async (productBody: CreateProductReq): Promise<IProduct> => {
   const { variants, ...productData } = productBody;
 
-  const product = await Product.create(productData);
+  const transaction = await getDatabaseInstance().transaction();
 
-  if (variants && variants.length > 0) {
-    const variantsWithProductId = variants.map((variant) => ({
-      ...variant,
-      productId: product.id,
-    }));
-    await ProductVariant.bulkCreate(variantsWithProductId);
+  try {
+    const product = await Product.create(productData, { transaction });
+
+    if (variants && variants.length > 0) {
+      const variantsWithProductId = variants.map((variant) => ({
+        ...variant,
+        productId: product.id,
+      }));
+      await ProductVariant.bulkCreate(variantsWithProductId, { transaction });
+    }
+
+    const createdProduct = await Product.findByPk(product.id, {
+      include: [
+        { model: ProductVariant, as: 'variants' },
+        { model: Category, as: 'category' },
+      ],
+      transaction,
+    });
+
+    await transaction.commit();
+
+    return createdProduct.toJSON();
+  } catch (error) {
+    await transaction.rollback();
+    throw error;
   }
-
-  const createdProduct = await Product.findByPk(product.id, {
-    include: [
-      { model: ProductVariant, as: 'variants' },
-      { model: Category, as: 'category' },
-    ],
-  });
-
-  return createdProduct.toJSON();
 };
 
 export const queryProducts = async (

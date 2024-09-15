@@ -71,7 +71,21 @@ export class Database {
     });
   }
 
+  transaction() {
+    return this.database.transaction();
+  }
+
   close() {
     return this.database.close();
   }
 }
+
+let databaseInstance = null;
+
+export const getDatabaseInstance = () => {
+  if (!databaseInstance) {
+    databaseInstance = new Database();
+  }
+
+  return databaseInstance;
+};
