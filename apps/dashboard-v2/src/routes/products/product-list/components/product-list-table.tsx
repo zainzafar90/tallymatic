@@ -9,12 +9,14 @@ import { Input } from '@/components/ui/input';
 import { FetchError } from '@/lib/is-fetch-error';
 
 import { useProductTableColumns } from '../hooks/use-product-table-columns';
+import { NoProducts } from './no-products';
 
 type ProductListTableProps = {
   results: (IProduct & {
     category: ICategory;
   })[];
   count: number;
+  hasResults: boolean;
   isLoading: boolean;
   isError: boolean;
   error: FetchError | null;
@@ -40,6 +42,10 @@ export const ProductListTable = (props: ProductListTableProps) => {
 
   if (props.isLoading) {
     return <TableListSkeleton />;
+  }
+
+  if (!props.hasResults && props.results.length === 0) {
+    return <NoProducts />;
   }
 
   return (

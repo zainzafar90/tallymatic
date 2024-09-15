@@ -58,6 +58,7 @@ export const useProductTableColumns = () => {
       id: 'category',
       header: 'Category',
       cell: ({ getValue }) => <div>{getValue()?.name || '-'}</div>,
+      enableSorting: false,
     }),
     columnHelper.accessor((row) => row.variants.map((v) => parseFloat(v.price)), {
       id: 'price',
@@ -75,6 +76,7 @@ export const useProductTableColumns = () => {
           </div>
         );
       },
+      enableSorting: false,
     }),
     columnHelper.accessor((row) => row.variants.map((v) => parseFloat(v.costPrice)), {
       id: 'costPrice',
@@ -92,6 +94,7 @@ export const useProductTableColumns = () => {
           </div>
         );
       },
+      enableSorting: false,
     }),
     columnHelper.accessor((row) => row.variants.map((v) => v.stock), {
       id: 'stock',
@@ -107,18 +110,9 @@ export const useProductTableColumns = () => {
           </div>
         );
       },
+      enableSorting: false,
     }),
-    columnHelper.accessor((row) => row.variants.map((v) => v.stock), {
-      id: 'stock',
-      header: () => {
-        return <div className="flex items-center space-x-2">Stock</div>;
-      },
-      cell: ({ getValue }) => {
-        const stocks = getValue();
-        const totalStock = stocks.reduce((acc, stock) => acc + stock, 0);
-        return <div className="flex items-center space-x-2">{totalStock === 0 ? '' : totalStock}</div>;
-      },
-    }),
+
     columnHelper.display({
       id: 'actions',
       enableHiding: false,

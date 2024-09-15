@@ -1,6 +1,7 @@
 import { flexRender, Table as TanstackTable } from '@tanstack/react-table';
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { NoResults } from '@/routes/products/product-list/components/no-results';
 
 interface TableDataProps<TData> {
   table: TanstackTable<TData>;
@@ -33,7 +34,7 @@ export function TableData<TData>({ table }: TableDataProps<TData>) {
         ) : (
           <TableRow>
             <TableCell colSpan={table.getAllColumns().length} className="h-24 text-center">
-              No results.
+              <NoResults />
             </TableCell>
           </TableRow>
         )}

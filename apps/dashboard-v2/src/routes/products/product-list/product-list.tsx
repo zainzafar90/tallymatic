@@ -6,12 +6,11 @@ import { useProducts } from '@/hooks/api/products.hooks';
 import { useToggleState } from '@/hooks/use-toggle-state';
 
 import { CreateProductDialog } from './components/create-product.dialog';
-import { NoProducts } from './components/no-products';
 import { ProductListTable } from './components/product-list-table';
 import { useProductTableQuery } from './hooks/use-product-table-query';
 
 export const ProductList = () => {
-  const { searchParams } = useProductTableQuery({});
+  const { searchParams, raw } = useProductTableQuery({});
   const [createOpen, showCreateModal, closeCreateModal] = useToggleState();
 
   const {
@@ -24,9 +23,7 @@ export const ProductList = () => {
     placeholderData: keepPreviousData,
   });
 
-  if (!isLoading && results.length === 0) {
-    return <NoProducts />;
-  }
+  const hasFilters = Object.keys(raw).some((key) => key !== 'offset' && key !== 'limit');
 
   return (
     <>
@@ -37,7 +34,15 @@ export const ProductList = () => {
         </Button>
       </div>
 
-      <ProductListTable results={results} count={count} isLoading={isLoading} isError={isError} error={error} />
+      <ProductListTable
+        count={count}
+        error={error}
+        results={results}
+        isError={isError}
+        isLoading={isLoading}
+        hasResults={hasFilters}
+      />
+
       <CreateProductDialog isOpen={createOpen} onClose={closeCreateModal} />
     </>
   );
