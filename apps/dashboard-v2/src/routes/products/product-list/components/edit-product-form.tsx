@@ -31,8 +31,8 @@ export const EditProductForm = (props: { product: IProduct; onClose: () => void 
       variants: props.product.variants.map((variant) => ({
         name: variant.name,
         sku: variant.sku,
-        price: variant.price,
-        costPrice: variant.costPrice,
+        price: parseFloat(variant.price),
+        costPrice: parseFloat(variant.costPrice),
         stock: variant.stock,
       })),
     },
