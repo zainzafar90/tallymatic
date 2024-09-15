@@ -27,7 +27,6 @@ export const ProductActions = ({ product }: { product: IProduct }) => {
       onSuccess: () => {
         toast.success('Product deleted', {
           description: `${product.name} was successfully deleted`,
-          closeButton: true,
         });
       },
       onError: (e) => {

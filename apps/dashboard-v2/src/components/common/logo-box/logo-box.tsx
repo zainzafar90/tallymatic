@@ -1,4 +1,4 @@
-import { clx } from '@medusajs/ui';
+import { cn } from '@/utils/cn';
 
 type LogoBoxProps = {
   className?: string;
@@ -7,7 +7,7 @@ type LogoBoxProps = {
 export const LogoBox = ({ className }: LogoBoxProps) => {
   return (
     <div
-      className={clx(
+      className={cn(
         'w-ful h-full relative flex items-center justify-center rounded-xl text-black dark:text-white',
         className
       )}

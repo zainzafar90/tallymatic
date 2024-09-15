@@ -1,8 +1,8 @@
 import { Navigate, useLocation, useRouteError } from 'react-router-dom';
 
-import { ExclamationCircle } from '@medusajs/icons';
-import { Text } from '@medusajs/ui';
+import { Info } from 'lucide-react';
 
+import { Heading, Subheading } from '@/components/ui/heading';
 import { isAxiosError } from '@/lib/is-axios-error';
 
 // WIP - Need to allow wrapping <Outlet> with ErrorBoundary for more granular error handling.
@@ -49,13 +49,9 @@ export const ErrorBoundary = () => {
   return (
     <div className="flex size-full min-h-screen items-center justify-center">
       <div className="text-ui-fg-subtle flex flex-col items-center gap-y-2">
-        <ExclamationCircle />
-        <Text size="small" leading="compact" weight="plus">
-          {title}
-        </Text>
-        <Text size="small" className="text-ui-fg-muted">
-          {message}
-        </Text>
+        <Info />
+        <Heading>{title}</Heading>
+        <Subheading>{message}</Subheading>
       </div>
     </div>
   );
