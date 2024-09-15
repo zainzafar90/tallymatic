@@ -5,10 +5,14 @@ import { IProduct } from '@shared';
 import { ActionMenu } from '@/components/common/action-menu';
 import { usePrompt } from '@/components/common/use-prompt';
 import { useDeleteProduct } from '@/hooks/api/products.hooks';
+import { useToggleState } from '@/hooks/use-toggle-state';
+
+import { EditProductDialog } from './edit-product.dialog';
 
 export const ProductActions = ({ product }: { product: IProduct }) => {
   const { prompt, PromptDialog } = usePrompt();
-  const { mutateAsync } = useDeleteProduct(product.id!);
+  const { mutateAsync } = useDeleteProduct(product.id);
+  const [editOpen, showEditModal, closeEditModal] = useToggleState();
 
   const handleDelete = async () => {
     const confirmed = await prompt({
@@ -38,6 +42,10 @@ export const ProductActions = ({ product }: { product: IProduct }) => {
     });
   };
 
+  const handleEdit = () => {
+    showEditModal();
+  };
+
   return (
     <div className="text-right">
       <ActionMenu
@@ -45,7 +53,7 @@ export const ProductActions = ({ product }: { product: IProduct }) => {
           {
             icon: <Pencil className="w-4 h-4" />,
             label: 'Edit',
-            to: `/products/${product.id}/edit`,
+            onClick: handleEdit,
           },
           {
             icon: <Trash className="w-4 h-4" />,
@@ -56,6 +64,7 @@ export const ProductActions = ({ product }: { product: IProduct }) => {
       />
 
       <PromptDialog />
+      <EditProductDialog product={product} isOpen={editOpen} onClose={closeEditModal} />
     </div>
   );
 };

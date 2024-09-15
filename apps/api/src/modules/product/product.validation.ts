@@ -41,9 +41,9 @@ export const updateProduct = {
   }),
   body: Joi.object()
     .keys({
+      id: Joi.string().custom(uuid).optional(),
       name: Joi.string(),
       description: Joi.string().allow('').optional(),
-      price: Joi.number().positive(),
       status: Joi.string().valid(Status.ACTIVE, Status.INACTIVE),
       categoryId: Joi.string().custom(uuid).optional(),
       variants: Joi.array().items(Joi.object().keys(createProductVariantBody)).min(1),

@@ -27,7 +27,7 @@ export type StoreResponse = ResourceResponse<IStore>;
 export type StoreListResponse = ResourceListResponse<IStore>;
 export type StoreDeleteResponse = DeleteResponse;
 
-export type ProductResponse = ResourceResponse<IProduct & { category: ICategory }>;
+export type ProductResponse = ResourceResponse<IProduct>;
 export type ProductListResponse = ResourceListResponse<IProduct & { category: ICategory }>;
 export type ProductDeleteResponse = DeleteResponse;
 

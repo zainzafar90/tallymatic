@@ -1,5 +1,5 @@
 import { ArrowDown, ArrowUp, ArrowUpDown } from 'lucide-react';
-import { ProductResponse } from '@shared';
+import { ICategory, ProductResponse } from '@shared';
 import { createColumnHelper } from '@tanstack/react-table';
 
 import { Badge } from '@/components/ui/badge';
@@ -8,7 +8,7 @@ import { parseFloat } from '@/utils/number-utils';
 
 import { ProductActions } from '../components/use-product-table-actions';
 
-const columnHelper = createColumnHelper<ProductResponse>();
+const columnHelper = createColumnHelper<ProductResponse & { category: ICategory }>();
 
 export const useProductTableColumns = () => {
   return [

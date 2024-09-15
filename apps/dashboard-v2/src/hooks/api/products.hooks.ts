@@ -34,6 +34,19 @@ export const useCreateProduct = (options?: UseMutationOptions<ProductResponse, E
   });
 };
 
+export const useUpdateProduct = (id: string, options?: UseMutationOptions<ProductResponse, Error, ProductResponse>) => {
+  return useMutation({
+    mutationFn: (payload: ProductResponse) => client.products.update(id, payload),
+    onSuccess: (data: any, variables: any, context: any) => {
+      queryClient.invalidateQueries({ queryKey: productsQueryKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: productsQueryKeys.detail(data.id) });
+
+      options?.onSuccess?.(data, variables, context);
+    },
+    ...options,
+  });
+};
+
 export const useDeleteProduct = (
   id: string,
   options?: UseMutationOptions<ProductDeleteResponse, FetchError, ProductDeleteResponse>

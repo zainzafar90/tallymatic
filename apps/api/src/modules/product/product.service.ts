@@ -71,13 +71,46 @@ export const getProductById = async (id: string): Promise<IProduct | null> => {
 };
 
 export const updateProductById = async (productId: string, updateBody: UpdateProductReq): Promise<IProduct | null> => {
-  const product = await Product.findByPk(productId);
-  if (!product) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Product not found');
+  const transaction = await getDatabaseInstance().transaction();
+
+  try {
+    const product = await Product.findByPk(productId, { transaction });
+    if (!product) {
+      throw new ApiError(httpStatus.NOT_FOUND, 'Product not found');
+    }
+
+    const { variants, ...productData } = updateBody;
+
+    Object.assign(product, productData);
+    await product.save({ transaction });
+
+    if (variants) {
+      await ProductVariant.destroy({ where: { productId }, transaction });
+
+      if (variants.length > 0) {
+        const variantsWithProductId = variants.map((variant) => ({
+          ...variant,
+          productId,
+        }));
+        await ProductVariant.bulkCreate(variantsWithProductId, { transaction });
+      }
+    }
+
+    const updatedProduct = await Product.findByPk(productId, {
+      include: [
+        { model: ProductVariant, as: 'variants' },
+        { model: Category, as: 'category' },
+      ],
+      transaction,
+    });
+
+    await transaction.commit();
+
+    return updatedProduct.toJSON();
+  } catch (error) {
+    await transaction.rollback();
+    throw error;
   }
-  Object.assign(product, updateBody);
-  await product.save();
-  return product.toJSON();
 };
 
 export const deleteProductById = async (productId: string): Promise<IProduct | null> => {
