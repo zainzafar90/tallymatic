@@ -1,4 +1,4 @@
-import { IProduct } from '@shared';
+import { ICategory, IProduct } from '@shared';
 
 import { TableData } from '@/components/common/table/table-data';
 import { TableListSkeleton } from '@/components/common/table/table-list-selecton';
@@ -11,7 +11,9 @@ import { FetchError } from '@/lib/is-fetch-error';
 import { useProductTableColumns } from '../hooks/use-product-table-columns';
 
 type ProductListTableProps = {
-  results: IProduct[];
+  results: (IProduct & {
+    category: ICategory;
+  })[];
   count: number;
   isLoading: boolean;
   isError: boolean;
