@@ -32,7 +32,7 @@ export const ProductForm = ({ product, isPending, onSubmit, onClose }: ProductFo
     resolver: zodResolver(ProductSchema),
     defaultValues: {
       name: product?.name || '',
-      categoryId: product?.categoryId ?? undefined,
+      categoryId: product?.categoryId ? product?.categoryId : undefined,
       description: product?.description || '',
       status: product?.status || Status.ACTIVE,
       variants: product?.variants.map((variant) => ({

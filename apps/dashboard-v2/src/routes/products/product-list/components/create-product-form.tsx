@@ -13,7 +13,7 @@ export const CreateProductForm = (props: { onClose: () => void }) => {
     await mutateAsync(
       {
         ...data,
-        categoryId: data.categoryId ?? undefined,
+        categoryId: data.categoryId ? data.categoryId : undefined,
         variants: data.variants.map((variant) => ({
           ...variant,
           status: 'active' as Status,

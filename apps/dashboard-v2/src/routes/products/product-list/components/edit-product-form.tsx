@@ -14,7 +14,7 @@ export const EditProductForm = (props: { product: IProduct; onClose: () => void 
       {
         id: props.product.id,
         ...data,
-        categoryId: data.categoryId ?? undefined,
+        categoryId: data.categoryId ? data.categoryId : undefined,
         variants: data.variants.map((variant) => ({
           ...variant,
           status: 'active' as Status,
