@@ -39,7 +39,10 @@ export const queryProducts = async (
   const paginationOptions = buildPaginationOptions(filter, options, wildcardFields);
   const result = await Product.findAndCountAll({
     ...paginationOptions,
-    include: [{ model: ProductVariant, as: 'variants' }],
+    include: [
+      { model: ProductVariant, as: 'variants' },
+      { model: Category, as: 'category' },
+    ],
   });
 
   const results = transformPagination(result.count, result.rows, paginationOptions.offset, paginationOptions.limit);
@@ -48,7 +51,10 @@ export const queryProducts = async (
 
 export const getProductById = async (id: string): Promise<IProduct | null> => {
   const product = await Product.findByPk(id, {
-    include: [{ model: ProductVariant, as: 'variants' }],
+    include: [
+      { model: ProductVariant, as: 'variants' },
+      { model: Category, as: 'category' },
+    ],
   });
   return product ? product.toJSON() : null;
 };

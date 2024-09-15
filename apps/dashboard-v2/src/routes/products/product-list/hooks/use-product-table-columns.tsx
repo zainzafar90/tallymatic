@@ -2,6 +2,8 @@ import { ArrowDown, ArrowUp, ArrowUpDown } from 'lucide-react';
 import { ProductResponse } from '@shared';
 import { createColumnHelper } from '@tanstack/react-table';
 
+import { Badge } from '@/components/ui/badge';
+
 // import { Checkbox } from '@/components/ui/checkbox';
 
 import { ProductActions } from '../components/use-product-table-actions';
@@ -52,7 +54,11 @@ export const useProductTableColumns = () => {
       cell: ({ row }) => <div>{row.getValue('name')}</div>,
       enableHiding: false,
     }),
-
+    columnHelper.accessor((row) => row.category, {
+      id: 'category',
+      header: 'Category',
+      cell: ({ getValue }) => <div>{getValue()?.name || '-'}</div>,
+    }),
     columnHelper.accessor((row) => row.variants.map((v) => v.costPrice), {
       id: 'price',
       header: () => {
@@ -68,6 +74,15 @@ export const useProductTableColumns = () => {
             <small>&#x20A8;</small> {formattedPrice}
           </div>
         );
+      },
+    }),
+    columnHelper.accessor((row) => row.variants.map((v) => v.stock), {
+      id: 'stock',
+      header: 'Stock',
+      cell: ({ getValue }) => {
+        const stocks = getValue();
+        const totalStock = stocks.reduce((acc, stock) => acc + stock, 0);
+        return <div>{totalStock ? <Badge color="lime">Available</Badge> : <Badge color="red">Out of stock</Badge>}</div>;
       },
     }),
     columnHelper.display({

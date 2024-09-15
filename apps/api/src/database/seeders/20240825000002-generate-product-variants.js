@@ -15,7 +15,7 @@ module.exports = {
       sku: `SKU-${index + 1}`,
       price: Math.floor(Math.random() * 1000) + 1,
       costPrice: Math.floor(Math.random() * 1000) + 1,
-      stock: 1,
+      stock: Math.floor(Math.random() * 6),
       status: 'active',
       createdAt: new Date(),
       updatedAt: new Date(),

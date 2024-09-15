@@ -12,11 +12,15 @@ module.exports = {
     const stores = await queryInterface.sequelize.query(`SELECT id FROM stores;`);
     const storeRows = stores[0];
 
+    const categories = await queryInterface.sequelize.query(`SELECT id FROM categories;`);
+    const categoryRows = categories[0];
+
     const products = [];
 
     products.push({
       id: '00000000-0000-4000-8000-000000000001',
       organizationId: organizationRows[0].id,
+      categoryId: categoryRows[0].id,
       storeId: storeRows[0].id,
       name: faker.commerce.productName(),
       description: faker.commerce.productDescription(),
@@ -32,6 +36,7 @@ module.exports = {
       products.push({
         id: uuidv4(),
         organizationId: randomOrganization.id,
+        categoryId: categoryRows[0].id,
         storeId: randomStore.id,
         name: faker.commerce.productName(),
         description: faker.commerce.productDescription(),
