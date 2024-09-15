@@ -7,7 +7,7 @@ import react from '@vitejs/plugin-react';
 
 export default defineConfig({
   root: __dirname,
-  cacheDir: '../node_modules/.vite/dashboard-v2',
+  cacheDir: '../node_modules/.vite/dashboard',
 
   server: {
     port: 4200,
@@ -32,7 +32,7 @@ export default defineConfig({
   // },
 
   build: {
-    outDir: '../../dist/apps/dashboard-v2',
+    outDir: '../../dist/apps/dashboard',
     emptyOutDir: true,
     reportCompressedSize: true,
     commonjsOptions: {
