@@ -5,9 +5,10 @@ import { NoResults } from '@/routes/products/product-list/components/no-results'
 
 interface TableDataProps<TData> {
   table: TanstackTable<TData>;
+  onClearFilters?: () => void;
 }
 
-export function TableData<TData>({ table }: TableDataProps<TData>) {
+export function TableData<TData>({ table, onClearFilters }: TableDataProps<TData>) {
   return (
     <Table dense bleed className="mt-8 [--gutter:theme(spacing.6)] lg:[--gutter:theme(spacing.10)]">
       <TableHead>
@@ -34,7 +35,7 @@ export function TableData<TData>({ table }: TableDataProps<TData>) {
         ) : (
           <TableRow>
             <TableCell colSpan={table.getAllColumns().length} className="h-24 text-center">
-              <NoResults />
+              <NoResults onClearFilters={onClearFilters} />
             </TableCell>
           </TableRow>
         )}

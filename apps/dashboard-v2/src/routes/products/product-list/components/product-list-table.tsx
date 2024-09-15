@@ -1,3 +1,5 @@
+import { useNavigate } from 'react-router-dom';
+
 import { ICategory, IProduct } from '@shared';
 
 import { TableData } from '@/components/common/table/table-data';
@@ -23,6 +25,7 @@ type ProductListTableProps = {
 };
 
 export const ProductListTable = (props: ProductListTableProps) => {
+  const navigate = useNavigate();
   const columns = useProductTableColumns();
 
   const table = useDataTable({
@@ -35,6 +38,10 @@ export const ProductListTable = (props: ProductListTableProps) => {
     enableRowSelection: true,
     globalFilterField: 'name',
   });
+
+  const onClearFilters = () => {
+    navigate('/products');
+  };
 
   if (props.isError) {
     throw props.error;
@@ -61,7 +68,7 @@ export const ProductListTable = (props: ProductListTableProps) => {
         <ToggleColumns table={table} />
       </div>
 
-      <TableData table={table} />
+      <TableData table={table} onClearFilters={onClearFilters} />
       <DataTablePagination table={table} />
     </div>
   );
