@@ -70,7 +70,7 @@ export function CreateProductDialog({
       name: data.name,
       description: data.description,
       status: data.status as Status,
-      categoryId: data.categoryId,
+      categoryId: data.categoryId ? data.categoryId : undefined,
       variants: data.variants.map(
         (variant) =>
           ({

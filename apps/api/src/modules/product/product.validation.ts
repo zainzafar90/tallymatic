@@ -7,7 +7,7 @@ import { createProductVariantBody } from '../product-variant/product-variant.val
 
 const createProductBody: Record<keyof CreateProductReq, any> = {
   name: Joi.string().required(),
-  description: Joi.string().optional(),
+  description: Joi.string().allow('').optional(),
   status: Joi.string().valid(Status.ACTIVE, Status.INACTIVE).required(),
   categoryId: Joi.string().custom(uuid).optional(),
   variants: Joi.array().items(Joi.object().keys(createProductVariantBody)).min(1).required(),
@@ -42,10 +42,10 @@ export const updateProduct = {
   body: Joi.object()
     .keys({
       name: Joi.string(),
-      description: Joi.string(),
+      description: Joi.string().allow('').optional(),
       price: Joi.number().positive(),
       status: Joi.string().valid(Status.ACTIVE, Status.INACTIVE),
-      categoryId: Joi.string().custom(uuid),
+      categoryId: Joi.string().custom(uuid).optional(),
       variants: Joi.array().items(Joi.object().keys(createProductVariantBody)).min(1),
     })
     .min(1),
