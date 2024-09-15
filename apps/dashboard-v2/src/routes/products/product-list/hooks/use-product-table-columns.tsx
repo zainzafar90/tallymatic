@@ -1,7 +1,10 @@
-import { ArrowDown, ArrowUp, ArrowUpDown } from 'lucide-react';
 import { ICategory, ProductResponse } from '@shared';
 import { createColumnHelper } from '@tanstack/react-table';
 
+import { DateCell } from '@/components/table/table-cells/common/date-cell';
+import { SortedHeader } from '@/components/table/table-cells/common/sorted-header';
+import { TextCell, TextHeader } from '@/components/table/table-cells/common/text-cell';
+import { VariantCell } from '@/components/table/table-cells/product/variant-cell';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { parseFloat } from '@/utils/number-utils';
@@ -34,55 +37,22 @@ export const useProductTableColumns = () => {
       enableHiding: false,
     }),
     columnHelper.accessor('name', {
-      header: ({ column }) => {
-        return (
-          <button
-            className="flex items-center space-x-2"
-            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-          >
-            Name
-            {column.getIsSorted() === 'asc' ? (
-              <ArrowDown className="ml-2 h-4 w-4" />
-            ) : column.getIsSorted() === 'desc' ? (
-              <ArrowUp className="ml-2 h-4 w-4" />
-            ) : (
-              <ArrowUpDown className="ml-2 h-4 w-4" />
-            )}
-          </button>
-        );
-      },
-      cell: ({ row }) => <div>{row.getValue('name')}</div>,
+      header: ({ column }) => <SortedHeader text="Name" column={column} />,
+      cell: ({ row }) => <TextCell text={row.getValue('name')} />,
       enableHiding: false,
     }),
     columnHelper.accessor((row) => row.category, {
       id: 'category',
-      header: 'Category',
-      cell: ({ getValue }) => <div>{getValue()?.name || '-'}</div>,
+      header: () => <TextHeader text="Category" />,
+      cell: ({ getValue }) => {
+        const value = getValue();
+        return <TextCell text={value?.name} />;
+      },
       enableSorting: false,
     }),
     columnHelper.accessor((row) => row.variants.map((v) => parseFloat(v.price)), {
       id: 'price',
-      header: () => {
-        return <div className="flex items-center justify-end space-x-2">Price</div>;
-      },
-      cell: ({ getValue }) => {
-        const prices = getValue();
-        const min = Math.min(...prices);
-        const max = Math.max(...prices);
-        const formattedPrice = min === max ? `${min}` : `${min} - ${max}`;
-        return (
-          <div className="text-right font-medium">
-            <small>&#x20A8;</small> {formattedPrice}
-          </div>
-        );
-      },
-      enableSorting: false,
-    }),
-    columnHelper.accessor((row) => row.variants.map((v) => parseFloat(v.costPrice)), {
-      id: 'costPrice',
-      header: () => {
-        return <div className="flex items-center justify-end space-x-2">Cost</div>;
-      },
+      header: () => <TextHeader text="Price" align="right" />,
       cell: ({ getValue }) => {
         const prices = getValue();
         const min = Math.min(...prices);
@@ -98,9 +68,7 @@ export const useProductTableColumns = () => {
     }),
     columnHelper.accessor((row) => row.variants.map((v) => v.stock), {
       id: 'stock',
-      header: () => {
-        return <div className="flex items-center space-x-2">Stock</div>;
-      },
+      header: () => <TextHeader text="Stock" />,
       cell: ({ getValue }) => {
         const stocks = getValue();
         const totalStock = stocks.reduce((acc, stock) => acc + stock, 0);
@@ -112,7 +80,28 @@ export const useProductTableColumns = () => {
       },
       enableSorting: false,
     }),
+    columnHelper.accessor('variants', {
+      id: 'variants',
+      header: () => <TextHeader text="Variants" align="right" />,
+      cell: ({ row }) => {
+        return <VariantCell variants={row.getValue('variants')} />;
+      },
+      enableSorting: false,
+    }),
+    columnHelper.accessor('createdAt', {
+      id: 'createdAt',
+      header: () => <TextHeader text="Created" />,
+      cell: ({ getValue }) => {
+        const value = getValue();
 
+        if (!value) {
+          return;
+        }
+
+        return <DateCell date={value} />;
+      },
+      enableSorting: false,
+    }),
     columnHelper.display({
       id: 'actions',
       enableHiding: false,

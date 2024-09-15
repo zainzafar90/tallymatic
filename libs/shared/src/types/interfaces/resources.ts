@@ -53,6 +53,8 @@ export interface IProduct {
   description?: string;
   status: Status;
   categoryId?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
   variants: IProductVariant[];
 }
 
