@@ -15,7 +15,13 @@ export const createProduct = async (productBody: CreateProductReq): Promise<IPro
   const transaction = await getDatabaseInstance().transaction();
 
   try {
-    const product = await Product.create(productData, { transaction });
+    const product = await Product.create(
+      {
+        ...productData,
+        categoryId: productData.categoryId ?? null,
+      },
+      { transaction }
+    );
 
     if (variants && variants.length > 0) {
       const variantsWithProductId = variants.map((variant) => ({
@@ -81,7 +87,10 @@ export const updateProductById = async (productId: string, updateBody: UpdatePro
 
     const { variants, ...productData } = updateBody;
 
-    Object.assign(product, productData);
+    Object.assign(product, {
+      ...productData,
+      categoryId: productData.categoryId ?? null,
+    });
     await product.save({ transaction });
 
     if (variants) {

@@ -9,9 +9,11 @@ export const CreateProductForm = (props: { onClose: () => void }) => {
   const { mutateAsync, isPending } = useCreateProduct();
 
   const handleSubmit = async (data: ProductFormData) => {
+    console.log(data);
     await mutateAsync(
       {
         ...data,
+        categoryId: data.categoryId ?? undefined,
         variants: data.variants.map((variant) => ({
           ...variant,
           status: 'active' as Status,

@@ -32,7 +32,7 @@ export const ProductForm = ({ product, isPending, onSubmit, onClose }: ProductFo
     resolver: zodResolver(ProductSchema),
     defaultValues: {
       name: product?.name || '',
-      categoryId: product?.categoryId ? product.categoryId : undefined,
+      categoryId: product?.categoryId ?? undefined,
       description: product?.description || '',
       status: product?.status || Status.ACTIVE,
       variants: product?.variants.map((variant) => ({
@@ -114,9 +114,7 @@ export const ProductForm = ({ product, isPending, onSubmit, onClose }: ProductFo
                     <FormLabel>Category</FormLabel>
                     <FormControl>
                       <Select {...field} disabled={isCategoriesLoading}>
-                        <option value="" disabled>
-                          Select a category&hellip;
-                        </option>
+                        <option value="">Select a category&hellip;</option>
                         {categories?.map((category) => (
                           <option key={category.id} value={category.id}>
                             {category.name}
