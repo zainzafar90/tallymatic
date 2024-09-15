@@ -291,30 +291,29 @@ export function CreateProductDialog({
                           );
                         }}
                       />
-                      <div className="flex items-center gap-2">
-                        <FormField
-                          control={form.control}
-                          name={`variants.${index}.sku`}
-                          render={({ field }) => {
-                            return (
-                              <FormItem className="w-full">
-                                <FormLabel>SKU</FormLabel>
-                                <FormControl>
-                                  <Input {...field} readOnly placeholder="Auto-generated SKU" />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            );
-                          }}
-                        />
+                      <FormField
+                        control={form.control}
+                        name={`variants.${index}.sku`}
+                        render={({ field }) => {
+                          return (
+                            <FormItem className="w-full md:w-1/4">
+                              <FormLabel>SKU</FormLabel>
+                              <FormControl>
+                                <Input {...field} readOnly placeholder="Auto-generated SKU" />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          );
+                        }}
+                      />
 
-                        <Fieldset className="space-y-2">
-                          <Label>&nbsp;</Label>
-                          <Button plain onClick={() => removeVariant(index)} disabled={fields.length === 1}>
-                            <CircleMinus className="w-6 h-6 text-red-500" />
-                          </Button>
-                        </Fieldset>
-                      </div>
+                      <Fieldset className="space-y-2">
+                        <Label className="hidden md:inline-flex">&nbsp;</Label>
+                        <Button outline onClick={() => removeVariant(index)} disabled={fields.length === 1} className="">
+                          <CircleMinus className="hidden md:inline-flex text-red-500 w-6 h-6" />
+                          <span className="inline-flex md:hidden text-red-500 text-sm">Remove Variant</span>
+                        </Button>
+                      </Fieldset>
                     </div>
                     <div className="flex flex-col sm:flex-row gap-x-4 w-full flex-1"></div>
                   </FieldGroup>

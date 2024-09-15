@@ -3,9 +3,8 @@ import { ProductResponse } from '@shared';
 import { createColumnHelper } from '@tanstack/react-table';
 
 import { Badge } from '@/components/ui/badge';
+import { Checkbox } from '@/components/ui/checkbox';
 import { parseFloat } from '@/utils/number-utils';
-
-// import { Checkbox } from '@/components/ui/checkbox';
 
 import { ProductActions } from '../components/use-product-table-actions';
 
@@ -13,27 +12,27 @@ const columnHelper = createColumnHelper<ProductResponse>();
 
 export const useProductTableColumns = () => {
   return [
-    // columnHelper.display({
-    //   id: 'select',
-    //   header: ({ table }) => (
-    //     <Checkbox
-    //       className="w-0"
-    //       checked={table.getIsAllPageRowsSelected()}
-    //       onChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-    //       aria-label="Select all"
-    //     />
-    //   ),
-    //   cell: ({ row }) => (
-    //     <Checkbox
-    //       className="w-0"
-    //       checked={row.getIsSelected()}
-    //       onChange={(value) => row.toggleSelected(!!value)}
-    //       aria-label="Select row"
-    //     />
-    //   ),
-    //   enableSorting: false,
-    //   enableHiding: false,
-    // }),
+    columnHelper.display({
+      id: 'select',
+      header: ({ table }) => (
+        <Checkbox
+          className="w-0"
+          checked={table.getIsAllPageRowsSelected()}
+          onChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          aria-label="Select all"
+        />
+      ),
+      cell: ({ row }) => (
+        <Checkbox
+          className="w-0"
+          checked={row.getIsSelected()}
+          onChange={(value) => row.toggleSelected(!!value)}
+          aria-label="Select row"
+        />
+      ),
+      enableSorting: false,
+      enableHiding: false,
+    }),
     columnHelper.accessor('name', {
       header: ({ column }) => {
         return (
