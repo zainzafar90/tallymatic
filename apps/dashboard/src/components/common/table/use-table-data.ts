@@ -101,6 +101,7 @@ export const useDataTable = <TData>({
       return newSearch;
     });
 
+    setRowSelection({});
     setPagination(state);
     return state;
   };
