@@ -46,9 +46,7 @@ export function TableData<TData>({ table, onClearFilters }: TableDataProps<TData
         <CommandBar.Bar>
           <CommandBar.Value>{table.getSelectedRowModel().rows.length} selected</CommandBar.Value>
           <CommandBar.Seperator />
-          <CommandBar.Command action={() => console.log('Deleted')} label="Delete" shortcut="d" />
-          <CommandBar.Seperator />
-          <CommandBar.Command action={() => console.log('Edit')} label="Edit" shortcut="e" />
+          <CommandBar.Command action={() => alert('Deleted')} label="Delete" shortcut="d" />
         </CommandBar.Bar>
       </CommandBar>
     </Table>
