@@ -61,7 +61,7 @@ Bar.displayName = 'CommandBar.Bar';
 
 const Seperator = React.forwardRef<HTMLDivElement, Omit<React.ComponentPropsWithoutRef<'div'>, 'children'>>(
   ({ className, ...props }, ref) => {
-    return <div ref={ref} className={cn('bg-border/30 h-10 w-px', className)} {...props} />;
+    return <div ref={ref} className={cn('bg-border/20 h-10 w-px', className)} {...props} />;
   }
 );
 Seperator.displayName = 'CommandBar.Seperator';
@@ -97,8 +97,8 @@ const Command = React.forwardRef<HTMLButtonElement, CommandProps>(
         ref={ref}
         className={cn(
           'bg-foreground text-background',
-          'hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent dark:hover:text-accent-foreground',
-          'focus:bg-accent focus:text-accent-foreground dark:focus:bg-accent dark:focus:text-accent-foreground',
+          'hover:bg-background/15 hover:text-background',
+          'focus:bg-background/15 focus:text-background',
           'flex items-center gap-x-2 px-3 py-2.5 outline-none',
           'text-xs font-normal',
           'last-of-type:-mr-1 last-of-type:pr-4',

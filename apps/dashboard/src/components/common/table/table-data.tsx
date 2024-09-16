@@ -1,10 +1,11 @@
+import { Fragment } from 'react';
+
 import { toast } from 'sonner';
 import { flexRender, Table as TanstackTable } from '@tanstack/react-table';
 
 import { usePrompt } from '@/components/common/use-prompt';
 import { CommandBar } from '@/components/ui/command-bar';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { useBulkDeleteProducts } from '@/hooks/api/products.hooks';
 import { NoResults } from '@/routes/products/product-list/components/no-results';
 
 interface TableDataProps<TData> {
@@ -19,10 +20,32 @@ export function TableData<TData>({ table, onClearFilters, onBulkDelete }: TableD
   const handleBulkDelete = async () => {
     const selectedRows = table.getSelectedRowModel().rows;
     const selectedIds = selectedRows.map((row: any) => row.original.id);
+    const selectedNames = selectedRows.map((row: any) => row.original.name || 'Untitled');
+
+    const namesList = selectedNames.map((name) => `• ${name}`).join('\n');
+    const maxNamesToShow = 5;
+    const truncatedNamesList =
+      selectedNames.length > maxNamesToShow
+        ? namesList.split('\n').slice(0, maxNamesToShow).join('\n') +
+          `\n• ... and ${selectedNames.length - maxNamesToShow} more`
+        : namesList;
 
     const confirmed = await prompt({
       title: 'Are you sure?',
-      description: `You are about to delete ${selectedRows.length} item(s). This action cannot be undone.`,
+      description: (
+        <Fragment>
+          You are about to delete {selectedRows.length} item(s):
+          <br />
+          {truncatedNamesList.split('\n').map((name, index) => (
+            <Fragment key={index}>
+              {name}
+              <br />
+            </Fragment>
+          ))}
+          <br />
+          <span className="text-destructive">This action cannot be undone.</span>
+        </Fragment>
+      ),
       confirmText: 'Delete',
       cancelText: 'Cancel',
       destructive: true,
