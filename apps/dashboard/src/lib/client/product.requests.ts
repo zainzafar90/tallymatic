@@ -22,10 +22,15 @@ async function deleteProduct(id: string) {
   return deleteRequest<ProductDeleteResponse>(`/v1/products/${id}`);
 }
 
+async function bulkDeleteProducts(ids: string[]) {
+  return deleteRequest<ProductDeleteResponse[]>(`/v1/products`, { productIds: ids });
+}
+
 export const products = {
   list: listProducts,
   retrieve: retrieveProduct,
   create: createProduct,
   update: updateProduct,
   delete: deleteProduct,
+  bulkDelete: bulkDeleteProducts,
 };

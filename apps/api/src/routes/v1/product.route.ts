@@ -12,7 +12,8 @@ const router: Router = express.Router();
 router
   .route('/')
   .post(auth(), validate(productValidation.createProduct), productController.createProduct)
-  .get(auth(), validate(productValidation.getProducts), productController.getProducts);
+  .get(auth(), validate(productValidation.getProducts), productController.getProducts)
+  .delete(auth(), validate(productValidation.bulkDeleteProducts), productController.bulkDeleteProducts);
 
 router
   .route('/:productId')
@@ -167,6 +168,39 @@ export default router;
  *         $ref: '#/components/responses/Unauthorized'
  *       "403":
  *         $ref: '#/components/responses/Forbidden'
+ *
+ *   delete:
+ *     summary: Delete multiple products
+ *     description: Delete multiple products by IDs.
+ *     tags: [Products]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               ids:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                   format: uuid
+ *             example:
+ *               ids: [
+ *                 "00000000-0000-4000-8000-000000000001",
+ *                 "00000000-0000-4000-8000-000000000002"
+ *               ]
+ *     responses:
+ *       "204":
+ *         description: No content
+ *       "400":
+ *         $ref: '#/components/responses/BadRequest'
+ *       "401":
+ *         $ref: '#/components/responses/Unauthorized'
+ *       "403":
+ *         $ref: '#/components/responses/Forbidden'
  */
 
 /**
@@ -275,4 +309,6 @@ export default router;
  *         $ref: '#/components/responses/Forbidden'
  *       "404":
  *         $ref: '#/components/responses/NotFound'
+ *
+ *
  */

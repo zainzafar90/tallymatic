@@ -1,7 +1,10 @@
+import { toast } from 'sonner';
 import { flexRender, Table as TanstackTable } from '@tanstack/react-table';
 
+import { usePrompt } from '@/components/common/use-prompt';
 import { CommandBar } from '@/components/ui/command-bar';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { useBulkDeleteProducts } from '@/hooks/api/products.hooks';
 import { NoResults } from '@/routes/products/product-list/components/no-results';
 
 interface TableDataProps<TData> {
@@ -10,6 +13,38 @@ interface TableDataProps<TData> {
 }
 
 export function TableData<TData>({ table, onClearFilters }: TableDataProps<TData>) {
+  const { prompt, PromptDialog } = usePrompt();
+  const { mutateAsync } = useBulkDeleteProducts();
+
+  const handleBulkDelete = async () => {
+    const selectedRows = table.getSelectedRowModel().rows;
+
+    const selectedIds = selectedRows.map((row: any) => row.original.id);
+
+    const confirmed = await prompt({
+      title: 'Are you sure?',
+      description: `You are about to delete ${selectedRows.length} product(s). This action cannot be undone.`,
+      confirmText: 'Delete',
+      cancelText: 'Cancel',
+      destructive: true,
+    });
+
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      await mutateAsync(selectedIds);
+      toast.success(`${selectedRows.length} product(s) deleted successfully`);
+      table.resetRowSelection();
+    } catch (error) {
+      toast.error('Failed to delete products', {
+        description: 'There was an error while deleting the products. Please try again.',
+        closeButton: true,
+      });
+    }
+  };
+
   return (
     <Table bleed className="mt-8 [--gutter:theme(spacing.6)] lg:[--gutter:theme(spacing.10)]">
       <TableHead>
@@ -46,16 +81,11 @@ export function TableData<TData>({ table, onClearFilters }: TableDataProps<TData
         <CommandBar.Bar>
           <CommandBar.Value>{table.getSelectedRowModel().rows.length} selected</CommandBar.Value>
           <CommandBar.Seperator />
-          <CommandBar.Command
-            action={() => {
-              alert(`${table.getSelectedRowModel().rows.length} Deleted`);
-              table.resetRowSelection();
-            }}
-            label="Delete"
-            shortcut="d"
-          />
+          <CommandBar.Command action={handleBulkDelete} label="Delete" shortcut="d" />
         </CommandBar.Bar>
       </CommandBar>
+
+      <PromptDialog />
     </Table>
   );
 }

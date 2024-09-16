@@ -92,8 +92,12 @@ export async function patchRequest<TRes, TPayload extends Record<string, any> | 
   });
 }
 
-export async function deleteRequest<TRes>(path: string, options?: Omit<RequestInit, 'body' | 'method'>): Promise<TRes> {
-  return makeRequest<TRes, undefined, undefined>(path, undefined, undefined, {
+export async function deleteRequest<TRes, TPayload extends Record<string, any> | undefined = {}>(
+  path: string,
+  payload?: TPayload,
+  options?: Omit<RequestInit, 'method'>
+): Promise<TRes> {
+  return makeRequest<TRes, Record<string, any>, undefined>(path, payload, undefined, {
     ...options,
     method: 'DELETE',
   });

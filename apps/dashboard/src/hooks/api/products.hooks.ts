@@ -62,3 +62,14 @@ export const useDeleteProduct = (
     ...options,
   });
 };
+
+export const useBulkDeleteProducts = (options?: UseMutationOptions<ProductDeleteResponse[], FetchError, string[]>) => {
+  return useMutation({
+    mutationFn: (ids: string[]) => client.products.bulkDelete(ids),
+    onSuccess: (data, variables, context) => {
+      queryClient.invalidateQueries({ queryKey: productsQueryKeys.lists() });
+      options?.onSuccess?.(data, variables, context);
+    },
+    ...options,
+  });
+};

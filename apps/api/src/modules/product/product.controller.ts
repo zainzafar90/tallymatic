@@ -63,3 +63,19 @@ export const deleteProduct = catchAsync(async (req: Request, res: Response) => {
     res.status(httpStatus.OK).send({});
   }
 });
+
+export const bulkDeleteProducts = catchAsync(async (req: Request, res: Response) => {
+  const isAllowed = permissionService.checkPermissions(req.user.role, 'delete', 'products');
+  if (!isAllowed) {
+    throw new ApiError(httpStatus.FORBIDDEN, 'You do not have permission to delete products');
+  }
+
+  const productIds = req.body.productIds;
+
+  if (!Array.isArray(productIds) || productIds.length === 0) {
+    return res.status(400).json({ message: 'Invalid input: productIds must be a non-empty array' });
+  }
+
+  await productService.bulkDeleteProducts(productIds);
+  res.status(httpStatus.OK).send({});
+});

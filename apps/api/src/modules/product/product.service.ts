@@ -130,3 +130,30 @@ export const deleteProductById = async (productId: string): Promise<IProduct | n
   await product.destroy();
   return product.toJSON();
 };
+
+export const bulkDeleteProducts = async (productIds: string[]): Promise<IProduct[]> => {
+  const transaction = await getDatabaseInstance().transaction();
+  try {
+    const products = await Product.findAll({
+      where: { id: productIds },
+      transaction,
+    });
+
+    if (products.length !== productIds.length) {
+      throw new Error('One or more product IDs are invalid');
+    }
+
+    await Product.destroy({
+      where: { id: productIds },
+      transaction,
+    });
+
+    await transaction.commit();
+
+    return products.map((product) => product.toJSON());
+  } catch (error) {
+    if (transaction) await transaction.rollback();
+    console.error('Error in bulkDeleteProducts:', error);
+    throw error;
+  }
+};
