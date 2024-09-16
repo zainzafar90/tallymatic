@@ -5,8 +5,6 @@ import config from '@/config/config';
 import authRoute from './auth.route';
 import categoryRoute from './category.route';
 import organizationRoute from './organization.route';
-// import productOptionRoute from './product-option.route';
-// import productVariantRoute from './product-variant.route';
 import productRoute from './product.route';
 import storeRoute from './store.route';
 import docsRoute from './swagger.route';
@@ -40,14 +38,6 @@ const defaultIRoute: IRoute[] = [
     path: '/products',
     route: productRoute,
   },
-  // {
-  //   path: '/product-variants',
-  //   route: productVariantRoute,
-  // },
-  // {
-  //   path: '/product-options',
-  //   route: productOptionRoute,
-  // },
   {
     path: '/categories',
     route: categoryRoute,

@@ -129,33 +129,6 @@ components:
         price: 1099.99
         status: active
 
-    ProductOption:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        productId:
-          type: string
-          format: uuid
-        name:
-          type: string
-        description:
-          type: string
-        priceModifier:
-          type: number
-          format: float
-        status:
-          type: string
-          enum: [active, inactive]
-      example:
-        id: 00000000-0000-4000-8000-000000000001
-        productId: 00000000-0000-4000-8000-000000000002
-        name: Extended Warranty
-        description: 2-year extended warranty
-        priceModifier: 99.99
-        status: active
-
     Organization:
       type: object
       properties:

@@ -4,14 +4,10 @@
 
 import {
   CreateProductDTO,
-  CreateProductOptionDTO,
-  CreateProductTypeDTO,
   CreateProductVariantDTO,
   CreateStoreDTO,
   CreateUserDTO,
   UpdateProductDTO,
-  UpdateProductOptionDTO,
-  UpdateProductTypeDTO,
   UpdateProductVariantDTO,
   UpdateStoreDTO,
   UpdateUserDTO,
@@ -27,14 +23,6 @@ export type CreateUserReq = CreateUserDTO;
 // Product
 export type UpdateProductReq = UpdateProductDTO;
 export type CreateProductReq = CreateProductDTO;
-
-// Product Type
-export type UpdateProductTypeReq = UpdateProductTypeDTO;
-export type CreateProductTypeReq = CreateProductTypeDTO;
-
-// Product Option
-export type UpdateProductOptionReq = UpdateProductOptionDTO;
-export type CreateProductOptionReq = CreateProductOptionDTO;
 
 // Product Variant
 export type CreateProductVariantReq = CreateProductVariantDTO;

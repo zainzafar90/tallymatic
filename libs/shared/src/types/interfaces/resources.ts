@@ -66,14 +66,6 @@ export interface ICategory {
   status: Status;
 }
 
-export interface IProductOption {
-  id?: string;
-  name: string;
-  description?: string;
-  priceModifier: number;
-  status: Status;
-}
-
 export interface IProductVariant {
   id?: string;
   name: string;
