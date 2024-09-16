@@ -35,6 +35,9 @@ export const useProductTableColumns = () => {
       ),
       enableSorting: false,
       enableHiding: false,
+      meta: {
+        className: 'hidden sm:table-cell',
+      },
     }),
     columnHelper.accessor('name', {
       header: ({ column }) => <SortedHeader text="Name" column={column} />,
@@ -49,6 +52,9 @@ export const useProductTableColumns = () => {
         return <TextCell text={value?.name} />;
       },
       enableSorting: false,
+      meta: {
+        className: 'hidden sm:table-cell',
+      },
     }),
     columnHelper.accessor((row) => row.variants.map((v) => parseFloat(v.price)), {
       id: 'price',
@@ -79,6 +85,9 @@ export const useProductTableColumns = () => {
         );
       },
       enableSorting: false,
+      meta: {
+        className: 'hidden sm:table-cell',
+      },
     }),
     columnHelper.accessor('variants', {
       id: 'variants',
@@ -87,6 +96,9 @@ export const useProductTableColumns = () => {
         return <VariantCell variants={row.getValue('variants')} />;
       },
       enableSorting: false,
+      meta: {
+        className: 'hidden md:table-cell',
+      },
     }),
     columnHelper.accessor('createdAt', {
       id: 'createdAt',
@@ -101,6 +113,9 @@ export const useProductTableColumns = () => {
         return <DateCell date={value} />;
       },
       enableSorting: false,
+      meta: {
+        className: 'hidden xl:table-cell',
+      },
     }),
     columnHelper.display({
       id: 'actions',

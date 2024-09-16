@@ -7,6 +7,7 @@ import { usePrompt } from '@/components/common/use-prompt';
 import { CommandBar } from '@/components/ui/command-bar';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { NoResults } from '@/routes/products/product-list/components/no-results';
+import { cn } from '@/utils/cn';
 
 interface TableDataProps<TData> {
   table: TanstackTable<TData>;
@@ -73,7 +74,7 @@ export function TableData<TData>({ table, onClearFilters, onBulkDelete }: TableD
         {table.getHeaderGroups().map((headerGroup) => (
           <TableRow key={headerGroup.id}>
             {headerGroup.headers.map((header) => (
-              <TableHeader key={header.id}>
+              <TableHeader key={header.id} className={cn((header.column.columnDef.meta as any)?.className)}>
                 {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
               </TableHeader>
             ))}
@@ -86,7 +87,9 @@ export function TableData<TData>({ table, onClearFilters, onBulkDelete }: TableD
           table.getRowModel().rows.map((row) => (
             <TableRow key={row.id} className={row.getIsSelected() ? 'bg-zinc-950/[2.5%] dark:bg-white/[2.5%]' : ''}>
               {row.getVisibleCells().map((cell) => (
-                <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
+                <TableCell key={cell.id} className={cn((cell.column.columnDef.meta as any)?.className)}>
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </TableCell>
               ))}
             </TableRow>
           ))
