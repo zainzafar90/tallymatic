@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 
+import { toast } from 'sonner';
 import { ICategory, IProduct } from '@shared';
 
 import { TableData } from '@/components/common/table/table-data';
@@ -9,6 +10,7 @@ import { ToggleColumns } from '@/components/common/table/toggle-columns';
 import { useDataTable } from '@/components/common/table/use-table-data';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { useBulkDeleteProducts } from '@/hooks/api/products.hooks';
 import { FetchError } from '@/lib/is-fetch-error';
 
 import { useProductTableColumns } from '../hooks/use-product-table-columns';
@@ -28,6 +30,7 @@ type ProductListTableProps = {
 export const ProductListTable = (props: ProductListTableProps) => {
   const navigate = useNavigate();
   const columns = useProductTableColumns();
+  const { mutateAsync } = useBulkDeleteProducts();
 
   const table = useDataTable({
     columns,
@@ -42,6 +45,17 @@ export const ProductListTable = (props: ProductListTableProps) => {
 
   const onClearFilters = () => {
     navigate('/products');
+  };
+
+  const handleBulkDelete = async (selectedIds: string[]) => {
+    try {
+      await mutateAsync(selectedIds);
+    } catch (error) {
+      toast.error('Failed to delete products', {
+        description: 'There was an error while deleting the products. Please try again.',
+        closeButton: true,
+      });
+    }
   };
 
   if (props.isError) {
@@ -75,7 +89,7 @@ export const ProductListTable = (props: ProductListTableProps) => {
         )}
       </div>
 
-      <TableData table={table} onClearFilters={onClearFilters} />
+      <TableData table={table} onClearFilters={onClearFilters} onBulkDelete={handleBulkDelete} />
       <DataTablePagination table={table} />
     </div>
   );

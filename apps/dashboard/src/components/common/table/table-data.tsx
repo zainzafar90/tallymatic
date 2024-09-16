@@ -10,20 +10,19 @@ import { NoResults } from '@/routes/products/product-list/components/no-results'
 interface TableDataProps<TData> {
   table: TanstackTable<TData>;
   onClearFilters?: () => void;
+  onBulkDelete?: (selectedIds: string[]) => Promise<void>;
 }
 
-export function TableData<TData>({ table, onClearFilters }: TableDataProps<TData>) {
+export function TableData<TData>({ table, onClearFilters, onBulkDelete }: TableDataProps<TData>) {
   const { prompt, PromptDialog } = usePrompt();
-  const { mutateAsync } = useBulkDeleteProducts();
 
   const handleBulkDelete = async () => {
     const selectedRows = table.getSelectedRowModel().rows;
-
     const selectedIds = selectedRows.map((row: any) => row.original.id);
 
     const confirmed = await prompt({
       title: 'Are you sure?',
-      description: `You are about to delete ${selectedRows.length} product(s). This action cannot be undone.`,
+      description: `You are about to delete ${selectedRows.length} item(s). This action cannot be undone.`,
       confirmText: 'Delete',
       cancelText: 'Cancel',
       destructive: true,
@@ -34,12 +33,12 @@ export function TableData<TData>({ table, onClearFilters }: TableDataProps<TData
     }
 
     try {
-      await mutateAsync(selectedIds);
-      toast.success(`${selectedRows.length} product(s) deleted successfully`);
+      await onBulkDelete?.(selectedIds);
+      toast.success(`${selectedRows.length} item(s) deleted successfully`);
       table.resetRowSelection();
     } catch (error) {
-      toast.error('Failed to delete products', {
-        description: 'There was an error while deleting the products. Please try again.',
+      toast.error('Failed to delete items', {
+        description: 'There was an error while deleting the items. Please try again.',
         closeButton: true,
       });
     }
