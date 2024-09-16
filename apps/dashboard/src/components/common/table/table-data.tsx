@@ -1,5 +1,6 @@
 import { flexRender, Table as TanstackTable } from '@tanstack/react-table';
 
+import { CommandBar } from '@/components/ui/command-bar';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { NoResults } from '@/routes/products/product-list/components/no-results';
 
@@ -40,6 +41,16 @@ export function TableData<TData>({ table, onClearFilters }: TableDataProps<TData
           </TableRow>
         )}
       </TableBody>
+
+      <CommandBar open={table.getSelectedRowModel().rows.length > 0}>
+        <CommandBar.Bar>
+          <CommandBar.Value>{table.getSelectedRowModel().rows.length} selected</CommandBar.Value>
+          <CommandBar.Seperator />
+          <CommandBar.Command action={() => console.log('Deleted')} label="Delete" shortcut="d" />
+          <CommandBar.Seperator />
+          <CommandBar.Command action={() => console.log('Edit')} label="Edit" shortcut="e" />
+        </CommandBar.Bar>
+      </CommandBar>
     </Table>
   );
 }
