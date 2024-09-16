@@ -7,6 +7,7 @@ import { TableListSkeleton } from '@/components/common/table/table-list-selecton
 import { DataTablePagination } from '@/components/common/table/table-pagination';
 import { ToggleColumns } from '@/components/common/table/toggle-columns';
 import { useDataTable } from '@/components/common/table/use-table-data';
+import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { FetchError } from '@/lib/is-fetch-error';
 
@@ -66,6 +67,12 @@ export const ProductListTable = (props: ProductListTableProps) => {
         />
 
         <ToggleColumns table={table} />
+
+        {props.hasResults && (
+          <Button plain onClick={onClearFilters}>
+            Clear Filters
+          </Button>
+        )}
       </div>
 
       <TableData table={table} onClearFilters={onClearFilters} />

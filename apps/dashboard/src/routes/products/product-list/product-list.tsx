@@ -23,7 +23,7 @@ export const ProductList = () => {
     placeholderData: keepPreviousData,
   });
 
-  const hasFilters = Object.keys(raw).some((key) => key !== 'offset' && key !== 'limit');
+  const hasFiltersEnabled = Object.values(raw).some((value) => Boolean(value));
 
   return (
     <>
@@ -40,7 +40,7 @@ export const ProductList = () => {
         results={results}
         isError={isError}
         isLoading={isLoading}
-        hasResults={hasFilters}
+        hasResults={hasFiltersEnabled}
       />
 
       <CreateProductDialog isOpen={createOpen} onClose={closeCreateModal} />
