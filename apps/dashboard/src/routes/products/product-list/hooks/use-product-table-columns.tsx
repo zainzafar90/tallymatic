@@ -23,6 +23,7 @@ export const useProductTableColumns = () => {
           checked={table.getIsAllPageRowsSelected()}
           onChange={(value) => table.toggleAllPageRowsSelected(!!value)}
           aria-label="Select all"
+          indeterminate={table.getIsSomePageRowsSelected() && !table.getIsAllPageRowsSelected()}
         />
       ),
       cell: ({ row }) => (

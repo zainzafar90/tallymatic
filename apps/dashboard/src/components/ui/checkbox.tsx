@@ -125,7 +125,7 @@ export function Checkbox({
     <Headless.Checkbox data-slot="control" {...props} className={cn(className, 'group inline-flex focus:outline-none')}>
       <span className={cn([base, colors[color]])}>
         <svg
-          className="size-4 stroke-[--checkbox-check] opacity-0 group-data-[checked]:opacity-100 sm:h-3.5 sm:w-3.5"
+          className="size-4 stroke-[--checkbox-check] opacity-0 group-data-[checked]:opacity-100 group-data-[indeterminate]:opacity-100 sm:h-3.5 sm:w-3.5"
           viewBox="0 0 14 14"
           fill="none"
         >
