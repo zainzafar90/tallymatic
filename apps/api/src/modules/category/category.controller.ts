@@ -25,7 +25,7 @@ export const getCategories = catchAsync(async (req: Request, res: Response) => {
   }
 
   const filter = pick(req.query, ['name', 'parentCategoryId', 'status']);
-  const options: IOptions = pick(req.query, ['sortBy', 'limit', 'offset', 'projectBy']);
+  const options: IOptions = pick(req.query, ['sortBy', 'limit', 'offset', 'projectBy', 'includeDeleted']);
   const wildcardFields = ['name'];
   const result = await categoryService.queryCategories(filter, options, wildcardFields);
   res.send(result);
@@ -33,7 +33,8 @@ export const getCategories = catchAsync(async (req: Request, res: Response) => {
 
 export const getCategory = catchAsync(async (req: Request, res: Response) => {
   if (typeof req.params['categoryId'] === 'string') {
-    const category = await categoryService.getCategoryById(req.params['categoryId']);
+    const includeDeleted = req.query.includeDeleted === 'true';
+    const category = await categoryService.getCategoryById(req.params['categoryId'], includeDeleted);
     if (!category) {
       throw new ApiError(httpStatus.NOT_FOUND, 'Category not found');
     }
@@ -61,4 +62,20 @@ export const deleteCategory = catchAsync(async (req: Request, res: Response) => 
     await categoryService.deleteCategoryById(req.params['categoryId']);
     res.status(httpStatus.NO_CONTENT).send();
   }
+});
+
+export const bulkDeteteCategories = catchAsync(async (req: Request, res: Response) => {
+  const isAllowed = permissionService.checkPermissions(req.user.role, 'delete', 'categories');
+  if (!isAllowed) {
+    throw new ApiError(httpStatus.FORBIDDEN, 'You do not have permission to delete categories');
+  }
+
+  const categoryIds = req.body.categoryIds;
+
+  if (!Array.isArray(categoryIds) || categoryIds.length === 0) {
+    return res.status(400).json({ message: 'Invalid input: categoryIds must be a non-empty array' });
+  }
+
+  await categoryService.bulkDeleteCategories(categoryIds);
+  res.status(httpStatus.OK).send({});
 });

@@ -25,12 +25,16 @@ export const getCategories = {
     projectBy: Joi.string(),
     limit: Joi.number().integer(),
     offset: Joi.number().integer(),
+    includeDeleted: Joi.boolean(),
   }),
 };
 
 export const getCategory = {
   params: Joi.object().keys({
     categoryId: Joi.string().custom(uuid),
+  }),
+  query: Joi.object().keys({
+    includeDeleted: Joi.boolean(),
   }),
 };
 
@@ -52,5 +56,11 @@ export const updateCategory = {
 export const deleteCategory = {
   params: Joi.object().keys({
     categoryId: Joi.string().custom(uuid),
+  }),
+};
+
+export const bulkDeleteCategories = {
+  body: Joi.object().keys({
+    categoryIds: Joi.array().items(Joi.string().custom(uuid)).min(1).required(),
   }),
 };

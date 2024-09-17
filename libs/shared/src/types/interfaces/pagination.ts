@@ -4,4 +4,5 @@ export interface IOptions {
   populate?: string;
   limit?: number;
   offset?: number;
+  includeDeleted?: boolean;
 }

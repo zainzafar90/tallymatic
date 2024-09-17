@@ -20,6 +20,7 @@ import { Product } from '../product';
 @Table({
   timestamps: true,
   tableName: 'categories',
+  paranoid: true,
 })
 export class Category extends Model {
   @IsUUID(4)
@@ -66,4 +67,10 @@ export class Category extends Model {
 
   @HasMany(() => Product)
   products: Product[];
+
+  @Column({
+    type: DataType.DATE,
+    allowNull: true,
+  })
+  deletedAt: Date;
 }

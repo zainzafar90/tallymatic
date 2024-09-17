@@ -7,6 +7,8 @@ import { FetchError } from '@/lib/is-fetch-error';
 import { queryClient } from '@/lib/query-client';
 import { queryKeysFactory } from '@/lib/query-key-factory';
 
+import { productsQueryKeys } from './products.hooks';
+
 const CATEGORIES_QUERY_KEY = 'categories' as const;
 export const categoriesQueryKeys = queryKeysFactory(CATEGORIES_QUERY_KEY);
 
@@ -57,11 +59,13 @@ export const useUpdateCategory = (id: string, options?: UseMutationOptions<Categ
   });
 };
 
-export const useDeleteCategory = (categoryId: string, options?: UseMutationOptions<void, Error, void>) => {
+export const useDeleteCategory = (id: string, options?: UseMutationOptions<void, Error, void>) => {
   return useMutation({
-    mutationFn: () => client.categories.delete(categoryId),
+    mutationFn: () => client.categories.delete(id),
     onSuccess: (data: any, variables: any, context: any) => {
       queryClient.invalidateQueries({ queryKey: categoriesQueryKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: categoriesQueryKeys.detail(id) });
+      queryClient.invalidateQueries({ queryKey: productsQueryKeys.lists() });
       options?.onSuccess?.(data, variables, context);
     },
     ...options,
@@ -73,6 +77,7 @@ export const useBulkDeleteCategories = (options?: UseMutationOptions<void, Error
     mutationFn: (categoryIds: string[]) => client.categories.bulkDelete(categoryIds),
     onSuccess: (data: any, variables: any, context: any) => {
       queryClient.invalidateQueries({ queryKey: categoriesQueryKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: productsQueryKeys.lists() });
       options?.onSuccess?.(data, variables, context);
     },
     ...options,
