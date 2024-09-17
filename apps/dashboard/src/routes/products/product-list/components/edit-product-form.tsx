@@ -9,7 +9,6 @@ export const EditProductForm = (props: { product: IProduct; onClose: () => void 
   const { mutateAsync, isPending } = useUpdateProduct(props.product.id);
 
   const handleSubmit = async (data: ProductFormData) => {
-    console.log(data);
     await mutateAsync(
       {
         id: props.product.id,

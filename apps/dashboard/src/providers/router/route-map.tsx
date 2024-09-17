@@ -74,6 +74,18 @@ export const RouteMap: RouteObject[] = [
               },
             ],
           },
+          {
+            path: '/categories',
+            handle: {
+              crumb: () => 'Categories',
+            },
+            children: [
+              {
+                path: '',
+                lazy: () => import('../../routes/categories/category-list'),
+              },
+            ],
+          },
         ],
       },
     ],

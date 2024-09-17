@@ -1,8 +1,10 @@
-import { CategoryListResponse, CategoryResponse } from '@shared';
-import { QueryKey, useQuery, UseQueryOptions } from '@tanstack/react-query';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { CategoryListResponse, CategoryResponse, CreateCategoryReq, UpdateCategoryReq } from '@shared';
+import { QueryKey, useMutation, UseMutationOptions, useQuery, UseQueryOptions } from '@tanstack/react-query';
 
 import { client } from '@/lib/client';
 import { FetchError } from '@/lib/is-fetch-error';
+import { queryClient } from '@/lib/query-client';
 import { queryKeysFactory } from '@/lib/query-key-factory';
 
 const CATEGORIES_QUERY_KEY = 'categories' as const;
@@ -28,6 +30,51 @@ export const useCategory = (
   return useQuery({
     queryFn: () => client.categories.retrieve(id),
     queryKey: categoriesQueryKeys.detail(id),
+    ...options,
+  });
+};
+
+export const useCreateCategory = (options?: UseMutationOptions<CategoryResponse, Error, CreateCategoryReq>) => {
+  return useMutation({
+    mutationFn: (payload: CreateCategoryReq) => client.categories.create(payload),
+    onSuccess: (data: any, variables: any, context: any) => {
+      queryClient.invalidateQueries({ queryKey: categoriesQueryKeys.lists() });
+      options?.onSuccess?.(data, variables, context);
+    },
+    ...options,
+  });
+};
+
+export const useUpdateCategory = (id: string, options?: UseMutationOptions<CategoryResponse, Error, UpdateCategoryReq>) => {
+  return useMutation({
+    mutationFn: (payload: UpdateCategoryReq) => client.categories.update(id, payload),
+    onSuccess: (data: any, variables: any, context: any) => {
+      queryClient.invalidateQueries({ queryKey: categoriesQueryKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: categoriesQueryKeys.detail(id) });
+      options?.onSuccess?.(data, variables, context);
+    },
+    ...options,
+  });
+};
+
+export const useDeleteCategory = (categoryId: string, options?: UseMutationOptions<void, Error, void>) => {
+  return useMutation({
+    mutationFn: () => client.categories.delete(categoryId),
+    onSuccess: (data: any, variables: any, context: any) => {
+      queryClient.invalidateQueries({ queryKey: categoriesQueryKeys.lists() });
+      options?.onSuccess?.(data, variables, context);
+    },
+    ...options,
+  });
+};
+
+export const useBulkDeleteCategories = (options?: UseMutationOptions<void, Error, string[]>) => {
+  return useMutation({
+    mutationFn: (categoryIds: string[]) => client.categories.bulkDelete(categoryIds),
+    onSuccess: (data: any, variables: any, context: any) => {
+      queryClient.invalidateQueries({ queryKey: categoriesQueryKeys.lists() });
+      options?.onSuccess?.(data, variables, context);
+    },
     ...options,
   });
 };

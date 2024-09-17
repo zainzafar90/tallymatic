@@ -9,7 +9,6 @@ export const CreateProductForm = (props: { onClose: () => void }) => {
   const { mutateAsync, isPending } = useCreateProduct();
 
   const handleSubmit = async (data: ProductFormData) => {
-    console.log(data);
     await mutateAsync(
       {
         ...data,

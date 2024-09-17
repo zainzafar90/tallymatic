@@ -4,8 +4,9 @@ import { flexRender, Table as TanstackTable } from '@tanstack/react-table';
 import { usePrompt } from '@/components/common/use-prompt';
 import { CommandBar } from '@/components/ui/command-bar';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { NoResults } from '@/routes/products/product-list/components/no-results';
 import { cn } from '@/utils/cn';
+
+import { NoResults } from './table-no-results';
 
 type ColumnMeta = {
   className?: string;

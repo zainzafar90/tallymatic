@@ -3,6 +3,11 @@ import { Moment } from 'moment';
 import { Status, TokenType } from '../enums.types';
 import { RoleType } from '../role.types';
 
+type Dates = {
+  createdAt?: Date;
+  updatedAt?: Date;
+};
+
 export type IAccessAndRefreshTokens = {
   access: {
     token: string;
@@ -47,19 +52,17 @@ export interface IStore {
   organizationId: string;
 }
 
-export interface IProduct {
+export interface IProduct extends Dates {
   id: string;
   name: string;
   description?: string;
   status: Status;
   categoryId?: string;
-  createdAt?: Date;
-  updatedAt?: Date;
   variants: IProductVariant[];
 }
 
-export interface ICategory {
-  id?: string;
+export interface ICategory extends Dates {
+  id: string;
   name: string;
   description?: string;
   parentCategoryId?: string | null;

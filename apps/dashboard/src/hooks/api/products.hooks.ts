@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { CreateProductReq, ProductDeleteResponse, ProductListResponse, ProductResponse } from '@shared';
+import { CreateProductReq, ProductDeleteResponse, ProductListResponse, ProductResponse, UpdateProductReq } from '@shared';
 import { QueryKey, useMutation, UseMutationOptions, useQuery, UseQueryOptions } from '@tanstack/react-query';
 
 import { client } from '@/lib/client';
@@ -36,7 +36,7 @@ export const useCreateProduct = (options?: UseMutationOptions<ProductResponse, E
 
 export const useUpdateProduct = (id: string, options?: UseMutationOptions<ProductResponse, Error, ProductResponse>) => {
   return useMutation({
-    mutationFn: (payload: ProductResponse) => client.products.update(id, payload),
+    mutationFn: (payload: UpdateProductReq) => client.products.update(id, payload),
     onSuccess: (data: any, variables: any, context: any) => {
       queryClient.invalidateQueries({ queryKey: productsQueryKeys.lists() });
       queryClient.invalidateQueries({ queryKey: productsQueryKeys.detail(data.id) });

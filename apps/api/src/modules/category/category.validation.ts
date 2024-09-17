@@ -8,6 +8,8 @@ const createCategoryBody: Record<keyof CreateCategoryReq, any> = {
   description: Joi.string().optional(),
   parentCategoryId: Joi.string().custom(uuid).optional().allow(null),
   status: Joi.string().valid(Status.ACTIVE, Status.INACTIVE).required(),
+  createdAt: Joi.date().optional(),
+  updatedAt: Joi.date().optional(),
 };
 
 export const createCategory = {
@@ -38,6 +40,7 @@ export const updateCategory = {
   }),
   body: Joi.object()
     .keys({
+      id: Joi.string().custom(uuid).optional(),
       name: Joi.string(),
       description: Joi.string(),
       parentCategoryId: Joi.string().custom(uuid).allow(null),

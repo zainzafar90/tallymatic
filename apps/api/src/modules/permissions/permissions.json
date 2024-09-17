@@ -75,7 +75,7 @@
       "rules": [
         {
           "actions": ["*"],
-          "roles": ["super-admin"],
+          "roles": ["super-admin", "admin"],
           "effect": "EFFECT_ALLOW"
         },
         {
@@ -90,55 +90,15 @@
         }
       ]
     },
-    {
-      "version": "default",
-      "resource": "product-options",
-      "rules": [
-        {
-          "actions": ["*"],
-          "roles": ["super-admin"],
-          "effect": "EFFECT_ALLOW"
-        },
-        {
-          "actions": ["view", "list", "update"],
-          "roles": ["admin"],
-          "effect": "EFFECT_ALLOW"
-        },
-        {
-          "actions": ["view"],
-          "roles": ["member"],
-          "effect": "EFFECT_ALLOW"
-        }
-      ]
-    },
+
     {
       "version": "default",
       "resource": "categories",
       "rules": [
         {
           "actions": ["*"],
-          "roles": ["super-admin"],
-          "effect": "EFFECT_ALLOW"
-        },
-        {
-          "actions": ["view", "list", "update"],
-          "roles": ["admin"],
-          "effect": "EFFECT_ALLOW"
-        },
-        {
-          "actions": ["view"],
-          "roles": ["member"],
-          "effect": "EFFECT_ALLOW"
-        }
-      ]
-    },
-    {
-      "version": "default",
-      "resource": "product-categories",
-      "rules": [
-        {
-          "actions": ["*"],
-          "roles": ["super-admin"],
+          "roles": ["super-admin", "admin"],
+
           "effect": "EFFECT_ALLOW"
         },
         {

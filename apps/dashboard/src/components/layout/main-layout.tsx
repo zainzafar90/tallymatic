@@ -17,6 +17,7 @@ import {
   SparklesIcon,
   Square2StackIcon,
   TicketIcon,
+  WalletIcon,
 } from '@heroicons/react/20/solid';
 
 import { Avatar } from '@/components/ui/avatar';
@@ -131,6 +132,10 @@ export const MainLayout = () => {
               <SidebarItem href="/products" current={pathname.startsWith('/products')}>
                 <Square2StackIcon />
                 <SidebarLabel>Products</SidebarLabel>
+              </SidebarItem>
+              <SidebarItem href="/categories" current={pathname.startsWith('/categories')}>
+                <WalletIcon />
+                <SidebarLabel>Categories</SidebarLabel>
               </SidebarItem>
               <SidebarItem href="/orders" current={pathname.startsWith('/orders')}>
                 <TicketIcon />

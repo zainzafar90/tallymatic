@@ -1,8 +1,22 @@
-import { BelongsTo, Column, DataType, ForeignKey, HasMany, IsUUID, Model, PrimaryKey, Table } from 'sequelize-typescript';
+import {
+  BelongsTo,
+  Column,
+  DataType,
+  DefaultScope,
+  ForeignKey,
+  HasMany,
+  IsUUID,
+  Model,
+  PrimaryKey,
+  Table,
+} from 'sequelize-typescript';
 import { Status } from '@shared';
 
 import { Product } from '../product';
 
+@DefaultScope(() => ({
+  attributes: { include: ['createdAt', 'updatedAt'] },
+}))
 @Table({
   timestamps: true,
   tableName: 'categories',
