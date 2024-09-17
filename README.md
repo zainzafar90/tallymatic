@@ -38,6 +38,7 @@
 3. Set up environment variables:
 
    - Copy `.env.example` to `.env` in the `apps/api` directory
+   - Copy `.env.example` to `.env` in the `apps/dashboard` directory
    - Update the `.env` file with your database credentials and other configuration
 
 4. Set up the database:
