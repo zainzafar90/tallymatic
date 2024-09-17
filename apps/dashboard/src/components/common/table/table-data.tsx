@@ -30,34 +30,10 @@ export function TableData<TData>({ table, onClearFilters, onBulkDelete }: TableD
   const selectedIds = selectedRows.map((row) => (row.original as TData & DataWithId).id);
 
   const handleBulkDelete = async () => {
-    const selectedRows = table.getSelectedRowModel().rows;
-    const selectedIds = selectedRows.map((row: any) => row.original.id);
-    const selectedNames = selectedRows.map((row: any) => row.original.name || 'Untitled');
-
-    const namesList = selectedNames.map((name) => `• ${name}`).join('\n');
-    const maxNamesToShow = 5;
-    const truncatedNamesList =
-      selectedNames.length > maxNamesToShow
-        ? namesList.split('\n').slice(0, maxNamesToShow).join('\n') +
-          `\n• ... and ${selectedNames.length - maxNamesToShow} more`
-        : namesList;
-
     const confirmed = await prompt({
       title: 'Are you sure?',
-      description: (
-        <Fragment>
-          You are about to delete {selectedRows.length} item(s):
-          <br />
-          {truncatedNamesList.split('\n').map((name, index) => (
-            <Fragment key={index}>
-              {name}
-              <br />
-            </Fragment>
-          ))}
-          <br />
-          <span className="text-destructive">This action cannot be undone.</span>
-        </Fragment>
-      ),
+      description: ` You are about to delete ${selectedRows.length} item(s)`,
+      warning: 'This action cannot be undone.',
       confirmText: 'Delete',
       cancelText: 'Cancel',
       destructive: true,

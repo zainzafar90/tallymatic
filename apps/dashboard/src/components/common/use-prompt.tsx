@@ -1,11 +1,12 @@
-import { ReactNode, useCallback, useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import { Alert, AlertActions, AlertDescription, AlertTitle } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 
 interface PromptOptions {
   title: string;
-  description: string | ReactNode;
+  description: string;
+  warning?: string;
   confirmText?: string;
   cancelText?: string;
   destructive?: boolean;
@@ -38,13 +39,12 @@ export function usePrompt() {
     return (
       <Alert open={isOpen} onClose={handleCancel}>
         <AlertTitle>{options.title}</AlertTitle>
-        <AlertDescription>
-          {typeof options.description === 'string' ? (
-            <div dangerouslySetInnerHTML={{ __html: options.description }} />
-          ) : (
-            options.description
-          )}
-        </AlertDescription>
+        <AlertDescription>{options.description}</AlertDescription>
+        {options.warning && (
+          <AlertDescription>
+            <span className="text-sm text-red-400">{options.warning}</span>
+          </AlertDescription>
+        )}
         <AlertActions>
           <Button plain onClick={handleCancel}>
             {options.cancelText || 'Cancel'}
