@@ -9,6 +9,14 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { NoResults } from '@/routes/products/product-list/components/no-results';
 import { cn } from '@/utils/cn';
 
+type ColumnMeta = {
+  className?: string;
+};
+
+type DataWithId = {
+  id: string;
+};
+
 interface TableDataProps<TData> {
   table: TanstackTable<TData>;
   onClearFilters?: () => void;
@@ -17,6 +25,9 @@ interface TableDataProps<TData> {
 
 export function TableData<TData>({ table, onClearFilters, onBulkDelete }: TableDataProps<TData>) {
   const { prompt, PromptDialog } = usePrompt();
+
+  const selectedRows = table.getSelectedRowModel().rows;
+  const selectedIds = selectedRows.map((row) => (row.original as TData & DataWithId).id);
 
   const handleBulkDelete = async () => {
     const selectedRows = table.getSelectedRowModel().rows;
@@ -74,7 +85,7 @@ export function TableData<TData>({ table, onClearFilters, onBulkDelete }: TableD
         {table.getHeaderGroups().map((headerGroup) => (
           <TableRow key={headerGroup.id}>
             {headerGroup.headers.map((header) => (
-              <TableHeader key={header.id} className={cn((header.column.columnDef.meta as any)?.className)}>
+              <TableHeader key={header.id} className={cn((header.column.columnDef.meta as ColumnMeta)?.className)}>
                 {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
               </TableHeader>
             ))}
@@ -87,7 +98,7 @@ export function TableData<TData>({ table, onClearFilters, onBulkDelete }: TableD
           table.getRowModel().rows.map((row) => (
             <TableRow key={row.id} className={row.getIsSelected() ? 'bg-zinc-950/[2.5%] dark:bg-white/[2.5%]' : ''}>
               {row.getVisibleCells().map((cell) => (
-                <TableCell key={cell.id} className={cn((cell.column.columnDef.meta as any)?.className)}>
+                <TableCell key={cell.id} className={cn((cell.column.columnDef.meta as ColumnMeta)?.className)}>
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </TableCell>
               ))}
