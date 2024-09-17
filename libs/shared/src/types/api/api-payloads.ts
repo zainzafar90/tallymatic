@@ -1,10 +1,7 @@
 import { ICategory, IOrganization, IProduct, IProductVariant, IStore, IUser } from '../interfaces/resources';
 
 // Auth
-export type EmailPassReq = {
-  email: string;
-  password: string;
-};
+export type EmailPassReq = { email: string; password: string };
 
 // Users
 export type CreateUserReq = Omit<IUser, 'id' | 'isEmailVerified'>;

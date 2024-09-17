@@ -1,13 +1,13 @@
-import { EmailPassReq } from '../../types/api-payloads';
-import { EmailPassRes } from '../../types/api-responses';
+import { AuthResponse, EmailPassReq } from '@shared';
+
 import { postRequest } from './common';
 
 async function register(payload: EmailPassReq) {
-  return postRequest<EmailPassRes>('/v1/auth/register', payload);
+  return postRequest<AuthResponse>('/v1/auth/register', payload);
 }
 
 async function login(payload: EmailPassReq) {
-  return postRequest<EmailPassRes>('/v1/auth/login', payload);
+  return postRequest<AuthResponse>('/v1/auth/login', payload);
 }
 
 async function logout(payload: { token: string }) {
@@ -15,7 +15,7 @@ async function logout(payload: { token: string }) {
 }
 
 async function refreshToken(payload: { token: string }) {
-  return postRequest<EmailPassRes>('/v1/auth/refresh-token', payload);
+  return postRequest<AuthResponse>('/v1/auth/refresh-token', payload);
 }
 
 export const auth = {

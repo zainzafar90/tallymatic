@@ -1,19 +1,18 @@
+import { AuthResponse, EmailPassReq } from '@shared';
 import { useMutation, UseMutationOptions } from '@tanstack/react-query';
 
 import { queryClient } from '@/lib/query-client';
 import { API_TOKEN_KEY } from '@/utils/common.utils';
 
 import { client } from '../../lib/client';
-import { EmailPassReq } from '../../types/api-payloads';
-import { EmailPassRes } from '../../types/api-responses';
 
-const handleAuthSuccess = async (data: EmailPassRes) => {
+const handleAuthSuccess = async (data: AuthResponse) => {
   if (data.access.token) {
     localStorage.setItem(API_TOKEN_KEY, data.access.token);
   }
 };
 
-export const useEmailPassLogin = (options?: UseMutationOptions<EmailPassRes, Error, EmailPassReq>) => {
+export const useEmailPassLogin = (options?: UseMutationOptions<AuthResponse, Error, EmailPassReq>) => {
   return useMutation({
     mutationFn: (payload) => client.auth.login(payload),
     onSuccess: async (data, variables, context) => {
@@ -39,7 +38,7 @@ export const useLogout = (options?: UseMutationOptions<void, Error, { token: str
   });
 };
 
-export const useCreateAuthUser = (options?: UseMutationOptions<EmailPassRes, Error, EmailPassReq>) => {
+export const useCreateAuthUser = (options?: UseMutationOptions<AuthResponse, Error, EmailPassReq>) => {
   return useMutation({
     mutationFn: (payload) => client.auth.register(payload),
     onSuccess: async (data, variables, context) => {
