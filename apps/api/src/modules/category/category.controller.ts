@@ -19,13 +19,15 @@ export const createCategory = catchAsync(async (req: Request, res: Response) => 
 });
 
 export const getCategories = catchAsync(async (req: Request, res: Response) => {
-  const filter = pick(req.query, ['name', 'parentCategoryId', 'status']);
-  const options: IOptions = pick(req.query, ['sortBy', 'limit', 'offset', 'projectBy']);
   const isAllowed = permissionService.checkPermissions(req.user.role, 'list', 'categories');
   if (!isAllowed) {
     throw new ApiError(httpStatus.FORBIDDEN, 'You do not have permission to list categories');
   }
-  const result = await categoryService.queryCategories(filter, options);
+
+  const filter = pick(req.query, ['name', 'parentCategoryId', 'status']);
+  const options: IOptions = pick(req.query, ['sortBy', 'limit', 'offset', 'projectBy']);
+  const wildcardFields = ['name'];
+  const result = await categoryService.queryCategories(filter, options, wildcardFields);
   res.send(result);
 });
 

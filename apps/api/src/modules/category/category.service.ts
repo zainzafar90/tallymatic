@@ -3,7 +3,7 @@ import { CreateCategoryReq, ICategory, IOptions, ListResponse, UpdateCategoryReq
 
 import { ApiError } from '@/common/errors/api-error';
 
-import { paginate } from '../paginate/paginate';
+import { buildPaginationOptions, paginate, transformPagination } from '../paginate/paginate';
 import { Category } from './category.model';
 
 export const createCategory = async (categoryBody: CreateCategoryReq): Promise<ICategory> => {
@@ -11,9 +11,17 @@ export const createCategory = async (categoryBody: CreateCategoryReq): Promise<I
   return category.toJSON();
 };
 
-export const queryCategories = async (filter: Record<string, any>, options: IOptions): Promise<ListResponse<Category>> => {
-  const result = await paginate(Category, filter, options);
-  return result;
+export const queryCategories = async (
+  filter: Record<string, any>,
+  options: IOptions,
+  wildcardFields: string[] = []
+): Promise<ListResponse<Category>> => {
+  const paginationOptions = buildPaginationOptions(filter, options, wildcardFields);
+
+  const result = await Category.findAndCountAll({
+    ...paginationOptions,
+  });
+  return transformPagination(result.count, result.rows, paginationOptions.offset, paginationOptions.limit);
 };
 
 export const getCategoryById = async (id: string): Promise<ICategory | null> => {

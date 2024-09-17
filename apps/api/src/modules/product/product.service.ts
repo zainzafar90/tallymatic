@@ -62,8 +62,7 @@ export const queryProducts = async (
     ],
   });
 
-  const results = transformPagination(result.count, result.rows, paginationOptions.offset, paginationOptions.limit);
-  return results;
+  return transformPagination(result.count, result.rows, paginationOptions.offset, paginationOptions.limit);
 };
 
 export const getProductById = async (id: string): Promise<IProduct | null> => {
