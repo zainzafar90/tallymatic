@@ -2,7 +2,7 @@
 
 ✨ **Tallymatic** is a modern Point of Sale (POS) system designed to streamline product management, sales, and purchases for businesses of all sizes.
 
-<img src="./image.png" width="512" alt="Tallymatic logo">
+<img src="./image.png" width="1024" alt="Tallymatic">
 
 ## Key Features
 
