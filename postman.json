@@ -1,141 +1,12 @@
 {
   "info": {
-    "_postman_id": "b6222fc7-febc-42ae-bdcd-30d1b1b46452",
-    "name": "Tallymatic",
+    "_postman_id": "997de3af-b693-43ef-81be-f3b78939d2b3",
+    "name": "Tallymatic v2.0",
     "description": "# 🚀 Tallymatic API Collection\n\nThis collection contains requests for all resources in the Tallymatic API, including Products, Product Variants, Product Options, Categories, Product Categories, Users, Stores, Organizations, and Authentication endpoints.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "_exporter_id": "284772"
   },
   "item": [
-    {
-      "name": "Product Categories",
-      "item": [
-        {
-          "name": "Get All Product Categories",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{TALLYMATIC_TOKEN}}"
-              }
-            ],
-            "url": {
-              "raw": "{{TALLYMATIC_URL}}/api/product-categories",
-              "host": ["{{TALLYMATIC_URL}}"],
-              "path": ["api", "product-categories"]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Get Product Category by ID",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{TALLYMATIC_TOKEN}}"
-              }
-            ],
-            "url": {
-              "raw": "{{TALLYMATIC_URL}}/api/product-categories/:id",
-              "host": ["{{TALLYMATIC_URL}}"],
-              "path": ["api", "product-categories", ":id"],
-              "variable": [
-                {
-                  "key": "id",
-                  "value": "pc1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6"
-                }
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Create Product Category",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "Authorization",
-                "value": "Bearer {{TALLYMATIC_TOKEN}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"productId\": \"p1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6\",\n    \"categoryId\": \"c2b3c4d5-e6f7-g8h9-i0j1-k2l3m4n5o6p7\"\n}"
-            },
-            "url": {
-              "raw": "{{TALLYMATIC_URL}}/api/product-categories",
-              "host": ["{{TALLYMATIC_URL}}"],
-              "path": ["api", "product-categories"]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Update Product Category",
-          "request": {
-            "method": "PUT",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "Authorization",
-                "value": "Bearer {{TALLYMATIC_TOKEN}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"productId\": \"p1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6\",\n    \"categoryId\": \"c3d4e5f6-g7h8-i9j0-k1l2-m3n4o5p6q7r8\"\n}"
-            },
-            "url": {
-              "raw": "{{TALLYMATIC_URL}}/api/product-categories/:id",
-              "host": ["{{TALLYMATIC_URL}}"],
-              "path": ["api", "product-categories", ":id"],
-              "variable": [
-                {
-                  "key": "id",
-                  "value": "pc1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6"
-                }
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Delete Product Category",
-          "request": {
-            "method": "DELETE",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{TALLYMATIC_TOKEN}}"
-              }
-            ],
-            "url": {
-              "raw": "{{TALLYMATIC_URL}}/api/product-categories/:id",
-              "host": ["{{TALLYMATIC_URL}}"],
-              "path": ["api", "product-categories", ":id"],
-              "variable": [
-                {
-                  "key": "id",
-                  "value": "pc1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6"
-                }
-              ]
-            }
-          },
-          "response": []
-        }
-      ]
-    },
     {
       "name": "Categories",
       "item": [
@@ -150,9 +21,9 @@
               }
             ],
             "url": {
-              "raw": "{{TALLYMATIC_URL}}/api/categories",
+              "raw": "{{TALLYMATIC_URL}}/categories",
               "host": ["{{TALLYMATIC_URL}}"],
-              "path": ["api", "categories"]
+              "path": ["categories"]
             }
           },
           "response": []
@@ -168,13 +39,14 @@
               }
             ],
             "url": {
-              "raw": "{{TALLYMATIC_URL}}/api/categories/:id",
+              "raw": "{{TALLYMATIC_URL}}/categories/:id",
               "host": ["{{TALLYMATIC_URL}}"],
-              "path": ["api", "categories", ":id"],
+              "path": ["categories", ":id"],
               "variable": [
                 {
                   "key": "id",
-                  "value": "c1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6"
+                  "value": "00000000-0000-4000-8000-000000000001",
+                  "type": "string"
                 }
               ]
             }
@@ -197,12 +69,17 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"Electronics\",\n    \"description\": \"Electronic devices and gadgets\",\n    \"parentCategoryId\": null,\n    \"status\": \"active\"\n}"
+              "raw": "{\n    \"name\": \"Electronics\",\n    \"description\": \"Electronic devices and gadgets\",\n    \"parentCategoryId\": null,\n    \"status\": \"active\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "url": {
-              "raw": "{{TALLYMATIC_URL}}/api/categories",
+              "raw": "{{TALLYMATIC_URL}}/categories",
               "host": ["{{TALLYMATIC_URL}}"],
-              "path": ["api", "categories"]
+              "path": ["categories"]
             }
           },
           "response": []
@@ -210,7 +87,7 @@
         {
           "name": "Update Category",
           "request": {
-            "method": "PUT",
+            "method": "PATCH",
             "header": [
               {
                 "key": "Content-Type",
@@ -223,16 +100,22 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"Consumer Electronics\",\n    \"description\": \"Consumer electronic devices and gadgets\",\n    \"status\": \"active\"\n}"
+              "raw": "{\n    \"name\": \"Consumer Electronics\",\n    \"description\": \"Consumer electronic devices and gadgets\",\n    \"status\": \"active\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "url": {
-              "raw": "{{TALLYMATIC_URL}}/api/categories/:id",
+              "raw": "{{TALLYMATIC_URL}}/categories/:id",
               "host": ["{{TALLYMATIC_URL}}"],
-              "path": ["api", "categories", ":id"],
+              "path": ["categories", ":id"],
               "variable": [
                 {
                   "key": "id",
-                  "value": "c1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6"
+                  "value": "00000000-0000-4000-8000-000000000001",
+                  "type": "string"
                 }
               ]
             }
@@ -250,142 +133,14 @@
               }
             ],
             "url": {
-              "raw": "{{TALLYMATIC_URL}}/api/categories/:id",
+              "raw": "{{TALLYMATIC_URL}}/categories/:id",
               "host": ["{{TALLYMATIC_URL}}"],
-              "path": ["api", "categories", ":id"],
+              "path": ["categories", ":id"],
               "variable": [
                 {
                   "key": "id",
-                  "value": "c1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6"
-                }
-              ]
-            }
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "Product Options",
-      "item": [
-        {
-          "name": "Get All Product Options",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{TALLYMATIC_TOKEN}}"
-              }
-            ],
-            "url": {
-              "raw": "{{TALLYMATIC_URL}}/api/product-options",
-              "host": ["{{TALLYMATIC_URL}}"],
-              "path": ["api", "product-options"]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Get Product Option by ID",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{TALLYMATIC_TOKEN}}"
-              }
-            ],
-            "url": {
-              "raw": "{{TALLYMATIC_URL}}/api/product-options/:id",
-              "host": ["{{TALLYMATIC_URL}}"],
-              "path": ["api", "product-options", ":id"],
-              "variable": [
-                {
-                  "key": "id",
-                  "value": "o1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6"
-                }
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Create Product Option",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "Authorization",
-                "value": "Bearer {{TALLYMATIC_TOKEN}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"productId\": \"p1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6\",\n    \"name\": \"Extended Warranty\",\n    \"description\": \"2-year extended warranty for Smartphone X\",\n    \"priceModifier\": 99.99,\n    \"status\": \"active\"\n}"
-            },
-            "url": {
-              "raw": "{{TALLYMATIC_URL}}/api/product-options",
-              "host": ["{{TALLYMATIC_URL}}"],
-              "path": ["api", "product-options"]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Update Product Option",
-          "request": {
-            "method": "PUT",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "Authorization",
-                "value": "Bearer {{TALLYMATIC_TOKEN}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"name\": \"Premium Extended Warranty\",\n    \"description\": \"3-year premium extended warranty for Smartphone X\",\n    \"priceModifier\": 149.99,\n    \"status\": \"active\"\n}"
-            },
-            "url": {
-              "raw": "{{TALLYMATIC_URL}}/api/product-options/:id",
-              "host": ["{{TALLYMATIC_URL}}"],
-              "path": ["api", "product-options", ":id"],
-              "variable": [
-                {
-                  "key": "id",
-                  "value": "o1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6"
-                }
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Delete Product Option",
-          "request": {
-            "method": "DELETE",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{TALLYMATIC_TOKEN}}"
-              }
-            ],
-            "url": {
-              "raw": "{{TALLYMATIC_URL}}/api/product-options/:id",
-              "host": ["{{TALLYMATIC_URL}}"],
-              "path": ["api", "product-options", ":id"],
-              "variable": [
-                {
-                  "key": "id",
-                  "value": "o1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6"
+                  "value": "00000000-0000-4000-8000-000000000001",
+                  "type": "string"
                 }
               ]
             }
@@ -408,9 +163,16 @@
               }
             ],
             "url": {
-              "raw": "{{TALLYMATIC_URL}}/api/product-variants",
+              "raw": "{{TALLYMATIC_URL}}/products/:product-id/variants",
               "host": ["{{TALLYMATIC_URL}}"],
-              "path": ["api", "product-variants"]
+              "path": ["products", ":product-id", "variants"],
+              "variable": [
+                {
+                  "key": "product-id",
+                  "value": "00000000-0000-4000-8000-000000000001",
+                  "type": "string"
+                }
+              ]
             }
           },
           "response": []
@@ -426,13 +188,19 @@
               }
             ],
             "url": {
-              "raw": "{{TALLYMATIC_URL}}/api/product-variants/:id",
+              "raw": "{{TALLYMATIC_URL}}/products/:product-id/variants/:id",
               "host": ["{{TALLYMATIC_URL}}"],
-              "path": ["api", "product-variants", ":id"],
+              "path": ["products", ":product-id", "variants", ":id"],
               "variable": [
                 {
+                  "key": "product-id",
+                  "value": "00000000-0000-4000-8000-000000000001",
+                  "type": "string"
+                },
+                {
                   "key": "id",
-                  "value": "v1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6"
+                  "value": "00000000-0000-4000-8000-000000000001",
+                  "type": "string"
                 }
               ]
             }
@@ -455,12 +223,24 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"productId\": \"p1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6\",\n    \"name\": \"Smartphone X - 128GB\",\n    \"sku\": \"SMX-128GB\",\n    \"price\": 799.99,\n    \"status\": \"active\"\n}"
+              "raw": "{\n    \"name\": \"Variant A1111\",\n    \"sku\": \"SKU-A11111\",\n    \"price\": 24.99,\n    \"costPrice\": 12.99,\n    \"stock\": 1,\n    \"status\": \"active\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "url": {
-              "raw": "{{TALLYMATIC_URL}}/api/product-variants",
+              "raw": "{{TALLYMATIC_URL}}/products/:product-id/variants",
               "host": ["{{TALLYMATIC_URL}}"],
-              "path": ["api", "product-variants"]
+              "path": ["products", ":product-id", "variants"],
+              "variable": [
+                {
+                  "key": "product-id",
+                  "value": "00000000-0000-4000-8000-000000000001",
+                  "type": "string"
+                }
+              ]
             }
           },
           "response": []
@@ -468,7 +248,7 @@
         {
           "name": "Update Product Variant",
           "request": {
-            "method": "PUT",
+            "method": "PATCH",
             "header": [
               {
                 "key": "Content-Type",
@@ -481,16 +261,27 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"Smartphone X - 256GB\",\n    \"sku\": \"SMX-256GB\",\n    \"price\": 899.99,\n    \"status\": \"active\"\n}"
+              "raw": "{\n    \"name\": \"Variant A1\",\n    \"price\": 24.99,\n    \"costPrice\": 12.99,\n    \"stock\": 1,\n    \"lowStockThreshold\": 1,\n    \"status\": \"active\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "url": {
-              "raw": "{{TALLYMATIC_URL}}/api/product-variants/:id",
+              "raw": "{{TALLYMATIC_URL}}/products/:product-id/variants/:id",
               "host": ["{{TALLYMATIC_URL}}"],
-              "path": ["api", "product-variants", ":id"],
+              "path": ["products", ":product-id", "variants", ":id"],
               "variable": [
                 {
+                  "key": "product-id",
+                  "value": "00000000-0000-4000-8000-000000000001",
+                  "type": "string"
+                },
+                {
                   "key": "id",
-                  "value": "v1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6"
+                  "value": "00000000-0000-4000-8000-000000000001",
+                  "type": "string"
                 }
               ]
             }
@@ -508,13 +299,19 @@
               }
             ],
             "url": {
-              "raw": "{{TALLYMATIC_URL}}/api/product-variants/:id",
+              "raw": "{{TALLYMATIC_URL}}/products/:product-id/variants/:id",
               "host": ["{{TALLYMATIC_URL}}"],
-              "path": ["api", "product-variants", ":id"],
+              "path": ["products", ":product-id", "variants", ":id"],
               "variable": [
                 {
+                  "key": "product-id",
+                  "value": "00000000-0000-4000-8000-000000000001",
+                  "type": "string"
+                },
+                {
                   "key": "id",
-                  "value": "v1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6"
+                  "value": "00000000-0000-4000-8000-000000000001",
+                  "type": "string"
                 }
               ]
             }
@@ -542,9 +339,33 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{TALLYMATIC_URL}}/api/products",
+              "raw": "{{TALLYMATIC_URL}}/products?offset=0&limit=10&sortBy=createdAt:desc",
               "host": ["{{TALLYMATIC_URL}}"],
-              "path": ["api", "products"]
+              "path": ["products"],
+              "query": [
+                {
+                  "key": "offset",
+                  "value": "0"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "sortBy",
+                  "value": "createdAt:desc"
+                },
+                {
+                  "key": "status",
+                  "value": "inactive",
+                  "disabled": true
+                },
+                {
+                  "key": "name",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
             }
           },
           "response": []
@@ -565,13 +386,14 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{TALLYMATIC_URL}}/api/products/:id",
+              "raw": "{{TALLYMATIC_URL}}/products/:id",
               "host": ["{{TALLYMATIC_URL}}"],
-              "path": ["api", "products", ":id"],
+              "path": ["products", ":id"],
               "variable": [
                 {
                   "key": "id",
-                  "value": "p1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6"
+                  "value": "00000000-0000-4000-8000-000000000001",
+                  "type": "string"
                 }
               ]
             }
@@ -600,12 +422,17 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"Smartphone X\",\n    \"description\": \"Latest model smartphone with advanced features\",\n    \"price\": 799.99,\n    \"status\": \"active\",\n    \"organizationId\": \"d3a3b4b6-4b7b-4b7b-9b4b-7b4b7b4b7b4b\",\n    \"storeId\": \"d3a3b4b6-4b7b-4b7b-9b4b-7b4b7b4b7b4d\"\n}"
+              "raw": "{\n    \"name\": \"Smartphone X\",\n    \"description\": \"Latest model smartphone with advanced features\",\n    \"status\": \"active\",\n    \"categoryId\": \"00000000-0000-4000-8000-000000000001\",\n    \"variants\": [\n        {\n            \"name\": \"Variant A1111\",\n            \"sku\": \"SKU-A1111\",\n            \"price\": 24.99,\n            \"costPrice\": 12.99,\n            \"stock\": 1,\n            \"status\": \"active\"\n        }\n    ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "url": {
-              "raw": "{{TALLYMATIC_URL}}/api/products",
+              "raw": "{{TALLYMATIC_URL}}/products",
               "host": ["{{TALLYMATIC_URL}}"],
-              "path": ["api", "products"]
+              "path": ["products"]
             }
           },
           "response": []
@@ -623,7 +450,7 @@
                 }
               ]
             },
-            "method": "PUT",
+            "method": "PATCH",
             "header": [
               {
                 "key": "Content-Type",
@@ -632,16 +459,22 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"Updated Smartphone X\",\n    \"description\": \"Updated description for Smartphone X\",\n    \"price\": 849.99,\n    \"status\": \"active\"\n}"
+              "raw": "{\n    \"name\": \"Updated Smartphone X\",\n    \"description\": \"Updated description for Smartphone X\",\n    \"status\": \"active\",\n    \"variants\": [\n        {\n            \"name\": \"Variant A1111\",\n            \"sku\": \"SKU-A1111\",\n            \"price\": 24.99,\n            \"costPrice\": 12.99,\n            \"stock\": 1,\n            \"status\": \"active\"\n        }\n    ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "url": {
-              "raw": "{{TALLYMATIC_URL}}/api/products/:id",
+              "raw": "{{TALLYMATIC_URL}}/products/:id",
               "host": ["{{TALLYMATIC_URL}}"],
-              "path": ["api", "products", ":id"],
+              "path": ["products", ":id"],
               "variable": [
                 {
                   "key": "id",
-                  "value": "p1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6"
+                  "value": "00000000-0000-4000-8000-000000000001",
+                  "type": "string"
                 }
               ]
             }
@@ -664,13 +497,14 @@
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "{{TALLYMATIC_URL}}/api/products/:id",
+              "raw": "{{TALLYMATIC_URL}}/products/:id",
               "host": ["{{TALLYMATIC_URL}}"],
-              "path": ["api", "products", ":id"],
+              "path": ["products", ":id"],
               "variable": [
                 {
                   "key": "id",
-                  "value": "p1a2b3c4-d5e6-f7g8-h9i0-j1k2l3m4n5o6"
+                  "value": "00000000-0000-4000-8000-000000000001",
+                  "type": "string"
                 }
               ]
             }
@@ -704,7 +538,7 @@
               "variable": [
                 {
                   "key": "id",
-                  "value": "d3a3b4b6-4b7b-4b7b-9b4b-7b4b7b4b7b1f"
+                  "value": "00000000-0000-4000-8000-000000000001"
                 }
               ]
             }
@@ -779,7 +613,12 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"John Doe\",\n    \"email\": \"john.doe@example.com\",\n    \"password\": \"securePassword123\",\n    \"role\": \"user\",\n    \"organizationId\": \"d3a3b4b6-4b7b-4b7b-9b4b-7b4b7b4b7b4b\"\n}"
+              "raw": "{\n    \"name\": \"John Doe\",\n    \"email\": \"john.doe@example.com\",\n    \"password\": \"securePassword123\",\n    \"role\": \"member\",\n    \"organizationId\": \"00000000-0000-4000-8000-000000000001\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "url": {
               "raw": "{{TALLYMATIC_URL}}/users",
@@ -811,7 +650,12 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"John Updated Doe\",\n    \"email\": \"john.updated@example.com\"\n}"
+              "raw": "{\n    \"name\": \"John Updated Doe\",\n    \"email\": \"superadmin@tallymatic.com\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "url": {
               "raw": "{{TALLYMATIC_URL}}/users/:id",
@@ -820,7 +664,7 @@
               "variable": [
                 {
                   "key": "id",
-                  "value": "d3a3b4b6-4b7b-4b7b-9b4b-7b4b7b4b7b1f"
+                  "value": "00000000-0000-4000-8000-000000000001"
                 }
               ]
             }
@@ -849,7 +693,7 @@
               "variable": [
                 {
                   "key": "id",
-                  "value": "d3a3b4b6-4b7b-4b7b-9b4b-7b4b7b4b7b1f"
+                  "value": "00000000-0000-4000-8000-000000000001"
                 }
               ]
             }
@@ -883,7 +727,7 @@
               "variable": [
                 {
                   "key": "id",
-                  "value": "d3a3b4b6-4b7b-4b7b-9b4b-7b4b7b4b7b4d"
+                  "value": "00000000-0000-4000-8000-000000000001"
                 }
               ]
             }
@@ -935,7 +779,12 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"Downtown Electronics\",\n    \"location\": \"123 Main St, Cityville\",\n    \"organizationId\": \"d3a3b4b6-4b7b-4b7b-9b4b-7b4b7b4b7b4b\"\n}"
+              "raw": "{\n    \"name\": \"Downtown Electronics\",\n    \"location\": \"123 Main St, Cityville\",\n    \"organizationId\": \"00000000-0000-4000-8000-000000000001\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "url": {
               "raw": "{{TALLYMATIC_URL}}/stores",
@@ -967,7 +816,12 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"Downtown Electronics & Repair\",\n    \"location\": \"123 Main St, Suite 100, Cityville\"\n}"
+              "raw": "{\n    \"name\": \"Downtown Electronics & Repair\",\n    \"location\": \"123 Main St, Suite 100, Cityville\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "url": {
               "raw": "{{TALLYMATIC_URL}}/stores/:id",
@@ -976,7 +830,7 @@
               "variable": [
                 {
                   "key": "id",
-                  "value": "d3a3b4b6-4b7b-4b7b-9b4b-7b4b7b4b7b4d"
+                  "value": "00000000-0000-4000-8000-000000000001"
                 }
               ]
             }
@@ -1005,7 +859,7 @@
               "variable": [
                 {
                   "key": "id",
-                  "value": "d3a3b4b6-4b7b-4b7b-9b4b-7b4b7b4b7b4d"
+                  "value": "00000000-0000-4000-8000-000000000001"
                 }
               ]
             }
@@ -1039,7 +893,7 @@
               "variable": [
                 {
                   "key": "id",
-                  "value": "d3a3b4b6-4b7b-4b7b-9b4b-7b4b7b4b7b4b"
+                  "value": "00000000-0000-4000-8000-000000000001"
                 }
               ]
             }
@@ -1091,7 +945,12 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"TechCorp Industries\",\n    \"description\": \"Leading technology solutions provider\",\n    \"status\": \"active\"\n}"
+              "raw": "{\n    \"name\": \"TechCorp Industries\",\n    \"description\": \"Leading technology solutions provider\",\n    \"status\": \"active\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "url": {
               "raw": "{{TALLYMATIC_URL}}/organizations",
@@ -1123,7 +982,12 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"TechCorp Global Industries\",\n    \"description\": \"Worldwide leader in innovative technology solutions\"\n}"
+              "raw": "{\n    \"name\": \"Catalyst Solutions\",\n    \"description\": \"Worldwide leader in innovative technology solutions\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "url": {
               "raw": "{{TALLYMATIC_URL}}/organizations/:id",
@@ -1132,7 +996,7 @@
               "variable": [
                 {
                   "key": "id",
-                  "value": "d3a3b4b6-4b7b-4b7b-9b4b-7b4b7b4b7b4b"
+                  "value": "00000000-0000-4000-8000-000000000001"
                 }
               ]
             }
@@ -1161,7 +1025,7 @@
               "variable": [
                 {
                   "key": "id",
-                  "value": "d3a3b4b6-4b7b-4b7b-9b4b-7b4b7b4b7b4b"
+                  "value": "00000000-0000-4000-8000-000000000001"
                 }
               ]
             }
@@ -1185,7 +1049,12 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"New User\",\n    \"email\": \"newuser@example.com\",\n    \"password\": \"securePassword123\",\n    \"organizationId\": \"d3a3b4b6-4b7b-4b7b-9b4b-7b4b7b4b7b4b\"\n}"
+              "raw": "{\n    \"name\": \"New User\",\n    \"email\": \"newuser@example.com\",\n    \"password\": \"securePassword123\",\n    \"organizationId\": \"00000000-0000-4000-8000-000000000001\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "url": {
               "raw": "{{TALLYMATIC_URL}}/auth/register",
@@ -1219,7 +1088,12 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"email\": \"admin@tallymatic.com\",\n    \"password\": \"test1234\"\n}"
+              "raw": "{\n    \"email\": \"superadmin@tallymatic.com\",\n    \"password\": \"test1234\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "url": {
               "raw": "{{TALLYMATIC_URL}}/auth/login",
@@ -1251,7 +1125,12 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"refreshToken\": \"your-refresh-token-here\"\n}"
+              "raw": "{\n    \"token\": \"{{TALLYMATIC_TOKEN}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "url": {
               "raw": "{{TALLYMATIC_URL}}/auth/logout",
@@ -1273,7 +1152,12 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"email\": \"user@example.com\"\n}"
+              "raw": "{\n    \"email\": \"admin@tallymatic.com\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "url": {
               "raw": "{{TALLYMATIC_URL}}/auth/forgot-password",
@@ -1333,7 +1217,12 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"email\": \"user@example.com\"\n}"
+              "raw": "{\n    \"email\": \"admin@tallymatic.com\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "url": {
               "raw": "{{TALLYMATIC_URL}}/auth/send-verification-email",
@@ -1365,6 +1254,258 @@
                 {
                   "key": "token",
                   "value": "verification-token-here"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Inventory",
+      "item": [
+        {
+          "name": "Adjust Stock",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TALLYMATIC_TOKEN}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"variantId\": \"00000000-0000-4000-8000-000000000001\",\n    \"quantity\": 10,\n    \"type\": \"add\",\n    \"notes\": \"Restocking\"\n}"
+            },
+            "url": {
+              "raw": "{{TALLYMATIC_URL}}/inventory/adjust",
+              "host": ["{{TALLYMATIC_URL}}"],
+              "path": ["inventory", "adjust"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Inventory Levels",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TALLYMATIC_TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{TALLYMATIC_URL}}/inventory/levels/:productId",
+              "host": ["{{TALLYMATIC_URL}}"],
+              "path": ["inventory", "levels", ":productId"],
+              "variable": [
+                {
+                  "key": "productId",
+                  "value": "00000000-0000-4000-8000-000000000001"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Low Stock Alerts",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TALLYMATIC_TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{TALLYMATIC_URL}}/inventory/low-stock-alerts",
+              "host": ["{{TALLYMATIC_URL}}"],
+              "path": ["inventory", "low-stock-alerts"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Claims",
+      "item": [
+        {
+          "name": "Create Claim",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TALLYMATIC_TOKEN}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"claim\": {\n        \"type\": \"missing_item\",\n        \"description\": \"Item missing from inventory\",\n        \"filedBy\": \"00000000-0000-4000-8000-000000000001\"\n    },\n    \"items\": [\n        {\n            \"variantId\": \"00000000-0000-4000-8000-000000000001\",\n            \"quantityReported\": 5,\n            \"notes\": \"Missing from last shipment\"\n        }\n    ]\n}"
+            },
+            "url": {
+              "raw": "{{TALLYMATIC_URL}}/claims",
+              "host": ["{{TALLYMATIC_URL}}"],
+              "path": ["claims"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Claims by Date Range",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TALLYMATIC_TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{TALLYMATIC_URL}}/claims?startDate=2023-01-01&endDate=2023-12-31",
+              "host": ["{{TALLYMATIC_URL}}"],
+              "path": ["claims"],
+              "query": [
+                {
+                  "key": "startDate",
+                  "value": "2023-01-01"
+                },
+                {
+                  "key": "endDate",
+                  "value": "2023-12-31"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Claim Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TALLYMATIC_TOKEN}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"status\": \"in_progress\"\n}"
+            },
+            "url": {
+              "raw": "{{TALLYMATIC_URL}}/claims/:claimId/status",
+              "host": ["{{TALLYMATIC_URL}}"],
+              "path": ["claims", ":claimId", "status"],
+              "variable": [
+                {
+                  "key": "claimId",
+                  "value": "00000000-0000-4000-8000-000000000001"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Assign Claim",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TALLYMATIC_TOKEN}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"userId\": \"00000000-0000-4000-8000-000000000001\"\n}"
+            },
+            "url": {
+              "raw": "{{TALLYMATIC_URL}}/claims/:claimId/assign",
+              "host": ["{{TALLYMATIC_URL}}"],
+              "path": ["claims", ":claimId", "assign"],
+              "variable": [
+                {
+                  "key": "claimId",
+                  "value": "00000000-0000-4000-8000-000000000001"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Resolve Claim",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TALLYMATIC_TOKEN}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"resolution\": \"Items found and added to inventory\"\n}"
+            },
+            "url": {
+              "raw": "{{TALLYMATIC_URL}}/claims/:claimId/resolve",
+              "host": ["{{TALLYMATIC_URL}}"],
+              "path": ["claims", ":claimId", "resolve"],
+              "variable": [
+                {
+                  "key": "claimId",
+                  "value": "00000000-0000-4000-8000-000000000001"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Claims by Variant",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{TALLYMATIC_TOKEN}}"
+              }
+            ],
+            "url": {
+              "raw": "{{TALLYMATIC_URL}}/claims/variant/:variantId",
+              "host": ["{{TALLYMATIC_URL}}"],
+              "path": ["claims", "variant", ":variantId"],
+              "variable": [
+                {
+                  "key": "variantId",
+                  "value": "00000000-0000-4000-8000-000000000001"
                 }
               ]
             }

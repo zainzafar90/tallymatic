@@ -81,7 +81,7 @@ export const useProductTableColumns = () => {
         const totalStock = stocks.reduce((acc, stock) => acc + stock, 0);
         return (
           <div className="flex items-center space-x-2">
-            {totalStock ? <Badge color="lime">In stock</Badge> : <Badge color="red">Out of stock</Badge>}
+            {totalStock ? <Badge color="zinc">In stock</Badge> : <Badge color="red">Out of stock</Badge>}
           </div>
         );
       },

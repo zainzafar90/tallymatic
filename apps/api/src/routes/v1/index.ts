@@ -4,6 +4,8 @@ import config from '@/config/config';
 
 import authRoute from './auth.route';
 import categoryRoute from './category.route';
+import claimRoute from './claim.route';
+import inventoryRoute from './inventory.route';
 import organizationRoute from './organization.route';
 import productRoute from './product.route';
 import storeRoute from './store.route';
@@ -41,6 +43,14 @@ const defaultIRoute: IRoute[] = [
   {
     path: '/categories',
     route: categoryRoute,
+  },
+  {
+    path: '/inventory',
+    route: inventoryRoute,
+  },
+  {
+    path: '/claims',
+    route: claimRoute,
   },
 ];
 

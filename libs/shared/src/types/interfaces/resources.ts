@@ -76,5 +76,8 @@ export interface IProductVariant {
   price: number;
   costPrice: number;
   stock: number;
+  lowStockThreshold?: number;
+  reorderPoint?: number;
+  reorderQuantity?: number;
   status: Status;
 }

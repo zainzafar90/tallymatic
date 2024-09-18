@@ -44,6 +44,21 @@ module.exports = {
         allowNull: false,
         defaultValue: 0,
       },
+      lowStockThreshold: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        defaultValue: 0,
+      },
+      reorderPoint: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        defaultValue: 0,
+      },
+      reorderQuantity: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        defaultValue: 0,
+      },
       status: {
         type: Sequelize.ENUM('active', 'inactive'),
         allowNull: false,

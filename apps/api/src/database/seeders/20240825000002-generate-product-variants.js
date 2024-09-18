@@ -16,10 +16,25 @@ module.exports = {
       price: Math.floor(Math.random() * 500) + 1000,
       costPrice: Math.floor(Math.random() * 500) + 500,
       stock: Math.floor(Math.random() * 6),
+      lowStockThreshold: 0,
       status: 'active',
       createdAt: new Date(),
       updatedAt: new Date(),
     }));
+
+    productVariants.push({
+      id: '00000000-0000-4000-8000-000000000001',
+      productId: '00000000-0000-4000-8000-000000000001',
+      name: 'Variant 0',
+      sku: 'SKU-0',
+      price: 1000,
+      costPrice: 500,
+      stock: 5,
+      lowStockThreshold: 1,
+      status: 'active',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
 
     await queryInterface.bulkInsert('variants', productVariants, {});
   },

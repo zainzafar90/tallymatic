@@ -1,6 +1,8 @@
-import { BelongsTo, Column, DataType, ForeignKey, IsUUID, Model, PrimaryKey, Table } from 'sequelize-typescript';
+import { BelongsTo, Column, DataType, ForeignKey, HasMany, Model, Table } from 'sequelize-typescript';
 import { Status } from '@shared';
 
+import { ClaimItem } from '../claim/claim-item.model';
+import { Inventory } from '../inventory/inventory.model';
 import { Product } from '../product/product.model';
 
 @Table({
@@ -8,11 +10,10 @@ import { Product } from '../product/product.model';
   tableName: 'variants',
 })
 export class ProductVariant extends Model {
-  @IsUUID(4)
-  @PrimaryKey
   @Column({
     type: DataType.UUID,
     defaultValue: DataType.UUIDV4,
+    primaryKey: true,
   })
   id: string;
 
@@ -20,8 +21,6 @@ export class ProductVariant extends Model {
   @Column({
     type: DataType.UUID,
     allowNull: false,
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE',
   })
   productId: string;
 
@@ -56,16 +55,44 @@ export class ProductVariant extends Model {
   costPrice: number;
 
   @Column({
-    type: DataType.NUMBER,
+    type: DataType.INTEGER,
     allowNull: false,
     defaultValue: 0,
   })
   stock: number;
 
   @Column({
-    type: DataType.ENUM({ values: Object.values(Status) }),
+    type: DataType.INTEGER,
+    allowNull: false,
+    defaultValue: 0,
+  })
+  lowStockThreshold: number;
+
+  @Column({
+    type: DataType.INTEGER,
+    allowNull: false,
+    defaultValue: 0,
+  })
+  reorderPoint: number;
+
+  @Column({
+    type: DataType.INTEGER,
+    allowNull: false,
+    defaultValue: 0,
+  })
+  reorderQuantity: number;
+
+  @Column({
+    type: DataType.ENUM,
+    values: Object.values(Status),
     allowNull: false,
     defaultValue: Status.ACTIVE,
   })
   status: Status;
+
+  @HasMany(() => Inventory)
+  inventories: Inventory[];
+
+  @HasMany(() => ClaimItem)
+  claimItems: ClaimItem[];
 }

@@ -3,6 +3,8 @@ import { Sequelize } from 'sequelize-typescript';
 
 import config from '@/config/config';
 import { Category } from '@/modules/category';
+import { Claim, ClaimItem } from '@/modules/claim';
+import { Inventory } from '@/modules/inventory/inventory.model';
 import { Organization } from '@/modules/organization';
 import { Product } from '@/modules/product';
 import { ProductVariant } from '@/modules/product-variant';
@@ -52,7 +54,18 @@ export class Database {
       logging: false,
     });
 
-    this.database.addModels([Token, User, Store, Organization, Product, ProductVariant, Category]);
+    this.database.addModels([
+      Token,
+      User,
+      Store,
+      Organization,
+      Product,
+      ProductVariant,
+      Category,
+      Inventory,
+      Claim,
+      ClaimItem,
+    ]);
   }
 
   isConnected() {

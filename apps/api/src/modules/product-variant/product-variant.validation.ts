@@ -9,6 +9,9 @@ export const createProductVariantBody: Record<keyof CreateProductVariantReq, any
   price: Joi.number().min(0).precision(2).required(),
   costPrice: Joi.number().min(0).precision(2).required(),
   stock: Joi.number().integer().min(0).required(),
+  lowStockThreshold: Joi.number().integer().min(0).default(0),
+  reorderPoint: Joi.number().integer().min(0).default(0),
+  reorderQuantity: Joi.number().integer().min(0).default(0),
   status: Joi.string().valid(Status.ACTIVE, Status.INACTIVE).required(),
 };
 
@@ -52,6 +55,9 @@ export const updateProductVariant = {
       price: Joi.number().positive(),
       costPrice: Joi.number().positive().required(),
       stock: Joi.number().positive().required(),
+      lowStockThreshold: Joi.number().integer().min(0).default(0),
+      reorderPoint: Joi.number().integer().min(0).default(0),
+      reorderQuantity: Joi.number().integer().min(0).default(0),
       status: Joi.string().valid(Status.ACTIVE, Status.INACTIVE),
     })
     .min(1),
