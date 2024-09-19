@@ -1,9 +1,10 @@
 import { Request, Response } from 'express';
 import httpStatus from 'http-status';
-import { TransactionType } from '@shared';
+import { IOptions, TransactionType } from '@shared';
 
 import { catchAsync } from '@/utils/catch-async';
 import { ApiError } from '@/common/errors/api-error';
+import { pick } from '@/utils';
 
 import { permissionService } from '../permissions/permission.service';
 import * as inventoryService from './inventory.service';
@@ -19,13 +20,27 @@ export const adjustStock = catchAsync(async (req: Request, res: Response) => {
   res.status(httpStatus.OK).send(transaction);
 });
 
-export const getInventoryLevels = catchAsync(async (req: Request, res: Response) => {
+// export const getInventoryLevels = catchAsync(async (req: Request, res: Response) => {
+//   const isAllowed = permissionService.checkPermissions(req.user.role, 'view', 'inventory');
+//   if (!isAllowed) {
+//     throw new ApiError(httpStatus.FORBIDDEN, 'You do not have permission to view inventory levels');
+//   }
+//   const { productId } = req.params;
+//   const levels = await inventoryService.getInventoryLevels(productId);
+//   res.status(httpStatus.OK).send(levels);
+// });
+
+export const getAllInventoryLevels = catchAsync(async (req: Request, res: Response) => {
   const isAllowed = permissionService.checkPermissions(req.user.role, 'view', 'inventory');
   if (!isAllowed) {
     throw new ApiError(httpStatus.FORBIDDEN, 'You do not have permission to view inventory levels');
   }
-  const { productId } = req.params;
-  const levels = await inventoryService.getInventoryLevels(productId);
+
+  const filter = pick(req.query, ['name']);
+  const options: IOptions = pick(req.query, ['sortBy', 'limit', 'offset', 'projectBy']);
+  const wildcardFields = ['name'];
+
+  const levels = await inventoryService.getAllInventoryLevels(filter, options, wildcardFields);
   res.status(httpStatus.OK).send(levels);
 });
 

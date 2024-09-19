@@ -1,7 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 
-import { toast } from 'sonner';
-import { ICategory } from '@shared';
+import { IProductVariant } from '@shared';
 
 import { TableData } from '@/components/common/table/table-data';
 import { TableListSkeleton } from '@/components/common/table/table-list-selecton';
@@ -11,13 +10,12 @@ import { ToggleColumns } from '@/components/common/table/toggle-columns';
 import { useDataTable } from '@/components/common/table/use-table-data';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useBulkDeleteCategories } from '@/hooks/api/category.hooks';
 import { FetchError } from '@/lib/is-fetch-error';
 
-import { useCategoryTableColumns } from '../hooks/use-category-table-columns';
+import { useInventoryTableColumns } from '../hooks/use-inventory-table-columns';
 
-type CategoryListTableProps = {
-  results: ICategory[];
+type InventoryTableProps = {
+  results: IProductVariant[];
   count: number;
   hasResults: boolean;
   isLoading: boolean;
@@ -25,10 +23,10 @@ type CategoryListTableProps = {
   error: FetchError | null;
 };
 
-export const CategoryListTable = (props: CategoryListTableProps) => {
+export const InventoryTable = (props: InventoryTableProps) => {
   const navigate = useNavigate();
-  const columns = useCategoryTableColumns();
-  const { mutateAsync } = useBulkDeleteCategories();
+
+  const columns = useInventoryTableColumns();
 
   const table = useDataTable({
     columns,
@@ -42,18 +40,7 @@ export const CategoryListTable = (props: CategoryListTableProps) => {
   });
 
   const onClearFilters = () => {
-    navigate('/categories');
-  };
-
-  const handleBulkDelete = async (selectedIds: string[]) => {
-    try {
-      await mutateAsync(selectedIds);
-    } catch (error) {
-      toast.error('Failed to delete categories', {
-        description: 'There was an error while deleting the categories. Please try again.',
-        closeButton: true,
-      });
-    }
+    navigate('/inventory');
   };
 
   if (props.isError) {
@@ -65,9 +52,7 @@ export const CategoryListTable = (props: CategoryListTableProps) => {
   }
 
   if (!props.hasResults && props.results.length === 0) {
-    return (
-      <NoRecords title="You have no categories" description="You can start organizing your products by adding categories." />
-    );
+    return <NoRecords />;
   }
 
   return (
@@ -89,7 +74,7 @@ export const CategoryListTable = (props: CategoryListTableProps) => {
         )}
       </div>
 
-      <TableData table={table} onClearFilters={onClearFilters} onBulkDelete={handleBulkDelete} />
+      <TableData table={table} onClearFilters={onClearFilters} />
       <DataTablePagination table={table} />
     </div>
   );

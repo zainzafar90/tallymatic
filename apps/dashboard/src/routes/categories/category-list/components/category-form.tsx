@@ -38,7 +38,7 @@ export const CategoryForm = ({ category, isPending, onSubmit, onClose }: Categor
 
   return (
     <Form {...form}>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <FormField
           name="name"
           control={form.control}

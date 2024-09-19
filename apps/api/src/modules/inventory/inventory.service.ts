@@ -1,8 +1,10 @@
 import { Op, Sequelize } from 'sequelize';
-import { TransactionType } from '@shared';
+import { InventoryLevelsResponse, IOptions, TransactionType } from '@shared';
 
 import { getDatabaseInstance } from '@/database/db';
 
+import { buildPaginationOptions, transformPagination } from '../paginate/paginate';
+import { Product } from '../product';
 import { ProductVariant } from '../product-variant';
 import { Inventory } from './inventory.model';
 
@@ -19,11 +21,31 @@ export const createClaimAdjustment = async (variantId: string, quantity: number,
   }
 };
 
-export const getInventoryLevels = async (productId: string): Promise<ProductVariant[]> => {
-  return ProductVariant.findAll({
-    where: { productId },
+// export const getInventoryLevels = async (productId: string): Promise<ProductVariant[]> => {
+//   return ProductVariant.findAll({
+//     where: { productId },
+//     attributes: ['id', 'name', 'stock', 'lowStockThreshold', 'reorderPoint', 'reorderQuantity'],
+//   });
+// };
+
+export const getAllInventoryLevels = async (
+  filter: Record<string, any>,
+  options: IOptions,
+  wildcardFields: string[] = []
+): Promise<InventoryLevelsResponse> => {
+  const paginationOptions = buildPaginationOptions(filter, options, wildcardFields);
+  const result = await ProductVariant.findAndCountAll({
+    ...paginationOptions,
     attributes: ['id', 'name', 'stock', 'lowStockThreshold', 'reorderPoint', 'reorderQuantity'],
+    include: [
+      {
+        model: Product,
+        attributes: ['name'],
+      },
+    ],
   });
+
+  return transformPagination(result.count, result.rows, paginationOptions.offset, paginationOptions.limit);
 };
 
 export const checkLowStockAlerts = async (): Promise<ProductVariant[]> => {

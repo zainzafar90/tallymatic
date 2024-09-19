@@ -5,6 +5,7 @@ import { ICategory, IProduct } from '@shared';
 
 import { TableData } from '@/components/common/table/table-data';
 import { TableListSkeleton } from '@/components/common/table/table-list-selecton';
+import { NoRecords } from '@/components/common/table/table-no-records';
 import { DataTablePagination } from '@/components/common/table/table-pagination';
 import { ToggleColumns } from '@/components/common/table/toggle-columns';
 import { useDataTable } from '@/components/common/table/use-table-data';
@@ -14,7 +15,6 @@ import { useBulkDeleteProducts } from '@/hooks/api/products.hooks';
 import { FetchError } from '@/lib/is-fetch-error';
 
 import { useProductTableColumns } from '../hooks/use-product-table-columns';
-import { NoProducts } from './no-products';
 
 type ProductListTableProps = {
   results: (IProduct & {
@@ -67,7 +67,7 @@ export const ProductListTable = (props: ProductListTableProps) => {
   }
 
   if (!props.hasResults && props.results.length === 0) {
-    return <NoProducts />;
+    return <NoRecords title="You have no products" description="You can start selling as soon as you add a product." />;
   }
 
   return (

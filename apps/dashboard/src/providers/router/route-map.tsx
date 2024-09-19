@@ -5,6 +5,7 @@ import { MainLayout } from '@/components/layout/main-layout';
 import { Dashboard } from '@/routes/dashboard/dashboard';
 
 import { ErrorBoundary } from '../../components/common/error-boundary';
+import { InventoryList } from '../../routes/inventory/inventory-list';
 
 export const RouteMap: RouteObject[] = [
   {
@@ -83,6 +84,18 @@ export const RouteMap: RouteObject[] = [
               {
                 path: '',
                 lazy: () => import('../../routes/categories/category-list'),
+              },
+            ],
+          },
+          {
+            path: '/inventory',
+            handle: {
+              crumb: () => 'Inventory',
+            },
+            children: [
+              {
+                path: '',
+                element: <InventoryList />,
               },
             ],
           },

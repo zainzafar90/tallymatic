@@ -12,8 +12,18 @@ export const adjustStockSchema = {
   }),
 };
 
+// export const getInventoryLevelsSchema = {
+//   params: Joi.object().keys({
+//     productId: Joi.string().uuid().required(),
+//   }),
+// };
+
 export const getInventoryLevelsSchema = {
-  params: Joi.object().keys({
-    productId: Joi.string().uuid().required(),
+  query: Joi.object().keys({
+    name: Joi.string(),
+    sortBy: Joi.string(),
+    projectBy: Joi.string(),
+    limit: Joi.number().integer(),
+    offset: Joi.number().integer(),
   }),
 };

@@ -9,8 +9,12 @@ const router = express.Router();
 router.route('/adjust').post(auth(), validate(inventoryValidation.adjustStockSchema), inventoryController.adjustStock);
 
 router
-  .route('/levels/:productId')
-  .get(auth(), validate(inventoryValidation.getInventoryLevelsSchema), inventoryController.getInventoryLevels);
+  .route('/levels')
+  .get(auth(), validate(inventoryValidation.getInventoryLevelsSchema), inventoryController.getAllInventoryLevels);
+
+// router
+//   .route('/levels/:productId')
+//   .get(auth(), validate(inventoryValidation.getInventoryLevelsSchema), inventoryController.getInventoryLevels);
 
 router.route('/low-stock-alerts').get(auth(), inventoryController.getLowStockAlerts);
 

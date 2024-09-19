@@ -2,6 +2,7 @@ import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 
 import {
   ArrowRightStartOnRectangleIcon,
+  BuildingLibraryIcon,
   ChevronDownIcon,
   ChevronUpIcon,
   Cog8ToothIcon,
@@ -136,6 +137,10 @@ export const MainLayout = () => {
               <SidebarItem href="/categories" current={pathname.startsWith('/categories')}>
                 <WalletIcon />
                 <SidebarLabel>Categories</SidebarLabel>
+              </SidebarItem>
+              <SidebarItem href="/inventory" current={pathname.startsWith('/inventory')}>
+                <BuildingLibraryIcon />
+                <SidebarLabel>Inventory</SidebarLabel>
               </SidebarItem>
               <SidebarItem href="/orders" current={pathname.startsWith('/orders')}>
                 <TicketIcon />

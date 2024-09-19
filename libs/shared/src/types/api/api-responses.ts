@@ -39,5 +39,5 @@ export type ProductVariantListResponse = ResourceListResponse<IProductVariant>;
 export type ProductVariantDeleteResponse = DeleteResponse;
 
 // Inventory
-export type InventoryLevelsResponse = IProductVariant[];
-export type LowStockAlertsResponse = IProductVariant[];
+export type InventoryLevelsResponse = ResourceListResponse<IProductVariant>;
+export type LowStockAlertsResponse = ResourceListResponse<IProductVariant>;
