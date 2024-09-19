@@ -1,6 +1,5 @@
 import Joi from 'joi';
-
-import { TransactionType } from './inventory.model';
+import { TransactionType } from '@shared';
 
 export const adjustStockSchema = {
   body: Joi.object().keys({

@@ -10,3 +10,9 @@ export enum Status {
   ACTIVE = 'active',
   INACTIVE = 'inactive',
 }
+
+export enum TransactionType {
+  RECEIVED = 'received',
+  SOLD = 'sold',
+  ADJUSTED = 'adjusted',
+}

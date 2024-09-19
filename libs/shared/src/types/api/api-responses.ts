@@ -37,3 +37,7 @@ export type CategoryDeleteResponse = DeleteResponse;
 export type ProductVariantResponse = ResourceResponse<IProductVariant>;
 export type ProductVariantListResponse = ResourceListResponse<IProductVariant>;
 export type ProductVariantDeleteResponse = DeleteResponse;
+
+// Inventory
+export type InventoryLevelsResponse = IProductVariant[];
+export type LowStockAlertsResponse = IProductVariant[];

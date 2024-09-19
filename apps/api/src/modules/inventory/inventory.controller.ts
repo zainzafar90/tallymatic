@@ -1,11 +1,11 @@
 import { Request, Response } from 'express';
 import httpStatus from 'http-status';
+import { TransactionType } from '@shared';
 
 import { catchAsync } from '@/utils/catch-async';
 import { ApiError } from '@/common/errors/api-error';
 
 import { permissionService } from '../permissions/permission.service';
-import { TransactionType } from './inventory.model';
 import * as inventoryService from './inventory.service';
 
 export const adjustStock = catchAsync(async (req: Request, res: Response) => {

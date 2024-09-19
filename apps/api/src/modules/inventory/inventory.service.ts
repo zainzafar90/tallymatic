@@ -1,9 +1,10 @@
 import { Op, Sequelize } from 'sequelize';
+import { TransactionType } from '@shared';
 
 import { getDatabaseInstance } from '@/database/db';
 
 import { ProductVariant } from '../product-variant';
-import { Inventory, TransactionType } from './inventory.model';
+import { Inventory } from './inventory.model';
 
 export const createClaimAdjustment = async (variantId: string, quantity: number, notes?: string): Promise<Inventory> => {
   const transaction = await getDatabaseInstance().transaction();

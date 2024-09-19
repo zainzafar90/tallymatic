@@ -27,4 +27,11 @@ export type UpdateCategoryReq = Partial<ICategory>;
 // ProductVariant
 export type CreateProductVariantReq = Omit<IProductVariant, 'id'>;
 export type UpdateProductVariantReq = Partial<IProductVariant>;
-export type UpdateProductVariantBatchReq = (UpdateProductVariantReq & { id: string })[];
+export type UpdateProductVariantBatchReq = UpdateProductVariantReq[];
+
+// Inventory
+export type AdjustStockReq = {
+  productId: string;
+  variantId: string;
+  quantity: number;
+};

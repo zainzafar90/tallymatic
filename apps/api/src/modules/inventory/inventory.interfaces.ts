@@ -1,4 +1,4 @@
-import { TransactionType } from './inventory.model';
+import { TransactionType } from '@shared';
 
 export interface AdjustStockReq {
   variantId: string;
@@ -14,13 +14,4 @@ export interface InventoryRes {
   quantity: number;
   date: Date;
   notes?: string;
-}
-
-export interface InventoryLevelRes {
-  id: string;
-  name: string;
-  currentStock: number;
-  lowStockThreshold: number;
-  reorderPoint: number;
-  reorderQuantity: number;
 }

@@ -1,12 +1,7 @@
 import { BelongsTo, Column, DataType, ForeignKey, Model, Table } from 'sequelize-typescript';
+import { TransactionType } from '@shared';
 
 import { ProductVariant } from '../product-variant';
-
-export enum TransactionType {
-  RECEIVED = 'received',
-  SOLD = 'sold',
-  ADJUSTED = 'adjusted',
-}
 
 @Table({
   timestamps: true,
