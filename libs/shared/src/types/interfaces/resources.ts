@@ -80,4 +80,5 @@ export interface IProductVariant {
   reorderPoint?: number;
   reorderQuantity?: number;
   status: Status;
+  product?: IProduct;
 }

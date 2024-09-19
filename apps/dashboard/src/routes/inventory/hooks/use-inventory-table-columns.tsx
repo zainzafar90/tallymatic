@@ -50,15 +50,12 @@ export const useInventoryTableColumns = () => {
       cell: ({ row }) => <TextCell text={row.getValue('lowStockThreshold')} />,
       enableHiding: false,
     }),
-    columnHelper.accessor('reorderPoint', {
-      header: () => <TextHeader text="Reorder Point" />,
-      cell: ({ row }) => <TextCell text={row.getValue('reorderPoint')} />,
-      enableHiding: false,
-    }),
-    columnHelper.accessor('reorderQuantity', {
-      header: () => <TextHeader text="Reorder Quantity" />,
-      cell: ({ row }) => <TextCell text={row.getValue('reorderQuantity')} />,
-      enableHiding: false,
+
+    columnHelper.accessor((row) => row.product, {
+      id: 'product',
+      header: () => <TextHeader text="Product" />,
+      cell: ({ row, getValue }) => <TextCell text={getValue()?.name} />,
+      enableSorting: false,
     }),
     columnHelper.accessor('status', {
       header: () => <TextHeader text="Status" />,

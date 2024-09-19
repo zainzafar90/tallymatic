@@ -49,7 +49,7 @@ export const AdjustStockModal: React.FC<AdjustStockModalProps> = ({ isOpen, onCl
                 <FormItem>
                   <FormLabel>Product Variant</FormLabel>
                   <FormControl>
-                    <Select {...field}>{/* Populate with product variants */}</Select>
+                    <Select {...field}>{/* TODO: Populate with product variants */}</Select>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
