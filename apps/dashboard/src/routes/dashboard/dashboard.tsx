@@ -1,4 +1,7 @@
+import { ShoppingCart } from 'lucide-react';
+
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Divider } from '@/components/ui/divider';
 import { Heading, Subheading } from '@/components/ui/heading';
 import { Select } from '@/components/ui/select';
@@ -40,14 +43,9 @@ export const Dashboard = () => {
       <Heading>Good afternoon, Zain</Heading>
       <div className="mt-8 flex items-end justify-between">
         <Subheading>Overview</Subheading>
-        <div>
-          <Select name="period">
-            <option value="last_day">Today's Sales</option>
-            <option value="last_week">Last Week Sales</option>
-            <option value="last_month">Last Month Sales</option>
-            <option value="last_year">Year to Date Sales</option>
-          </Select>
-        </div>
+        <Button>
+          <ShoppingCart className="w-4 h-4" /> New Sale
+        </Button>
       </div>
       <div className="mt-4 grid gap-8 sm:grid-cols-2 xl:grid-cols-4">
         <Stat title="Today's Sales" subtitle="from yesterday" value="&#8360; 455" change="+4.5%" />
