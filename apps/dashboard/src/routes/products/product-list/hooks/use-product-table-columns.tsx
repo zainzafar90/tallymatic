@@ -103,7 +103,7 @@ export const useProductTableColumns = () => {
     }),
     columnHelper.accessor('createdAt', {
       id: 'createdAt',
-      header: () => <TextHeader text="Created" />,
+      header: ({ column }) => <SortedHeader text="Created" column={column} />,
       cell: ({ getValue }) => {
         const value = getValue();
 
@@ -113,7 +113,7 @@ export const useProductTableColumns = () => {
 
         return <DateCell date={value} />;
       },
-      enableSorting: false,
+      enableSorting: true,
       meta: {
         className: 'hidden xl:table-cell',
       },

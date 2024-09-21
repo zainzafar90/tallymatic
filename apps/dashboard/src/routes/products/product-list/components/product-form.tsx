@@ -2,7 +2,7 @@ import { CircleMinus, CirclePlus } from 'lucide-react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { IProduct, Status } from '@shared';
+import { IProduct, ProductStatus } from '@shared';
 
 import { Button } from '@/components/ui/button';
 import { DialogActions } from '@/components/ui/dialog';
@@ -34,7 +34,7 @@ export const ProductForm = ({ product, isPending, onSubmit, onClose }: ProductFo
       name: product?.name || '',
       categoryId: product?.categoryId ? product?.categoryId : undefined,
       description: product?.description || '',
-      status: product?.status || Status.ACTIVE,
+      status: product?.status || ProductStatus.ACTIVE,
       variants: product?.variants.map((variant) => ({
         name: variant.name,
         sku: variant.sku,
