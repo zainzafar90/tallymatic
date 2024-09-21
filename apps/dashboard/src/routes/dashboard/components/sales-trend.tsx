@@ -68,7 +68,7 @@ export function SalesTrend() {
             <div className="flex">
               <div className="relative z-30 flex flex-1 flex-col justify-center gap-1 border-t px-6 py-4 text-left even:border-l border-zinc-100 dark:border-zinc-800  sm:border-l sm:border-t-0 sm:px-8 sm:py-6">
                 <span className="text-xs text-muted-foreground">{chartConfig['sales'].label}</span>
-                <span className="text-lg font-bold leading-none sm:text-3xl">{total['sales'].toLocaleString()}</span>
+                <span className="text-lg font-bold leading-none sm:text-3xl">₨ {total['sales'].toLocaleString()}</span>
               </div>
             </div>
           </CardHeader>
