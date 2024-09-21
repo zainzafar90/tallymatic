@@ -18,6 +18,23 @@ module.exports = {
         type: Sequelize.TEXT,
         allowNull: true,
       },
+      email: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        unique: true,
+      },
+      phone: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      website: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      address: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
       status: {
         type: Sequelize.ENUM('active', 'inactive'),
         allowNull: false,

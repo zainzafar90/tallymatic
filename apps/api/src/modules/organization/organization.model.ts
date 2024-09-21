@@ -24,6 +24,30 @@ export class Organization extends Model<Organization> {
   name: string;
 
   @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  email: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  phone: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  website: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: true,
+  })
+  address: string;
+
+  @Column({
     type: DataType.TEXT,
     allowNull: true,
   })
