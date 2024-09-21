@@ -5,8 +5,8 @@ import { Heading } from '@/components/ui/heading';
 import { useCategories } from '@/hooks/api/category.hooks';
 import { useToggleState } from '@/hooks/use-toggle-state';
 
-import { CategoryListTable } from './components/category-list-table';
-import { CreateCategoryDialog } from './components/create-category.dialog';
+import { CreateCategoryDialog } from './components/dialogs/create-category.dialog';
+import { CategoryListTable } from './components/tables/category-list-table';
 import { useCategoryTableQuery } from './hooks/use-category-table-query';
 
 export const CategoryList = () => {

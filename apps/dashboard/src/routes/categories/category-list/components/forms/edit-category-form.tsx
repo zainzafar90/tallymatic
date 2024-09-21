@@ -13,6 +13,7 @@ export const EditCategoryForm = (props: { category: ICategory; onClose: () => vo
       {
         id: props.category.id,
         ...data,
+        parentCategoryId: data.parentCategoryId ? data.parentCategoryId : undefined,
         status: data.status as Status,
       },
       {

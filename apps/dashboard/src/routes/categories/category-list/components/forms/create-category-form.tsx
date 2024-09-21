@@ -12,7 +12,6 @@ export const CreateCategoryForm = (props: { onClose: () => void }) => {
     await mutateAsync(
       {
         ...data,
-        parentCategoryId: data.parentCategoryId ? data.parentCategoryId : undefined,
         status: data.status as Status,
       },
       {

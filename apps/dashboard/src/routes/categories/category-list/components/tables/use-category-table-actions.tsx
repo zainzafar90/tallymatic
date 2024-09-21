@@ -7,7 +7,7 @@ import { usePrompt } from '@/components/common/use-prompt';
 import { useDeleteCategory } from '@/hooks/api/category.hooks';
 import { useToggleState } from '@/hooks/use-toggle-state';
 
-import { EditCategoryDialog } from './edit-category.dialog';
+import { EditCategoryDialog } from '../dialogs/edit-category.dialog';
 
 export const CategoryActions = ({ category }: { category: ICategory }) => {
   const { prompt, PromptDialog } = usePrompt();

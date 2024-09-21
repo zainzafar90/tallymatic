@@ -2,7 +2,7 @@ import { ICategory } from '@shared';
 
 import { Dialog, DialogBody, DialogDescription, DialogTitle } from '@/components/ui/dialog';
 
-import { EditCategoryForm } from './edit-category-form';
+import { EditCategoryForm } from '../forms/edit-category-form';
 
 export function EditCategoryDialog({
   category,

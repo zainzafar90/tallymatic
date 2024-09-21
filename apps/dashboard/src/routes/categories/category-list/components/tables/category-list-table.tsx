@@ -14,7 +14,7 @@ import { Input } from '@/components/ui/input';
 import { useBulkDeleteCategories } from '@/hooks/api/category.hooks';
 import { FetchError } from '@/lib/is-fetch-error';
 
-import { useCategoryTableColumns } from '../hooks/use-category-table-columns';
+import { useCategoryTableColumns } from '../../hooks/use-category-table-columns';
 
 type CategoryListTableProps = {
   results: ICategory[];

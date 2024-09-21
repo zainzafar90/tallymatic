@@ -1,6 +1,6 @@
 import { Dialog, DialogBody, DialogDescription, DialogTitle } from '@/components/ui/dialog';
 
-import { CreateCategoryForm } from './create-category-form';
+import { CreateCategoryForm } from '../forms/create-category-form';
 
 export function CreateCategoryDialog({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   return (
