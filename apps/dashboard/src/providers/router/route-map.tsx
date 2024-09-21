@@ -53,25 +53,6 @@ export const RouteMap: RouteObject[] = [
               {
                 path: '',
                 lazy: () => import('../../routes/products/product-list'),
-                // children: [
-                //   {
-                //     path: 'create',
-                //     lazy: () => import('../../routes/products/product-create'),
-                //   },
-                // ],
-              },
-              {
-                path: ':id',
-                lazy: () => import('../../routes/products/product-detail'),
-                handle: {
-                  crumb: (data: any) => data.product.title,
-                },
-                //     children: [
-                //       {
-                //         path: 'edit',
-                //         lazy: () => import("../../routes/products/product-edit"),
-                //       },
-                //     ],
               },
             ],
           },

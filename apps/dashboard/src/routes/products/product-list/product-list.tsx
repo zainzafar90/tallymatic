@@ -5,8 +5,8 @@ import { Heading } from '@/components/ui/heading';
 import { useProducts } from '@/hooks/api/products.hooks';
 import { useToggleState } from '@/hooks/use-toggle-state';
 
-import { CreateProductDialog } from './components/create-product.dialog';
-import { ProductListTable } from './components/product-list-table';
+import { CreateProductDialog } from './components/dialogs/create-product.dialog';
+import { ProductListTable } from './components/tables/product-list-table';
 import { useProductTableQuery } from './hooks/use-product-table-query';
 
 export const ProductList = () => {

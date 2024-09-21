@@ -14,7 +14,7 @@ import { Input } from '@/components/ui/input';
 import { useBulkDeleteProducts } from '@/hooks/api/products.hooks';
 import { FetchError } from '@/lib/is-fetch-error';
 
-import { useProductTableColumns } from '../hooks/use-product-table-columns';
+import { useProductTableColumns } from '../../hooks/use-product-table-columns';
 
 type ProductListTableProps = {
   results: (IProduct & {

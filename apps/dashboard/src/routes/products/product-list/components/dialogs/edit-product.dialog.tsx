@@ -2,7 +2,7 @@ import { IProduct } from '@shared';
 
 import { Dialog, DialogBody, DialogDescription, DialogTitle } from '@/components/ui/dialog';
 
-import { EditProductForm } from './edit-product-form';
+import { EditProductForm } from '../forms/edit-product-form';
 
 export function EditProductDialog({
   product,

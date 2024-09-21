@@ -7,7 +7,7 @@ import { usePrompt } from '@/components/common/use-prompt';
 import { useDeleteProduct } from '@/hooks/api/products.hooks';
 import { useToggleState } from '@/hooks/use-toggle-state';
 
-import { EditProductDialog } from './edit-product.dialog';
+import { EditProductDialog } from '../dialogs/edit-product.dialog';
 
 export const ProductActions = ({ product }: { product: IProduct }) => {
   const { prompt, PromptDialog } = usePrompt();

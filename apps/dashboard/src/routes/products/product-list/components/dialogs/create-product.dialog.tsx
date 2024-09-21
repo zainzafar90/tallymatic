@@ -1,6 +1,6 @@
 import { Dialog, DialogBody, DialogDescription, DialogTitle } from '@/components/ui/dialog';
 
-import { CreateProductForm } from './create-product-form';
+import { CreateProductForm } from '../forms/create-product-form';
 
 export function CreateProductDialog({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   return (
