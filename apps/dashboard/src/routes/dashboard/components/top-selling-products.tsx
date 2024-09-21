@@ -40,55 +40,51 @@ const chartConfig = {
 
 export function TopSellingProducts() {
   return (
-    <div className="mt-4">
-      <div className="mt-4">
-        <Card className="bg-muted/50">
-          <CardHeader>
-            <CardTitle>Top Selling Products</CardTitle>
-            <CardDescription>Showing the top selling products</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ChartContainer config={chartConfig}>
-              <BarChart
-                accessibilityLayer
-                data={chartData}
-                layout="vertical"
-                margin={{
-                  right: 40,
-                }}
-              >
-                <CartesianGrid horizontal={false} />
-                <YAxis
-                  dataKey="productName"
-                  type="category"
-                  tickLine={false}
-                  tickMargin={10}
-                  axisLine={false}
-                  tickFormatter={(value) => value.slice(0, 3)}
-                  hide
-                />
-                <XAxis dataKey="itemsSold" type="number" hide />
-                <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="line" />} />
-                <Bar dataKey="itemsSold" layout="vertical" fill="var(--color-desktop)" radius={4}>
-                  <LabelList
-                    dataKey="productName"
-                    position="insideLeft"
-                    offset={8}
-                    className="fill-[--color-label]"
-                    fontSize={12}
-                  />
-                  <LabelList dataKey="itemsSold" position="right" offset={8} className="fill-foreground" fontSize={12} />
-                </Bar>
-              </BarChart>
-            </ChartContainer>
-          </CardContent>
-          <CardFooter className="flex-col items-start gap-2 text-sm">
-            <div className="flex gap-2 font-medium leading-none">
-              Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-            </div>
-          </CardFooter>
-        </Card>
-      </div>
-    </div>
+    <Card className="bg-muted/50">
+      <CardHeader>
+        <CardTitle>Top Selling Products</CardTitle>
+        <CardDescription>Showing the top selling products</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <ChartContainer config={chartConfig}>
+          <BarChart
+            accessibilityLayer
+            data={chartData}
+            layout="vertical"
+            margin={{
+              right: 40,
+            }}
+          >
+            <CartesianGrid horizontal={false} />
+            <YAxis
+              dataKey="productName"
+              type="category"
+              tickLine={false}
+              tickMargin={10}
+              axisLine={false}
+              tickFormatter={(value) => value.slice(0, 3)}
+              hide
+            />
+            <XAxis dataKey="itemsSold" type="number" hide />
+            <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="line" />} />
+            <Bar dataKey="itemsSold" layout="vertical" fill="var(--color-desktop)" radius={4}>
+              <LabelList
+                dataKey="productName"
+                position="insideLeft"
+                offset={8}
+                className="fill-[--color-label]"
+                fontSize={12}
+              />
+              <LabelList dataKey="itemsSold" position="right" offset={8} className="fill-foreground" fontSize={12} />
+            </Bar>
+          </BarChart>
+        </ChartContainer>
+      </CardContent>
+      <CardFooter className="flex-col items-start gap-2 text-sm">
+        <div className="flex gap-2 font-medium leading-none">
+          Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
+        </div>
+      </CardFooter>
+    </Card>
   );
 }
