@@ -13,7 +13,7 @@ const transactions = [
     type: 'Sale',
     status: 'Approved',
     date: '2023-06-23',
-    amount: '$250.00',
+    amount: '₨ 250.00',
   },
   {
     id: 2,
@@ -22,7 +22,7 @@ const transactions = [
     type: 'Refund',
     status: 'Declined',
     date: '2023-06-24',
-    amount: '$150.00',
+    amount: '₨ 150.00',
   },
   {
     id: 3,
@@ -31,7 +31,7 @@ const transactions = [
     type: 'Subscription',
     status: 'Approved',
     date: '2023-06-25',
-    amount: '$350.00',
+    amount: '₨ 350.00',
   },
   {
     id: 4,
@@ -40,7 +40,7 @@ const transactions = [
     type: 'Sale',
     status: 'Approved',
     date: '2023-06-26',
-    amount: '$450.00',
+    amount: '₨ 450.00',
   },
   {
     id: 5,
@@ -49,7 +49,7 @@ const transactions = [
     type: 'Sale',
     status: 'Approved',
     date: '2023-06-27',
-    amount: '$550.00',
+    amount: '₨ 550.00',
   },
 ];
 

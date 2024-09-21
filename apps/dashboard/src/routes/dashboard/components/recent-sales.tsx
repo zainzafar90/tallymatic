@@ -6,41 +6,41 @@ const salesData = [
     initials: 'OM',
     name: 'Olivia Martin',
     email: 'olivia.martin@email.com',
-    amount: '+$1,999.00',
+    amount: '+₨ 1,999',
   },
   {
     initials: 'JL',
     name: 'Jackson Lee',
     email: 'jackson.lee@email.com',
-    amount: '+$39.00',
+    amount: '+₨ 39',
   },
   {
     initials: 'IN',
     name: 'Isabella Nguyen',
     email: 'isabella.nguyen@email.com',
-    amount: '+$299.00',
+    amount: '+₨ 299',
   },
   {
     initials: 'WK',
     name: 'William Kim',
     email: 'will@email.com',
-    amount: '+$99.00',
+    amount: '+₨ 99',
   },
   {
     initials: 'SD',
     name: 'Sofia Davis',
     email: 'sofia.davis@email.com',
-    amount: '+$39.00',
+    amount: '+₨ 39',
   },
   {
     initials: 'EM',
     name: 'Ethan Miller',
     email: 'ethan.miller@email.com',
-    amount: '+$499.00',
+    amount: '+₨ 499',
   },
 ];
 
-export function LatestSales() {
+export function RecentSales() {
   return (
     <Card className="bg-muted/50">
       <CardHeader>
@@ -49,7 +49,12 @@ export function LatestSales() {
       <CardContent className="grid gap-8">
         {salesData.map((sale, index) => (
           <div key={index} className="flex items-center gap-4">
-            <Avatar slot="icon" initials={sale.initials} className="size-6 bg-blue-600 text-white" />
+            <Avatar
+              slot="icon"
+              src="https://ui.shadcn.com/avatars/02.png"
+              initials={sale.initials}
+              className="size-8 bg-blue-900 text-white"
+            />
             <div className="grid gap-1">
               <p className="text-sm font-medium leading-none">{sale.name}</p>
               <p className="text-sm text-muted-foreground">{sale.email}</p>
