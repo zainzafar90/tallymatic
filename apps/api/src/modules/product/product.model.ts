@@ -10,7 +10,7 @@ import {
   PrimaryKey,
   Table,
 } from 'sequelize-typescript';
-import { Status } from '@shared';
+import { ProductStatus } from '@shared';
 
 import { Category } from '../category';
 import { Organization } from '../organization/organization.model';
@@ -68,11 +68,11 @@ export class Product extends Model<Product> {
   description: string;
 
   @Column({
-    type: DataType.ENUM({ values: Object.values(Status) }),
+    type: DataType.ENUM({ values: Object.values(ProductStatus) }),
     allowNull: false,
-    defaultValue: Status.ACTIVE,
+    defaultValue: ProductStatus.ACTIVE,
   })
-  status: Status;
+  status: ProductStatus;
 
   @BelongsTo(() => Category)
   category: Category;

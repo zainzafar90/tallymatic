@@ -40,7 +40,7 @@ module.exports = {
         storeId: randomStore.id,
         name: faker.commerce.productName(),
         description: faker.commerce.productDescription(),
-        status: faker.helpers.arrayElement(['active', 'inactive']),
+        status: faker.helpers.arrayElement(['active', 'draft', 'archived']),
         createdAt: faker.date.past(),
         updatedAt: faker.date.recent(),
       });

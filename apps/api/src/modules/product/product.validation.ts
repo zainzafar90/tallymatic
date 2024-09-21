@@ -1,5 +1,5 @@
 import Joi from 'joi';
-import { CreateProductReq, Status } from '@shared';
+import { CreateProductReq, ProductStatus } from '@shared';
 
 import { uuid } from '@/common/validate/custom.validation';
 
@@ -8,7 +8,7 @@ import { createProductVariantBody } from '../product-variant/product-variant.val
 const createProductBody: Record<keyof CreateProductReq, any> = {
   name: Joi.string().required(),
   description: Joi.string().allow('').optional(),
-  status: Joi.string().valid(Status.ACTIVE, Status.INACTIVE).required(),
+  status: Joi.string().valid(ProductStatus.ACTIVE, ProductStatus.ARCHIVED, ProductStatus.DRAFT).optional(),
   categoryId: Joi.string().custom(uuid).optional(),
   variants: Joi.array().items(Joi.object().keys(createProductVariantBody)).min(1).required(),
   createdAt: Joi.date().optional(),
@@ -23,7 +23,7 @@ export const getProducts = {
   query: Joi.object().keys({
     storeId: Joi.string().custom(uuid),
     name: Joi.string(),
-    status: Joi.string().valid(Status.ACTIVE, Status.INACTIVE),
+    status: Joi.string().valid(ProductStatus.ACTIVE, ProductStatus.ARCHIVED, ProductStatus.DRAFT),
     sortBy: Joi.string(),
     projectBy: Joi.string(),
     limit: Joi.number().integer(),
@@ -46,7 +46,7 @@ export const updateProduct = {
       id: Joi.string().custom(uuid).optional(),
       name: Joi.string(),
       description: Joi.string().allow('').optional(),
-      status: Joi.string().valid(Status.ACTIVE, Status.INACTIVE),
+      status: Joi.string().valid(ProductStatus.ACTIVE, ProductStatus.ARCHIVED, ProductStatus.DRAFT).optional(),
       categoryId: Joi.string().custom(uuid).optional(),
       variants: Joi.array().items(Joi.object().keys(createProductVariantBody)).min(1),
     })

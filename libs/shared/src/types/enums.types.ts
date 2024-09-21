@@ -11,6 +11,12 @@ export enum Status {
   INACTIVE = 'inactive',
 }
 
+export enum ProductStatus {
+  ACTIVE = 'active',
+  ARCHIVED = 'archived',
+  DRAFT = 'draft',
+}
+
 export enum TransactionType {
   RECEIVED = 'received',
   SOLD = 'sold',

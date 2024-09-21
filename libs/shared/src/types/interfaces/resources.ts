@@ -1,6 +1,6 @@
 import { Moment } from 'moment';
 
-import { Status, TokenType } from '../enums.types';
+import { ProductStatus, Status, TokenType } from '../enums.types';
 import { RoleType } from '../role.types';
 
 type Dates = {
@@ -56,7 +56,7 @@ export interface IProduct extends Dates {
   id: string;
   name: string;
   description?: string;
-  status: Status;
+  status: ProductStatus;
   categoryId?: string;
   variants: IProductVariant[];
 }
