@@ -1,12 +1,9 @@
-'use client';
-
 import * as React from 'react';
 
 import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
-import { Subheading } from '@/components/ui/heading';
 
 const chartData = [
   { date: '2024-08-01', sales: 222 },
@@ -60,13 +57,12 @@ export function SalesTrend() {
   );
 
   return (
-    <div className="mt-14">
-      <Subheading>Sales Trend</Subheading>
+    <div className="mt-4">
       <div className="mt-4">
         <Card className="bg-muted/50">
           <CardHeader className="flex flex-col items-stretch space-y-0 border-b border-zinc-100 dark:border-zinc-800 p-0 sm:flex-row">
             <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
-              <CardTitle>Last Month Sales</CardTitle>
+              <CardTitle>Sales Trend</CardTitle>
               <CardDescription>Sales trend for the last month</CardDescription>
             </div>
             <div className="flex">

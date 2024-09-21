@@ -1,13 +1,10 @@
-import { useEffect, useState } from 'react';
-
-import { Avatar } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Divider } from '@/components/ui/divider';
 import { Heading, Subheading } from '@/components/ui/heading';
 import { Select } from '@/components/ui/select';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { getOrders } from '@/data';
 
+import { LatestSales } from './components/latest-sales';
+import { RecentInventoryChanges } from './components/recent-inventory-changes';
 import { SalesTrend } from './components/sales-trend';
 import { TopSellingProducts } from './components/top-selling-products';
 
@@ -36,14 +33,6 @@ export function Stat({
 }
 
 export const Dashboard = () => {
-  const [orders, setOrders] = useState<Awaited<ReturnType<typeof getOrders>>>([]);
-
-  useEffect(() => {
-    (async () => {
-      setOrders(await getOrders());
-    })();
-  }, []);
-
   return (
     <>
       <Heading>Good afternoon, Zain</Heading>
@@ -64,39 +53,11 @@ export const Dashboard = () => {
         <Stat title="Last Month Sales" subtitle="from last month" value="&#8360; 288,454" change="+4.5%" />
         <Stat title="Year to Date Sales" subtitle="from last year" value="&#8360; 2.6M" change="+21.2%" />
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-8">
         <SalesTrend />
         <TopSellingProducts />
-        <div className="mt-14">
-          <Subheading>Recent orders</Subheading>
-          <Table className="mt-4 [--gutter:theme(spacing.6)] lg:[--gutter:theme(spacing.10)]">
-            <TableHead>
-              <TableRow>
-                <TableHeader>Order number</TableHeader>
-                <TableHeader>Purchase date</TableHeader>
-                <TableHeader>Customer</TableHeader>
-                <TableHeader>Event</TableHeader>
-                <TableHeader className="text-right">Amount</TableHeader>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {orders.map((order) => (
-                <TableRow key={order.id} href={order.url} title={`Order #${order.id}`}>
-                  <TableCell>{order.id}</TableCell>
-                  <TableCell className="text-zinc-500">{order.date}</TableCell>
-                  <TableCell>{order.customer.name}</TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-2">
-                      <Avatar src={order.event.thumbUrl} className="size-6" />
-                      <span>{order.event.name}</span>
-                    </div>
-                  </TableCell>
-                  <TableCell className="text-right">US{order.amount.usd}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
+        <LatestSales />
+        <RecentInventoryChanges />
       </div>
     </>
   );

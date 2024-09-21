@@ -1,11 +1,8 @@
-'use client';
-
 import { TrendingUp } from 'lucide-react';
 import { Bar, BarChart, CartesianGrid, LabelList, XAxis, YAxis } from 'recharts';
 
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
-import { Subheading } from '@/components/ui/heading';
 
 const chartData = [
   { productName: 'smartphone', itemsSold: 250, fill: 'hsl(var(--chart-1))' },
@@ -43,12 +40,11 @@ const chartConfig = {
 
 export function TopSellingProducts() {
   return (
-    <div className="mt-14">
-      <Subheading>Top Selling Products</Subheading>
+    <div className="mt-4">
       <div className="mt-4">
         <Card className="bg-muted/50">
           <CardHeader>
-            <CardTitle>Last Month</CardTitle>
+            <CardTitle>Top Selling Products</CardTitle>
             <CardDescription>Showing the top selling products</CardDescription>
           </CardHeader>
           <CardContent>
