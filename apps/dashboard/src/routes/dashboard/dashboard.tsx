@@ -4,6 +4,8 @@ import { Heading, Subheading } from '@/components/ui/heading';
 import { Select } from '@/components/ui/select';
 
 import { LatestSales } from './components/latest-sales';
+import { LowStockWarnings } from './components/low-stock-warnings';
+import { PendingPurchaseOrders } from './components/pending-purchase-orders';
 import { RecentInventoryChanges } from './components/recent-inventory-changes';
 import { SalesTrend } from './components/sales-trend';
 import { TopSellingProducts } from './components/top-selling-products';
@@ -58,6 +60,8 @@ export const Dashboard = () => {
         <TopSellingProducts />
         <LatestSales />
         <RecentInventoryChanges />
+        <LowStockWarnings />
+        <PendingPurchaseOrders />
       </div>
     </>
   );
