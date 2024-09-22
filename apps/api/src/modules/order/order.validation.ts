@@ -15,10 +15,10 @@ const createOrderBody = {
   fulfillmentStatus: Joi.string()
     .valid(...Object.values(FulfillmentStatus))
     .required(),
-  totalPrice: Joi.number().required(),
-  subtotalPrice: Joi.number().required(),
+  total: Joi.number().required(),
+  subtotal: Joi.number().required(),
   totalTax: Joi.number().required(),
-  totalDiscounts: Joi.number().required(),
+  totalDiscount: Joi.number().required(),
   items: Joi.array()
     .items(
       Joi.object({

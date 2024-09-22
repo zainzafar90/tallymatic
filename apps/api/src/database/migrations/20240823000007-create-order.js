@@ -40,11 +40,11 @@ module.exports = {
         type: Sequelize.ENUM('fulfilled', 'partial', 'unfulfilled'),
         allowNull: false,
       },
-      totalPrice: {
+      total: {
         type: Sequelize.DECIMAL(10, 2),
         allowNull: false,
       },
-      subtotalPrice: {
+      subtotal: {
         type: Sequelize.DECIMAL(10, 2),
         allowNull: false,
       },
@@ -52,7 +52,7 @@ module.exports = {
         type: Sequelize.DECIMAL(10, 2),
         allowNull: false,
       },
-      totalDiscounts: {
+      totalDiscount: {
         type: Sequelize.DECIMAL(10, 2),
         allowNull: false,
       },

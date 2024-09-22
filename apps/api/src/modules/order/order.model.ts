@@ -53,16 +53,16 @@ export class Order extends Model {
   fulfillmentStatus: FulfillmentStatus;
 
   @Column(DataType.DECIMAL(10, 2))
-  totalPrice: number;
+  total: number;
 
   @Column(DataType.DECIMAL(10, 2))
-  subtotalPrice: number;
+  subtotal: number;
 
   @Column(DataType.DECIMAL(10, 2))
   totalTax: number;
 
   @Column(DataType.DECIMAL(10, 2))
-  totalDiscounts: number;
+  totalDiscount: number;
 
   @HasMany(() => OrderItem)
   items: OrderItem[];

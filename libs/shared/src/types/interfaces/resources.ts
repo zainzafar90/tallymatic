@@ -108,10 +108,10 @@ export interface IOrder extends Dates {
   currency: string;
   financialStatus: string;
   fulfillmentStatus: string;
-  totalPrice: number;
-  subtotalPrice: number;
+  total: number;
+  subtotal: number;
   totalTax: number;
-  totalDiscounts: number;
+  totalDiscount: number;
   items: IOrderItem[];
 }
 

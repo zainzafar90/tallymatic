@@ -19,10 +19,10 @@ module.exports = {
         currency: 'PKR',
         financialStatus: ['pending', 'paid', 'unpaid', 'partiallyPaid', 'refunded', 'voided'][Math.floor(Math.random() * 6)],
         fulfillmentStatus: ['fulfilled', 'partial', 'unfulfilled'][Math.floor(Math.random() * 3)],
-        totalPrice: (Math.random() * 1000).toFixed(2),
-        subtotalPrice: (Math.random() * 900).toFixed(2),
+        total: (Math.random() * 1000).toFixed(2),
+        subtotal: (Math.random() * 900).toFixed(2),
         totalTax: (Math.random() * 50).toFixed(2),
-        totalDiscounts: (Math.random() * 50).toFixed(2),
+        totalDiscount: (Math.random() * 50).toFixed(2),
         createdAt: new Date(),
         updatedAt: new Date(),
       });
