@@ -4,7 +4,7 @@ import { IProductVariant } from '@shared';
 import { ActionMenu } from '@/components/common/action-menu';
 import { useToggleState } from '@/hooks/use-toggle-state';
 
-import { AdjustStockModal } from './adjust-stock-modal';
+import { AdjustStockDialog } from '../dialogs/adjust-stock.dialog';
 
 export const InventoryActions = ({ variant }: { variant: IProductVariant }) => {
   const [adjustStockOpen, showAdjustStockModal, closeAdjustStockModal] = useToggleState();
@@ -25,7 +25,7 @@ export const InventoryActions = ({ variant }: { variant: IProductVariant }) => {
         ]}
       />
 
-      <AdjustStockModal isOpen={adjustStockOpen} onClose={closeAdjustStockModal} variant={variant} />
+      <AdjustStockDialog isOpen={adjustStockOpen} onClose={closeAdjustStockModal} variant={variant} />
     </div>
   );
 };

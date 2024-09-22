@@ -3,8 +3,8 @@ import { keepPreviousData } from '@tanstack/react-query';
 import { Heading } from '@/components/ui/heading';
 import { useAllInventoryLevels } from '@/hooks/api/inventory.hooks';
 
-import { InventoryTable } from './components/inventory-list-table';
 import { LowStockAlerts } from './components/low-stock-alerts';
+import { InventoryTable } from './components/tables/inventory-list-table';
 import { useInventoryTableQuery } from './hooks/use-inventory-table-query';
 
 export const InventoryList = () => {

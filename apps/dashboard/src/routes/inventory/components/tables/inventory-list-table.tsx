@@ -12,7 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { FetchError } from '@/lib/is-fetch-error';
 
-import { useInventoryTableColumns } from '../hooks/use-inventory-table-columns';
+import { useInventoryTableColumns } from '../../hooks/use-inventory-table-columns';
 
 type InventoryTableProps = {
   results: IProductVariant[];

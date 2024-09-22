@@ -5,7 +5,7 @@ import { SortedHeader } from '@/components/table/table-cells/common/sorted-heade
 import { TextCell, TextHeader } from '@/components/table/table-cells/common/text-cell';
 import { Badge } from '@/components/ui/badge';
 
-import { InventoryActions } from '../components/use-inventory-table-actions';
+import { InventoryActions } from '../components/tables/use-inventory-table-actions';
 
 const columnHelper = createColumnHelper<IProductVariant>();
 

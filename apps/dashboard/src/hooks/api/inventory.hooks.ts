@@ -1,4 +1,3 @@
-import { checkDomainOfScale } from 'recharts/types/util/ChartUtils';
 import { InventoryLevelsResponse } from '@shared';
 import { QueryKey, useMutation, UseMutationOptions, useQuery, UseQueryOptions } from '@tanstack/react-query';
 
@@ -18,8 +17,6 @@ export const useAdjustStock = (options?: UseMutationOptions<any, Error, any>) =>
     mutationFn: client.inventory.adjustStock,
     onSuccess: (data: any, variables: any, context: any) => {
       queryClient.invalidateQueries({ queryKey: inventoryQueryKeys.lists() });
-      queryClient.invalidateQueries({ queryKey: inventoryQueryKeys.detail(data.id) });
-
       options?.onSuccess?.(data, variables, context);
     },
   });
