@@ -2,6 +2,7 @@ import {
   IAccessAndRefreshTokens,
   ICategory,
   ICustomer,
+  IOrder,
   IOrganization,
   IProduct,
   IProductVariant,
@@ -61,3 +62,8 @@ export type CustomerDeleteResponse = DeleteResponse;
 export type SupplierResponse = ResourceResponse<ISupplier>;
 export type SupplierListResponse = ResourceListResponse<ISupplier>;
 export type SupplierDeleteResponse = DeleteResponse;
+
+// Order
+export type OrderResponse = ResourceResponse<IOrder>;
+export type OrderListResponse = ResourceListResponse<IOrder>;
+export type OrderDeleteResponse = DeleteResponse;

@@ -9,6 +9,8 @@ const createSupplierBody: Record<keyof CreateSupplierReq, any> = {
   email: Joi.string().required().email(),
   phone: Joi.string().optional(),
   address: Joi.string().optional(),
+  createdAt: Joi.date().optional(),
+  updatedAt: Joi.date().optional(),
 };
 
 export const createSupplier = {

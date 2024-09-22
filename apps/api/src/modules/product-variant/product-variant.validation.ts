@@ -14,6 +14,8 @@ export const createProductVariantBody: Record<keyof CreateProductVariantReq, any
   reorderQuantity: Joi.number().integer().min(0).default(0),
   status: Joi.string().valid(Status.ACTIVE, Status.INACTIVE).required(),
   product: Joi.object().optional(),
+  createdAt: Joi.date().optional(),
+  updatedAt: Joi.date().optional(),
 };
 
 export const createProductVariant = {

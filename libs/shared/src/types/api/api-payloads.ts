@@ -1,6 +1,7 @@
 import {
   ICategory,
   ICustomer,
+  IOrder,
   IOrganization,
   IProduct,
   IProductVariant,
@@ -52,3 +53,7 @@ export type UpdateCustomerReq = Partial<ICustomer>;
 // Supplier
 export type CreateSupplierReq = Omit<ISupplier, 'id'>;
 export type UpdateSupplierReq = Partial<ISupplier>;
+
+// Order
+export type CreateOrderReq = Omit<IOrder, 'id'>;
+export type UpdateOrderReq = Partial<IOrder>;

@@ -8,6 +8,8 @@ const createCustomerBody: Record<keyof CreateCustomerReq, any> = {
   email: Joi.string().optional().email(),
   phone: Joi.string().optional(),
   address: Joi.string().optional(),
+  createdAt: Joi.date().optional(),
+  updatedAt: Joi.date().optional(),
 };
 
 export const createCustomer = {

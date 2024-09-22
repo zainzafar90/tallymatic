@@ -69,7 +69,7 @@ export interface ICategory extends Dates {
   status: Status;
 }
 
-export interface IProductVariant {
+export interface IProductVariant extends Dates {
   id?: string;
   name: string;
   sku: string;
@@ -83,7 +83,7 @@ export interface IProductVariant {
   product?: IProduct;
 }
 
-export interface ICustomer {
+export interface ICustomer extends Dates {
   id?: string;
   name: string;
   email: string;
@@ -91,11 +91,35 @@ export interface ICustomer {
   address?: string;
 }
 
-export interface ISupplier {
+export interface ISupplier extends Dates {
   id?: string;
   companyName: string;
   email?: string;
   contactName?: string;
   phone?: string;
   address?: string;
+}
+
+export interface IOrder extends Dates {
+  id?: string;
+  number: string;
+  customerId: string;
+  closedAt?: Date;
+  currency: string;
+  financialStatus: string;
+  fulfillmentStatus: string;
+  totalPrice: number;
+  subtotalPrice: number;
+  totalTax: number;
+  totalDiscounts: number;
+  items: IOrderItem[];
+}
+
+export interface IOrderItem extends Dates {
+  id?: string;
+  orderId: string;
+  variantId: string;
+  quantity: number;
+  price: number;
+  totalDiscount: number;
 }
