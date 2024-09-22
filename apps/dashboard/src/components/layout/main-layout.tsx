@@ -158,7 +158,7 @@ export const MainLayout = () => {
 
             <SidebarSection className="max-lg:hidden">
               <SidebarLabel className="mb-1 px-2 text-[10px]/4 font-medium text-zinc-500 dark:text-zinc-400">
-                No upcoming events
+                No upcoming payments
               </SidebarLabel>
             </SidebarSection>
 
