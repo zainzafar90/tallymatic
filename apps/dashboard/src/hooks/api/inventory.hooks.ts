@@ -1,3 +1,4 @@
+import { checkDomainOfScale } from 'recharts/types/util/ChartUtils';
 import { InventoryLevelsResponse } from '@shared';
 import { QueryKey, useMutation, UseMutationOptions, useQuery, UseQueryOptions } from '@tanstack/react-query';
 
@@ -48,8 +49,10 @@ export const useAllInventoryLevels = (
 };
 
 export const useLowStockAlerts = () => {
-  return useQuery({
+  const { data, ...rest } = useQuery({
+    queryFn: () => client.inventory.getLowStockAlerts(),
     queryKey: ['lowStockAlerts'],
-    queryFn: client.inventory.getLowStockAlerts,
   });
+
+  return { ...data, ...rest };
 };

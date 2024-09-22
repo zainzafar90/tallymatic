@@ -1,5 +1,5 @@
 import { Op, Sequelize } from 'sequelize';
-import { InventoryLevelsResponse, IOptions, TransactionType } from '@shared';
+import { InventoryLevelsResponse, IOptions, LowStockAlertsResponse, TransactionType } from '@shared';
 
 import { getDatabaseInstance } from '@/database/db';
 
@@ -58,14 +58,16 @@ export const getAllInventoryLevels = async (
   return transformPagination(result.count, result.rows, paginationOptions.offset, paginationOptions.limit);
 };
 
-export const checkLowStockAlerts = async (): Promise<ProductVariant[]> => {
-  return ProductVariant.findAll({
+export const checkLowStockAlerts = async (): Promise<LowStockAlertsResponse> => {
+  const result = await ProductVariant.findAndCountAll({
     where: {
       stock: {
         [Op.lte]: Sequelize.col('lowStockThreshold'),
       },
     },
   });
+
+  return transformPagination(result.count, result.rows, 0, result.count);
 };
 
 export const adjustStock = async (
