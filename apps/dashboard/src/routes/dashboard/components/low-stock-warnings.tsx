@@ -1,15 +1,20 @@
+import { TableListSkeleton } from '@/components/common/table/table-list-selecton';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { useLowStockAlerts } from '@/hooks/api/inventory.hooks';
 
-const lowStockItems = [
-  { id: 1, name: 'iPhone 13 Pro', currentStock: 5, minStock: 10, status: 'Critical' },
-  { id: 2, name: 'Samsung Galaxy S21', currentStock: 8, minStock: 15, status: 'Low' },
-  { id: 3, name: 'MacBook Air M1', currentStock: 3, minStock: 8, status: 'Critical' },
-  { id: 4, name: 'AirPods Pro', currentStock: 12, minStock: 20, status: 'Low' },
-];
+export const LowStockWarnings = () => {
+  const { results = [], isLoading, isError, error } = useLowStockAlerts();
 
-export function LowStockWarnings() {
+  if (isError) {
+    throw error;
+  }
+
+  if (isLoading) {
+    return <TableListSkeleton />;
+  }
+
   return (
     <Card className="bg-muted/50">
       <CardHeader>
@@ -26,13 +31,18 @@ export function LowStockWarnings() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {lowStockItems.map((item) => (
+            {results.map((item) => (
               <TableRow key={item.id}>
-                <TableCell>{item.name}</TableCell>
-                <TableCell className="hidden md:table-cell">{item.currentStock}</TableCell>
-                <TableCell className="hidden md:table-cell lg:hidden xl:table-cell">{item.minStock}</TableCell>
                 <TableCell>
-                  <Badge color={item.status === 'Critical' ? 'red' : 'yellow'}>{item.status}</Badge>
+                  <div className="flex flex-col h-full w-full gap-x-3 overflow-hidden">
+                    <div className="truncate">{item.product?.name}</div>
+                    <div className="text-sm text-gray-500">{item.name}</div>
+                  </div>
+                </TableCell>
+                <TableCell className="hidden md:table-cell">{item.stock}</TableCell>
+                <TableCell className="hidden md:table-cell lg:hidden xl:table-cell">{item.lowStockThreshold}</TableCell>
+                <TableCell>
+                  <StockStatus stock={item.stock} lowStockThreshold={item.lowStockThreshold || 0} />
                 </TableCell>
               </TableRow>
             ))}
@@ -41,4 +51,19 @@ export function LowStockWarnings() {
       </CardContent>
     </Card>
   );
-}
+};
+
+const StockStatus = ({ stock, lowStockThreshold }: { stock: number; lowStockThreshold: number }) => {
+  const isLowStock = stock <= lowStockThreshold;
+  const isCriticalStock = stock === 0;
+
+  return (
+    <div className="flex items-center space-x-2">
+      {isLowStock && (
+        <Badge color={isCriticalStock ? 'red' : 'yellow'} className="text-xs">
+          {isCriticalStock ? 'Critical' : 'Low'}
+        </Badge>
+      )}
+    </div>
+  );
+};

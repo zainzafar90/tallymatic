@@ -65,6 +65,7 @@ export const checkLowStockAlerts = async (): Promise<LowStockAlertsResponse> => 
         [Op.lte]: Sequelize.col('lowStockThreshold'),
       },
     },
+    order: [['stock', 'ASC']],
   });
 
   return transformPagination(result.count, result.rows, 0, result.count);
