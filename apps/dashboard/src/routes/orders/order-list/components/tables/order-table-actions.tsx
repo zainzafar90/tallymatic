@@ -9,7 +9,7 @@ import { usePrompt } from '@/components/common/use-prompt';
 import { useDeleteOrder } from '@/hooks/api/order.hooks';
 import { useToggleState } from '@/hooks/use-toggle-state';
 
-import { EditOrderDialog } from '../dialogs/edit-order-dialog';
+import { EditOrderDialog } from '../dialogs/edit-order.dialog';
 
 export const OrderActions: React.FC<{ order: IOrder }> = ({ order }) => {
   const { prompt, PromptDialog } = usePrompt();

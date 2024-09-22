@@ -5,7 +5,7 @@ import { Heading } from '@/components/ui/heading';
 import { useOrders } from '@/hooks/api/order.hooks';
 import { useToggleState } from '@/hooks/use-toggle-state';
 
-import { CreateOrderDialog } from './components/dialogs/create-order-dialog';
+import { CreateOrderDialog } from './components/dialogs/create-order.dialog';
 import { OrderListTable } from './components/tables/order-list-table';
 import { useOrderTableQuery } from './hooks/use-order-table-query';
 
