@@ -82,3 +82,20 @@ export interface IProductVariant {
   status: Status;
   product?: IProduct;
 }
+
+export interface ICustomer {
+  id?: string;
+  name: string;
+  email: string;
+  phone?: string;
+  address?: string;
+}
+
+export interface ISupplier {
+  id?: string;
+  companyName: string;
+  email?: string;
+  contactName?: string;
+  phone?: string;
+  address?: string;
+}

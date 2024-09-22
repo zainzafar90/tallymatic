@@ -1,4 +1,13 @@
-import { ICategory, IOrganization, IProduct, IProductVariant, IStore, IUser } from '../interfaces/resources';
+import {
+  ICategory,
+  ICustomer,
+  IOrganization,
+  IProduct,
+  IProductVariant,
+  IStore,
+  ISupplier,
+  IUser,
+} from '../interfaces/resources';
 
 // Auth
 export type EmailPassReq = { email: string; password: string };
@@ -20,14 +29,14 @@ export type UpdateStoreReq = Partial<IStore>;
 export type CreateProductReq = Omit<IProduct, 'id'>;
 export type UpdateProductReq = Partial<IProduct>;
 
-// Category
-export type CreateCategoryReq = Omit<ICategory, 'id'>;
-export type UpdateCategoryReq = Partial<ICategory>;
-
 // ProductVariant
 export type CreateProductVariantReq = Omit<IProductVariant, 'id'>;
 export type UpdateProductVariantReq = Partial<IProductVariant>;
 export type UpdateProductVariantBatchReq = UpdateProductVariantReq[];
+
+// Category
+export type CreateCategoryReq = Omit<ICategory, 'id'>;
+export type UpdateCategoryReq = Partial<ICategory>;
 
 // Inventory
 export type AdjustStockReq = {
@@ -35,3 +44,11 @@ export type AdjustStockReq = {
   variantId: string;
   quantity: number;
 };
+
+// Customer
+export type CreateCustomerReq = Omit<ICustomer, 'id'>;
+export type UpdateCustomerReq = Partial<ICustomer>;
+
+// Supplier
+export type CreateSupplierReq = Omit<ISupplier, 'id'>;
+export type UpdateSupplierReq = Partial<ISupplier>;

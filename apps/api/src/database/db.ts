@@ -4,11 +4,13 @@ import { Sequelize } from 'sequelize-typescript';
 import config from '@/config/config';
 import { Category } from '@/modules/category';
 import { Claim, ClaimItem } from '@/modules/claim';
+import { Customer } from '@/modules/customer';
 import { Inventory } from '@/modules/inventory/inventory.model';
 import { Organization } from '@/modules/organization';
 import { Product } from '@/modules/product';
 import { ProductVariant } from '@/modules/product-variant';
 import { Store } from '@/modules/store';
+import { Supplier } from '@/modules/supplier';
 import { Token } from '@/modules/token/token.model';
 import { User } from '@/modules/user/user.model';
 
@@ -65,6 +67,8 @@ export class Database {
       Inventory,
       Claim,
       ClaimItem,
+      Customer,
+      Supplier,
     ]);
   }
 
