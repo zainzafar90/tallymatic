@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { CircleMinus, CirclePlus } from 'lucide-react';
-import { useFieldArray, useForm } from 'react-hook-form';
+import { useFieldArray, useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { FinancialStatus, FulfillmentStatus, IOrder } from '@shared';
 
@@ -10,6 +10,7 @@ import { Description, FieldGroup, Fieldset, Label } from '@/components/ui/fields
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Select } from '@/components/ui/select';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 import { OrderFormData, OrderSchema } from './order.schema';
 
@@ -21,21 +22,25 @@ interface OrderFormProps {
 }
 
 export const OrderForm: React.FC<OrderFormProps> = ({ order, isPending, onSubmit, onClose }) => {
+  const [total, setTotal] = useState(0);
+  const [subtotal, setSubtotal] = useState(0);
+
   const form = useForm<OrderFormData>({
     resolver: zodResolver(OrderSchema),
     defaultValues: order || {
       customerId: '00000000-0000-4000-8000-000000000001',
-      number: '',
-      currency: 'USD',
+      currency: 'PKR',
       financialStatus: FinancialStatus.PENDING,
       fulfillmentStatus: FulfillmentStatus.UNFULFILLED,
-      total: 0,
-      subtotal: 0,
       totalTax: 0,
       totalDiscount: 0,
       items: [{ variantId: '', quantity: 1, price: 0, totalDiscount: 0 }],
     },
   });
+
+  const items = useWatch({ control: form.control, name: 'items' });
+  const totalDiscount = useWatch({ control: form.control, name: 'totalDiscount' });
+  const totalTax = useWatch({ control: form.control, name: 'totalTax' });
 
   const { fields, append, remove } = useFieldArray({
     control: form.control,
@@ -59,6 +64,14 @@ export const OrderForm: React.FC<OrderFormProps> = ({ order, isPending, onSubmit
     }
   };
 
+  useEffect(() => {
+    const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity - item.totalDiscount, 0);
+    const total = subtotal + totalTax - totalDiscount;
+
+    setSubtotal(subtotal);
+    setTotal(total);
+  }, [items, totalDiscount, totalTax, form]);
+
   return (
     <Form {...form}>
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -71,36 +84,7 @@ export const OrderForm: React.FC<OrderFormProps> = ({ order, isPending, onSubmit
                 <FormItem className="w-full">
                   <FormLabel>Customer ID</FormLabel>
                   <FormControl>
-                    <Input value={field.value} placeholder="Enter customer ID" readOnly />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="number"
-              render={({ field }) => (
-                <FormItem className="w-full">
-                  <FormLabel>Order Number</FormLabel>
-                  <FormControl>
-                    <Input {...field} placeholder="Order #" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-
-          <div className="flex gap-4 w-full flex-col md:flex-row">
-            <FormField
-              control={form.control}
-              name="currency"
-              render={({ field }) => (
-                <FormItem className="w-full">
-                  <FormLabel>Currency</FormLabel>
-                  <FormControl>
-                    <Input {...field} placeholder="Enter currency" />
+                    <Input value={field.value} placeholder="Enter customer ID" readOnly autoFocus />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -240,96 +224,80 @@ export const OrderForm: React.FC<OrderFormProps> = ({ order, isPending, onSubmit
             </FieldGroup>
           ))}
 
-          <div className="flex gap-4 w-full flex-col md:flex-row">
-            <FormField
-              control={form.control}
-              name="total"
-              render={({ field }) => (
-                <FormItem className="w-full">
-                  <FormLabel>Total</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      type="number"
-                      inputMode="decimal"
-                      step="0.01"
-                      min={0}
-                      onChange={(e) => field.onChange(parseFloat(e.target.value))}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="subtotal"
-              render={({ field }) => (
-                <FormItem className="w-full">
-                  <FormLabel>Subtotal</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      type="number"
-                      inputMode="decimal"
-                      step="0.01"
-                      min={0}
-                      onChange={(e) => field.onChange(parseFloat(e.target.value))}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
+          <div className="flex gap-4 w-full flex-col md:flex-row"></div>
 
-          <div className="flex gap-4 w-full flex-col md:flex-row">
-            <FormField
-              control={form.control}
-              name="totalTax"
-              render={({ field }) => (
-                <FormItem className="w-full">
-                  <FormLabel>Total Tax</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      type="number"
-                      inputMode="decimal"
-                      step="0.01"
-                      min={0}
-                      onChange={(e) => field.onChange(parseFloat(e.target.value))}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="totalDiscount"
-              render={({ field }) => (
-                <FormItem className="w-full">
-                  <FormLabel>Total Discount</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      type="number"
-                      inputMode="decimal"
-                      step="0.01"
-                      min={0}
-                      onChange={(e) => field.onChange(parseFloat(e.target.value))}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
+          <Table bleed className="mt-8 [--gutter:theme(spacing.6)] lg:[--gutter:theme(spacing.10)] table-fixed">
+            <TableHead>
+              <TableRow>
+                <TableHeader>&nbsp;</TableHeader>
+                <TableHeader>&nbsp;</TableHeader>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              <TableRow>
+                <TableCell className="font-bold ">Discount</TableCell>
+
+                <TableCell className="text-right">
+                  <FormField
+                    control={form.control}
+                    name="totalDiscount"
+                    render={({ field }) => (
+                      <FormItem className="w-full max-w-xs ml-auto">
+                        <FormControl>
+                          <Input
+                            {...field}
+                            type="number"
+                            inputMode="decimal"
+                            step="0.01"
+                            min={0}
+                            onChange={(e) => field.onChange(parseFloat(e.target.value))}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell className="font-bold">Tax</TableCell>
+                <TableCell className="text-right">
+                  <FormField
+                    control={form.control}
+                    name="totalTax"
+                    render={({ field }) => (
+                      <FormItem className="w-full max-w-xs ml-auto">
+                        <FormControl>
+                          <Input
+                            {...field}
+                            type="number"
+                            inputMode="decimal"
+                            step="0.01"
+                            min={0}
+                            onChange={(e) => field.onChange(parseFloat(e.target.value))}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell className="font-bold">Subtotal</TableCell>
+                <TableCell className="text-right">Rs. {subtotal.toFixed(2)} </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell className="font-bold">Total</TableCell>
+                <TableCell className="text-right">Rs. {total.toFixed(2)} </TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
         </FieldGroup>
 
         <div className="flex justify-end space-x-2">
           <Button onClick={onClose}>Cancel</Button>
-          <Button type="submit" disabled={isPending}>
+          <Button type="submit" color="blue" disabled={isPending}>
             {order ? 'Update' : 'Create'} Order
           </Button>
         </div>

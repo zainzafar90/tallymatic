@@ -3,12 +3,9 @@ import { FinancialStatus, FulfillmentStatus } from '@shared';
 
 export const OrderSchema = z.object({
   customerId: z.string().uuid(),
-  number: z.string().min(1, 'Order number is required'),
   currency: z.string().min(1, 'Currency is required'),
   financialStatus: z.nativeEnum(FinancialStatus),
   fulfillmentStatus: z.nativeEnum(FulfillmentStatus),
-  total: z.number().min(0, 'Total must be non-negative'),
-  subtotal: z.number().min(0, 'Subtotal must be non-negative'),
   totalTax: z.number().min(0, 'Total tax must be non-negative'),
   totalDiscount: z.number().min(0, 'Total discount must be non-negative'),
   items: z

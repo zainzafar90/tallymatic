@@ -55,5 +55,5 @@ export type CreateSupplierReq = Omit<ISupplier, 'id'>;
 export type UpdateSupplierReq = Partial<ISupplier>;
 
 // Order
-export type CreateOrderReq = Omit<IOrder, 'id'>;
+export type CreateOrderReq = Omit<IOrder, 'id' | 'closedAt' | 'createdAt' | 'updatedAt' | 'total' | 'subtotal'>;
 export type UpdateOrderReq = Partial<IOrder>;

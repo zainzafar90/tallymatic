@@ -6,20 +6,15 @@ import { uuid } from '@/common/validate/custom.validation';
 const createOrderBody: Record<keyof CreateOrderReq, any> = {
   number: Joi.string().required(),
   customerId: Joi.string().custom(uuid).required(),
-  closedAt: Joi.date().optional(),
-  currency: Joi.string().required().default('PKR'),
+  currency: Joi.string().optional().default('PKR'),
   financialStatus: Joi.string()
     .valid(...Object.values(FinancialStatus))
     .required(),
   fulfillmentStatus: Joi.string()
     .valid(...Object.values(FulfillmentStatus))
     .required(),
-  total: Joi.number().required(),
-  subtotal: Joi.number().required(),
   totalTax: Joi.number().required(),
   totalDiscount: Joi.number().required(),
-  createdAt: Joi.date().optional(),
-  updatedAt: Joi.date().optional(),
   items: Joi.array()
     .items(
       Joi.object({
