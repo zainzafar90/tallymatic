@@ -25,7 +25,8 @@ export const getCustomers = catchAsync(async (req: Request, res: Response) => {
   if (!isAllowed) {
     throw new ApiError(httpStatus.FORBIDDEN, 'You do not have permission to list customers');
   }
-  const result = await customerService.queryCustomers(filter, options);
+  const wildcardFields = ['name'];
+  const result = await customerService.queryCustomers(filter, options, wildcardFields);
   res.send(result);
 });
 

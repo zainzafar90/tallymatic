@@ -9,7 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { parseFloat } from '@/utils/number-utils';
 
-import { ProductActions } from '../components/tables/use-product-table-actions';
+import { ProductActions } from '../components/tables/product-table-actions';
 
 const columnHelper = createColumnHelper<ProductResponse & { category: ICategory }>();
 

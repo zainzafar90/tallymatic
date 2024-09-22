@@ -53,3 +53,9 @@ export const deleteSupplier = {
     supplierId: Joi.string().custom(uuid),
   }),
 };
+
+export const bulkDeleteSuppliers = {
+  body: Joi.object().keys({
+    supplierIds: Joi.array().items(Joi.string().custom(uuid)).required(),
+  }),
+};

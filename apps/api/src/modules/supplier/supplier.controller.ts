@@ -25,7 +25,9 @@ export const getSuppliers = catchAsync(async (req: Request, res: Response) => {
   if (!isAllowed) {
     throw new ApiError(httpStatus.FORBIDDEN, 'You do not have permission to list suppliers');
   }
-  const result = await supplierService.querySuppliers(filter, options);
+
+  const wildcardFields = ['companyName'];
+  const result = await supplierService.querySuppliers(filter, options, wildcardFields);
   res.send(result);
 });
 
@@ -59,4 +61,13 @@ export const deleteSupplier = catchAsync(async (req: Request, res: Response) => 
     await supplierService.deleteSupplierById(req.params['supplierId']);
     res.status(httpStatus.NO_CONTENT).send();
   }
+});
+
+export const bulkDeleteSuppliers = catchAsync(async (req: Request, res: Response) => {
+  const isAllowed = permissionService.checkPermissions(req.user.role, 'delete', 'suppliers');
+  if (!isAllowed) {
+    throw new ApiError(httpStatus.FORBIDDEN, 'You do not have permission to delete suppliers');
+  }
+  await supplierService.bulkDeleteSuppliers(req.body.supplierIds);
+  res.status(httpStatus.NO_CONTENT).send();
 });

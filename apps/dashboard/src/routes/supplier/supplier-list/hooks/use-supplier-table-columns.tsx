@@ -1,15 +1,15 @@
-import { ICustomer } from '@shared';
+import { ISupplier } from '@shared';
 import { createColumnHelper } from '@tanstack/react-table';
 
 import { SortedHeader } from '@/components/table/table-cells/common/sorted-header';
 import { TextCell, TextHeader } from '@/components/table/table-cells/common/text-cell';
 import { Checkbox } from '@/components/ui/checkbox';
 
-import { CustomerActions } from '../components/tables/customer-table-actions';
+import { SupplierActions } from '../components/tables/supplier-table-actions';
 
-const columnHelper = createColumnHelper<ICustomer>();
+const columnHelper = createColumnHelper<ISupplier>();
 
-export const useCustomerTableColumns = () => {
+export const useSupplierTableColumns = () => {
   return [
     columnHelper.display({
       id: 'select',
@@ -26,10 +26,14 @@ export const useCustomerTableColumns = () => {
       enableSorting: false,
       enableHiding: false,
     }),
-    columnHelper.accessor('name', {
-      header: ({ column }) => <SortedHeader text="Name" column={column} />,
-      cell: ({ row }) => <TextCell text={row.getValue('name')} />,
+    columnHelper.accessor('companyName', {
+      header: ({ column }) => <SortedHeader text="Company Name" column={column} />,
+      cell: ({ row }) => <TextCell text={row.getValue('companyName')} />,
       enableHiding: false,
+    }),
+    columnHelper.accessor('contactName', {
+      header: () => <TextHeader text="Contact Name" />,
+      cell: ({ getValue }) => <TextCell text={getValue()} />,
     }),
     columnHelper.accessor('email', {
       header: () => <TextHeader text="Email" />,
@@ -47,8 +51,8 @@ export const useCustomerTableColumns = () => {
       id: 'actions',
       enableHiding: false,
       cell: ({ row }) => {
-        const customer = row.original;
-        return <CustomerActions customer={customer} />;
+        const supplier = row.original;
+        return <SupplierActions supplier={supplier} />;
       },
     }),
   ];

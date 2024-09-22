@@ -5,22 +5,21 @@ import {
   BuildingLibraryIcon,
   ChevronDownIcon,
   ChevronUpIcon,
+  Cog6ToothIcon,
   Cog8ToothIcon,
+  HomeIcon,
   LightBulbIcon,
+  QuestionMarkCircleIcon,
   ShieldCheckIcon,
   ShoppingBagIcon,
-  UserCircleIcon,
-  UsersIcon,
-} from '@heroicons/react/16/solid';
-import {
-  Cog6ToothIcon,
-  HomeIcon,
-  QuestionMarkCircleIcon,
   SparklesIcon,
   Square2StackIcon,
   TicketIcon,
+  TruckIcon,
+  UserCircleIcon,
+  UsersIcon,
   WalletIcon,
-} from '@heroicons/react/20/solid';
+} from '@heroicons/react/16/solid';
 
 import { Avatar } from '@/components/ui/avatar';
 import {
@@ -146,6 +145,10 @@ export const MainLayout = () => {
               <SidebarItem href="/customers" current={pathname.startsWith('/customers')}>
                 <UsersIcon />
                 <SidebarLabel>Customers</SidebarLabel>
+              </SidebarItem>
+              <SidebarItem href="/suppliers" current={pathname.startsWith('/suppliers')}>
+                <TruckIcon />
+                <SidebarLabel>Suppliers</SidebarLabel>
               </SidebarItem>
               <SidebarItem href="/orders" current={pathname.startsWith('/orders')}>
                 <TicketIcon />

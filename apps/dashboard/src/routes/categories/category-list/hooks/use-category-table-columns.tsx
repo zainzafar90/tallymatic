@@ -7,7 +7,7 @@ import { TextCell, TextHeader } from '@/components/table/table-cells/common/text
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 
-import { CategoryActions } from '../components/tables/use-category-table-actions';
+import { CategoryActions } from '../components/tables/category-table-actions';
 
 const columnHelper = createColumnHelper<ICategory>();
 

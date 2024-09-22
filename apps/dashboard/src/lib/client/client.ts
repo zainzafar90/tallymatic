@@ -4,6 +4,7 @@ import { customers } from './customer.requests';
 import { inventory } from './inventory.requests';
 import { products } from './product.requests';
 import { stores } from './stores.requests';
+import { suppliers } from './supplier.requests';
 import { users } from './users.requests';
 
 export const client = {
@@ -14,4 +15,5 @@ export const client = {
   categories,
   inventory,
   customers,
+  suppliers,
 };

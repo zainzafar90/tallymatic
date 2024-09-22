@@ -5,7 +5,7 @@ import { SortedHeader } from '@/components/table/table-cells/common/sorted-heade
 import { StockStatus } from '@/components/table/table-cells/common/stock-status-cell';
 import { TextCell, TextHeader } from '@/components/table/table-cells/common/text-cell';
 
-import { InventoryActions } from '../components/tables/use-inventory-table-actions';
+import { InventoryActions } from '../components/tables/inventory-table-actions';
 
 const columnHelper = createColumnHelper<IProductVariant>();
 

@@ -2,11 +2,9 @@ import { RouteObject } from 'react-router-dom';
 
 import { ProtectedRoute } from '@/components/common/protected-route';
 import { MainLayout } from '@/components/layout/main-layout';
-import { CustomerList } from '@/routes/customer/customer-list/customer-list';
 import { Dashboard } from '@/routes/dashboard/dashboard';
 
 import { ErrorBoundary } from '../../components/common/error-boundary';
-import { InventoryList } from '../../routes/inventory/inventory-list';
 
 export const RouteMap: RouteObject[] = [
   {
@@ -77,7 +75,7 @@ export const RouteMap: RouteObject[] = [
             children: [
               {
                 path: '',
-                element: <InventoryList />,
+                lazy: () => import('../../routes/inventory'),
               },
             ],
           },
@@ -89,7 +87,20 @@ export const RouteMap: RouteObject[] = [
             children: [
               {
                 path: '',
-                element: <CustomerList />,
+                lazy: () => import('../../routes/customer/customer-list'),
+              },
+            ],
+          },
+
+          {
+            path: '/suppliers',
+            handle: {
+              crumb: () => 'Suppliers',
+            },
+            children: [
+              {
+                path: '',
+                lazy: () => import('../../routes/supplier/supplier-list'),
               },
             ],
           },

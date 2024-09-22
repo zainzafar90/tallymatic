@@ -9,7 +9,8 @@ const router: Router = express.Router();
 router
   .route('/')
   .post(auth(), validate(supplierValidation.createSupplier), supplierController.createSupplier)
-  .get(auth(), validate(supplierValidation.getSuppliers), supplierController.getSuppliers);
+  .get(auth(), validate(supplierValidation.getSuppliers), supplierController.getSuppliers)
+  .delete(auth(), validate(supplierValidation.bulkDeleteSuppliers), supplierController.bulkDeleteSuppliers);
 
 router
   .route('/:supplierId')
