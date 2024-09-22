@@ -1,1 +1,1 @@
-export { InventoryList as Component } from './inventory-list';
+export { InventoryList as Component } from './inventory-list/inventory-list';
