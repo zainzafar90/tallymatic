@@ -33,14 +33,24 @@ export const getAllInventoryLevels = async (
   options: IOptions,
   wildcardFields: string[] = []
 ): Promise<InventoryLevelsResponse> => {
-  const paginationOptions = buildPaginationOptions(filter, options, wildcardFields);
+  const searchFilter = {};
+  for (const [key, value] of Object.entries(filter)) {
+    if (wildcardFields.includes(key)) {
+      searchFilter[key] = { [Op.iLike]: `%${value}%` };
+    } else {
+      searchFilter[key] = value;
+    }
+  }
+
+  const paginationOptions = buildPaginationOptions({}, options, wildcardFields);
   const result = await ProductVariant.findAndCountAll({
     ...paginationOptions,
-    attributes: ['id', 'name', 'stock', 'lowStockThreshold', 'reorderPoint', 'reorderQuantity'],
+    attributes: ['id', 'name', 'sku', 'stock', 'lowStockThreshold', 'reorderPoint', 'reorderQuantity'],
     include: [
       {
         model: Product,
         attributes: ['name'],
+        where: searchFilter,
       },
     ],
   });

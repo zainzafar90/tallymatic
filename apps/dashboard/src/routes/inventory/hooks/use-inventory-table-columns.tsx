@@ -4,40 +4,24 @@ import { createColumnHelper } from '@tanstack/react-table';
 import { SortedHeader } from '@/components/table/table-cells/common/sorted-header';
 import { TextCell, TextHeader } from '@/components/table/table-cells/common/text-cell';
 import { Badge } from '@/components/ui/badge';
-import { Checkbox } from '@/components/ui/checkbox';
 
 const columnHelper = createColumnHelper<IProductVariant>();
 
 export const useInventoryTableColumns = () => {
   return [
-    columnHelper.display({
-      id: 'select',
-      header: ({ table }) => (
-        <Checkbox
-          className="w-0"
-          checked={table.getIsAllPageRowsSelected()}
-          onChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-          aria-label="Select all"
-          indeterminate={table.getIsSomePageRowsSelected() && !table.getIsAllPageRowsSelected()}
-        />
-      ),
-      cell: ({ row }) => (
-        <Checkbox
-          className="w-0"
-          checked={row.getIsSelected()}
-          onChange={(value) => row.toggleSelected(!!value)}
-          aria-label="Select row"
-        />
-      ),
-      enableSorting: false,
-      enableHiding: false,
-      meta: {
-        className: 'hidden sm:table-cell',
-      },
-    }),
     columnHelper.accessor('name', {
       header: ({ column }) => <SortedHeader text="Name" column={column} />,
-      cell: ({ row }) => <TextCell text={row.getValue('name')} />,
+      cell: ({ row }) => (
+        <div className="flex flex-col h-full w-full gap-x-3 overflow-hidden">
+          <div className="truncate">{row.original.product?.name}</div>
+          <div className="text-sm text-gray-500">{row.getValue('name')}</div>
+        </div>
+      ),
+      enableHiding: false,
+    }),
+    columnHelper.accessor('sku', {
+      header: () => <TextHeader text="SKU" />,
+      cell: ({ row }) => <TextCell text={row.getValue('sku')} />,
       enableHiding: false,
     }),
     columnHelper.accessor('stock', {
@@ -50,20 +34,19 @@ export const useInventoryTableColumns = () => {
       cell: ({ row }) => <TextCell text={row.getValue('lowStockThreshold')} />,
       enableHiding: false,
     }),
-
-    columnHelper.accessor((row) => row.product, {
-      id: 'product',
-      header: () => <TextHeader text="Product" />,
-      cell: ({ row, getValue }) => <TextCell text={getValue()?.name} />,
-      enableSorting: false,
-    }),
-    columnHelper.accessor('status', {
-      header: () => <TextHeader text="Status" />,
-      cell: ({ getValue }) => {
-        const status = getValue();
+    columnHelper.accessor('stock', {
+      header: ({ column }) => <SortedHeader text="Status" column={column} />,
+      cell: ({ row }) => {
+        const stock = row.getValue<number>('stock');
+        const lowStockThreshold = row.getValue<number>('lowStockThreshold');
+        const isLowStock = stock <= lowStockThreshold;
         return (
           <div className="flex items-center space-x-2">
-            <Badge color={status === 'active' ? 'lime' : 'red'}>{status}</Badge>
+            {isLowStock && (
+              <Badge color="red" className="text-xs">
+                Low Stock
+              </Badge>
+            )}
           </div>
         );
       },

@@ -25,8 +25,22 @@ module.exports = {
     productVariants.push({
       id: '00000000-0000-4000-8000-000000000001',
       productId: '00000000-0000-4000-8000-000000000001',
-      name: 'Variant 0',
-      sku: 'SKU-0',
+      name: 'Black',
+      sku: 'SKU-01',
+      price: 1000,
+      costPrice: 500,
+      stock: 5,
+      lowStockThreshold: 1,
+      status: 'active',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
+
+    productVariants.push({
+      id: '00000000-0000-4000-8000-000000000002',
+      productId: '00000000-0000-4000-8000-000000000001',
+      name: 'White',
+      sku: 'SKU-02',
       price: 1000,
       costPrice: 500,
       stock: 5,
