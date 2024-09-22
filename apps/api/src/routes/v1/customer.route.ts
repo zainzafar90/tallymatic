@@ -9,7 +9,8 @@ const router: Router = express.Router();
 router
   .route('/')
   .post(auth(), validate(customerValidation.createCustomer), customerController.createCustomer)
-  .get(auth(), validate(customerValidation.getCustomers), customerController.getCustomers);
+  .get(auth(), validate(customerValidation.getCustomers), customerController.getCustomers)
+  .delete(auth(), validate(customerValidation.bulkDeleteCustomers), customerController.bulkDeleteCustomers);
 
 router
   .route('/:customerId')

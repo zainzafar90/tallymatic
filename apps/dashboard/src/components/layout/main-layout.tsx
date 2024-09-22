@@ -10,6 +10,7 @@ import {
   ShieldCheckIcon,
   ShoppingBagIcon,
   UserCircleIcon,
+  UsersIcon,
 } from '@heroicons/react/16/solid';
 import {
   Cog6ToothIcon,
@@ -141,6 +142,10 @@ export const MainLayout = () => {
               <SidebarItem href="/inventory" current={pathname.startsWith('/inventory')}>
                 <BuildingLibraryIcon />
                 <SidebarLabel>Inventory</SidebarLabel>
+              </SidebarItem>
+              <SidebarItem href="/customers" current={pathname.startsWith('/customers')}>
+                <UsersIcon />
+                <SidebarLabel>Customers</SidebarLabel>
               </SidebarItem>
               <SidebarItem href="/orders" current={pathname.startsWith('/orders')}>
                 <TicketIcon />

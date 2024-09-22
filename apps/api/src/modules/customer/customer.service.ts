@@ -2,8 +2,9 @@ import httpStatus from 'http-status';
 import { CreateCustomerReq, ICustomer, IOptions, ListResponse, UpdateCustomerReq } from '@shared';
 
 import { ApiError } from '@/common/errors/api-error';
+import { getDatabaseInstance } from '@/database/db';
 
-import { paginate } from '../paginate/paginate';
+import { buildPaginationOptions, transformPagination } from '../paginate/paginate';
 import { Customer } from './customer.model';
 
 export const createCustomer = async (customerBody: CreateCustomerReq): Promise<ICustomer> => {
@@ -11,9 +12,18 @@ export const createCustomer = async (customerBody: CreateCustomerReq): Promise<I
   return customer.toJSON();
 };
 
-export const queryCustomers = async (filter: Record<string, any>, options: IOptions): Promise<ListResponse<Customer>> => {
-  const result = await paginate(Customer, filter, options);
-  return result;
+export const queryCustomers = async (
+  filter: Record<string, any>,
+  options: IOptions,
+  wildcardFields: string[] = []
+): Promise<ListResponse<Customer>> => {
+  const paginationOptions = buildPaginationOptions(filter, options, wildcardFields);
+  const result = await Customer.findAndCountAll({
+    ...paginationOptions,
+    paranoid: !options.includeDeleted,
+  });
+
+  return transformPagination(result.count, result.rows, paginationOptions.offset, paginationOptions.limit);
 };
 
 export const getCustomerById = async (id: string): Promise<ICustomer | null> => {
@@ -38,4 +48,31 @@ export const deleteCustomerById = async (customerId: string): Promise<ICustomer 
   }
   await customer.destroy();
   return customer.toJSON();
+};
+
+export const bulkDeleteCustomers = async (customerIds: string[]): Promise<ICustomer[]> => {
+  const transaction = await getDatabaseInstance().transaction();
+  try {
+    const customers = await Customer.findAll({
+      where: { id: customerIds },
+      transaction,
+    });
+
+    if (customers.length !== customerIds.length) {
+      throw new Error('One or more customer IDs are invalid');
+    }
+
+    await Customer.destroy({
+      where: { id: customerIds },
+      transaction,
+    });
+
+    await transaction.commit();
+
+    return customers.map((customer) => customer.toJSON());
+  } catch (error) {
+    if (transaction) await transaction.rollback();
+    console.error('Error in bulkDeleteCustomers:', error);
+    throw error;
+  }
 };

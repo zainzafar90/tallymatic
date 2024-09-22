@@ -2,6 +2,7 @@ import { RouteObject } from 'react-router-dom';
 
 import { ProtectedRoute } from '@/components/common/protected-route';
 import { MainLayout } from '@/components/layout/main-layout';
+import { CustomerList } from '@/routes/customer/customer-list/customer-list';
 import { Dashboard } from '@/routes/dashboard/dashboard';
 
 import { ErrorBoundary } from '../../components/common/error-boundary';
@@ -77,6 +78,18 @@ export const RouteMap: RouteObject[] = [
               {
                 path: '',
                 element: <InventoryList />,
+              },
+            ],
+          },
+          {
+            path: '/customers',
+            handle: {
+              crumb: () => 'Customers',
+            },
+            children: [
+              {
+                path: '',
+                element: <CustomerList />,
               },
             ],
           },

@@ -60,3 +60,19 @@ export const deleteCustomer = catchAsync(async (req: Request, res: Response) => 
     res.status(httpStatus.NO_CONTENT).send();
   }
 });
+
+export const bulkDeleteCustomers = catchAsync(async (req: Request, res: Response) => {
+  const isAllowed = permissionService.checkPermissions(req.user.role, 'delete', 'customers');
+  if (!isAllowed) {
+    throw new ApiError(httpStatus.FORBIDDEN, 'You do not have permission to delete customers');
+  }
+
+  const customerIds = req.body.customerIds;
+
+  if (!Array.isArray(customerIds) || customerIds.length === 0) {
+    return res.status(400).json({ message: 'Invalid input: customerIds must be a non-empty array' });
+  }
+
+  await customerService.bulkDeleteCustomers(customerIds);
+  res.status(httpStatus.OK).send({});
+});

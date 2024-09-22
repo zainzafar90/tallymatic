@@ -50,3 +50,9 @@ export const deleteCustomer = {
     customerId: Joi.string().custom(uuid),
   }),
 };
+
+export const bulkDeleteCustomers = {
+  body: Joi.object().keys({
+    customerIds: Joi.array().items(Joi.string().custom(uuid)).min(1).required(),
+  }),
+};
