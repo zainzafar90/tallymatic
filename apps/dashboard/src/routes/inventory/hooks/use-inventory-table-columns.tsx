@@ -2,8 +2,8 @@ import { IProductVariant } from '@shared';
 import { createColumnHelper } from '@tanstack/react-table';
 
 import { SortedHeader } from '@/components/table/table-cells/common/sorted-header';
+import { StockStatus } from '@/components/table/table-cells/common/stock-status-cell';
 import { TextCell, TextHeader } from '@/components/table/table-cells/common/text-cell';
-import { Badge } from '@/components/ui/badge';
 
 import { InventoryActions } from '../components/tables/use-inventory-table-actions';
 
@@ -40,17 +40,8 @@ export const useInventoryTableColumns = () => {
       header: ({ column }) => <SortedHeader text="Status" column={column} />,
       cell: ({ row }) => {
         const stock = row.getValue<number>('stock');
-        const lowStockThreshold = row.getValue<number>('lowStockThreshold');
-        const isLowStock = stock <= lowStockThreshold;
-        return (
-          <div className="flex items-center space-x-2">
-            {isLowStock && (
-              <Badge color="red" className="text-xs">
-                Low Stock
-              </Badge>
-            )}
-          </div>
-        );
+        const lowStockThreshold = row.getValue<number>('lowStockThreshold') || 0;
+        return <StockStatus stock={stock} lowStockThreshold={lowStockThreshold} />;
       },
       enableSorting: false,
     }),

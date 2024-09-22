@@ -1,5 +1,5 @@
 import { TableListSkeleton } from '@/components/common/table/table-list-selecton';
-import { Badge } from '@/components/ui/badge';
+import { StockStatus } from '@/components/table/table-cells/common/stock-status-cell';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useLowStockAlerts } from '@/hooks/api/inventory.hooks';
@@ -50,20 +50,5 @@ export const LowStockWarnings = () => {
         </Table>
       </CardContent>
     </Card>
-  );
-};
-
-const StockStatus = ({ stock, lowStockThreshold }: { stock: number; lowStockThreshold: number }) => {
-  const isLowStock = stock <= lowStockThreshold;
-  const isCriticalStock = stock === 0;
-
-  return (
-    <div className="flex items-center space-x-2">
-      {isLowStock && (
-        <Badge color={isCriticalStock ? 'red' : 'yellow'} className="text-xs">
-          {isCriticalStock ? 'Critical' : 'Low'}
-        </Badge>
-      )}
-    </div>
   );
 };
