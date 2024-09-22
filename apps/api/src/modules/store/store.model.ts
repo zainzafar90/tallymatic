@@ -1,7 +1,20 @@
-import { BelongsTo, Column, DataType, ForeignKey, IsUUID, Model, PrimaryKey, Table } from 'sequelize-typescript';
+import {
+  BelongsTo,
+  Column,
+  DataType,
+  DefaultScope,
+  ForeignKey,
+  IsUUID,
+  Model,
+  PrimaryKey,
+  Table,
+} from 'sequelize-typescript';
 
 import { Organization } from '../organization/organization.model';
 
+@DefaultScope(() => ({
+  attributes: { include: ['createdAt', 'updatedAt'] },
+}))
 @Table({
   timestamps: true,
   tableName: 'stores',

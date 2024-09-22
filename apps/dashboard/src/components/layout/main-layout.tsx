@@ -130,6 +130,10 @@ export const MainLayout = () => {
                 <HomeIcon />
                 <SidebarLabel>Home</SidebarLabel>
               </SidebarItem>
+              <SidebarItem href="/orders" current={pathname.startsWith('/orders')}>
+                <ShoppingBagIcon />
+                <SidebarLabel>Sale</SidebarLabel>
+              </SidebarItem>
               <SidebarItem href="/products" current={pathname.startsWith('/products')}>
                 <Square2StackIcon />
                 <SidebarLabel>Products</SidebarLabel>
@@ -149,18 +153,6 @@ export const MainLayout = () => {
               <SidebarItem href="/suppliers" current={pathname.startsWith('/suppliers')}>
                 <TruckIcon />
                 <SidebarLabel>Suppliers</SidebarLabel>
-              </SidebarItem>
-              <SidebarItem href="/orders" current={pathname.startsWith('/orders')}>
-                <TicketIcon />
-                <SidebarLabel>Orders</SidebarLabel>
-              </SidebarItem>
-              <SidebarItem href="/sale" current={pathname.startsWith('/sale')}>
-                <ShoppingBagIcon />
-                <SidebarLabel>Sale</SidebarLabel>
-              </SidebarItem>
-              <SidebarItem href="/settings" current={pathname.startsWith('/settings')}>
-                <Cog6ToothIcon />
-                <SidebarLabel>Settings</SidebarLabel>
               </SidebarItem>
             </SidebarSection>
 

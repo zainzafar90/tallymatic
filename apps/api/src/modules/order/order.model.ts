@@ -1,9 +1,12 @@
-import { BelongsTo, Column, DataType, ForeignKey, HasMany, Model, Table } from 'sequelize-typescript';
+import { BelongsTo, Column, DataType, DefaultScope, ForeignKey, HasMany, Model, Table } from 'sequelize-typescript';
 import { FinancialStatus, FulfillmentStatus } from '@shared';
 
 import { Customer } from '../customer/customer.model';
 import { OrderItem } from './order-item.model';
 
+@DefaultScope(() => ({
+  attributes: { include: ['createdAt', 'updatedAt'] },
+}))
 @Table({ tableName: 'orders' })
 export class Order extends Model {
   @Column({

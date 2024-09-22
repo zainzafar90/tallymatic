@@ -1,9 +1,12 @@
-import { Column, DataType, HasMany, IsUUID, Model, PrimaryKey, Table } from 'sequelize-typescript';
+import { Column, DataType, DefaultScope, HasMany, IsUUID, Model, PrimaryKey, Table } from 'sequelize-typescript';
 import { Status } from '@shared';
 
 import { Store } from '../store';
 import { User } from '../user';
 
+@DefaultScope(() => ({
+  attributes: { include: ['createdAt', 'updatedAt'] },
+}))
 @Table({
   timestamps: true,
   tableName: 'organizations',

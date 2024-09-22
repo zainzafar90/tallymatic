@@ -18,7 +18,7 @@ import { Organization } from '../organization';
 import { Token } from '../token/token.model';
 
 @DefaultScope(() => ({
-  attributes: { exclude: ['password', 'deletedAt'] },
+  attributes: { exclude: ['password', 'deletedAt'], include: ['createdAt', 'updatedAt'] },
   paranoid: true,
 }))
 @Scopes(() => ({

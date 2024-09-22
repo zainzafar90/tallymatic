@@ -51,10 +51,14 @@ export const useOrderTableColumns = () => {
       enableHiding: false,
     }),
     columnHelper.accessor('createdAt', {
-      header: () => <TextHeader text="Created At" />,
+      header: ({ column }) => <SortedHeader text="Created" column={column} />,
       cell: ({ getValue }) => {
         const value = getValue();
         return value ? <DateCell date={value} /> : null;
+      },
+      enableSorting: false,
+      meta: {
+        className: 'hidden xl:table-cell',
       },
     }),
     columnHelper.display({

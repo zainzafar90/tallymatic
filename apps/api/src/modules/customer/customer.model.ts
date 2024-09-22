@@ -1,5 +1,8 @@
-import { Column, DataType, IsUUID, Model, PrimaryKey, Table } from 'sequelize-typescript';
+import { Column, DataType, DefaultScope, IsUUID, Model, PrimaryKey, Table } from 'sequelize-typescript';
 
+@DefaultScope(() => ({
+  attributes: { include: ['createdAt', 'updatedAt'] },
+}))
 @Table({
   timestamps: true,
   tableName: 'customers',
