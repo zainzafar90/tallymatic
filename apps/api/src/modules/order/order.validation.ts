@@ -1,14 +1,13 @@
 import Joi from 'joi';
-import { FinancialStatus, FulfillmentStatus } from '@shared';
+import { CreateOrderReq, FinancialStatus, FulfillmentStatus } from '@shared';
 
 import { uuid } from '@/common/validate/custom.validation';
 
-const createOrderBody = {
-  customerId: Joi.string().custom(uuid).required(),
+const createOrderBody: Record<keyof CreateOrderReq, any> = {
   number: Joi.string().required(),
-  email: Joi.string().email().required(),
-  closedAt: Joi.date(),
-  currency: Joi.string().required(),
+  customerId: Joi.string().custom(uuid).required(),
+  closedAt: Joi.date().optional(),
+  currency: Joi.string().required().default('PKR'),
   financialStatus: Joi.string()
     .valid(...Object.values(FinancialStatus))
     .required(),
@@ -19,9 +18,12 @@ const createOrderBody = {
   subtotal: Joi.number().required(),
   totalTax: Joi.number().required(),
   totalDiscount: Joi.number().required(),
+  createdAt: Joi.date().optional(),
+  updatedAt: Joi.date().optional(),
   items: Joi.array()
     .items(
       Joi.object({
+        orderId: Joi.string().custom(uuid).required(),
         variantId: Joi.string().custom(uuid).required(),
         quantity: Joi.number().integer().min(1).required(),
         price: Joi.number().required(),
@@ -67,6 +69,7 @@ export const updateOrder = {
       items: Joi.array().items(
         Joi.object({
           id: Joi.string().custom(uuid),
+          orderId: Joi.string().custom(uuid),
           variantId: Joi.string().custom(uuid),
           quantity: Joi.number().integer().min(1),
           price: Joi.number(),

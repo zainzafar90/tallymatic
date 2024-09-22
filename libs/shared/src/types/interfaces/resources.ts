@@ -1,6 +1,6 @@
 import { Moment } from 'moment';
 
-import { ProductStatus, Status, TokenType } from '../enums.types';
+import { FinancialStatus, FulfillmentStatus, ProductStatus, Status, TokenType } from '../enums.types';
 import { RoleType } from '../role.types';
 
 type Dates = {
@@ -106,8 +106,8 @@ export interface IOrder extends Dates {
   customerId: string;
   closedAt?: Date;
   currency: string;
-  financialStatus: string;
-  fulfillmentStatus: string;
+  financialStatus: FinancialStatus;
+  fulfillmentStatus: FulfillmentStatus;
   total: number;
   subtotal: number;
   totalTax: number;
