@@ -14,7 +14,6 @@ module.exports = {
         id: i === 0 ? '00000000-0000-4000-8000-000000000001' : uuidv4(),
         customerId: customerRows[Math.floor(Math.random() * customerRows.length)].id,
         number: `ORD-${1000 + i}`,
-        email: `customer${i}@example.com`,
         closedAt: null,
         currency: 'PKR',
         financialStatus: ['pending', 'paid', 'unpaid', 'partiallyPaid', 'refunded', 'voided'][Math.floor(Math.random() * 6)],

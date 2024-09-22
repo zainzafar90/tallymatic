@@ -23,7 +23,6 @@ const createOrderBody: Record<keyof CreateOrderReq, any> = {
   items: Joi.array()
     .items(
       Joi.object({
-        orderId: Joi.string().custom(uuid).required(),
         variantId: Joi.string().custom(uuid).required(),
         quantity: Joi.number().integer().min(1).required(),
         price: Joi.number().required(),
@@ -65,7 +64,6 @@ export const updateOrder = {
       ...createOrderBody,
       customerId: Joi.string().custom(uuid),
       number: Joi.string(),
-      email: Joi.string().email(),
       items: Joi.array().items(
         Joi.object({
           id: Joi.string().custom(uuid),

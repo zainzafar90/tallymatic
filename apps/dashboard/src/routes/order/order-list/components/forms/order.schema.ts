@@ -4,7 +4,6 @@ import { FinancialStatus, FulfillmentStatus } from '@shared';
 export const OrderSchema = z.object({
   customerId: z.string().uuid(),
   number: z.string().min(1, 'Order number is required'),
-  email: z.string().email('Invalid email address'),
   currency: z.string().min(1, 'Currency is required'),
   financialStatus: z.nativeEnum(FinancialStatus),
   fulfillmentStatus: z.nativeEnum(FulfillmentStatus),

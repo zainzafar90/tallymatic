@@ -4,7 +4,7 @@ import { CreateOrderForm } from '../forms/create-order-form';
 
 export function CreateOrderDialog({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   return (
-    <Dialog open={isOpen} onClose={onClose}>
+    <Dialog size="2xl" open={isOpen} onClose={onClose}>
       <DialogTitle>Create Order</DialogTitle>
       <DialogDescription>Fill in the details below to create a new order.</DialogDescription>
       <DialogBody>

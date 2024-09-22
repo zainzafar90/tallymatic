@@ -32,10 +32,6 @@ export const RouteMap: RouteObject[] = [
             element: <Dashboard />,
           },
           {
-            path: '/events',
-            lazy: () => import('../../routes/events'),
-          },
-          {
             path: '/settings',
             lazy: () => import('../../routes/settings'),
           },

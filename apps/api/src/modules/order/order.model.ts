@@ -23,9 +23,6 @@ export class Order extends Model {
   @Column(DataType.STRING)
   number: string;
 
-  @Column(DataType.STRING)
-  email: string;
-
   @Column(DataType.DATE)
   closedAt: Date;
 
