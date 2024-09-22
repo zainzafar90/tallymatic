@@ -86,7 +86,7 @@ export const adjustStock = async (
       throw new Error('Insufficient stock');
     }
 
-    await variant.update({ currentStock: newStock }, { transaction });
+    await variant.update({ stock: newStock }, { transaction });
 
     const inventoryCreated = await Inventory.create(
       {

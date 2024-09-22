@@ -10,7 +10,6 @@ import { permissionService } from '../permissions/permission.service';
 import * as inventoryService from './inventory.service';
 
 export const adjustStock = catchAsync(async (req: Request, res: Response) => {
-  console.log('adjustStock', req.user);
   const isAllowed = permissionService.checkPermissions(req.user.role, 'update', 'inventory');
   if (!isAllowed) {
     throw new ApiError(httpStatus.FORBIDDEN, 'You do not have permission to adjust stock');

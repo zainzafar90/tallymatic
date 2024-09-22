@@ -2,7 +2,7 @@ import React from 'react';
 
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { TransactionType } from '@shared';
+import { IProductVariant, TransactionType } from '@shared';
 
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogActions, DialogBody, DialogTitle } from '@/components/ui/dialog';
@@ -16,14 +16,15 @@ import { adjustStockSchema } from './inventory.schema';
 interface AdjustStockModalProps {
   isOpen: boolean;
   onClose: () => void;
+  variant: IProductVariant;
 }
 
-export const AdjustStockModal: React.FC<AdjustStockModalProps> = ({ isOpen, onClose }) => {
+export const AdjustStockModal: React.FC<AdjustStockModalProps> = ({ isOpen, onClose, variant }) => {
   const form = useForm({
     resolver: zodResolver(adjustStockSchema),
     defaultValues: {
-      variantId: '',
-      quantity: 0,
+      variantId: variant?.id || '',
+      quantity: parseInt(variant.stock.toString()) || 0,
       type: TransactionType.ADJUSTED,
       notes: '',
     },
@@ -32,29 +33,20 @@ export const AdjustStockModal: React.FC<AdjustStockModalProps> = ({ isOpen, onCl
   const { mutateAsync, isPending } = useAdjustStock();
 
   const onSubmit = async (data: any) => {
-    await mutateAsync(data);
+    await mutateAsync({
+      ...data,
+      variantId: variant.id,
+      notes: data.notes || undefined,
+    });
     onClose();
   };
 
   return (
     <Dialog open={isOpen} onClose={onClose}>
-      <DialogTitle>Adjust Stock</DialogTitle>
+      <DialogTitle>Adjust Stock for {variant.name}</DialogTitle>
       <DialogBody>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">
-            <FormField
-              control={form.control}
-              name="variantId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Product Variant</FormLabel>
-                  <FormControl>
-                    <Select {...field}>{/* TODO: Populate with product variants */}</Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
             <FormField
               control={form.control}
               name="quantity"
@@ -62,7 +54,15 @@ export const AdjustStockModal: React.FC<AdjustStockModalProps> = ({ isOpen, onCl
                 <FormItem>
                   <FormLabel>Quantity</FormLabel>
                   <FormControl>
-                    <Input type="number" {...field} />
+                    <Input
+                      type="number"
+                      {...field}
+                      autoFocus
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        field.onChange(parseInt(value) || 0);
+                      }}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -105,7 +105,7 @@ export const AdjustStockModal: React.FC<AdjustStockModalProps> = ({ isOpen, onCl
                 Cancel
               </Button>
               <Button type="submit" color="blue" disabled={isPending}>
-                Adjust
+                Adjust Stock
               </Button>
             </DialogActions>
           </form>

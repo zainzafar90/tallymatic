@@ -5,6 +5,8 @@ import { SortedHeader } from '@/components/table/table-cells/common/sorted-heade
 import { TextCell, TextHeader } from '@/components/table/table-cells/common/text-cell';
 import { Badge } from '@/components/ui/badge';
 
+import { InventoryActions } from '../components/use-inventory-table-actions';
+
 const columnHelper = createColumnHelper<IProductVariant>();
 
 export const useInventoryTableColumns = () => {
@@ -25,7 +27,7 @@ export const useInventoryTableColumns = () => {
       enableHiding: false,
     }),
     columnHelper.accessor('stock', {
-      header: () => <TextHeader text="Current Stock" />,
+      header: ({ column }) => <SortedHeader text="Stock" column={column} />,
       cell: ({ row }) => <TextCell text={row.getValue('stock')} />,
       enableHiding: false,
     }),
@@ -51,6 +53,15 @@ export const useInventoryTableColumns = () => {
         );
       },
       enableSorting: false,
+    }),
+    columnHelper.display({
+      id: 'actions',
+      enableHiding: false,
+      header: () => <div className="w-0"></div>,
+      cell: ({ row }) => {
+        const variant = row.original;
+        return <InventoryActions variant={variant} />;
+      },
     }),
   ];
 };
