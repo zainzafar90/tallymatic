@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { Input } from '@/components/ui/input';
 import { Listbox, ListboxLabel, ListboxOption } from '@/components/ui/listbox';
-import { getCountries } from '@/data';
+import { getCountries } from '@/lib/helpers/country-helper';
 
 export function Address() {
   const countries = getCountries();
