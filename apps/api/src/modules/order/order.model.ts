@@ -2,7 +2,6 @@ import { BelongsTo, Column, DataType, ForeignKey, HasMany, Model, Table } from '
 import { FinancialStatus, FulfillmentStatus } from '@shared';
 
 import { Customer } from '../customer/customer.model';
-import { Store } from '../store/store.model';
 import { OrderItem } from './order-item.model';
 
 @Table({ tableName: 'orders' })
@@ -13,13 +12,6 @@ export class Order extends Model {
     primaryKey: true,
   })
   id: string;
-
-  @ForeignKey(() => Store)
-  @Column(DataType.UUID)
-  storeId: string;
-
-  @BelongsTo(() => Store)
-  store: Store;
 
   @ForeignKey(() => Customer)
   @Column(DataType.UUID)

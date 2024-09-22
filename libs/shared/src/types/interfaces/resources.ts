@@ -117,7 +117,7 @@ export interface IOrder extends Dates {
 
 export interface IOrderItem extends Dates {
   id?: string;
-  orderId: string;
+  orderId?: string;
   variantId: string;
   quantity: number;
   price: number;

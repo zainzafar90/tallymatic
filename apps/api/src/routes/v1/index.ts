@@ -7,6 +7,7 @@ import categoryRoute from './category.route';
 import claimRoute from './claim.route';
 import customerRoute from './customer.route';
 import inventoryRoute from './inventory.route';
+import orderRoute from './order.route';
 import organizationRoute from './organization.route';
 import productRoute from './product.route';
 import storeRoute from './store.route';
@@ -61,6 +62,10 @@ const defaultIRoute: IRoute[] = [
   {
     path: '/suppliers',
     route: supplierRoute,
+  },
+  {
+    path: '/orders',
+    route: orderRoute,
   },
 ];
 

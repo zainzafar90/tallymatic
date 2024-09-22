@@ -36,18 +36,11 @@ export const RouteMap: RouteObject[] = [
             lazy: () => import('../../routes/events'),
           },
           {
-            path: '/orders',
-            lazy: () => import('../../routes/orders'),
-          },
-          {
             path: '/settings',
             lazy: () => import('../../routes/settings'),
           },
           {
             path: '/products',
-            handle: {
-              crumb: () => 'Products',
-            },
             children: [
               {
                 path: '',
@@ -57,9 +50,6 @@ export const RouteMap: RouteObject[] = [
           },
           {
             path: '/categories',
-            handle: {
-              crumb: () => 'Categories',
-            },
             children: [
               {
                 path: '',
@@ -69,9 +59,6 @@ export const RouteMap: RouteObject[] = [
           },
           {
             path: '/inventory',
-            handle: {
-              crumb: () => 'Inventory',
-            },
             children: [
               {
                 path: '',
@@ -81,9 +68,6 @@ export const RouteMap: RouteObject[] = [
           },
           {
             path: '/customers',
-            handle: {
-              crumb: () => 'Customers',
-            },
             children: [
               {
                 path: '',
@@ -94,13 +78,20 @@ export const RouteMap: RouteObject[] = [
 
           {
             path: '/suppliers',
-            handle: {
-              crumb: () => 'Suppliers',
-            },
             children: [
               {
                 path: '',
                 lazy: () => import('../../routes/supplier'),
+              },
+            ],
+          },
+
+          {
+            path: '/orders',
+            children: [
+              {
+                path: '',
+                lazy: () => import('../../routes/order'),
               },
             ],
           },

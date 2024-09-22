@@ -9,7 +9,7 @@ module.exports = {
 
     const orders = [];
 
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 20; i++) {
       orders.push({
         id: i === 0 ? '00000000-0000-4000-8000-000000000001' : uuidv4(),
         customerId: customerRows[Math.floor(Math.random() * customerRows.length)].id,

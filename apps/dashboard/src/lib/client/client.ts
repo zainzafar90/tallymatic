@@ -2,6 +2,7 @@ import { auth } from './auth.requests';
 import { categories } from './category.requests';
 import { customers } from './customer.requests';
 import { inventory } from './inventory.requests';
+import { orders } from './order.requests';
 import { products } from './product.requests';
 import { stores } from './stores.requests';
 import { suppliers } from './supplier.requests';
@@ -16,4 +17,5 @@ export const client = {
   inventory,
   customers,
   suppliers,
+  orders,
 };
