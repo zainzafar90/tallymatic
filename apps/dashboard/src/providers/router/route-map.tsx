@@ -40,7 +40,7 @@ export const RouteMap: RouteObject[] = [
             children: [
               {
                 path: '',
-                lazy: () => import('../../routes/product'),
+                lazy: () => import('../../routes/products'),
               },
             ],
           },
@@ -67,7 +67,7 @@ export const RouteMap: RouteObject[] = [
             children: [
               {
                 path: '',
-                lazy: () => import('../../routes/customer'),
+                lazy: () => import('../../routes/customers'),
               },
             ],
           },
@@ -87,7 +87,7 @@ export const RouteMap: RouteObject[] = [
             children: [
               {
                 path: '',
-                lazy: () => import('../../routes/order'),
+                lazy: () => import('../../routes/orders'),
               },
             ],
           },
