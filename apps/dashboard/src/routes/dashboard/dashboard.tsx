@@ -4,7 +4,6 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Divider } from '@/components/ui/divider';
 import { Heading, Subheading } from '@/components/ui/heading';
-import { Select } from '@/components/ui/select';
 
 import { LowStockWarnings } from './components/low-stock-warnings';
 import { PendingPurchaseOrders } from './components/pending-purchase-orders';
