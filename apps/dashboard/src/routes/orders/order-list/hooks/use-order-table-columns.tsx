@@ -1,4 +1,5 @@
-import { FinancialStatus, IOrder } from '@shared';
+import { CircleCheck, CircleDashed, CircleSlash } from 'lucide-react';
+import { FinancialStatus, FulfillmentStatus, IOrder } from '@shared';
 import { createColumnHelper } from '@tanstack/react-table';
 
 import { DateCell } from '@/components/table/table-cells/common/date-cell';
@@ -7,6 +8,7 @@ import { SortedHeader } from '@/components/table/table-cells/common/sorted-heade
 import { TextCell, TextHeader } from '@/components/table/table-cells/common/text-cell';
 import { Badge } from '@/components/ui/badge';
 import { Color } from '@/components/ui/utils';
+import { cn } from '@/utils/cn';
 
 import { OrderActions } from '../components/tables/order-table-actions';
 
@@ -19,7 +21,7 @@ export const useOrderTableColumns = () => {
       cell: ({ row }) => <TextCell text={row.getValue('number')} />,
     }),
     columnHelper.accessor('financialStatus', {
-      header: () => <TextHeader text="Financial Status" />,
+      header: () => <TextHeader text="Status" />,
 
       cell: ({ getValue }) => {
         const status = getValue();
@@ -41,10 +43,6 @@ export const useOrderTableColumns = () => {
           </div>
         );
       },
-    }),
-    columnHelper.accessor('fulfillmentStatus', {
-      header: () => <TextHeader text="Fulfillment Status" />,
-      cell: ({ getValue }) => <TextCell text={getValue()} />,
     }),
     columnHelper.accessor('total', {
       header: () => <TextHeader text="Total" align="right" />,

@@ -11,8 +11,6 @@ type MoneyAmountCellProps = {
 };
 
 export const MoneyAmountCell = ({ currencyCode, amount, align = 'left', className }: MoneyAmountCellProps) => {
-  console.log(amount, typeof amount);
-
   if (typeof amount === 'undefined' || amount === null || amount === '0.00') {
     return <PlaceholderCell align="right" />;
   }

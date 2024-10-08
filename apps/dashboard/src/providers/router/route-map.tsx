@@ -81,13 +81,19 @@ export const RouteMap: RouteObject[] = [
               },
             ],
           },
-
           {
             path: '/orders',
+            handle: {
+              crumb: () => 'Orders',
+            },
             children: [
               {
                 path: '',
-                lazy: () => import('../../routes/orders'),
+                lazy: () => import('../../routes/orders/order-list'),
+              },
+              {
+                path: 'create',
+                lazy: () => import('../../routes/orders/order-create'),
               },
             ],
           },

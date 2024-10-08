@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { FinancialStatus, FulfillmentStatus, IOrder } from '@shared';
 
 import { Button } from '@/components/ui/button';
-import { Description, FieldGroup, Fieldset, Label } from '@/components/ui/fieldset';
+import { Description, Field, FieldGroup, Fieldset, Label } from '@/components/ui/fieldset';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Select } from '@/components/ui/select';
@@ -130,10 +130,10 @@ export const OrderForm: React.FC<OrderFormProps> = ({ order, isPending, onSubmit
           </div>
 
           <Fieldset className="flex justify-between gap-x-2">
-            <div>
+            <Field>
               <Label>Order Items</Label>
               <Description>Add items to the order. Each item represents a product variant.</Description>
-            </div>
+            </Field>
             <Button type="button" onClick={addItem}>
               <CirclePlus className="w-6 h-6" />
             </Button>

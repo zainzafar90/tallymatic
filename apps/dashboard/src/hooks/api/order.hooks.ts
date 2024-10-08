@@ -1,4 +1,4 @@
-import { OrderListResponse, OrderResponse, UpdateOrderReq } from '@shared';
+import { CreateOrderReq, OrderListResponse, OrderResponse, UpdateOrderReq } from '@shared';
 import { QueryKey, useMutation, UseMutationOptions, useQuery, UseQueryOptions } from '@tanstack/react-query';
 
 import { client } from '@/lib/client';
@@ -30,11 +30,12 @@ export const useOrder = (id: string, options?: UseQueryOptions<OrderResponse, Fe
   });
 };
 
-export const useCreateOrder = () => {
+export const useCreateOrder = (options?: UseMutationOptions<CreateOrderReq, Error, CreateOrderReq>) => {
   return useMutation({
-    mutationFn: client.orders.create,
-    onSuccess: () => {
+    mutationFn: (payload: CreateOrderReq) => client.orders.create(payload),
+    onSuccess: (data: any, variables: any, context: any) => {
       queryClient.invalidateQueries({ queryKey: ordersQueryKeys.lists() });
+      options?.onSuccess?.(data, variables, context);
     },
   });
 };
