@@ -40,7 +40,7 @@ export const getNativeSymbol = (currencyCode: string) => {
  * user's locale and is only used in cases where we want to display the
  * currency code and symbol explicitly, e.g. for totals.
  */
-export const getStylizedAmount = (amount: number, currencyCode: string) => {
+export const getStylizedAmount = (amount: number, currencyCode: string, showCurrencyCode = false) => {
   const symbol = getNativeSymbol(currencyCode);
   const decimalDigits = getDecimalDigits(currencyCode);
 
@@ -48,6 +48,10 @@ export const getStylizedAmount = (amount: number, currencyCode: string) => {
     minimumFractionDigits: decimalDigits,
     maximumFractionDigits: decimalDigits,
   });
+
+  if (!showCurrencyCode) {
+    return `${symbol} ${total}`;
+  }
 
   return `${symbol} ${total} ${currencyCode.toUpperCase()}`;
 };

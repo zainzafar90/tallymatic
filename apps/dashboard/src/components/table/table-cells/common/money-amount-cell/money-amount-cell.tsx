@@ -5,17 +5,19 @@ import { PlaceholderCell } from '../placeholder-cell';
 
 type MoneyAmountCellProps = {
   currencyCode: string;
-  amount?: number | null;
+  amount?: number | string | null;
   align?: 'left' | 'right';
   className?: string;
 };
 
 export const MoneyAmountCell = ({ currencyCode, amount, align = 'left', className }: MoneyAmountCellProps) => {
-  if (typeof amount === 'undefined' || amount === null) {
-    return <PlaceholderCell />;
+  console.log(amount, typeof amount);
+
+  if (typeof amount === 'undefined' || amount === null || amount === '0.00') {
+    return <PlaceholderCell align="right" />;
   }
 
-  const formatted = getStylizedAmount(amount, currencyCode);
+  const formatted = getStylizedAmount(+amount, currencyCode);
 
   return (
     <div
