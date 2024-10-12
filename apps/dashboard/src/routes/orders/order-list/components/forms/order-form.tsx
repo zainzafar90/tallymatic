@@ -4,7 +4,6 @@ import { CircleMinus, CirclePlus } from 'lucide-react';
 import { useFieldArray, useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { IOrder, OrderStatus } from '@shared';
-import { keepPreviousData } from '@tanstack/react-query';
 
 import { Button } from '@/components/ui/button';
 import { Description, Field, FieldGroup, Fieldset, Label } from '@/components/ui/fieldset';
@@ -12,8 +11,9 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { Select } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { useCustomers } from '@/hooks/api/customer.hooks';
+import { useToggleState } from '@/hooks/use-toggle-state';
 
+import { ChooseCustomerDialog } from '../dialogs/choose-customer.dialog';
 import { OrderFormData, OrderSchema } from './order.schema';
 
 interface OrderFormProps {
@@ -26,23 +26,7 @@ interface OrderFormProps {
 export const OrderForm: React.FC<OrderFormProps> = ({ order, isPending, onSubmit, onClose }) => {
   const [total, setTotal] = useState(0);
   const [subtotal, setSubtotal] = useState(0);
-
-  const {
-    results = [],
-    isLoading,
-    isError,
-    error,
-    count = 0,
-  } = useCustomers(
-    {
-      name: 'Emma',
-    },
-    {
-      placeholderData: keepPreviousData,
-    }
-  );
-
-  console.log(results);
+  const [isCustomerDialogOpen, openCustomerDialog, closeCustomerDialog] = useToggleState();
 
   const form = useForm<OrderFormData>({
     resolver: zodResolver(OrderSchema),
@@ -90,6 +74,10 @@ export const OrderForm: React.FC<OrderFormProps> = ({ order, isPending, onSubmit
     setTotal(total);
   }, [items, totalDiscount, totalTax, form]);
 
+  const handleSelectCustomer = (customerId: string) => {
+    form.setValue('customerId', customerId);
+  };
+
   return (
     <Form {...form}>
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -101,9 +89,14 @@ export const OrderForm: React.FC<OrderFormProps> = ({ order, isPending, onSubmit
               render={({ field }) => (
                 <FormItem className="w-full">
                   <FormLabel>Customer ID</FormLabel>
-                  <FormControl>
-                    <Input value={field.value} placeholder="Enter customer ID" readOnly autoFocus />
-                  </FormControl>
+                  <div className="flex gap-2">
+                    <FormControl>
+                      <Input value={field.value} placeholder="Enter customer ID" readOnly />
+                    </FormControl>
+                    <Button type="button" onClick={() => openCustomerDialog()}>
+                      Select Customer
+                    </Button>
+                  </div>
                   <FormMessage />
                 </FormItem>
               )}
@@ -303,6 +296,12 @@ export const OrderForm: React.FC<OrderFormProps> = ({ order, isPending, onSubmit
           </Button>
         </div>
       </form>
+
+      <ChooseCustomerDialog
+        isOpen={isCustomerDialogOpen}
+        onClose={() => closeCustomerDialog()}
+        onSelectCustomer={handleSelectCustomer}
+      />
     </Form>
   );
 };
