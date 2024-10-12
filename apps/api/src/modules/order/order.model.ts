@@ -87,7 +87,7 @@ export class Order extends Model {
         nextNumber = currentMax + 1;
       }
 
-      instance.number = `${instance.storeId.substr(0, 8)}-${nextNumber.toString().padStart(6, '0')}`;
+      instance.number = `ORD-${nextNumber}`;
 
       await transaction.commit();
     } catch (error) {

@@ -11,7 +11,15 @@ export const createOrder = async (orderData: CreateOrderReq): Promise<IOrder> =>
   const transaction = await getDatabaseInstance().transaction();
 
   try {
-    const order = await Order.create(orderData, { transaction });
+    const order = await Order.create(
+      {
+        ...orderData,
+        storeId: '00000000-0000-4000-8000-000000000001',
+        subtotal: orderData.items.reduce((acc, item) => acc + item.price * item.quantity, 0),
+        total: orderData.items.reduce((acc, item) => acc + item.price * item.quantity, 0) - orderData.totalDiscount,
+      },
+      { transaction }
+    );
 
     if (orderData.items && orderData.items.length > 0) {
       await OrderItem.bulkCreate(
