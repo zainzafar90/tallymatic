@@ -17,6 +17,15 @@ module.exports = {
         onUpdate: 'CASCADE',
         onDelete: 'SET NULL',
       },
+      storeId: {
+        type: Sequelize.UUID,
+        references: {
+          model: 'stores',
+          key: 'id',
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'SET NULL',
+      },
       number: {
         type: Sequelize.STRING,
         allowNull: false,

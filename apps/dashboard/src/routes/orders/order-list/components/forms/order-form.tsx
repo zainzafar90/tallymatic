@@ -4,6 +4,7 @@ import { CircleMinus, CirclePlus } from 'lucide-react';
 import { useFieldArray, useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { IOrder, OrderStatus } from '@shared';
+import { keepPreviousData } from '@tanstack/react-query';
 
 import { Button } from '@/components/ui/button';
 import { Description, Field, FieldGroup, Fieldset, Label } from '@/components/ui/fieldset';
@@ -11,6 +12,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { Select } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { useCustomers } from '@/hooks/api/customer.hooks';
 
 import { OrderFormData, OrderSchema } from './order.schema';
 
@@ -24,6 +26,23 @@ interface OrderFormProps {
 export const OrderForm: React.FC<OrderFormProps> = ({ order, isPending, onSubmit, onClose }) => {
   const [total, setTotal] = useState(0);
   const [subtotal, setSubtotal] = useState(0);
+
+  const {
+    results = [],
+    isLoading,
+    isError,
+    error,
+    count = 0,
+  } = useCustomers(
+    {
+      name: 'Emma',
+    },
+    {
+      placeholderData: keepPreviousData,
+    }
+  );
+
+  console.log(results);
 
   const form = useForm<OrderFormData>({
     resolver: zodResolver(OrderSchema),
