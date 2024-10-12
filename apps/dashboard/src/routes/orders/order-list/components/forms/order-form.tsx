@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { CircleMinus, CirclePlus } from 'lucide-react';
 import { useFieldArray, useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { FinancialStatus, FulfillmentStatus, IOrder } from '@shared';
+import { IOrder, OrderStatus } from '@shared';
 
 import { Button } from '@/components/ui/button';
 import { Description, Field, FieldGroup, Fieldset, Label } from '@/components/ui/fieldset';
@@ -30,8 +30,7 @@ export const OrderForm: React.FC<OrderFormProps> = ({ order, isPending, onSubmit
     defaultValues: order || {
       customerId: '00000000-0000-4000-8000-000000000001',
       currency: 'PKR',
-      financialStatus: FinancialStatus.PENDING,
-      fulfillmentStatus: FulfillmentStatus.UNFULFILLED,
+      status: OrderStatus.PENDING,
       totalTax: 0,
       totalDiscount: 0,
       items: [{ variantId: '', quantity: 1, price: 0, totalDiscount: 0 }],
@@ -95,29 +94,12 @@ export const OrderForm: React.FC<OrderFormProps> = ({ order, isPending, onSubmit
           <div className="flex gap-4 w-full flex-col md:flex-row">
             <FormField
               control={form.control}
-              name="financialStatus"
+              name="status"
               render={({ field }) => (
                 <FormItem className="w-full">
                   <FormLabel>Financial Status</FormLabel>
                   <Select {...field}>
-                    {Object.values(FinancialStatus).map((status) => (
-                      <option key={status} value={status}>
-                        {status}
-                      </option>
-                    ))}
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="fulfillmentStatus"
-              render={({ field }) => (
-                <FormItem className="w-full">
-                  <FormLabel>Fulfillment Status</FormLabel>
-                  <Select {...field}>
-                    {Object.values(FulfillmentStatus).map((status) => (
+                    {Object.values(OrderStatus).map((status) => (
                       <option key={status} value={status}>
                         {status}
                       </option>

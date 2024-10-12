@@ -1,5 +1,4 @@
-import { CircleCheck, CircleDashed, CircleSlash } from 'lucide-react';
-import { FinancialStatus, FulfillmentStatus, IOrder } from '@shared';
+import { IOrder, OrderStatus } from '@shared';
 import { createColumnHelper } from '@tanstack/react-table';
 
 import { DateCell } from '@/components/table/table-cells/common/date-cell';
@@ -20,22 +19,22 @@ export const useOrderTableColumns = () => {
       header: ({ column }) => <SortedHeader text="Order #" column={column} />,
       cell: ({ row }) => <TextCell text={row.getValue('number')} />,
     }),
-    columnHelper.accessor('financialStatus', {
+    columnHelper.accessor('status', {
       header: () => <TextHeader text="Status" />,
 
       cell: ({ getValue }) => {
         const status = getValue();
 
-        const financialStatusConfig: Record<FinancialStatus, [Color, string]> = {
-          [FinancialStatus.PENDING]: ['yellow', 'Pending'],
-          [FinancialStatus.PAID]: ['green', 'Paid'],
-          [FinancialStatus.UNPAID]: ['red', 'Unpaid'],
-          [FinancialStatus.PARTIALLY_PAID]: ['orange', 'Partially Paid'],
-          [FinancialStatus.REFUNDED]: ['blue', 'Refunded'],
-          [FinancialStatus.VOIDED]: ['zinc', 'Voided'],
+        const statusConfig: Record<OrderStatus, [Color, string]> = {
+          [OrderStatus.PENDING]: ['yellow', 'Pending'],
+          [OrderStatus.PAID]: ['green', 'Paid'],
+          [OrderStatus.UNPAID]: ['red', 'Unpaid'],
+          [OrderStatus.PARTIALLY_PAID]: ['orange', 'Partially Paid'],
+          [OrderStatus.REFUNDED]: ['blue', 'Refunded'],
+          [OrderStatus.VOIDED]: ['zinc', 'Voided'],
         };
 
-        const [color, text] = financialStatusConfig[status] || ['zinc', 'Unknown'];
+        const [color, text] = statusConfig[status] || ['zinc', 'Unknown'];
 
         return (
           <div className="flex items-center space-x-2">

@@ -28,12 +28,8 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      financialStatus: {
+      status: {
         type: Sequelize.ENUM('pending', 'paid', 'unpaid', 'partiallyPaid', 'refunded', 'voided'),
-        allowNull: false,
-      },
-      fulfillmentStatus: {
-        type: Sequelize.ENUM('fulfilled', 'partial', 'unfulfilled'),
         allowNull: false,
       },
       total: {

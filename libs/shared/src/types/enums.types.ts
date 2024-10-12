@@ -23,17 +23,11 @@ export enum TransactionType {
   ADJUSTED = 'adjusted',
 }
 
-export enum FinancialStatus {
+export enum OrderStatus {
   PENDING = 'pending',
   PAID = 'paid',
   UNPAID = 'unpaid',
   PARTIALLY_PAID = 'partiallyPaid',
   REFUNDED = 'refunded',
   VOIDED = 'voided',
-}
-
-export enum FulfillmentStatus {
-  FULFILLED = 'fulfilled',
-  PARTIAL = 'partial',
-  UNFULFILLED = 'unfulfilled',
 }

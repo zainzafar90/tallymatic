@@ -1,7 +1,18 @@
-import { BelongsTo, Column, DataType, DefaultScope, ForeignKey, HasMany, Model, Table } from 'sequelize-typescript';
-import { FinancialStatus, FulfillmentStatus } from '@shared';
+import {
+  BeforeCreate,
+  BelongsTo,
+  Column,
+  DataType,
+  DefaultScope,
+  ForeignKey,
+  HasMany,
+  Model,
+  Table,
+} from 'sequelize-typescript';
+import { OrderStatus } from '@shared';
 
 import { Customer } from '../customer/customer.model';
+import { Store } from '../store/store.model'; // Assuming you have a Store model
 import { OrderItem } from './order-item.model';
 
 @DefaultScope(() => ({
@@ -20,6 +31,13 @@ export class Order extends Model {
   @Column(DataType.UUID)
   customerId: string;
 
+  @ForeignKey(() => Store)
+  @Column(DataType.UUID)
+  storeId: string;
+
+  @BelongsTo(() => Store)
+  store: Store;
+
   @BelongsTo(() => Customer)
   customer: Customer;
 
@@ -33,16 +51,10 @@ export class Order extends Model {
   currency: string;
 
   @Column({
-    type: DataType.ENUM({ values: Object.values(FinancialStatus) }),
+    type: DataType.ENUM({ values: Object.values(OrderStatus) }),
     allowNull: false,
   })
-  financialStatus: FinancialStatus;
-
-  @Column({
-    type: DataType.ENUM({ values: Object.values(FulfillmentStatus) }),
-    allowNull: false,
-  })
-  fulfillmentStatus: FulfillmentStatus;
+  status: OrderStatus;
 
   @Column(DataType.DECIMAL(10, 2))
   total: number;
@@ -58,4 +70,29 @@ export class Order extends Model {
 
   @HasMany(() => OrderItem)
   items: OrderItem[];
+
+  @BeforeCreate
+  static async generateOrderNumber(instance: Order) {
+    const transaction = await instance.sequelize.transaction();
+    try {
+      const maxOrder = await Order.findOne({
+        where: { storeId: instance.storeId },
+        attributes: [[instance.sequelize.fn('max', instance.sequelize.col('number')), 'maxNumber']],
+        transaction,
+      });
+
+      let nextNumber = 1;
+      if (maxOrder && maxOrder.getDataValue('maxNumber')) {
+        const currentMax = parseInt(maxOrder.getDataValue('maxNumber').split('-')[1], 10);
+        nextNumber = currentMax + 1;
+      }
+
+      instance.number = `${instance.storeId.substr(0, 8)}-${nextNumber.toString().padStart(6, '0')}`;
+
+      await transaction.commit();
+    } catch (error) {
+      await transaction.rollback();
+      throw error;
+    }
+  }
 }

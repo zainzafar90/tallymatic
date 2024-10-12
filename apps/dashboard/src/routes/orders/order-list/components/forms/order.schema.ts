@@ -1,11 +1,10 @@
 import * as z from 'zod';
-import { FinancialStatus, FulfillmentStatus } from '@shared';
+import { OrderStatus } from '@shared';
 
 export const OrderSchema = z.object({
   customerId: z.string().uuid(),
   currency: z.string().min(1, 'Currency is required'),
-  financialStatus: z.nativeEnum(FinancialStatus),
-  fulfillmentStatus: z.nativeEnum(FulfillmentStatus),
+  status: z.nativeEnum(OrderStatus),
   totalTax: z.number().min(0, 'Total tax must be non-negative'),
   totalDiscount: z.number().min(0, 'Total discount must be non-negative'),
   items: z

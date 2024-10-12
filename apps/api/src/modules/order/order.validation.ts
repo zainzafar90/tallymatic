@@ -1,17 +1,13 @@
 import Joi from 'joi';
-import { CreateOrderReq, FinancialStatus, FulfillmentStatus } from '@shared';
+import { CreateOrderReq, OrderStatus } from '@shared';
 
 import { uuid } from '@/common/validate/custom.validation';
 
 const createOrderBody: Record<keyof CreateOrderReq, any> = {
-  number: Joi.string().required(),
   customerId: Joi.string().custom(uuid).required(),
   currency: Joi.string().optional().default('PKR'),
-  financialStatus: Joi.string()
-    .valid(...Object.values(FinancialStatus))
-    .required(),
-  fulfillmentStatus: Joi.string()
-    .valid(...Object.values(FulfillmentStatus))
+  status: Joi.string()
+    .valid(...Object.values(OrderStatus))
     .required(),
   totalTax: Joi.number().required(),
   totalDiscount: Joi.number().required(),
@@ -35,8 +31,7 @@ export const createOrder = {
 export const getOrders = {
   query: Joi.object().keys({
     customerId: Joi.string().custom(uuid),
-    financialStatus: Joi.string().valid(...Object.values(FinancialStatus)),
-    fulfillmentStatus: Joi.string().valid(...Object.values(FulfillmentStatus)),
+    status: Joi.string().valid(...Object.values(OrderStatus)),
     sortBy: Joi.string(),
     projectBy: Joi.string(),
     limit: Joi.number().integer(),
