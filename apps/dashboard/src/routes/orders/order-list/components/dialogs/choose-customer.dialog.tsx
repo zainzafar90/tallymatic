@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
+import { CheckCircleIcon } from '@heroicons/react/16/solid';
+import { ICustomer } from '@shared';
 import { keepPreviousData } from '@tanstack/react-query';
 
 import { Button } from '@/components/ui/button';
@@ -11,10 +13,11 @@ import { useCustomers } from '@/hooks/api/customer.hooks';
 interface ChooseCustomerDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  onSelectCustomer: (customerId: string) => void;
+  onSelectCustomer: (customer: ICustomer) => void;
+  selectedCustomerId?: string;
 }
 
-export function ChooseCustomerDialog({ isOpen, onClose, onSelectCustomer }: ChooseCustomerDialogProps) {
+export function ChooseCustomerDialog({ isOpen, onClose, onSelectCustomer, selectedCustomerId }: ChooseCustomerDialogProps) {
   const [searchTerm, setSearchTerm] = useState('');
 
   const { results: customers, isLoading } = useCustomers(
@@ -32,6 +35,7 @@ export function ChooseCustomerDialog({ isOpen, onClose, onSelectCustomer }: Choo
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="mb-4"
+          autoFocus
         />
         {isLoading ? (
           <p>Loading...</p>
@@ -41,25 +45,43 @@ export function ChooseCustomerDialog({ isOpen, onClose, onSelectCustomer }: Choo
               <TableRow>
                 <TableHeader>Name</TableHeader>
                 <TableHeader>Email</TableHeader>
-                <TableHeader>Action</TableHeader>
+                <TableHeader className="text-center">Action</TableHeader>
               </TableRow>
             </TableHead>
             <TableBody>
+              {customers?.length === 0 && (
+                <TableRow>
+                  <TableCell colSpan={3} className="text-center">
+                    No customers found
+                  </TableCell>
+                </TableRow>
+              )}
+
               {customers?.map((customer) => (
                 <TableRow key={customer.id}>
                   <TableCell>{customer.name}</TableCell>
                   <TableCell>{customer.email}</TableCell>
-                  <TableCell>
-                    <Button
-                      onClick={() => {
-                        if (!customer.id) return;
+                  <TableCell className="text-center">
+                    {customer.id === selectedCustomerId && (
+                      <div className="flex justify-center w-full">
+                        <CheckCircleIcon className="size-8 text-green-400" />
+                      </div>
+                    )}
 
-                        onSelectCustomer(customer.id);
-                        onClose();
-                      }}
-                    >
-                      Select
-                    </Button>
+                    {customer.id !== selectedCustomerId && (
+                      <Button
+                        onClick={() => {
+                          if (!customer.id || customer.id === selectedCustomerId) return;
+
+                          onSelectCustomer(customer);
+                          onClose();
+                        }}
+                        disabled={customer.id === selectedCustomerId}
+                        color={customer.id === selectedCustomerId ? 'green' : 'zinc'}
+                      >
+                        Select
+                      </Button>
+                    )}
                   </TableCell>
                 </TableRow>
               ))}

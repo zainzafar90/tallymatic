@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { CircleMinus, CirclePlus } from 'lucide-react';
 import { useFieldArray, useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { IOrder, OrderStatus } from '@shared';
+import { ICustomer, IOrder, OrderStatus } from '@shared';
 
 import { Button } from '@/components/ui/button';
 import { Description, Field, FieldGroup, Fieldset, Label } from '@/components/ui/fieldset';
@@ -27,11 +27,12 @@ export const OrderForm: React.FC<OrderFormProps> = ({ order, isPending, onSubmit
   const [total, setTotal] = useState(0);
   const [subtotal, setSubtotal] = useState(0);
   const [isCustomerDialogOpen, openCustomerDialog, closeCustomerDialog] = useToggleState();
+  const [selectedCustomer, setSelectedCustomer] = useState<ICustomer | null>(null);
 
   const form = useForm<OrderFormData>({
     resolver: zodResolver(OrderSchema),
     defaultValues: order || {
-      customerId: '00000000-0000-4000-8000-000000000001',
+      customerId: '',
       currency: 'PKR',
       status: OrderStatus.PENDING,
       totalTax: 0,
@@ -74,8 +75,11 @@ export const OrderForm: React.FC<OrderFormProps> = ({ order, isPending, onSubmit
     setTotal(total);
   }, [items, totalDiscount, totalTax, form]);
 
-  const handleSelectCustomer = (customerId: string) => {
-    form.setValue('customerId', customerId);
+  const handleSelectCustomer = (customer: ICustomer) => {
+    if (!customer?.id) return;
+
+    setSelectedCustomer(customer);
+    form.setValue('customerId', customer.id);
   };
 
   return (
@@ -88,13 +92,17 @@ export const OrderForm: React.FC<OrderFormProps> = ({ order, isPending, onSubmit
               name="customerId"
               render={({ field }) => (
                 <FormItem className="w-full">
-                  <FormLabel>Customer ID</FormLabel>
+                  <FormLabel>Customer</FormLabel>
                   <div className="flex gap-2">
                     <FormControl>
-                      <Input value={field.value} placeholder="Enter customer ID" readOnly />
+                      <Input
+                        value={selectedCustomer ? selectedCustomer.name : ''}
+                        placeholder="Select a customer"
+                        readOnly
+                      />
                     </FormControl>
                     <Button type="button" onClick={() => openCustomerDialog()}>
-                      Select Customer
+                      Select
                     </Button>
                   </div>
                   <FormMessage />
@@ -141,9 +149,9 @@ export const OrderForm: React.FC<OrderFormProps> = ({ order, isPending, onSubmit
                   name={`items.${index}.variantId`}
                   render={({ field }) => (
                     <FormItem className="w-full">
-                      <FormLabel>Variant ID</FormLabel>
+                      <FormLabel>Product</FormLabel>
                       <FormControl>
-                        <Input {...field} placeholder="Enter variant ID" />
+                        <Input {...field} placeholder="Select a product" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -301,6 +309,7 @@ export const OrderForm: React.FC<OrderFormProps> = ({ order, isPending, onSubmit
         isOpen={isCustomerDialogOpen}
         onClose={() => closeCustomerDialog()}
         onSelectCustomer={handleSelectCustomer}
+        selectedCustomerId={selectedCustomer?.id}
       />
     </Form>
   );
