@@ -4,6 +4,7 @@ import { CheckCircleIcon } from '@heroicons/react/16/solid';
 import { IProductVariant } from '@shared';
 import { keepPreviousData } from '@tanstack/react-query';
 
+import { Avatar } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogBody, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
@@ -26,7 +27,7 @@ export function ChooseProductVariantDialog({
   const [searchTerm, setSearchTerm] = useState('');
 
   const { results: variants, isLoading } = useVariants(
-    { name: searchTerm ? searchTerm : undefined },
+    { productName: searchTerm ? searchTerm : undefined },
     { enabled: isOpen, placeholderData: keepPreviousData }
   );
 
@@ -45,11 +46,10 @@ export function ChooseProductVariantDialog({
         {isLoading ? (
           <p>Loading...</p>
         ) : (
-          <Table>
+          <Table striped bleed>
             <TableHead>
               <TableRow>
-                <TableHeader>Variant Name</TableHeader>
-                <TableHeader>Product Name</TableHeader>
+                <TableHeader>Product</TableHeader>
                 <TableHeader>Price</TableHeader>
                 <TableHeader className="text-center">Action</TableHeader>
               </TableRow>
@@ -64,9 +64,17 @@ export function ChooseProductVariantDialog({
               )}
 
               {variants?.map((variant) => (
-                <TableRow key={variant.id}>
-                  <TableCell>{variant.name}</TableCell>
-                  <TableCell>{variant.product?.name}</TableCell>
+                <TableRow key={variant.id} className="cursor-pointer">
+                  <TableCell>
+                    <div className="flex gap-4">
+                      <Avatar className="size-12 bg-blue-600 text-white" initials={variant.product?.name?.charAt(0)} />
+                      <div className="flex flex-col">
+                        <div className="font-medium">{variant.product?.name}</div>
+                        <div className="hidden text-sm text-muted-foreground md:inline">{variant.name}</div>
+                      </div>
+                    </div>
+                  </TableCell>
+
                   <TableCell>{variant.price}</TableCell>
                   <TableCell className="text-center">
                     {variant.id === selectedVariantId ? (
