@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 
 import { CircleMinus, CirclePlus } from 'lucide-react';
 import { useFieldArray, useForm, UseFormReturn, useWatch } from 'react-hook-form';
-import { ClipboardDocumentIcon } from '@heroicons/react/16/solid';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ICustomer, IOrder, IOrderItem, IProductVariant, OrderStatus } from '@shared';
 
@@ -65,14 +64,8 @@ export const OrderForm: React.FC<OrderFormProps> = ({ order, isPending, onSubmit
           <Card className="bg-muted/50 xl:col-span-1 p-6">
             <FieldGroup>
               <div className="grid gap-0.5">
-                <CardTitle className="group flex items-center gap-2 text-lg">
-                  Order Oe31b70H
-                  <Button outline className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100">
-                    <ClipboardDocumentIcon className="h-3 w-3" />
-                    <span className="sr-only">Copy Order ID</span>
-                  </Button>
-                </CardTitle>
-                <CardDescription>Date: November 23, 2023</CardDescription>
+                <CardTitle className="group flex items-center gap-2 text-lg">Order Details</CardTitle>
+                <CardDescription>Date: {new Date().toLocaleDateString()}</CardDescription>
               </div>
 
               <CustomerSummary form={form} />
