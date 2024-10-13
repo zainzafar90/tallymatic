@@ -4,8 +4,6 @@ import { validate } from '@/common/validate';
 import { auth } from '@/modules/auth';
 import { productController, productValidation } from '@/modules/product';
 
-import productVariantRouter from './product-variant.route';
-
 const router: Router = express.Router();
 
 router
@@ -19,8 +17,6 @@ router
   .get(auth(), validate(productValidation.getProduct), productController.getProduct)
   .patch(auth(), validate(productValidation.updateProduct), productController.updateProduct)
   .delete(auth(), validate(productValidation.deleteProduct), productController.deleteProduct);
-
-router.use('/:productId/variants', productVariantRouter);
 
 export default router;
 

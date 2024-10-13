@@ -36,7 +36,7 @@ export const OrderForm: React.FC<OrderFormProps> = ({ order, isPending, onSubmit
       status: OrderStatus.PENDING,
       totalTax: 0,
       totalDiscount: 0,
-      items: [{ variantId: '', quantity: 1, price: 0, totalDiscount: 0 }],
+      items: [],
     },
   });
 
@@ -234,27 +234,28 @@ const CustomerSummary = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
 
 const OrderItems = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
   const [isProductVariantDialogOpen, openProductVariantDialog, closeProductVariantDialog] = useToggleState();
-  const [currentEditingItemIndex, setCurrentEditingItemIndex] = useState<number | null>(null);
+  const [selectedVariants, setSelectedVariants] = useState<IProductVariant[]>([]);
 
   const { fields, append, remove } = useFieldArray({
     control: form.control,
     name: 'items',
-    rules: { minLength: 1 },
   });
 
-  const addItem = () => append({ variantId: '', quantity: 1, price: 0, totalDiscount: 0 });
-  const removeItem = (index: number) => fields.length > 1 && remove(index);
-
   const handleSelectProductVariant = (variant: IProductVariant) => {
-    if (currentEditingItemIndex === null || !variant?.id) return;
+    if (!variant?.id) return;
 
-    const updatedItems = [...form.getValues('items')];
-    updatedItems[currentEditingItemIndex] = {
-      ...updatedItems[currentEditingItemIndex],
+    append({
       variantId: variant.id,
+      quantity: 1,
       price: parseFloat(variant.price.toString()),
-    };
-    form.setValue('items', updatedItems);
+      totalDiscount: 0,
+    });
+    setSelectedVariants([...selectedVariants, variant]);
+  };
+
+  const removeItem = (index: number) => {
+    remove(index);
+    setSelectedVariants(selectedVariants.filter((_, i) => i !== index));
   };
 
   return (
@@ -264,95 +265,86 @@ const OrderItems = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
           <Label>Order Items</Label>
           <Description>Add items to the order. Each item represents a product variant.</Description>
         </Field>
-        <Button type="button" onClick={addItem}>
+        <Button type="button" onClick={openProductVariantDialog}>
           <CirclePlus className="w-6 h-6" />
         </Button>
       </Fieldset>
 
-      {fields.map((field, index) => (
-        <FieldGroup className="w-full space-y-2" key={field.id}>
-          <div className="flex gap-4 w-full flex-col md:flex-row">
-            <FormField
-              control={form.control}
-              name={`items.${index}.variantId`}
-              render={({ field }) => (
-                <FormItem className="w-full">
-                  <FormLabel>Product</FormLabel>
-                  <div className="flex gap-2">
-                    <FormControl>
-                      <Input {...field} placeholder="Select a product" readOnly />
-                    </FormControl>
-                    <Button
-                      type="button"
-                      onClick={() => {
-                        setCurrentEditingItemIndex(index);
-                        openProductVariantDialog();
-                      }}
-                    >
-                      Browse
-                    </Button>
-                  </div>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name={`items.${index}.quantity`}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Quantity</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      type="number"
-                      inputMode="numeric"
-                      min={1}
-                      onChange={(e) => field.onChange(parseInt(e.target.value, 10))}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name={`items.${index}.price`}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Price</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      type="number"
-                      inputMode="decimal"
-                      step="0.01"
-                      min={0}
-                      onChange={(e) => field.onChange(parseFloat(e.target.value))}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableHeader>Product</TableHeader>
+            <TableHeader>Quantity</TableHeader>
+            <TableHeader>Price</TableHeader>
+            <TableHeader>Actions</TableHeader>
+          </TableRow>
+        </TableHead>
 
-            <Fieldset className="space-y-2">
-              <Label className="hidden md:inline-flex">&nbsp;</Label>
-              <Button type="button" onClick={() => removeItem(index)} disabled={fields.length === 1}>
-                <CircleMinus className="text-red-500 w-6 h-6" />
-              </Button>
-            </Fieldset>
-          </div>
-        </FieldGroup>
-      ))}
+        <TableBody>
+          {fields.length === 0 && (
+            <TableRow>
+              <TableCell colSpan={4} className="text-center">
+                No items added yet.
+              </TableCell>
+            </TableRow>
+          )}
+
+          {fields.map((field, index) => (
+            <TableRow key={field.id}>
+              <TableCell>{selectedVariants[index]?.name}</TableCell>
+              <TableCell>
+                <FormField
+                  control={form.control}
+                  name={`items.${index}.quantity`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          type="number"
+                          inputMode="numeric"
+                          min={1}
+                          onChange={(e) => field.onChange(parseInt(e.target.value, 10))}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+              </TableCell>
+              <TableCell>
+                <FormField
+                  control={form.control}
+                  name={`items.${index}.price`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          type="number"
+                          inputMode="decimal"
+                          step="0.01"
+                          min={0}
+                          onChange={(e) => field.onChange(parseFloat(e.target.value))}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+              </TableCell>
+              <TableCell>
+                <Button type="button" onClick={() => removeItem(index)}>
+                  <CircleMinus className="text-red-500 w-6 h-6" />
+                </Button>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
 
       <ChooseProductVariantDialog
         isOpen={isProductVariantDialogOpen}
         onClose={closeProductVariantDialog}
         onSelectVariant={handleSelectProductVariant}
-        selectedVariantId={
-          currentEditingItemIndex !== null ? form.getValues(`items.${currentEditingItemIndex}.variantId`) : undefined
-        }
       />
     </FieldGroup>
   );

@@ -2,18 +2,19 @@ import express, { Router } from 'express';
 
 import config from '@/config/config';
 
-import authRoute from './auth.route';
-import categoryRoute from './category.route';
-import claimRoute from './claim.route';
-import customerRoute from './customer.route';
-import inventoryRoute from './inventory.route';
-import orderRoute from './order.route';
-import organizationRoute from './organization.route';
-import productRoute from './product.route';
-import storeRoute from './store.route';
-import supplierRoute from './supplier.route';
-import docsRoute from './swagger.route';
-import userRoute from './user.route';
+import authRoute from './auth.routes';
+import categoryRoute from './category.routes';
+import claimRoute from './claim.routes';
+import customerRoute from './customer.routes';
+import inventoryRoute from './inventory.routes';
+import orderRoute from './order.routes';
+import organizationRoute from './organization.routes';
+import productRoute from './product.routes';
+import storeRoute from './store.routes';
+import supplierRoute from './supplier.routes';
+import docsRoute from './swagger.routes';
+import userRoute from './user.routes';
+import variantRoute from './variant.routes';
 
 const router = express.Router();
 
@@ -42,6 +43,10 @@ const defaultIRoute: IRoute[] = [
   {
     path: '/products',
     route: productRoute,
+  },
+  {
+    path: '/variants',
+    route: variantRoute,
   },
   {
     path: '/categories',

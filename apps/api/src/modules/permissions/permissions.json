@@ -71,7 +71,7 @@
     },
     {
       "version": "default",
-      "resource": "product-variants",
+      "resource": "variants",
       "rules": [
         {
           "actions": ["*"],

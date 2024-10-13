@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { CheckCircleIcon } from '@heroicons/react/16/solid';
 import { IProductVariant } from '@shared';
@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogBody, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { useProducts } from '@/hooks/api/products.hooks';
+import { useVariants } from '@/hooks/api/variant.hooks';
 
 interface ChooseProductVariantDialogProps {
   isOpen: boolean;
@@ -24,31 +24,11 @@ export function ChooseProductVariantDialog({
   selectedVariantId,
 }: ChooseProductVariantDialogProps) {
   const [searchTerm, setSearchTerm] = useState('');
-  const [expandedProductIds, setExpandedProductIds] = useState<Set<string>>(new Set());
 
-  const { results: products, isLoading } = useProducts(
+  const { results: variants, isLoading } = useVariants(
     { name: searchTerm ? searchTerm : undefined },
     { enabled: isOpen, placeholderData: keepPreviousData }
   );
-
-  useEffect(() => {
-    if (products) {
-      const allProductIds = products.map((product) => product.id);
-      setExpandedProductIds(new Set(allProductIds));
-    }
-  }, [products]);
-
-  const handleProductClick = (productId: string) => {
-    setExpandedProductIds((prev) => {
-      const newSet = new Set(prev);
-      if (newSet.has(productId)) {
-        newSet.delete(productId);
-      } else {
-        newSet.add(productId);
-      }
-      return newSet;
-    });
-  };
 
   return (
     <Dialog open={isOpen} onClose={onClose} size="2xl">
@@ -56,7 +36,7 @@ export function ChooseProductVariantDialog({
       <DialogBody>
         <Input
           type="text"
-          placeholder="Search products..."
+          placeholder="Search variants..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="mb-4"
@@ -68,86 +48,44 @@ export function ChooseProductVariantDialog({
           <Table>
             <TableHead>
               <TableRow>
+                <TableHeader>Variant Name</TableHeader>
                 <TableHeader>Product Name</TableHeader>
-                <TableHeader>Category</TableHeader>
+                <TableHeader>Price</TableHeader>
                 <TableHeader className="text-center">Action</TableHeader>
               </TableRow>
             </TableHead>
             <TableBody>
-              {products?.length === 0 && (
+              {variants?.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={3} className="text-center">
-                    No products found
+                  <TableCell colSpan={4} className="text-center">
+                    No variants found
                   </TableCell>
                 </TableRow>
               )}
 
-              {products?.map((product) => (
-                <>
-                  <TableRow key={product.id}>
-                    <TableCell>{product.name}</TableCell>
-                    <TableCell>{product.category.name}</TableCell>
-                    <TableCell className="text-center">
-                      {product.variants.length === 1 ? (
-                        <Button
-                          onClick={() => {
-                            onSelectVariant(product.variants[0]);
-                            onClose();
-                          }}
-                          color="zinc"
-                        >
-                          Select
-                        </Button>
-                      ) : (
-                        <Button onClick={() => handleProductClick(product.id)}>
-                          {expandedProductIds.has(product.id) ? 'Hide Variants' : 'Show Variants'}
-                        </Button>
-                      )}
-                    </TableCell>
-                  </TableRow>
-                  {expandedProductIds.has(product.id) && product.variants.length > 1 && (
-                    <TableRow>
-                      <TableCell colSpan={3}>
-                        <Table>
-                          <TableHead>
-                            <TableRow>
-                              <TableHeader>Variant Name</TableHeader>
-                              <TableHeader>SKU</TableHeader>
-                              <TableHeader>Price</TableHeader>
-                              <TableHeader className="text-center">Action</TableHeader>
-                            </TableRow>
-                          </TableHead>
-                          <TableBody>
-                            {product.variants.map((variant) => (
-                              <TableRow key={variant.id}>
-                                <TableCell>{variant.name}</TableCell>
-                                <TableCell>{variant.sku}</TableCell>
-                                <TableCell>{variant.price}</TableCell>
-                                <TableCell className="text-center">
-                                  {variant.id === selectedVariantId ? (
-                                    <div className="flex justify-center w-full">
-                                      <CheckCircleIcon className="size-8 text-green-400" />
-                                    </div>
-                                  ) : (
-                                    <Button
-                                      onClick={() => {
-                                        onSelectVariant(variant);
-                                        onClose();
-                                      }}
-                                      color="zinc"
-                                    >
-                                      Select
-                                    </Button>
-                                  )}
-                                </TableCell>
-                              </TableRow>
-                            ))}
-                          </TableBody>
-                        </Table>
-                      </TableCell>
-                    </TableRow>
-                  )}
-                </>
+              {variants?.map((variant) => (
+                <TableRow key={variant.id}>
+                  <TableCell>{variant.name}</TableCell>
+                  <TableCell>{variant.product?.name}</TableCell>
+                  <TableCell>{variant.price}</TableCell>
+                  <TableCell className="text-center">
+                    {variant.id === selectedVariantId ? (
+                      <div className="flex justify-center w-full">
+                        <CheckCircleIcon className="size-8 text-green-400" />
+                      </div>
+                    ) : (
+                      <Button
+                        onClick={() => {
+                          onSelectVariant(variant);
+                          onClose();
+                        }}
+                        color="zinc"
+                      >
+                        Select
+                      </Button>
+                    )}
+                  </TableCell>
+                </TableRow>
               ))}
             </TableBody>
           </Table>

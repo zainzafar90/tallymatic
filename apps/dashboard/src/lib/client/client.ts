@@ -7,6 +7,7 @@ import { products } from './product.requests';
 import { stores } from './stores.requests';
 import { suppliers } from './supplier.requests';
 import { users } from './users.requests';
+import { variants } from './variant.requests';
 
 export const client = {
   auth,
@@ -18,4 +19,5 @@ export const client = {
   customers,
   suppliers,
   orders,
+  variants,
 };
