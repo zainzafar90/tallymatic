@@ -11,12 +11,15 @@ export const createOrder = async (orderData: CreateOrderReq): Promise<IOrder> =>
   const transaction = await getDatabaseInstance().transaction();
 
   try {
+    const subtotalValue = orderData.items.reduce((sum, item) => sum + item.price * item.quantity - item.totalDiscount, 0);
+    const totalValue = subtotalValue + (orderData.totalTax || 0) - (orderData.totalDiscount || 0);
+
     const order = await Order.create(
       {
         ...orderData,
         storeId: '00000000-0000-4000-8000-000000000001',
-        subtotal: orderData.items.reduce((acc, item) => acc + item.price * item.quantity, 0),
-        total: orderData.items.reduce((acc, item) => acc + item.price * item.quantity, 0) - orderData.totalDiscount,
+        subtotal: subtotalValue,
+        total: totalValue,
       },
       { transaction }
     );
