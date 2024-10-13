@@ -102,7 +102,7 @@ export interface ISupplier extends Dates {
 
 export interface IOrder extends Dates {
   id?: string;
-  number: string;
+  orderNumber: string;
   customerId: string;
   closedAt?: Date;
   currency: string;

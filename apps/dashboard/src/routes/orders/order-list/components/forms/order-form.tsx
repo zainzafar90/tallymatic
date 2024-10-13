@@ -58,6 +58,10 @@ export const OrderForm: React.FC<OrderFormProps> = ({ order, isPending, onSubmit
     await onSubmit(data);
     onClose();
     form.reset();
+    setSelectedCustomer(null);
+    setCurrentEditingItemIndex(null);
+    setTotal(0);
+    setSubtotal(0);
   });
 
   const addItem = () => {

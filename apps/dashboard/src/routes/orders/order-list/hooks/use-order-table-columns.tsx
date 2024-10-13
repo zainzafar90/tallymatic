@@ -15,9 +15,9 @@ const columnHelper = createColumnHelper<IOrder>();
 
 export const useOrderTableColumns = () => {
   return [
-    columnHelper.accessor('number', {
+    columnHelper.accessor('orderNumber', {
       header: ({ column }) => <SortedHeader text="Order #" column={column} />,
-      cell: ({ row }) => <TextCell text={row.getValue('number')} />,
+      cell: ({ row }) => <TextCell text={row.getValue('orderNumber')} />,
     }),
     columnHelper.accessor('status', {
       header: () => <TextHeader text="Status" />,

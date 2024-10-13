@@ -14,6 +14,7 @@ module.exports = {
           model: 'users',
           key: 'id',
         },
+        allowNull: true,
         onUpdate: 'CASCADE',
         onDelete: 'SET NULL',
       },
@@ -26,7 +27,7 @@ module.exports = {
         onUpdate: 'CASCADE',
         onDelete: 'SET NULL',
       },
-      number: {
+      orderNumber: {
         type: Sequelize.STRING,
         allowNull: false,
       },

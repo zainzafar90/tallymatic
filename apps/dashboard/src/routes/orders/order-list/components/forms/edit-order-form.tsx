@@ -19,7 +19,7 @@ export const EditOrderForm: React.FC<{ order: IOrder; onClose: () => void }> = (
       {
         onSuccess: () => {
           toast.success('Order updated', {
-            description: `Order #${data.number} was successfully updated`,
+            description: `Order was successfully updated`,
             closeButton: true,
           });
         },

@@ -4,7 +4,7 @@ import { CreateOrderReq, OrderStatus } from '@shared';
 import { uuid } from '@/common/validate/custom.validation';
 
 const createOrderBody: Record<keyof CreateOrderReq, any> = {
-  customerId: Joi.string().custom(uuid).required(),
+  customerId: Joi.string().custom(uuid).optional(),
   currency: Joi.string().optional().default('PKR'),
   status: Joi.string()
     .valid(...Object.values(OrderStatus))
@@ -53,7 +53,7 @@ export const updateOrder = {
     .keys({
       ...createOrderBody,
       customerId: Joi.string().custom(uuid),
-      number: Joi.string(),
+      orderNumber: Joi.string(),
       items: Joi.array().items(
         Joi.object({
           id: Joi.string().custom(uuid),

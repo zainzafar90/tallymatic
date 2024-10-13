@@ -28,7 +28,10 @@ export class Order extends Model {
   id: string;
 
   @ForeignKey(() => Customer)
-  @Column(DataType.UUID)
+  @Column({
+    type: DataType.UUID,
+    allowNull: false,
+  })
   customerId: string;
 
   @ForeignKey(() => Store)
@@ -42,7 +45,7 @@ export class Order extends Model {
   customer: Customer;
 
   @Column(DataType.STRING)
-  number: string;
+  orderNumber: string;
 
   @Column(DataType.DATE)
   closedAt: Date;
@@ -77,7 +80,7 @@ export class Order extends Model {
     try {
       const maxOrder = await Order.findOne({
         where: { storeId: instance.storeId },
-        attributes: [[instance.sequelize.fn('max', instance.sequelize.col('number')), 'maxNumber']],
+        attributes: [[instance.sequelize.fn('max', instance.sequelize.col('orderNumber')), 'maxNumber']],
         transaction,
       });
 
@@ -87,7 +90,7 @@ export class Order extends Model {
         nextNumber = currentMax + 1;
       }
 
-      instance.number = `ORD-${nextNumber}`;
+      instance.orderNumber = `ORD-${nextNumber}`;
 
       await transaction.commit();
     } catch (error) {

@@ -19,7 +19,7 @@ export const OrderActions: React.FC<{ order: IOrder }> = ({ order }) => {
   const handleDelete = async () => {
     const confirmed = await prompt({
       title: 'Delete Order',
-      description: `Are you sure you want to delete order ${order.number}?`,
+      description: `Are you sure you want to delete order ${order.orderNumber}?`,
       confirmText: 'Delete',
       cancelText: 'Cancel',
     });
