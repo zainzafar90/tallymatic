@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { CheckCircleIcon } from '@heroicons/react/16/solid';
 import { IProductVariant } from '@shared';
@@ -24,15 +24,30 @@ export function ChooseProductVariantDialog({
   selectedVariantId,
 }: ChooseProductVariantDialogProps) {
   const [searchTerm, setSearchTerm] = useState('');
-  const [expandedProductId, setExpandedProductId] = useState<string | null>(null);
+  const [expandedProductIds, setExpandedProductIds] = useState<Set<string>>(new Set());
 
   const { results: products, isLoading } = useProducts(
     { name: searchTerm ? searchTerm : undefined },
     { enabled: isOpen, placeholderData: keepPreviousData }
   );
 
+  useEffect(() => {
+    if (products) {
+      const allProductIds = products.map((product) => product.id);
+      setExpandedProductIds(new Set(allProductIds));
+    }
+  }, [products]);
+
   const handleProductClick = (productId: string) => {
-    setExpandedProductId(expandedProductId === productId ? null : productId);
+    setExpandedProductIds((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(productId)) {
+        newSet.delete(productId);
+      } else {
+        newSet.add(productId);
+      }
+      return newSet;
+    });
   };
 
   return (
@@ -73,12 +88,24 @@ export function ChooseProductVariantDialog({
                     <TableCell>{product.name}</TableCell>
                     <TableCell>{product.category.name}</TableCell>
                     <TableCell className="text-center">
-                      <Button onClick={() => handleProductClick(product.id)}>
-                        {expandedProductId === product.id ? 'Hide Variants' : 'Show Variants'}
-                      </Button>
+                      {product.variants.length === 1 ? (
+                        <Button
+                          onClick={() => {
+                            onSelectVariant(product.variants[0]);
+                            onClose();
+                          }}
+                          color="zinc"
+                        >
+                          Select
+                        </Button>
+                      ) : (
+                        <Button onClick={() => handleProductClick(product.id)}>
+                          {expandedProductIds.has(product.id) ? 'Hide Variants' : 'Show Variants'}
+                        </Button>
+                      )}
                     </TableCell>
                   </TableRow>
-                  {expandedProductId === product.id && (
+                  {expandedProductIds.has(product.id) && product.variants.length > 1 && (
                     <TableRow>
                       <TableCell colSpan={3}>
                         <Table>
