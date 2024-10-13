@@ -3,7 +3,7 @@ import { CreateOrderReq, IOptions, IOrder, ListResponse, UpdateOrderReq } from '
 import { ApiError } from '@/common/errors/api-error';
 import { getDatabaseInstance } from '@/database/db';
 
-import { paginate } from '../paginate/paginate';
+import { buildPaginationOptions, transformPagination } from '../paginate/paginate';
 import { OrderItem } from './order-item.model';
 import { Order } from './order.model';
 
@@ -40,8 +40,19 @@ export const createOrder = async (orderData: CreateOrderReq): Promise<IOrder> =>
 };
 
 export const queryOrders = async (filter: Record<string, any>, options: IOptions): Promise<ListResponse<Order>> => {
-  const result = await paginate(Order, filter, options);
-  return result;
+  const paginationOptions = buildPaginationOptions(filter, options, ['orderNumber']);
+
+  const result = await Order.findAndCountAll({
+    ...paginationOptions,
+    include: [
+      {
+        model: OrderItem,
+        as: 'items',
+      },
+    ],
+  });
+
+  return transformPagination(result.count, result.rows, paginationOptions.offset, paginationOptions.limit);
 };
 
 export const getOrderById = async (id: string): Promise<IOrder | null> => {
