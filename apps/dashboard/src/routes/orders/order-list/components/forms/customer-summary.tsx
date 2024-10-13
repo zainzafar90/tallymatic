@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { UseFormReturn } from 'react-hook-form';
 import { ICustomer } from '@shared';
 
 import { Button } from '@/components/ui/button';
@@ -8,9 +9,10 @@ import { Input } from '@/components/ui/input';
 import { useToggleState } from '@/hooks/use-toggle-state';
 
 import { ChooseCustomerDialog } from '../dialogs/choose-customer.dialog';
+import { OrderFormData } from './order.schema';
 
 interface OrderSummaryProps {
-  form: any;
+  form: UseFormReturn<OrderFormData>;
 }
 
 export const CustomerSummary = ({ form }: OrderSummaryProps) => {
@@ -22,6 +24,7 @@ export const CustomerSummary = ({ form }: OrderSummaryProps) => {
 
     setSelectedCustomer(customer);
     form.setValue('customerId', customer.id);
+    form.clearErrors('customerId');
   };
 
   return (

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 import { CircleMinus, CirclePlus } from 'lucide-react';
-import { useFieldArray } from 'react-hook-form';
+import { useFieldArray, UseFormReturn } from 'react-hook-form';
 import { IProductVariant } from '@shared';
 
 import { Button } from '@/components/ui/button';
@@ -11,9 +11,10 @@ import { Input } from '@/components/ui/input';
 import { useToggleState } from '@/hooks/use-toggle-state';
 
 import { ChooseProductVariantDialog } from '../dialogs/choose-product-variant.dialog';
+import { OrderFormData } from './order.schema';
 
 interface OrderItemsProps {
-  form: any;
+  form: UseFormReturn<OrderFormData>;
 }
 
 export const OrderItems: React.FC<OrderItemsProps> = ({ form }) => {
