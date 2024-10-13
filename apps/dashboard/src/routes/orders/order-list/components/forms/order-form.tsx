@@ -78,8 +78,8 @@ export const OrderForm: React.FC<OrderFormProps> = ({ order, isPending, onSubmit
   };
 
   useEffect(() => {
-    const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity - item.totalDiscount, 0);
-    const total = subtotal + totalTax - totalDiscount;
+    const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity - (item.totalDiscount || 0), 0);
+    const total = subtotal + (totalTax || 0) - (totalDiscount || 0);
 
     setSubtotal(subtotal);
     setTotal(total);
@@ -186,26 +186,7 @@ export const OrderForm: React.FC<OrderFormProps> = ({ order, isPending, onSubmit
                         </FormItem>
                       )}
                     />
-                    <FormField
-                      control={form.control}
-                      name={`items.${index}.totalDiscount`}
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Discount</FormLabel>
-                          <FormControl>
-                            <Input
-                              {...field}
-                              type="number"
-                              inputMode="decimal"
-                              step="0.01"
-                              min={0}
-                              onChange={(e) => field.onChange(parseFloat(e.target.value))}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+
                     <Fieldset className="space-y-2">
                       <Label className="hidden md:inline-flex">&nbsp;</Label>
                       <Button type="button" onClick={() => removeItem(index)} disabled={fields.length === 1}>
@@ -228,7 +209,6 @@ export const OrderForm: React.FC<OrderFormProps> = ({ order, isPending, onSubmit
                 <TableBody>
                   <TableRow>
                     <TableCell className="font-bold ">Discount</TableCell>
-
                     <TableCell className="text-right">
                       <FormField
                         control={form.control}
@@ -242,7 +222,7 @@ export const OrderForm: React.FC<OrderFormProps> = ({ order, isPending, onSubmit
                                 inputMode="decimal"
                                 step="0.01"
                                 min={0}
-                                onChange={(e) => field.onChange(parseFloat(e.target.value))}
+                                onChange={(e) => field.onChange(parseFloat(e.target.value || '0'))}
                               />
                             </FormControl>
                             <FormMessage />
@@ -266,7 +246,7 @@ export const OrderForm: React.FC<OrderFormProps> = ({ order, isPending, onSubmit
                                 inputMode="decimal"
                                 step="0.01"
                                 min={0}
-                                onChange={(e) => field.onChange(parseFloat(e.target.value))}
+                                onChange={(e) => field.onChange(parseFloat(e.target.value || '0'))}
                               />
                             </FormControl>
                             <FormMessage />
