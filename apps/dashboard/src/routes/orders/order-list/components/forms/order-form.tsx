@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 
 import { CircleMinus, CirclePlus } from 'lucide-react';
 import { useFieldArray, useForm, UseFormReturn, useWatch } from 'react-hook-form';
@@ -98,19 +98,16 @@ export const OrderForm: React.FC<OrderFormProps> = ({ order, isPending, onSubmit
 };
 
 const OrderSummary = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
-  const [subtotal, setSubtotal] = useState(0);
-  const [total, setTotal] = useState(0);
-
   const items = useWatch({ control: form.control, name: 'items' }) as IOrderItem[];
   const totalDiscount = useWatch({ control: form.control, name: 'totalDiscount' });
   const totalTax = useWatch({ control: form.control, name: 'totalTax' });
 
-  useEffect(() => {
-    const subtotalValue = items.reduce((sum, item) => sum + item.price * item.quantity - (item.totalDiscount || 0), 0);
-    const totalValue = subtotalValue + (totalTax || 0) - (totalDiscount || 0);
-    setSubtotal(subtotalValue);
-    setTotal(totalValue);
-  }, [items, totalDiscount, totalTax]);
+  const subtotal = useMemo(
+    () => items.reduce((sum, item) => sum + item.price * item.quantity - (item.totalDiscount || 0), 0),
+    [items]
+  );
+
+  const total = useMemo(() => subtotal + (+totalTax || 0) - (+totalDiscount || 0), [subtotal, totalDiscount, totalTax]);
 
   return (
     <Table className="mt-8 [--gutter:theme(spacing.6)] lg:[--gutter:theme(spacing.10)] table-fixed">
@@ -171,11 +168,11 @@ const OrderSummary = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
         </TableRow>
         <TableRow>
           <TableCell className="font-bold">Subtotal</TableCell>
-          <TableCell className="text-right">Rs. {subtotal.toFixed(2)} </TableCell>
+          <TableCell className="text-right">Rs. {subtotal} </TableCell>
         </TableRow>
         <TableRow>
           <TableCell className="font-bold">Total</TableCell>
-          <TableCell className="text-right">Rs. {total.toFixed(2)} </TableCell>
+          <TableCell className="text-right">Rs. {total} </TableCell>
         </TableRow>
       </TableBody>
     </Table>
