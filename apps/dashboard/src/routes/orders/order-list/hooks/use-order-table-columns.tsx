@@ -1,4 +1,4 @@
-import { IOrder, OrderStatus } from '@shared';
+import { IOrder } from '@shared';
 import { createColumnHelper } from '@tanstack/react-table';
 
 import { DateCell } from '@/components/table/table-cells/common/date-cell';
@@ -6,10 +6,9 @@ import { MoneyAmountCell } from '@/components/table/table-cells/common/money-amo
 import { SortedHeader } from '@/components/table/table-cells/common/sorted-header';
 import { TextCell, TextHeader } from '@/components/table/table-cells/common/text-cell';
 import { Badge } from '@/components/ui/badge';
-import { Color } from '@/components/ui/utils';
-import { cn } from '@/utils/cn';
 
 import { OrderActions } from '../components/tables/order-table-actions';
+import { orderStatusConfig } from '../config/order-status.config';
 
 const columnHelper = createColumnHelper<IOrder>();
 
@@ -21,20 +20,9 @@ export const useOrderTableColumns = () => {
     }),
     columnHelper.accessor('status', {
       header: () => <TextHeader text="Status" />,
-
       cell: ({ getValue }) => {
         const status = getValue();
-
-        const statusConfig: Record<OrderStatus, [Color, string]> = {
-          [OrderStatus.PENDING]: ['yellow', 'Pending'],
-          [OrderStatus.PAID]: ['green', 'Paid'],
-          [OrderStatus.UNPAID]: ['red', 'Unpaid'],
-          [OrderStatus.PARTIALLY_PAID]: ['orange', 'Partially Paid'],
-          [OrderStatus.REFUNDED]: ['blue', 'Refunded'],
-          [OrderStatus.VOIDED]: ['zinc', 'Voided'],
-        };
-
-        const [color, text] = statusConfig[status] || ['zinc', 'Unknown'];
+        const [color, text] = orderStatusConfig[status] || ['zinc', 'Unknown'];
 
         return (
           <div className="flex items-center space-x-2">

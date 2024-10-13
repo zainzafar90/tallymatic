@@ -15,6 +15,7 @@ import { Select } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useToggleState } from '@/hooks/use-toggle-state';
 
+import { orderStatusConfig } from '../../config/order-status.config';
 import { ChooseCustomerDialog } from '../dialogs/choose-customer.dialog';
 import { ChooseProductVariantDialog } from '../dialogs/choose-product-variant.dialog';
 import { OrderFormData, OrderSchema } from './order.schema';
@@ -338,9 +339,9 @@ export const OrderForm: React.FC<OrderFormProps> = ({ order, isPending, onSubmit
                     <FormItem className="w-full">
                       <FormLabel>Financial Status</FormLabel>
                       <Select {...field}>
-                        {Object.values(OrderStatus).map((status) => (
+                        {Object.entries(orderStatusConfig).map(([status, [_, text]]) => (
                           <option key={status} value={status}>
-                            {status}
+                            {text}
                           </option>
                         ))}
                       </Select>
