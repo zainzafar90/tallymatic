@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { CircleMinus, CirclePlus } from 'lucide-react';
 import { useFieldArray, useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { ICustomer, IOrder, OrderStatus } from '@shared';
+import { ICustomer, IOrder, IProductVariant, OrderStatus } from '@shared';
 
 import { Button } from '@/components/ui/button';
 import { Description, Field, FieldGroup, Fieldset, Label } from '@/components/ui/fieldset';
@@ -14,6 +14,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { useToggleState } from '@/hooks/use-toggle-state';
 
 import { ChooseCustomerDialog } from '../dialogs/choose-customer.dialog';
+import { ChooseProductVariantDialog } from '../dialogs/choose-product-variant.dialog';
 import { OrderFormData, OrderSchema } from './order.schema';
 
 interface OrderFormProps {
@@ -28,6 +29,8 @@ export const OrderForm: React.FC<OrderFormProps> = ({ order, isPending, onSubmit
   const [subtotal, setSubtotal] = useState(0);
   const [isCustomerDialogOpen, openCustomerDialog, closeCustomerDialog] = useToggleState();
   const [selectedCustomer, setSelectedCustomer] = useState<ICustomer | null>(null);
+  const [isProductVariantDialogOpen, setIsProductVariantDialogOpen] = useState(false);
+  const [currentEditingItemIndex, setCurrentEditingItemIndex] = useState<number | null>(null);
 
   const form = useForm<OrderFormData>({
     resolver: zodResolver(OrderSchema),
@@ -80,6 +83,18 @@ export const OrderForm: React.FC<OrderFormProps> = ({ order, isPending, onSubmit
 
     setSelectedCustomer(customer);
     form.setValue('customerId', customer.id);
+  };
+
+  const handleSelectProductVariant = (variant: IProductVariant) => {
+    if (currentEditingItemIndex === null || !variant?.id) return;
+
+    const updatedItems = [...form.getValues('items')];
+    updatedItems[currentEditingItemIndex] = {
+      ...updatedItems[currentEditingItemIndex],
+      variantId: variant.id,
+      price: variant.price,
+    };
+    form.setValue('items', updatedItems);
   };
 
   return (
@@ -150,9 +165,20 @@ export const OrderForm: React.FC<OrderFormProps> = ({ order, isPending, onSubmit
                   render={({ field }) => (
                     <FormItem className="w-full">
                       <FormLabel>Product</FormLabel>
-                      <FormControl>
-                        <Input {...field} placeholder="Select a product" />
-                      </FormControl>
+                      <div className="flex gap-2">
+                        <FormControl>
+                          <Input {...field} placeholder="Select a product" readOnly />
+                        </FormControl>
+                        <Button
+                          type="button"
+                          onClick={() => {
+                            setCurrentEditingItemIndex(index);
+                            setIsProductVariantDialogOpen(true);
+                          }}
+                        >
+                          Select
+                        </Button>
+                      </div>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -310,6 +336,15 @@ export const OrderForm: React.FC<OrderFormProps> = ({ order, isPending, onSubmit
         onClose={() => closeCustomerDialog()}
         onSelectCustomer={handleSelectCustomer}
         selectedCustomerId={selectedCustomer?.id}
+      />
+
+      <ChooseProductVariantDialog
+        isOpen={isProductVariantDialogOpen}
+        onClose={() => setIsProductVariantDialogOpen(false)}
+        onSelectVariant={handleSelectProductVariant}
+        selectedVariantId={
+          currentEditingItemIndex !== null ? form.getValues(`items.${currentEditingItemIndex}.variantId`) : undefined
+        }
       />
     </Form>
   );
