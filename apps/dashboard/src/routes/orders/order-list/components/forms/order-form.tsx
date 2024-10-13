@@ -99,7 +99,7 @@ export const OrderForm: React.FC<OrderFormProps> = ({ order, isPending, onSubmit
     updatedItems[currentEditingItemIndex] = {
       ...updatedItems[currentEditingItemIndex],
       variantId: variant.id,
-      price: variant.price,
+      price: parseFloat(variant.price.toString()),
     };
     form.setValue('items', updatedItems);
   };
