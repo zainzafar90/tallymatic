@@ -2,10 +2,12 @@ import React, { useEffect, useState } from 'react';
 
 import { CircleMinus, CirclePlus } from 'lucide-react';
 import { useFieldArray, useForm, useWatch } from 'react-hook-form';
+import { ClipboardDocumentIcon } from '@heroicons/react/16/solid';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ICustomer, IOrder, IProductVariant, OrderStatus } from '@shared';
 
 import { Button } from '@/components/ui/button';
+import { Card, CardDescription, CardTitle } from '@/components/ui/card';
 import { Description, Field, FieldGroup, Fieldset, Label } from '@/components/ui/fieldset';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
@@ -102,84 +104,223 @@ export const OrderForm: React.FC<OrderFormProps> = ({ order, isPending, onSubmit
   };
 
   return (
-    <Form {...form}>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <FieldGroup>
-          <div className="flex gap-4 w-full flex-col md:flex-row">
-            <FormField
-              control={form.control}
-              name="customerId"
-              render={({ field }) => (
-                <FormItem className="w-full">
-                  <FormLabel>Customer</FormLabel>
-                  <div className="flex gap-2">
-                    <FormControl>
-                      <Input
-                        value={selectedCustomer ? selectedCustomer.name : ''}
-                        placeholder="Select a customer"
-                        readOnly
-                      />
-                    </FormControl>
-                    <Button type="button" onClick={() => openCustomerDialog()}>
-                      Select
-                    </Button>
+    <div className="">
+      <Form {...form}>
+        <form onSubmit={handleSubmit} className="grid grid-cols-1 xl:grid-cols-3 gap-4">
+          <Card className="bg-muted/50 xl:col-span-2 p-6">
+            <FieldGroup>
+              <Fieldset className="flex justify-between gap-x-2">
+                <Field>
+                  <Label>Order Items</Label>
+                  <Description>Add items to the order. Each item represents a product variant.</Description>
+                </Field>
+                <Button type="button" onClick={addItem}>
+                  <CirclePlus className="w-6 h-6" />
+                </Button>
+              </Fieldset>
+
+              {fields.map((field, index) => (
+                <FieldGroup className="w-full space-y-2" key={field.id}>
+                  <div className="flex gap-4 w-full flex-col md:flex-row">
+                    <FormField
+                      control={form.control}
+                      name={`items.${index}.variantId`}
+                      render={({ field }) => (
+                        <FormItem className="w-full">
+                          <FormLabel>Product</FormLabel>
+                          <div className="flex gap-2">
+                            <FormControl>
+                              <Input {...field} placeholder="Select a product" readOnly />
+                            </FormControl>
+                            <Button
+                              type="button"
+                              onClick={() => {
+                                setCurrentEditingItemIndex(index);
+                                setIsProductVariantDialogOpen(true);
+                              }}
+                            >
+                              Select
+                            </Button>
+                          </div>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name={`items.${index}.quantity`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Quantity</FormLabel>
+                          <FormControl>
+                            <Input
+                              {...field}
+                              type="number"
+                              inputMode="numeric"
+                              min={1}
+                              onChange={(e) => field.onChange(parseInt(e.target.value, 10))}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name={`items.${index}.price`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Price</FormLabel>
+                          <FormControl>
+                            <Input
+                              {...field}
+                              type="number"
+                              inputMode="decimal"
+                              step="0.01"
+                              min={0}
+                              onChange={(e) => field.onChange(parseFloat(e.target.value))}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name={`items.${index}.totalDiscount`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Discount</FormLabel>
+                          <FormControl>
+                            <Input
+                              {...field}
+                              type="number"
+                              inputMode="decimal"
+                              step="0.01"
+                              min={0}
+                              onChange={(e) => field.onChange(parseFloat(e.target.value))}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <Fieldset className="space-y-2">
+                      <Label className="hidden md:inline-flex">&nbsp;</Label>
+                      <Button type="button" onClick={() => removeItem(index)} disabled={fields.length === 1}>
+                        <CircleMinus className="text-red-500 w-6 h-6" />
+                      </Button>
+                    </Fieldset>
                   </div>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
+                </FieldGroup>
+              ))}
 
-          <div className="flex gap-4 w-full flex-col md:flex-row">
-            <FormField
-              control={form.control}
-              name="status"
-              render={({ field }) => (
-                <FormItem className="w-full">
-                  <FormLabel>Financial Status</FormLabel>
-                  <Select {...field}>
-                    {Object.values(OrderStatus).map((status) => (
-                      <option key={status} value={status}>
-                        {status}
-                      </option>
-                    ))}
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
+              <div className="flex gap-4 w-full flex-col md:flex-row"></div>
 
-          <Fieldset className="flex justify-between gap-x-2">
-            <Field>
-              <Label>Order Items</Label>
-              <Description>Add items to the order. Each item represents a product variant.</Description>
-            </Field>
-            <Button type="button" onClick={addItem}>
-              <CirclePlus className="w-6 h-6" />
-            </Button>
-          </Fieldset>
+              <Table className="mt-8 [--gutter:theme(spacing.6)] lg:[--gutter:theme(spacing.10)] table-fixed">
+                <TableHead>
+                  <TableRow>
+                    <TableHeader>&nbsp;</TableHeader>
+                    <TableHeader>&nbsp;</TableHeader>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  <TableRow>
+                    <TableCell className="font-bold ">Discount</TableCell>
 
-          {fields.map((field, index) => (
-            <FieldGroup className="w-full space-y-2" key={field.id}>
+                    <TableCell className="text-right">
+                      <FormField
+                        control={form.control}
+                        name="totalDiscount"
+                        render={({ field }) => (
+                          <FormItem className="w-full max-w-xs ml-auto">
+                            <FormControl>
+                              <Input
+                                {...field}
+                                type="number"
+                                inputMode="decimal"
+                                step="0.01"
+                                min={0}
+                                onChange={(e) => field.onChange(parseFloat(e.target.value))}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="font-bold">Tax</TableCell>
+                    <TableCell className="text-right">
+                      <FormField
+                        control={form.control}
+                        name="totalTax"
+                        render={({ field }) => (
+                          <FormItem className="w-full max-w-xs ml-auto">
+                            <FormControl>
+                              <Input
+                                {...field}
+                                type="number"
+                                inputMode="decimal"
+                                step="0.01"
+                                min={0}
+                                onChange={(e) => field.onChange(parseFloat(e.target.value))}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="font-bold">Subtotal</TableCell>
+                    <TableCell className="text-right">Rs. {subtotal.toFixed(2)} </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="font-bold">Total</TableCell>
+                    <TableCell className="text-right">Rs. {total.toFixed(2)} </TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </FieldGroup>
+
+            <div className="flex justify-end space-x-2 mt-4">
+              <Button onClick={onClose}>Cancel</Button>
+              <Button type="submit" color="blue" disabled={isPending}>
+                {order ? 'Update' : 'Create'} Order
+              </Button>
+            </div>
+          </Card>
+          <Card className="bg-muted/50 xl:col-span-1 p-6">
+            <FieldGroup>
+              <div className="grid gap-0.5">
+                <CardTitle className="group flex items-center gap-2 text-lg">
+                  Order Oe31b70H
+                  <Button outline className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100">
+                    <ClipboardDocumentIcon className="h-3 w-3" />
+                    <span className="sr-only">Copy Order ID</span>
+                  </Button>
+                </CardTitle>
+                <CardDescription>Date: November 23, 2023</CardDescription>
+              </div>
               <div className="flex gap-4 w-full flex-col md:flex-row">
                 <FormField
                   control={form.control}
-                  name={`items.${index}.variantId`}
+                  name="customerId"
                   render={({ field }) => (
                     <FormItem className="w-full">
-                      <FormLabel>Product</FormLabel>
+                      <FormLabel>Customer</FormLabel>
                       <div className="flex gap-2">
                         <FormControl>
-                          <Input {...field} placeholder="Select a product" readOnly />
+                          <Input
+                            value={selectedCustomer ? selectedCustomer.name : ''}
+                            placeholder="Select a customer"
+                            readOnly
+                          />
                         </FormControl>
-                        <Button
-                          type="button"
-                          onClick={() => {
-                            setCurrentEditingItemIndex(index);
-                            setIsProductVariantDialogOpen(true);
-                          }}
-                        >
+                        <Button type="button" onClick={() => openCustomerDialog()}>
                           Select
                         </Button>
                       </div>
@@ -187,153 +328,31 @@ export const OrderForm: React.FC<OrderFormProps> = ({ order, isPending, onSubmit
                     </FormItem>
                   )}
                 />
+              </div>
+
+              <div className="flex gap-4 w-full flex-col md:flex-row">
                 <FormField
                   control={form.control}
-                  name={`items.${index}.quantity`}
+                  name="status"
                   render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Quantity</FormLabel>
-                      <FormControl>
-                        <Input
-                          {...field}
-                          type="number"
-                          inputMode="numeric"
-                          min={1}
-                          onChange={(e) => field.onChange(parseInt(e.target.value, 10))}
-                        />
-                      </FormControl>
+                    <FormItem className="w-full">
+                      <FormLabel>Financial Status</FormLabel>
+                      <Select {...field}>
+                        {Object.values(OrderStatus).map((status) => (
+                          <option key={status} value={status}>
+                            {status}
+                          </option>
+                        ))}
+                      </Select>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-                <FormField
-                  control={form.control}
-                  name={`items.${index}.price`}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Price</FormLabel>
-                      <FormControl>
-                        <Input
-                          {...field}
-                          type="number"
-                          inputMode="decimal"
-                          step="0.01"
-                          min={0}
-                          onChange={(e) => field.onChange(parseFloat(e.target.value))}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name={`items.${index}.totalDiscount`}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Discount</FormLabel>
-                      <FormControl>
-                        <Input
-                          {...field}
-                          type="number"
-                          inputMode="decimal"
-                          step="0.01"
-                          min={0}
-                          onChange={(e) => field.onChange(parseFloat(e.target.value))}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <Fieldset className="space-y-2">
-                  <Label className="hidden md:inline-flex">&nbsp;</Label>
-                  <Button type="button" onClick={() => removeItem(index)} disabled={fields.length === 1}>
-                    <CircleMinus className="text-red-500 w-6 h-6" />
-                  </Button>
-                </Fieldset>
               </div>
             </FieldGroup>
-          ))}
-
-          <div className="flex gap-4 w-full flex-col md:flex-row"></div>
-
-          <Table bleed className="mt-8 [--gutter:theme(spacing.6)] lg:[--gutter:theme(spacing.10)] table-fixed">
-            <TableHead>
-              <TableRow>
-                <TableHeader>&nbsp;</TableHeader>
-                <TableHeader>&nbsp;</TableHeader>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              <TableRow>
-                <TableCell className="font-bold ">Discount</TableCell>
-
-                <TableCell className="text-right">
-                  <FormField
-                    control={form.control}
-                    name="totalDiscount"
-                    render={({ field }) => (
-                      <FormItem className="w-full max-w-xs ml-auto">
-                        <FormControl>
-                          <Input
-                            {...field}
-                            type="number"
-                            inputMode="decimal"
-                            step="0.01"
-                            min={0}
-                            onChange={(e) => field.onChange(parseFloat(e.target.value))}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell className="font-bold">Tax</TableCell>
-                <TableCell className="text-right">
-                  <FormField
-                    control={form.control}
-                    name="totalTax"
-                    render={({ field }) => (
-                      <FormItem className="w-full max-w-xs ml-auto">
-                        <FormControl>
-                          <Input
-                            {...field}
-                            type="number"
-                            inputMode="decimal"
-                            step="0.01"
-                            min={0}
-                            onChange={(e) => field.onChange(parseFloat(e.target.value))}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell className="font-bold">Subtotal</TableCell>
-                <TableCell className="text-right">Rs. {subtotal.toFixed(2)} </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell className="font-bold">Total</TableCell>
-                <TableCell className="text-right">Rs. {total.toFixed(2)} </TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </FieldGroup>
-
-        <div className="flex justify-end space-x-2">
-          <Button onClick={onClose}>Cancel</Button>
-          <Button type="submit" color="blue" disabled={isPending}>
-            {order ? 'Update' : 'Create'} Order
-          </Button>
-        </div>
-      </form>
+          </Card>
+        </form>
+      </Form>
 
       <ChooseCustomerDialog
         isOpen={isCustomerDialogOpen}
@@ -350,6 +369,6 @@ export const OrderForm: React.FC<OrderFormProps> = ({ order, isPending, onSubmit
           currentEditingItemIndex !== null ? form.getValues(`items.${currentEditingItemIndex}.variantId`) : undefined
         }
       />
-    </Form>
+    </div>
   );
 };
