@@ -1,20 +1,23 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
-import { useForm } from 'react-hook-form';
+import { CircleMinus, CirclePlus } from 'lucide-react';
+import { useFieldArray, useForm, UseFormReturn, useWatch } from 'react-hook-form';
 import { ClipboardDocumentIcon } from '@heroicons/react/16/solid';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { IOrder, OrderStatus } from '@shared';
+import { ICustomer, IOrder, IOrderItem, IProductVariant, OrderStatus } from '@shared';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardDescription, CardTitle } from '@/components/ui/card';
-import { FieldGroup } from '@/components/ui/fieldset';
-import { Form, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Description, Field, FieldGroup, Fieldset, Label } from '@/components/ui/fieldset';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
 import { Select } from '@/components/ui/select';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { useToggleState } from '@/hooks/use-toggle-state';
 
 import { orderStatusConfig } from '../../config/order-status.config';
-import { CustomerSummary } from './customer-summary';
-import { OrderItems } from './order-items';
-import { OrderSummary } from './order-summary';
+import { ChooseCustomerDialog } from '../dialogs/choose-customer.dialog';
+import { ChooseProductVariantDialog } from '../dialogs/choose-product-variant.dialog';
 import { OrderFormData, OrderSchema } from './order.schema';
 
 interface OrderFormProps {
@@ -98,5 +101,259 @@ export const OrderForm: React.FC<OrderFormProps> = ({ order, isPending, onSubmit
         </form>
       </Form>
     </div>
+  );
+};
+
+const OrderSummary = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
+  const [subtotal, setSubtotal] = useState(0);
+  const [total, setTotal] = useState(0);
+
+  const items = useWatch({ control: form.control, name: 'items' }) as IOrderItem[];
+  const totalDiscount = useWatch({ control: form.control, name: 'totalDiscount' });
+  const totalTax = useWatch({ control: form.control, name: 'totalTax' });
+
+  useEffect(() => {
+    const subtotalValue = items.reduce((sum, item) => sum + item.price * item.quantity - (item.totalDiscount || 0), 0);
+    const totalValue = subtotalValue + (totalTax || 0) - (totalDiscount || 0);
+    setSubtotal(subtotalValue);
+    setTotal(totalValue);
+  }, [items, totalDiscount, totalTax]);
+
+  return (
+    <Table className="mt-8 [--gutter:theme(spacing.6)] lg:[--gutter:theme(spacing.10)] table-fixed">
+      <TableHead>
+        <TableRow>
+          <TableHeader>&nbsp;</TableHeader>
+          <TableHeader>&nbsp;</TableHeader>
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        <TableRow>
+          <TableCell className="font-bold ">Discount</TableCell>
+          <TableCell className="text-right">
+            <FormField
+              control={form.control}
+              name="totalDiscount"
+              render={({ field }) => (
+                <FormItem className="w-full max-w-xs ml-auto">
+                  <FormControl>
+                    <Input
+                      {...field}
+                      type="number"
+                      inputMode="decimal"
+                      step="0.01"
+                      min={0}
+                      onChange={(e) => field.onChange(parseFloat(e.target.value || '0'))}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell className="font-bold">Tax</TableCell>
+          <TableCell className="text-right">
+            <FormField
+              control={form.control}
+              name="totalTax"
+              render={({ field }) => (
+                <FormItem className="w-full max-w-xs ml-auto">
+                  <FormControl>
+                    <Input
+                      {...field}
+                      type="number"
+                      inputMode="decimal"
+                      step="0.01"
+                      min={0}
+                      onChange={(e) => field.onChange(parseFloat(e.target.value || '0'))}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell className="font-bold">Subtotal</TableCell>
+          <TableCell className="text-right">Rs. {subtotal.toFixed(2)} </TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell className="font-bold">Total</TableCell>
+          <TableCell className="text-right">Rs. {total.toFixed(2)} </TableCell>
+        </TableRow>
+      </TableBody>
+    </Table>
+  );
+};
+
+const CustomerSummary = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
+  const [isCustomerDialogOpen, openCustomerDialog, closeCustomerDialog] = useToggleState();
+  const [selectedCustomer, setSelectedCustomer] = useState<ICustomer | null>(null);
+
+  const handleSelectCustomer = (customer: ICustomer) => {
+    if (!customer?.id) return;
+
+    setSelectedCustomer(customer);
+    form.setValue('customerId', customer.id);
+    form.clearErrors('customerId');
+  };
+
+  return (
+    <div className="flex gap-4 w-full flex-col md:flex-row">
+      <FormField
+        control={form.control}
+        name="customerId"
+        render={({ field }) => (
+          <FormItem className="w-full">
+            <FormLabel>Customer</FormLabel>
+            <div className="flex gap-2">
+              <FormControl>
+                <Input value={selectedCustomer ? selectedCustomer.name : ''} placeholder="Select a customer" readOnly />
+              </FormControl>
+              <Button type="button" onClick={openCustomerDialog}>
+                Browse
+              </Button>
+            </div>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <ChooseCustomerDialog
+        isOpen={isCustomerDialogOpen}
+        onClose={closeCustomerDialog}
+        onSelectCustomer={handleSelectCustomer}
+        selectedCustomerId={selectedCustomer?.id}
+      />
+    </div>
+  );
+};
+
+const OrderItems = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
+  const [isProductVariantDialogOpen, openProductVariantDialog, closeProductVariantDialog] = useToggleState();
+  const [currentEditingItemIndex, setCurrentEditingItemIndex] = useState<number | null>(null);
+
+  const { fields, append, remove } = useFieldArray({
+    control: form.control,
+    name: 'items',
+    rules: { minLength: 1 },
+  });
+
+  const addItem = () => append({ variantId: '', quantity: 1, price: 0, totalDiscount: 0 });
+  const removeItem = (index: number) => fields.length > 1 && remove(index);
+
+  const handleSelectProductVariant = (variant: IProductVariant) => {
+    if (currentEditingItemIndex === null || !variant?.id) return;
+
+    const updatedItems = [...form.getValues('items')];
+    updatedItems[currentEditingItemIndex] = {
+      ...updatedItems[currentEditingItemIndex],
+      variantId: variant.id,
+      price: parseFloat(variant.price.toString()),
+    };
+    form.setValue('items', updatedItems);
+  };
+
+  return (
+    <FieldGroup>
+      <Fieldset className="flex justify-between gap-x-2">
+        <Field>
+          <Label>Order Items</Label>
+          <Description>Add items to the order. Each item represents a product variant.</Description>
+        </Field>
+        <Button type="button" onClick={addItem}>
+          <CirclePlus className="w-6 h-6" />
+        </Button>
+      </Fieldset>
+
+      {fields.map((field, index) => (
+        <FieldGroup className="w-full space-y-2" key={field.id}>
+          <div className="flex gap-4 w-full flex-col md:flex-row">
+            <FormField
+              control={form.control}
+              name={`items.${index}.variantId`}
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormLabel>Product</FormLabel>
+                  <div className="flex gap-2">
+                    <FormControl>
+                      <Input {...field} placeholder="Select a product" readOnly />
+                    </FormControl>
+                    <Button
+                      type="button"
+                      onClick={() => {
+                        setCurrentEditingItemIndex(index);
+                        openProductVariantDialog();
+                      }}
+                    >
+                      Browse
+                    </Button>
+                  </div>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name={`items.${index}.quantity`}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Quantity</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      type="number"
+                      inputMode="numeric"
+                      min={1}
+                      onChange={(e) => field.onChange(parseInt(e.target.value, 10))}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name={`items.${index}.price`}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Price</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      type="number"
+                      inputMode="decimal"
+                      step="0.01"
+                      min={0}
+                      onChange={(e) => field.onChange(parseFloat(e.target.value))}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <Fieldset className="space-y-2">
+              <Label className="hidden md:inline-flex">&nbsp;</Label>
+              <Button type="button" onClick={() => removeItem(index)} disabled={fields.length === 1}>
+                <CircleMinus className="text-red-500 w-6 h-6" />
+              </Button>
+            </Fieldset>
+          </div>
+        </FieldGroup>
+      ))}
+
+      <ChooseProductVariantDialog
+        isOpen={isProductVariantDialogOpen}
+        onClose={closeProductVariantDialog}
+        onSelectVariant={handleSelectProductVariant}
+        selectedVariantId={
+          currentEditingItemIndex !== null ? form.getValues(`items.${currentEditingItemIndex}.variantId`) : undefined
+        }
+      />
+    </FieldGroup>
   );
 };
