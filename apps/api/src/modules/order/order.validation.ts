@@ -30,12 +30,12 @@ export const createOrder = {
 
 export const getOrders = {
   query: Joi.object().keys({
-    customerId: Joi.string().custom(uuid),
     status: Joi.string().valid(...Object.values(OrderStatus)),
     sortBy: Joi.string(),
     projectBy: Joi.string(),
     limit: Joi.number().integer(),
     offset: Joi.number().integer(),
+    orderNumber: Joi.string(),
   }),
 };
 

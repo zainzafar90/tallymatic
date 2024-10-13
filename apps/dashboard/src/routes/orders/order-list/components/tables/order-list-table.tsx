@@ -38,11 +38,11 @@ export const OrderListTable = (props: OrderListTableProps) => {
     enableFiltering: true,
     enablePagination: true,
     enableRowSelection: true,
-    globalFilterField: 'name',
+    globalFilterField: 'orderNumber',
   });
 
   const onClearFilters = () => {
-    navigate('/customers');
+    navigate('/orders');
   };
 
   const handleBulkDelete = async (selectedIds: string[]) => {
@@ -71,7 +71,7 @@ export const OrderListTable = (props: OrderListTableProps) => {
     <div className="w-full">
       <div className="flex items-center gap-2 py-4">
         <Input
-          placeholder="Filter customers..."
+          placeholder="Filter orders..."
           value={table.getState().globalFilter ?? ''}
           onChange={(e) => table.setGlobalFilter(e.target.value)}
           className="max-w-sm"
