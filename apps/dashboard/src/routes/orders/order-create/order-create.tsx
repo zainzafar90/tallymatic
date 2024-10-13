@@ -10,7 +10,7 @@ export const OrderCreate = () => {
   return (
     <div>
       <Heading className="mb-8">Create Order</Heading>
-      <CreateOrderForm onClose={onClose} />;
+      <CreateOrderForm onClose={onClose} />
     </div>
   );
 };
