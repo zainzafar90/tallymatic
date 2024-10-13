@@ -70,11 +70,10 @@ export const OrderItems: React.FC<OrderItemsProps> = ({ form }) => {
                       type="button"
                       onClick={() => {
                         setCurrentEditingItemIndex(index);
-                        // onSelectProductVariant(index);
                         openProductVariantDialog();
                       }}
                     >
-                      Select
+                      Browse
                     </Button>
                   </div>
                   <FormMessage />
