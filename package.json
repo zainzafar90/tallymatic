@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
+    "dev": "concurrently -n \"Frontend,Backend\" -c \"blue,green\" \"npx nx serve dashboard\" \"npx nx serve api\"",
     "db:up": "cd apps/api && npx sequelize db:drop && npx sequelize db:create && npx sequelize db:migrate && npx sequelize db:seed:all",
     "db:drop": "cd apps/api && npx sequelize db:drop",
     "db:create": "cd apps/api && npx sequelize db:create",
@@ -51,6 +52,7 @@
     "@vitest/ui": "^1.3.1",
     "autoprefixer": "10.4.13",
     "babel-jest": "^29.4.1",
+    "concurrently": "^9.1.0",
     "eslint": "~8.57.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-import": "2.27.5",
