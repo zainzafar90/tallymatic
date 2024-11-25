@@ -4,7 +4,7 @@ const { v4: uuidv4 } = require('uuid');
 
 module.exports = {
   up: async (queryInterface) => {
-    const customers = await queryInterface.sequelize.query(`SELECT id FROM users WHERE role = 'member';`);
+    const customers = await queryInterface.sequelize.query(`SELECT id FROM customers;`);
     const customerRows = customers[0];
 
     const stores = await queryInterface.sequelize.query(`SELECT id FROM stores;`);
