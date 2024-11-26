@@ -14,7 +14,7 @@ module.exports = {
           model: 'customers',
           key: 'id',
         },
-        allowNull: true,
+        allowNull: false,
         onUpdate: 'CASCADE',
         onDelete: 'SET NULL',
       },
