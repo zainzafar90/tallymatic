@@ -11,10 +11,10 @@ module.exports = {
       customerId: {
         type: Sequelize.UUID,
         references: {
-          model: 'users',
+          model: 'customers',
           key: 'id',
         },
-        allowNull: true,
+        allowNull: false,
         onUpdate: 'CASCADE',
         onDelete: 'SET NULL',
       },
