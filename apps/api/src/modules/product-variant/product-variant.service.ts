@@ -39,6 +39,7 @@ export const queryProductVariants = async (
         required: Object.keys(productWhere).length > 0,
       },
     ],
+    order: [['productId', 'ASC']],
   });
 
   return transformPagination(result.count, result.rows, paginationOptions.offset, paginationOptions.limit);
