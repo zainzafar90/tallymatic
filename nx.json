@@ -12,7 +12,13 @@
       "!{projectRoot}/src/test-setup.[jt]s",
       "!{projectRoot}/test-setup.[jt]s"
     ],
-    "sharedGlobals": []
+    "sharedGlobals": [],
+    "development": [
+      "default",
+      "!{projectRoot}/**/*.md",
+      "!{projectRoot}/**/*.js.map",
+      "!{projectRoot}/src/environments/*.ts"
+    ]
   },
   "nxCloudAccessToken": "MDk4YTM3NWMtNzIzYS00NjMxLWE0ODAtNGRhYzJhZDU3NTQ3fHJlYWQtd3JpdGU=",
   "plugins": [
