@@ -224,7 +224,7 @@ const CustomerSummary = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
 
 const OrderItems = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
   const [isProductVariantDialogOpen, openProductVariantDialog, closeProductVariantDialog] = useToggleState();
-  const [selectedVariants, setSelectedVariants] = useState<IProductVariant[]>([]);
+  const [selectedVariants, setSelectedVariants] = useState<{ variant: IProductVariant; product: IProduct }[]>([]);
 
   const { fields, append, remove } = useFieldArray({
     control: form.control,
@@ -234,18 +234,21 @@ const OrderItems = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
   const handleSelectProductVariant = (variant: IProductVariant) => {
     if (!variant?.id) return;
 
+    
     append({
       variantId: variant.id,
       quantity: 1,
       price: parseFloat(variant.price.toString()),
       totalDiscount: 0,
     });
-    setSelectedVariants([...selectedVariants, variant]);
+
+    
+    setSelectedVariants([...selectedVariants, { variant, product: variant.product }]); 
   };
 
   const removeItem = (index: number) => {
     remove(index);
-    setSelectedVariants(selectedVariants.filter((_, i) => i !== index));
+    setSelectedVariants(selectedVariants.filter((_, i) => i !== index)); 
   };
 
   return (
@@ -281,7 +284,8 @@ const OrderItems = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
 
           {fields.map((field, index) => (
             <TableRow key={field.id}>
-              <TableCell>{selectedVariants[index]?.name}</TableCell>
+              
+              <TableCell>{selectedVariants[index]?.product?.name || 'Unknown Product'}</TableCell> 
               <TableCell>
                 <FormField
                   control={form.control}
