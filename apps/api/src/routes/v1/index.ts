@@ -16,7 +16,7 @@ import docsRoute from './swagger.routes';
 import userRoute from './user.routes';
 import variantRoute from './variant.routes';
 
-const router = express.Router();
+const router: express.Router = express.Router();
 
 interface IRoute {
   path: string;
