@@ -3,7 +3,7 @@ import React, { useMemo, useState } from 'react';
 import { CircleMinus, CirclePlus } from 'lucide-react';
 import { useFieldArray, useForm, UseFormReturn, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { ICustomer, IOrder, IOrderItem, IProductVariant, OrderStatus } from '@shared';
+import { ICustomer, IOrder, IOrderItem, IProduct, IProductVariant, OrderStatus } from '@shared';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardDescription, CardTitle } from '@/components/ui/card';
@@ -224,7 +224,7 @@ const CustomerSummary = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
 
 const OrderItems = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
   const [isProductVariantDialogOpen, openProductVariantDialog, closeProductVariantDialog] = useToggleState();
-  const [selectedVariants, setSelectedVariants] = useState<IProductVariant[]>([]);
+  const [selectedVariants, setSelectedVariants] = useState<{ variant: IProductVariant; product: IProduct }[]>([]);
 
   const { fields, append, remove } = useFieldArray({
     control: form.control,
@@ -232,20 +232,36 @@ const OrderItems = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
   });
 
   const handleSelectProductVariant = (variant: IProductVariant) => {
-    if (!variant?.id) return;
-
+    // Ensure variant and its required properties are valid
+    if (!variant || !variant.product || !variant.id) {
+      console.error('Variant is invalid or missing required properties:', variant);
+      return;
+    }
+  
+    setSelectedVariants((prevSelectedVariants) => {
+      console.log('Previous variants:', prevSelectedVariants); 
+      return [
+        ...prevSelectedVariants,
+        { variant, product: variant.product || { id: 'default-id', name: 'Unknown Product' } }, 
+      ];
+    });
+  
     append({
       variantId: variant.id,
       quantity: 1,
-      price: parseFloat(variant.price.toString()),
+      price: parseFloat(variant.price.toString()) || 0,
       totalDiscount: 0,
     });
-    setSelectedVariants([...selectedVariants, variant]);
   };
+  
+
 
   const removeItem = (index: number) => {
     remove(index);
-    setSelectedVariants(selectedVariants.filter((_, i) => i !== index));
+
+    setSelectedVariants((prevSelectedVariants) =>
+      prevSelectedVariants.filter((_, i) => i !== index)
+    );
   };
 
   return (
@@ -281,7 +297,7 @@ const OrderItems = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
 
           {fields.map((field, index) => (
             <TableRow key={field.id}>
-              <TableCell>{selectedVariants[index]?.name}</TableCell>
+              <TableCell>{selectedVariants[index]?.product?.name || 'Unknown Product'}</TableCell>
               <TableCell>
                 <FormField
                   control={form.control}
