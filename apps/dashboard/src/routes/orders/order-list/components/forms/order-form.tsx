@@ -133,7 +133,11 @@ const OrderSummary = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
                       inputMode="decimal"
                       step="0.01"
                       min={0}
-                      onChange={(e) => field.onChange(parseFloat(e.target.value || '0'))}
+                      value={field.value || '0'}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        field.onChange(val === '0' ? '' : Number(val));
+                      }}
                     />
                   </FormControl>
                   <FormMessage />
@@ -157,7 +161,11 @@ const OrderSummary = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
                       inputMode="decimal"
                       step="0.01"
                       min={0}
-                      onChange={(e) => field.onChange(parseFloat(e.target.value || '0'))}
+                      value={field.value || '0'}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        field.onChange(val === '0' ? '' : Number(val));
+                      }}
                     />
                   </FormControl>
                   <FormMessage />
