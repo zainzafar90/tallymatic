@@ -21,10 +21,10 @@ module.exports = {
         closedAt: null,
         currency: 'PKR',
         status: ['pending', 'paid', 'unpaid', 'partiallyPaid', 'refunded', 'voided'][Math.floor(Math.random() * 6)],
-        total: (Math.random() * 1000).toFixed(2),
+        totalAmount: (Math.random() * 1000).toFixed(2),
         subtotal: (Math.random() * 900).toFixed(2),
-        totalTax: (Math.random() * 50).toFixed(2),
-        totalDiscount: (Math.random() * 50).toFixed(2),
+        taxAmount: (Math.random() * 50).toFixed(2),
+        discountAmount: (Math.random() * 50).toFixed(2),
         createdAt: new Date(),
         updatedAt: new Date(),
       });

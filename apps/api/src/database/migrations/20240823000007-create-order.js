@@ -42,7 +42,7 @@ module.exports = {
         type: Sequelize.ENUM('pending', 'paid', 'unpaid', 'partiallyPaid', 'refunded', 'voided'),
         allowNull: false,
       },
-      total: {
+      totalAmount: {
         type: Sequelize.DECIMAL(10, 2),
         allowNull: false,
       },
@@ -50,11 +50,11 @@ module.exports = {
         type: Sequelize.DECIMAL(10, 2),
         allowNull: false,
       },
-      totalTax: {
+      taxAmount: {
         type: Sequelize.DECIMAL(10, 2),
         allowNull: false,
       },
-      totalDiscount: {
+      discountAmount: {
         type: Sequelize.DECIMAL(10, 2),
         allowNull: false,
       },

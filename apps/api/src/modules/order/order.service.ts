@@ -12,7 +12,7 @@ export const createOrder = async (orderData: CreateOrderReq): Promise<IOrder> =>
 
   try {
     const subtotalValue = orderData.items.reduce((sum, item) => sum + item.price * item.quantity - item.totalDiscount, 0);
-    const totalValue = subtotalValue + (orderData.totalTax || 0) - (orderData.totalDiscount || 0);
+    const totalValue = subtotalValue + (orderData.taxAmount || 0) - (orderData.discountAmount || 0);
 
     const order = await Order.create(
       {

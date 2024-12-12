@@ -33,8 +33,8 @@ export const OrderForm: React.FC<OrderFormProps> = ({ order, isPending, onSubmit
       customerId: '',
       currency: 'PKR',
       status: OrderStatus.PENDING,
-      totalTax: 0,
-      totalDiscount: 0,
+      taxAmount: 0,
+      discountAmount: 0,
       items: [],
     },
   });
@@ -99,15 +99,15 @@ export const OrderForm: React.FC<OrderFormProps> = ({ order, isPending, onSubmit
 
 const OrderSummary = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
   const items = useWatch({ control: form.control, name: 'items' }) as IOrderItem[];
-  const totalDiscount = useWatch({ control: form.control, name: 'totalDiscount' });
-  const totalTax = useWatch({ control: form.control, name: 'totalTax' });
+  const discountAmount = useWatch({ control: form.control, name: 'discountAmount' });
+  const taxAmount = useWatch({ control: form.control, name: 'taxAmount' });
 
   const subtotal = useMemo(
     () => items.reduce((sum, item) => sum + item.price * item.quantity - (item.totalDiscount || 0), 0),
     [items]
   );
 
-  const total = useMemo(() => subtotal + (+totalTax || 0) - (+totalDiscount || 0), [subtotal, totalDiscount, totalTax]);
+  const total = useMemo(() => subtotal + (+taxAmount || 0) - (+discountAmount || 0), [subtotal, taxAmount, discountAmount]);
 
   return (
     <Table className="mt-8 [--gutter:theme(spacing.6)] lg:[--gutter:theme(spacing.10)] table-fixed">
@@ -123,7 +123,7 @@ const OrderSummary = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
           <TableCell className="text-right">
             <FormField
               control={form.control}
-              name="totalDiscount"
+              name="discountAmount"
               render={({ field }) => (
                 <FormItem className="w-full max-w-xs ml-auto">
                   <FormControl>
@@ -151,7 +151,7 @@ const OrderSummary = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
           <TableCell className="text-right">
             <FormField
               control={form.control}
-              name="totalTax"
+              name="taxAmount"
               render={({ field }) => (
                 <FormItem className="w-full max-w-xs ml-auto">
                   <FormControl>

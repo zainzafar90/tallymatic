@@ -9,8 +9,8 @@ const createOrderBody: Record<keyof CreateOrderReq, any> = {
   status: Joi.string()
     .valid(...Object.values(OrderStatus))
     .required(),
-  totalTax: Joi.number().required(),
-  totalDiscount: Joi.number().required(),
+  taxAmount: Joi.number().required(),
+  discountAmount: Joi.number().required(),
   items: Joi.array()
     .items(
       Joi.object({

@@ -5,8 +5,8 @@ export const OrderSchema = z.object({
   customerId: z.string().uuid('Please select a customer'),
   currency: z.string().min(1, 'Currency is required'),
   status: z.nativeEnum(OrderStatus),
-  totalTax: z.union([z.string(), z.number()]).transform(val => Number(val || 0)),
-  totalDiscount: z.union([z.string(), z.number()]).transform(val => Number(val || 0)),
+  taxAmount: z.union([z.string(), z.number()]).transform(val => Number(val || 0)),
+  discountAmount: z.union([z.string(), z.number()]).transform(val => Number(val || 0)),
   items: z
     .array(
       z.object({
