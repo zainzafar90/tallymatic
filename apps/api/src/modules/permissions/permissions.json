@@ -197,6 +197,27 @@
           "effect": "EFFECT_ALLOW"
         }
       ]
+    },
+    {
+      "version": "default",
+      "resource": "purchases",
+      "rules": [
+        {
+          "actions": ["*"],
+          "roles": ["super-admin", "admin"],
+          "effect": "EFFECT_ALLOW"
+        },
+        {
+          "actions": ["view", "list", "create", "update"],
+          "roles": ["admin"],
+          "effect": "EFFECT_ALLOW"
+        },
+        {
+          "actions": ["view", "list"],
+          "roles": ["member"],
+          "effect": "EFFECT_ALLOW"
+        }
+      ]
     }
   ]
 }

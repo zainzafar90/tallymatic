@@ -6,6 +6,7 @@ import {
   ChevronDownIcon,
   ChevronUpIcon,
   Cog8ToothIcon,
+  CurrencyDollarIcon,
   HomeIcon,
   LightBulbIcon,
   QuestionMarkCircleIcon,
@@ -143,6 +144,10 @@ export const MainLayout = () => {
               <SidebarItem href="/inventory" current={pathname.startsWith('/inventory')}>
                 <BuildingLibraryIcon />
                 <SidebarLabel>Inventory</SidebarLabel>
+              </SidebarItem>
+              <SidebarItem href="/purchases" current={pathname.startsWith('/purchases')}>
+                <CurrencyDollarIcon />
+                <SidebarLabel>Purchases</SidebarLabel>
               </SidebarItem>
               <SidebarItem href="/customers" current={pathname.startsWith('/customers')}>
                 <UsersIcon />

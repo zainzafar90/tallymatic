@@ -1,4 +1,6 @@
-import { Column, DataType, DefaultScope, IsUUID, Model, PrimaryKey, Table } from 'sequelize-typescript';
+import { Column, DataType, DefaultScope, HasMany, IsUUID, Model, PrimaryKey, Table } from 'sequelize-typescript';
+
+import { Purchase } from '../purchase/purchase.model';
 
 @DefaultScope(() => ({
   attributes: { include: ['createdAt', 'updatedAt'] },
@@ -48,4 +50,7 @@ export class Supplier extends Model<Supplier> {
     allowNull: true,
   })
   address: string;
+
+  @HasMany(() => Purchase)
+  purchases: Purchase[];
 }

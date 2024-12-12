@@ -10,6 +10,7 @@ import inventoryRoute from './inventory.routes';
 import orderRoute from './order.routes';
 import organizationRoute from './organization.routes';
 import productRoute from './product.routes';
+import purchaseRoute from './purchase.routes';
 import storeRoute from './store.routes';
 import supplierRoute from './supplier.routes';
 import docsRoute from './swagger.routes';
@@ -71,6 +72,10 @@ const defaultIRoute: IRoute[] = [
   {
     path: '/orders',
     route: orderRoute,
+  },
+  {
+    path: '/purchases',
+    route: purchaseRoute,
   },
 ];
 

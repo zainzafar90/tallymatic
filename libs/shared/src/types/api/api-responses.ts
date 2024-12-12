@@ -6,6 +6,7 @@ import {
   IOrganization,
   IProduct,
   IProductVariant,
+  IPurchase,
   IStore,
   ISupplier,
   IUser,
@@ -67,3 +68,8 @@ export type SupplierDeleteResponse = DeleteResponse;
 export type OrderResponse = ResourceResponse<IOrder>;
 export type OrderListResponse = ResourceListResponse<IOrder>;
 export type OrderDeleteResponse = DeleteResponse;
+
+// Purchase
+export type PurchaseResponse = ResourceResponse<IPurchase>;
+export type PurchaseListResponse = ResourceListResponse<IPurchase>;
+export type PurchaseDeleteResponse = DeleteResponse;

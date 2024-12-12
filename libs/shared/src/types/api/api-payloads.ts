@@ -5,6 +5,8 @@ import {
   IOrganization,
   IProduct,
   IProductVariant,
+  IPurchase,
+  IPurchaseItem,
   IStore,
   ISupplier,
   IUser,
@@ -60,3 +62,11 @@ export type CreateOrderReq = Omit<
   'id' | 'orderNumber' | 'closedAt' | 'createdAt' | 'updatedAt' | 'totalAmount' | 'subtotal'
 >;
 export type UpdateOrderReq = Partial<IOrder>;
+
+// Purchase
+export type CreatePurchaseReq = Omit<IPurchase, 'id'> & {
+  items: Omit<IPurchaseItem, 'id' | 'purchaseId'>[];
+};
+export type UpdatePurchaseReq = Partial<IPurchase> & {
+  items?: Omit<IPurchaseItem, 'id' | 'purchaseId'>[];
+};

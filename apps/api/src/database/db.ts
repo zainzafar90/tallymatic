@@ -10,6 +10,7 @@ import { Order, OrderItem } from '@/modules/order';
 import { Organization } from '@/modules/organization';
 import { Product } from '@/modules/product';
 import { ProductVariant } from '@/modules/product-variant';
+import { Purchase, PurchaseItem } from '@/modules/purchase';
 import { Store } from '@/modules/store';
 import { Supplier } from '@/modules/supplier';
 import { Token } from '@/modules/token/token.model';
@@ -72,6 +73,8 @@ export class Database {
       Supplier,
       Order,
       OrderItem,
+      Purchase,
+      PurchaseItem,
     ]);
   }
 

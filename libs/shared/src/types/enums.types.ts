@@ -31,3 +31,10 @@ export enum OrderStatus {
   REFUNDED = 'refunded',
   VOIDED = 'voided',
 }
+
+export enum PurchaseStatus {
+  DRAFT = 'draft',
+  PENDING = 'pending',
+  COMPLETED = 'completed',
+  CANCELLED = 'cancelled',
+}

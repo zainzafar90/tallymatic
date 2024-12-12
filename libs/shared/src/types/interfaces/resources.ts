@@ -1,6 +1,6 @@
 import { Moment } from 'moment';
 
-import { OrderStatus, ProductStatus, Status, TokenType } from '../enums.types';
+import { OrderStatus, ProductStatus, PurchaseStatus, Status, TokenType } from '../enums.types';
 import { RoleType } from '../role.types';
 
 type Dates = {
@@ -121,4 +121,22 @@ export interface IOrderItem extends Dates {
   quantity: number;
   price: number;
   totalDiscount: number;
+}
+
+export interface IPurchase extends Dates {
+  id?: string;
+  organizationId?: string;
+  supplierId: string;
+  status: PurchaseStatus;
+  totalAmount?: number;
+  notes?: string;
+  items?: IPurchaseItem[];
+}
+
+export interface IPurchaseItem extends Dates {
+  id?: string;
+  purchaseId?: string;
+  variantId: string;
+  quantity: number;
+  unitCost: number;
 }

@@ -1,6 +1,7 @@
 import { Column, DataType, DefaultScope, HasMany, IsUUID, Model, PrimaryKey, Table } from 'sequelize-typescript';
 import { Status } from '@shared';
 
+import { Purchase } from '../purchase';
 import { Store } from '../store';
 import { User } from '../user';
 
@@ -11,7 +12,7 @@ import { User } from '../user';
   timestamps: true,
   tableName: 'organizations',
 })
-export class Organization extends Model<Organization> {
+export class Organization extends Model {
   @IsUUID(4)
   @PrimaryKey
   @Column({
@@ -68,4 +69,7 @@ export class Organization extends Model<Organization> {
 
   @HasMany(() => User)
   users: User[];
+
+  @HasMany(() => Purchase)
+  purchases: Purchase[];
 }
