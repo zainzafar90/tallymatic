@@ -14,9 +14,9 @@ const columnHelper = createColumnHelper<IPurchase>();
 
 export const usePurchaseTableColumns = () => {
   return [
-    columnHelper.accessor('id', {
+    columnHelper.accessor('orderNumber', {
       header: ({ column }) => <SortedHeader text="Purchase #" column={column} />,
-      cell: ({ row }) => <TextCell text={row.getValue('id')} />,
+      cell: ({ row }) => <TextCell text={row.getValue('orderNumber')} />,
     }),
     columnHelper.accessor('status', {
       header: () => <TextHeader text="Status" />,
@@ -27,6 +27,24 @@ export const usePurchaseTableColumns = () => {
         return (
           <div className="flex items-center space-x-2">
             <Badge color={color}>{text}</Badge>
+          </div>
+        );
+      },
+    }),
+    columnHelper.accessor((row) => ({ received: row.receivedQuantity, total: row.totalQuantity }), {
+      id: 'quantity',
+      header: () => <TextHeader text="Received / Total" />,
+      cell: ({ getValue }) => {
+        const { received = 0, total = 0 } = getValue();
+        const ratio = `${received}/${total}`;
+        const percentage = total ? Math.round((received / total) * 100) : 0;
+
+        return (
+          <div className="flex items-center gap-2">
+            <div className="w-16 h-2 bg-gray-200 rounded-full overflow-hidden">
+              <div className="h-full bg-blue-500 transition-all" style={{ width: `${percentage}%` }} />
+            </div>
+            <span className="w-20 truncate">{ratio}</span>
           </div>
         );
       },

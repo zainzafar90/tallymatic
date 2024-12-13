@@ -22,9 +22,13 @@ module.exports = {
         id: purchaseId,
         organizationId: organizationRows[0].id,
         supplierId: supplierRows[Math.floor(Math.random() * supplierRows.length)].id,
-        status: ['draft', 'pending', 'completed', 'cancelled'][Math.floor(Math.random() * 4)],
+        status: ['draft', 'ordered', 'partial', 'received', 'closed'][Math.floor(Math.random() * 5)],
         totalAmount: (Math.random() * 10000).toFixed(2),
         notes: 'Sample purchase order',
+        orderNumber: `#PUR-${i.toString().padStart(4, '0')}`,
+        expectedArrivalDate: new Date(Date.now() + Math.floor(Math.random() * 30) * 24 * 60 * 60 * 1000),
+        totalQuantity: 0,
+        receivedQuantity: 0,
         createdAt: new Date(),
         updatedAt: new Date(),
       });
@@ -45,6 +49,15 @@ module.exports = {
         });
       }
     }
+
+    purchases.forEach((purchase) => {
+      purchase.totalQuantity = purchaseItems
+        .filter((item) => item.purchaseId === purchase.id)
+        .reduce((sum, item) => sum + item.quantity, 0);
+      purchase.receivedQuantity = purchaseItems
+        .filter((item) => item.purchaseId === purchase.id && item.received)
+        .reduce((sum, item) => sum + item.quantity, 0);
+    });
 
     await queryInterface.bulkInsert('purchases', purchases, {});
     await queryInterface.bulkInsert('purchase_items', purchaseItems, {});

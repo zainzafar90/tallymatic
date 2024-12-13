@@ -14,10 +14,14 @@ export const createPurchase = async (purchaseData: CreatePurchaseReq): Promise<P
   try {
     const { items, ...purchaseBody } = purchaseData;
     const totalAmount = items.reduce((sum, item) => sum + item.unitCost * item.quantity, 0);
+    const totalQuantity = items.reduce((sum, item) => sum + item.quantity, 0);
+
     const purchase = await Purchase.create(
       {
         ...purchaseBody,
         totalAmount,
+        totalQuantity,
+        receivedQuantity: 0,
       },
       { transaction }
     );
@@ -63,6 +67,7 @@ export const updatePurchaseById = async (purchaseId: string, updateBody: any): P
 
     const { items, ...purchaseData } = updateBody;
     const totalAmount = items.reduce((sum, item) => sum + item.unitCost * item.quantity, 0);
+    const totalQuantity = items.reduce((sum, item) => sum + item.quantity, 0);
 
     if (items) {
       await PurchaseItem.destroy({
@@ -80,6 +85,7 @@ export const updatePurchaseById = async (purchaseId: string, updateBody: any): P
     Object.assign(purchase, {
       ...purchaseData,
       totalAmount,
+      totalQuantity,
     });
     await purchase.save({ transaction });
     await transaction.commit();

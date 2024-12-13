@@ -1,8 +1,7 @@
 import Joi from 'joi';
+import { PurchaseStatus } from '@shared';
 
 import { uuid } from '@/common/validate/custom.validation';
-
-import { PurchaseStatus } from './purchase.model';
 
 const purchaseItemSchema = Joi.object().keys({
   variantId: Joi.string().custom(uuid).required(),
@@ -17,6 +16,7 @@ export const createPurchase = {
       .valid(...Object.values(PurchaseStatus))
       .required(),
     notes: Joi.string().allow(null, ''),
+    expectedArrivalDate: Joi.date().allow(null),
     items: Joi.array().items(purchaseItemSchema).min(1).required(),
   }),
 };
@@ -47,6 +47,9 @@ export const updatePurchase = {
       supplierId: Joi.string().custom(uuid).required(),
       status: Joi.string().valid(...Object.values(PurchaseStatus)),
       notes: Joi.string().allow(null, ''),
+      expectedArrivalDate: Joi.date().allow(null),
+      receivedQuantity: Joi.number().integer().min(0),
+      totalQuantity: Joi.number().integer().min(0),
       items: Joi.array().items(purchaseItemSchema).min(1),
     })
     .min(1),

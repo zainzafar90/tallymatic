@@ -130,6 +130,10 @@ export interface IPurchase extends Dates {
   status: PurchaseStatus;
   totalAmount?: number;
   notes?: string;
+  orderNumber?: string;
+  totalQuantity?: number;
+  receivedQuantity?: number;
+  expectedArrivalDate?: Date;
   items?: IPurchaseItem[];
 }
 

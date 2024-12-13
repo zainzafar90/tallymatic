@@ -5,6 +5,12 @@ export const PurchaseSchema = z.object({
   supplierId: z.string().uuid('Please select a supplier'),
   status: z.nativeEnum(PurchaseStatus),
   notes: z.string().optional(),
+  expectedArrivalDate: z
+    .union([z.string(), z.date()])
+    .transform((val) => (val ? new Date(val) : null))
+    .nullable(),
+  totalQuantity: z.number().min(0, 'Total quantity must be non-negative'),
+  receivedQuantity: z.number().min(0, 'Received quantity must be non-negative'),
   supplier: z
     .object({
       id: z.string().uuid(),

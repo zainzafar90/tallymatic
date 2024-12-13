@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 import { CircleMinus, CirclePlus } from 'lucide-react';
 import { useFieldArray, useForm, UseFormReturn, useWatch } from 'react-hook-form';
@@ -8,7 +8,7 @@ import { IProductVariant, IPurchase, ISupplier, PurchaseStatus } from '@shared';
 import { Button } from '@/components/ui/button';
 import { Card, CardDescription, CardTitle } from '@/components/ui/card';
 import { Description, Field, FieldGroup, Fieldset, Label } from '@/components/ui/fieldset';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Select } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -29,11 +29,15 @@ interface PurchaseFormProps {
 export const PurchaseForm: React.FC<PurchaseFormProps> = ({ purchase, isPending, onSubmit, onClose }) => {
   const form = useForm<PurchaseFormData>({
     resolver: zodResolver(PurchaseSchema),
-    defaultValues: purchase || {
+    defaultValues: {
+      ...purchase,
+      expectedArrivalDate: purchase?.expectedArrivalDate ? new Date(purchase.expectedArrivalDate) : null,
+    } || {
       supplierId: '',
       status: PurchaseStatus.DRAFT,
       notes: '',
       items: [],
+      expectedArrivalDate: null,
     },
   });
 
@@ -66,6 +70,7 @@ export const PurchaseForm: React.FC<PurchaseFormProps> = ({ purchase, isPending,
             <FieldGroup>
               <div className="grid gap-0.5">
                 <CardTitle className="group flex items-center gap-2 text-lg">Purchase Details</CardTitle>
+                {purchase?.orderNumber && <CardDescription>Order #: {purchase.orderNumber}</CardDescription>}
                 <CardDescription>Date: {new Date().toLocaleDateString()}</CardDescription>
               </div>
 
@@ -91,6 +96,51 @@ export const PurchaseForm: React.FC<PurchaseFormProps> = ({ purchase, isPending,
                 />
               </div>
 
+              {purchase && (
+                <FormField
+                  control={form.control}
+                  name="receivedQuantity"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Received Quantity</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          {...field}
+                          min={0}
+                          max={form.getValues('totalQuantity')}
+                          onChange={(e) => field.onChange(parseInt(e.target.value, 10))}
+                        />
+                      </FormControl>
+                      <FormDescription>Total Quantity: {form.getValues('totalQuantity')}</FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
+
+              <FormField
+                control={form.control}
+                name="expectedArrivalDate"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Expected Arrival Date</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="date"
+                        {...field}
+                        value={field.value ? new Date(field.value).toISOString().split('T')[0] : ''}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          field.onChange(value ? value : null);
+                        }}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
               <FormField
                 control={form.control}
                 name="notes"
@@ -113,16 +163,17 @@ export const PurchaseForm: React.FC<PurchaseFormProps> = ({ purchase, isPending,
 };
 
 const PurchaseSummary = ({ form }: { form: UseFormReturn<PurchaseFormData> }) => {
-  const items = useWatch({ control: form.control, name: 'items' });
+  const items = useWatch({
+    control: form.control,
+    name: 'items',
+  });
 
   const total = useMemo(() => {
-    const calculatedTotal = items.reduce((sum, item) => {
+    return items.reduce((sum, item) => {
       const quantity = Number(item.quantity) || 0;
       const unitCost = Number(item.unitCost) || 0;
       return sum + quantity * unitCost;
     }, 0);
-
-    return calculatedTotal;
   }, [items]);
 
   return (
@@ -194,6 +245,16 @@ const PurchaseItems = ({ form }: { form: UseFormReturn<PurchaseFormData> }) => {
     control: form.control,
     name: 'items',
   });
+
+  const items = useWatch({
+    control: form.control,
+    name: 'items',
+  });
+
+  useEffect(() => {
+    const totalQuantity = items.reduce((sum, item) => sum + (Number(item.quantity) || 0), 0);
+    form.setValue('totalQuantity', totalQuantity);
+  }, [items, form]);
 
   const handleSelectProductVariant = (variant: IProductVariant) => {
     if (!variant?.id) return;

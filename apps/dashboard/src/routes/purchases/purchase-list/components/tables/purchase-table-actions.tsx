@@ -19,7 +19,7 @@ export const PurchaseActions: React.FC<{ purchase: IPurchase }> = ({ purchase })
   const handleDelete = async () => {
     const confirmed = await prompt({
       title: 'Delete Purchase',
-      description: `Are you sure you want to delete purchase ${purchase.id}?`,
+      description: `Are you sure you want to delete purchase ${purchase.orderNumber}?`,
       confirmText: 'Delete',
       cancelText: 'Cancel',
     });

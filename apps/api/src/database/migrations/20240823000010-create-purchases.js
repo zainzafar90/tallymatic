@@ -29,7 +29,7 @@ module.exports = {
         onDelete: 'RESTRICT',
       },
       status: {
-        type: Sequelize.ENUM('draft', 'pending', 'completed', 'cancelled'),
+        type: Sequelize.ENUM('draft', 'ordered', 'partial', 'received', 'closed'),
         allowNull: false,
         defaultValue: 'draft',
       },
@@ -40,6 +40,25 @@ module.exports = {
       },
       notes: {
         type: Sequelize.TEXT,
+        allowNull: true,
+      },
+      orderNumber: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        unique: true,
+      },
+      receivedQuantity: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        defaultValue: 0,
+      },
+      totalQuantity: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        defaultValue: 0,
+      },
+      expectedArrivalDate: {
+        type: Sequelize.DATE,
         allowNull: true,
       },
       createdAt: {

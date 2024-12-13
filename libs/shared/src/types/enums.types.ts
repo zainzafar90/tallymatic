@@ -34,7 +34,8 @@ export enum OrderStatus {
 
 export enum PurchaseStatus {
   DRAFT = 'draft',
-  PENDING = 'pending',
-  COMPLETED = 'completed',
-  CANCELLED = 'cancelled',
+  ORDERED = 'ordered',
+  PARTIAL = 'partial',
+  RECEIVED = 'received',
+  CLOSED = 'closed',
 }
