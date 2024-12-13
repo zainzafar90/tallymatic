@@ -10,7 +10,7 @@ export default defineConfig({
   cacheDir: '../node_modules/.vite/dashboard',
 
   server: {
-    port: 4200,
+    port: 4000,
     host: 'localhost',
   },
 

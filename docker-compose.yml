@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: tallymatic
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    env_file: .env
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - HOST=0.0.0.0
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=tallymatic
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_DIALECT=postgres
+      - JWT_SECRET=f2NQW9ElfcRPlqsDEqcvmlETauLjPyqpJZhyIKsa
+      - JWT_ACCESS_EXPIRATION_MINUTES=100
+      - JWT_REFRESH_EXPIRATION_DAYS=30
+      - JWT_RESET_PASSWORD_EXPIRATION_MINUTES=10
+      - JWT_VERIFY_EMAIL_EXPIRATION_MINUTES=10
+      - SMTP_HOST=smtp.ethereal.email
+      - SMTP_PORT=587
+      - SMTP_USERNAME=deshaun.shields@ethereal.email
+      - SMTP_PASSWORD=ZZbKZDM41QryBjeVpP
+      - EMAIL_FROM=support@meelio.io
+      - COOKIE_SECRET=thisisasamplesecret
+      - CLIENT_URL=http://localhost:4000
+    depends_on:
+      - postgres
+    ports:
+      - '3000:3000'
+
+  dashboard:
+    build:
+      context: .
+      dockerfile: apps/dashboard/Dockerfile
+    ports:
+      - '4000:4000'
+    depends_on:
+      - api
+
+volumes:
+  postgres_data:
