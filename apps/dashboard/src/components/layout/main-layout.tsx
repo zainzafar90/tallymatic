@@ -9,11 +9,13 @@ import {
   CurrencyDollarIcon,
   HomeIcon,
   LightBulbIcon,
+  MoonIcon,
   QuestionMarkCircleIcon,
   ShieldCheckIcon,
   ShoppingBagIcon,
   SparklesIcon,
   Square2StackIcon,
+  SunIcon,
   TruckIcon,
   UserCircleIcon,
   UsersIcon,
@@ -45,10 +47,12 @@ import { useLogout } from '@/hooks/api/auth.hooks';
 import { useMe } from '@/hooks/api/users.hooks';
 import { API_TOKEN_KEY } from '@/utils/common.utils';
 import { getInitials } from '@/utils/string.utils';
+import { useTheme } from '@/providers/theme/theme-provider';
 
 function AccountDropdownMenu({ anchor }: { anchor: 'top start' | 'bottom end' }) {
   const navigate = useNavigate();
   const { mutateAsync: logoutMutation } = useLogout();
+  const { theme, setTheme } = useTheme();
 
   const handleLogout = async () => {
     const token = localStorage.getItem(API_TOKEN_KEY) || '';
@@ -68,6 +72,11 @@ function AccountDropdownMenu({ anchor }: { anchor: 'top start' | 'bottom end' })
         <UserCircleIcon />
         <DropdownLabel>My account</DropdownLabel>
       </DropdownItem>
+      <DropdownItem onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}>
+        {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
+        <DropdownLabel>Switch to {theme === 'dark' ? 'Light mode' : 'Dark mode'}</DropdownLabel>
+      </DropdownItem>
+
       <DropdownDivider />
       <DropdownItem href="#">
         <ShieldCheckIcon />

@@ -10,7 +10,7 @@ import { TooltipProvider } from './components/ui/tooltip';
 export function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider storageKey="ui-theme" defaultTheme="system">
+      <ThemeProvider storageKey="ui-theme" defaultTheme="light">
         <TooltipProvider>
           <RouterProvider />
         </TooltipProvider>
