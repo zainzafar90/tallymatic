@@ -8,7 +8,7 @@ const database = getDatabaseInstance();
 
 database.connect().then(() => {
   logger.info('Connected to PostgreSQL');
-  app.listen(config.port, config.host, () => {
+  app.listen(config.port, () => {
     logger.info(`Listening to port ${config.port}`);
   });
 });

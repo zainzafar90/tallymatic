@@ -27,7 +27,6 @@ RUN echo '{\
     "env": {\
       "NODE_ENV": "production",\
       "PORT": 3000,\
-      "HOST": "0.0.0.0",\
       "DB_HOST": "postgres",\
       "DB_PORT": 5432,\
       "DB_NAME": "tallymatic",\

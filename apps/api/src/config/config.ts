@@ -6,7 +6,6 @@ const envVarsSchema = Joi.object()
   .keys({
     NODE_ENV: Joi.string().valid('production', 'development', 'test').required(),
     PORT: Joi.number().default(3000),
-    HOST: Joi.string().default('localhost'),
     DB_HOST: Joi.string().required().description('Database host name').default('localhost'),
     DB_PORT: Joi.number().default(5432),
     DB_NAME: Joi.string().required().description('Database name').default('tallymatic'),
@@ -40,7 +39,6 @@ if (error) {
 const config = {
   env: envVars.NODE_ENV,
   port: envVars.PORT,
-  host: envVars.HOST,
   db: {
     host: envVars.DB_HOST,
     port: envVars.DB_PORT,
