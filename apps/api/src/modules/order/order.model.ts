@@ -27,23 +27,6 @@ export class Order extends Model {
   })
   id: string;
 
-  @ForeignKey(() => Customer)
-  @Column({
-    type: DataType.UUID,
-    allowNull: false,
-  })
-  customerId: string;
-
-  @ForeignKey(() => Store)
-  @Column(DataType.UUID)
-  storeId: string;
-
-  @BelongsTo(() => Store)
-  store: Store;
-
-  @BelongsTo(() => Customer)
-  customer: Customer;
-
   @Column(DataType.STRING)
   orderNumber: string;
 
@@ -70,6 +53,23 @@ export class Order extends Model {
 
   @Column(DataType.DECIMAL(10, 2))
   discountAmount: number;
+
+  @ForeignKey(() => Customer)
+  @Column({
+    type: DataType.UUID,
+    allowNull: false,
+  })
+  customerId: string;
+
+  @ForeignKey(() => Store)
+  @Column(DataType.UUID)
+  storeId: string;
+
+  @BelongsTo(() => Store)
+  store: Store;
+
+  @BelongsTo(() => Customer)
+  customer: Customer;
 
   @HasMany(() => OrderItem)
   items: OrderItem[];

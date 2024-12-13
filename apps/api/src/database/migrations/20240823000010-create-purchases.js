@@ -8,16 +8,6 @@ module.exports = {
         defaultValue: Sequelize.UUIDV4,
         primaryKey: true,
       },
-      organizationId: {
-        type: Sequelize.UUID,
-        allowNull: false,
-        references: {
-          model: 'organizations',
-          key: 'id',
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE',
-      },
       supplierId: {
         type: Sequelize.UUID,
         allowNull: false,
@@ -27,6 +17,19 @@ module.exports = {
         },
         onUpdate: 'CASCADE',
         onDelete: 'RESTRICT',
+      },
+      storeId: {
+        type: Sequelize.UUID,
+        references: {
+          model: 'stores',
+          key: 'id',
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'SET NULL',
+      },
+      orderNumber: {
+        type: Sequelize.STRING,
+        allowNull: false,
       },
       status: {
         type: Sequelize.ENUM('draft', 'ordered', 'partial', 'received', 'closed'),
@@ -41,11 +44,6 @@ module.exports = {
       notes: {
         type: Sequelize.TEXT,
         allowNull: true,
-      },
-      orderNumber: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        unique: true,
       },
       receivedQuantity: {
         type: Sequelize.INTEGER,

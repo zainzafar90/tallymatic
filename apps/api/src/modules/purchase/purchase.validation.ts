@@ -17,6 +17,8 @@ export const createPurchase = {
       .required(),
     notes: Joi.string().allow(null, ''),
     expectedArrivalDate: Joi.date().allow(null),
+    receivedQuantity: Joi.number().integer().min(0),
+    totalQuantity: Joi.number().integer().min(0),
     items: Joi.array().items(purchaseItemSchema).min(1).required(),
   }),
 };

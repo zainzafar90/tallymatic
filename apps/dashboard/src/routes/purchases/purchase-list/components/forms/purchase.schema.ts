@@ -3,14 +3,12 @@ import { PurchaseStatus } from '@shared';
 
 export const PurchaseSchema = z.object({
   supplierId: z.string().uuid('Please select a supplier'),
-  status: z.nativeEnum(PurchaseStatus),
+  status: z.nativeEnum(PurchaseStatus).default(PurchaseStatus.DRAFT),
   notes: z.string().optional(),
   expectedArrivalDate: z
     .union([z.string(), z.date()])
-    .transform((val) => (val ? new Date(val) : null))
-    .nullable(),
-  totalQuantity: z.number().min(0, 'Total quantity must be non-negative'),
-  receivedQuantity: z.number().min(0, 'Received quantity must be non-negative'),
+    .transform((val) => (val ? new Date(val) : undefined))
+    .optional(),
   supplier: z
     .object({
       id: z.string().uuid(),
@@ -36,6 +34,8 @@ export const PurchaseSchema = z.object({
       })
     )
     .min(1, 'At least one item is required'),
+  totalQuantity: z.number().min(0).optional(),
+  receivedQuantity: z.number().min(0).optional(),
 });
 
 export type PurchaseFormData = z.infer<typeof PurchaseSchema>;

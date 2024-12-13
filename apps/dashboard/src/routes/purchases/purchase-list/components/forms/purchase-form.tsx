@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 
 import { CircleMinus, CirclePlus } from 'lucide-react';
 import { useFieldArray, useForm, UseFormReturn, useWatch } from 'react-hook-form';
@@ -29,25 +29,41 @@ interface PurchaseFormProps {
 export const PurchaseForm: React.FC<PurchaseFormProps> = ({ purchase, isPending, onSubmit, onClose }) => {
   const form = useForm<PurchaseFormData>({
     resolver: zodResolver(PurchaseSchema),
-    defaultValues: {
-      ...purchase,
-      expectedArrivalDate: purchase?.expectedArrivalDate ? new Date(purchase.expectedArrivalDate) : null,
-    } || {
-      supplierId: '',
-      status: PurchaseStatus.DRAFT,
-      notes: '',
-      items: [],
-      expectedArrivalDate: null,
-    },
+    defaultValues: purchase
+      ? {
+          ...purchase,
+          expectedArrivalDate: purchase.expectedArrivalDate ? new Date(purchase.expectedArrivalDate) : undefined,
+          items: purchase.items || [],
+        }
+      : {
+          supplierId: '',
+          status: PurchaseStatus.DRAFT,
+          notes: '',
+          items: [],
+          expectedArrivalDate: undefined,
+          totalQuantity: 0,
+          receivedQuantity: 0,
+        },
   });
 
   const handleSubmit = form.handleSubmit(async (data) => {
-    const { supplier, ...purchaseData } = data;
-    await onSubmit({
-      ...purchaseData,
-    });
-    onClose();
-    form.reset();
+    try {
+      const { supplier, ...purchaseData } = data;
+
+      const totalQuantity = data.items.reduce((sum, item) => sum + Number(item.quantity), 0);
+
+      console.log('Purchase Data:', purchaseData);
+      await onSubmit({
+        ...purchaseData,
+        status: purchaseData.status || PurchaseStatus.DRAFT,
+        totalQuantity,
+        receivedQuantity: data?.receivedQuantity || 0,
+      });
+      onClose();
+      form.reset();
+    } catch (error) {
+      console.error('Submit error:', error);
+    }
   });
 
   return (
@@ -80,12 +96,21 @@ export const PurchaseForm: React.FC<PurchaseFormProps> = ({ purchase, isPending,
                 <FormField
                   control={form.control}
                   name="status"
+                  defaultValue={PurchaseStatus.DRAFT}
                   render={({ field }) => (
                     <FormItem className="w-full">
                       <FormLabel>Status</FormLabel>
-                      <Select {...field}>
+                      <Select
+                        {...field}
+                        value={field.value || PurchaseStatus.DRAFT}
+                        disabled={field.value === PurchaseStatus.CLOSED}
+                      >
                         {Object.entries(purchaseStatusConfig).map(([status, [_, text]]) => (
-                          <option key={status} value={status}>
+                          <option
+                            key={status}
+                            value={status}
+                            disabled={status === PurchaseStatus.CLOSED && !purchase?.receivedQuantity}
+                          >
                             {text}
                           </option>
                         ))}
@@ -107,9 +132,13 @@ export const PurchaseForm: React.FC<PurchaseFormProps> = ({ purchase, isPending,
                         <Input
                           type="number"
                           {...field}
+                          value={field.value ?? 0}
                           min={0}
                           max={form.getValues('totalQuantity')}
-                          onChange={(e) => field.onChange(parseInt(e.target.value, 10))}
+                          onChange={(e) => {
+                            const quantity = parseInt(e.target.value, 10);
+                            field.onChange(quantity);
+                          }}
                         />
                       </FormControl>
                       <FormDescription>Total Quantity: {form.getValues('totalQuantity')}</FormDescription>
@@ -166,14 +195,17 @@ const PurchaseSummary = ({ form }: { form: UseFormReturn<PurchaseFormData> }) =>
   const items = useWatch({
     control: form.control,
     name: 'items',
+    defaultValue: [],
   });
 
   const total = useMemo(() => {
-    return items.reduce((sum, item) => {
-      const quantity = Number(item.quantity) || 0;
-      const unitCost = Number(item.unitCost) || 0;
-      return sum + quantity * unitCost;
-    }, 0);
+    return (
+      items?.reduce((sum, item) => {
+        const quantity = Number(item.quantity) || 0;
+        const unitCost = Number(item.unitCost) || 0;
+        return sum + quantity * unitCost;
+      }, 0) || 0
+    );
   }, [items]);
 
   return (
@@ -245,16 +277,6 @@ const PurchaseItems = ({ form }: { form: UseFormReturn<PurchaseFormData> }) => {
     control: form.control,
     name: 'items',
   });
-
-  const items = useWatch({
-    control: form.control,
-    name: 'items',
-  });
-
-  useEffect(() => {
-    const totalQuantity = items.reduce((sum, item) => sum + (Number(item.quantity) || 0), 0);
-    form.setValue('totalQuantity', totalQuantity);
-  }, [items, form]);
 
   const handleSelectProductVariant = (variant: IProductVariant) => {
     if (!variant?.id) return;

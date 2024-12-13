@@ -7,8 +7,8 @@ module.exports = {
     const suppliers = await queryInterface.sequelize.query(`SELECT id FROM suppliers;`);
     const supplierRows = suppliers[0];
 
-    const organizations = await queryInterface.sequelize.query(`SELECT id FROM organizations;`);
-    const organizationRows = organizations[0];
+    const stores = await queryInterface.sequelize.query(`SELECT id FROM stores;`);
+    const storeRows = stores[0];
 
     const purchases = [];
     const purchaseItems = [];
@@ -20,12 +20,12 @@ module.exports = {
 
       purchases.push({
         id: purchaseId,
-        organizationId: organizationRows[0].id,
         supplierId: supplierRows[Math.floor(Math.random() * supplierRows.length)].id,
+        storeId: storeRows[Math.floor(Math.random() * storeRows.length)].id,
         status: ['draft', 'ordered', 'partial', 'received', 'closed'][Math.floor(Math.random() * 5)],
         totalAmount: (Math.random() * 10000).toFixed(2),
         notes: 'Sample purchase order',
-        orderNumber: `#PUR-${i.toString().padStart(4, '0')}`,
+        orderNumber: `PO-${1000 + i}`,
         expectedArrivalDate: new Date(Date.now() + Math.floor(Math.random() * 30) * 24 * 60 * 60 * 1000),
         totalQuantity: 0,
         receivedQuantity: 0,

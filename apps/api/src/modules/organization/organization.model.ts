@@ -69,7 +69,4 @@ export class Organization extends Model {
 
   @HasMany(() => User)
   users: User[];
-
-  @HasMany(() => Purchase)
-  purchases: Purchase[];
 }

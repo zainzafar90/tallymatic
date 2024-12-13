@@ -6,27 +6,20 @@ import {
   DefaultScope,
   ForeignKey,
   HasMany,
-  IsUUID,
   Model,
-  PrimaryKey,
   Table,
 } from 'sequelize-typescript';
 import { PurchaseStatus } from '@shared';
 
-import { Organization } from '../organization/organization.model';
+import { Store } from '../store/store.model';
 import { Supplier } from '../supplier/supplier.model';
 import { PurchaseItem } from './purchase-item.model';
 
 @DefaultScope(() => ({
   attributes: { include: ['createdAt', 'updatedAt'] },
 }))
-@Table({
-  timestamps: true,
-  tableName: 'purchases',
-})
+@Table({ tableName: 'purchases' })
 export class Purchase extends Model {
-  @IsUUID(4)
-  @PrimaryKey
   @Column({
     type: DataType.UUID,
     defaultValue: DataType.UUIDV4,
@@ -34,31 +27,20 @@ export class Purchase extends Model {
   })
   id: string;
 
-  @Column({
-    type: DataType.STRING,
-    allowNull: false,
-    unique: true,
-  })
+  @Column(DataType.STRING)
   orderNumber: string;
 
   @Column({
-    type: DataType.ENUM(...Object.values(PurchaseStatus)),
+    type: DataType.ENUM({ values: Object.values(PurchaseStatus) }),
     allowNull: false,
     defaultValue: PurchaseStatus.DRAFT,
   })
   status: PurchaseStatus;
 
-  @Column({
-    type: DataType.DECIMAL(10, 2),
-    allowNull: false,
-    defaultValue: 0,
-  })
+  @Column(DataType.DECIMAL(10, 2))
   totalAmount: number;
 
-  @Column({
-    type: DataType.DATE,
-    allowNull: true,
-  })
+  @Column(DataType.DATE)
   expectedArrivalDate: Date;
 
   @Column({
@@ -75,18 +57,8 @@ export class Purchase extends Model {
   })
   totalQuantity: number;
 
-  @Column({
-    type: DataType.TEXT,
-    allowNull: true,
-  })
+  @Column(DataType.TEXT)
   notes: string;
-
-  @ForeignKey(() => Organization)
-  @Column({
-    type: DataType.UUID,
-    allowNull: false,
-  })
-  organizationId: string;
 
   @ForeignKey(() => Supplier)
   @Column({
@@ -95,10 +67,14 @@ export class Purchase extends Model {
   })
   supplierId: string;
 
-  @BelongsTo(() => Organization, 'organizationId')
-  organization: Organization;
+  @ForeignKey(() => Store)
+  @Column(DataType.UUID)
+  storeId: string;
 
-  @BelongsTo(() => Supplier, 'supplierId')
+  @BelongsTo(() => Store)
+  store: Store;
+
+  @BelongsTo(() => Supplier)
   supplier: Supplier;
 
   @HasMany(() => PurchaseItem)
@@ -109,7 +85,7 @@ export class Purchase extends Model {
     const transaction = await instance.sequelize.transaction();
     try {
       const maxOrder = await Purchase.findOne({
-        where: { organizationId: instance.organizationId },
+        where: { storeId: instance.storeId },
         attributes: [[instance.sequelize.fn('max', instance.sequelize.col('orderNumber')), 'maxNumber']],
         transaction,
       });
@@ -120,7 +96,7 @@ export class Purchase extends Model {
         nextNumber = currentMax + 1;
       }
 
-      instance.orderNumber = `PUR-${nextNumber}`;
+      instance.orderNumber = `PO-${nextNumber}`;
 
       await transaction.commit();
     } catch (error) {
