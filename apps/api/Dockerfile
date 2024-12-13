@@ -26,7 +26,7 @@ RUN echo '{\
     "exec_mode": "cluster",\
     "env": {\
       "NODE_ENV": "production",\
-      "PORT": 3000,\
+      "PORT": 3001,\
       "DB_HOST": "postgres",\
       "DB_PORT": 5432,\
       "DB_NAME": "tallymatic",\
