@@ -38,8 +38,9 @@ export const PurchaseForm: React.FC<PurchaseFormProps> = ({ purchase, isPending,
   });
 
   const handleSubmit = form.handleSubmit(async (data) => {
+    const { supplier, ...purchaseData } = data;
     await onSubmit({
-      ...data,
+      ...purchaseData,
     });
     onClose();
     form.reset();
@@ -138,7 +139,9 @@ const PurchaseSummary = ({ form }: { form: UseFormReturn<PurchaseFormData> }) =>
 
 const SupplierSummary = ({ form }: { form: UseFormReturn<PurchaseFormData> }) => {
   const [isSupplierDialogOpen, openSupplierDialog, closeSupplierDialog] = useToggleState();
-  const [selectedSupplier, setSelectedSupplier] = useState<ISupplier | null>(null);
+  const [selectedSupplier, setSelectedSupplier] = useState<ISupplier | undefined>(
+    (form.getValues().supplier as ISupplier) || undefined
+  );
 
   const handleSelectSupplier = (supplier: ISupplier) => {
     if (!supplier?.id) return;

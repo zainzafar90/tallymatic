@@ -5,6 +5,16 @@ export const PurchaseSchema = z.object({
   supplierId: z.string().uuid('Please select a supplier'),
   status: z.nativeEnum(PurchaseStatus),
   notes: z.string().optional(),
+  supplier: z
+    .object({
+      id: z.string().uuid(),
+      companyName: z.string(),
+      email: z.string().email(),
+      contactName: z.string(),
+      phone: z.string(),
+      address: z.string(),
+    })
+    .optional(),
   items: z
     .array(
       z.object({

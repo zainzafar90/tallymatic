@@ -1,18 +1,26 @@
 import httpStatus from 'http-status';
-import { IOptions, ListResponse } from '@shared';
+import { CreatePurchaseReq, IOptions, ListResponse } from '@shared';
 
 import { ApiError } from '@/common/errors/api-error';
 import { getDatabaseInstance } from '@/database/db';
 
 import { buildPaginationOptions, transformPagination } from '../paginate/paginate';
+import { Supplier } from '../supplier/supplier.model';
 import { PurchaseItem } from './purchase-item.model';
 import { Purchase } from './purchase.model';
 
-export const createPurchase = async (purchaseData: any): Promise<Purchase> => {
+export const createPurchase = async (purchaseData: CreatePurchaseReq): Promise<Purchase> => {
   const transaction = await getDatabaseInstance().transaction();
   try {
     const { items, ...purchaseBody } = purchaseData;
-    const purchase = await Purchase.create(purchaseBody, { transaction });
+    const totalAmount = items.reduce((sum, item) => sum + item.unitCost * item.quantity, 0);
+    const purchase = await Purchase.create(
+      {
+        ...purchaseBody,
+        totalAmount,
+      },
+      { transaction }
+    );
 
     if (items && items.length > 0) {
       const purchaseItems = items.map((item: any) => ({
@@ -34,7 +42,7 @@ export const queryPurchases = async (filter: Record<string, any>, options: IOpti
   const paginationOptions = buildPaginationOptions(filter, options);
   const result = await Purchase.findAndCountAll({
     ...paginationOptions,
-    include: [PurchaseItem],
+    include: [PurchaseItem, Supplier],
   });
   return transformPagination(result.count, result.rows, paginationOptions.offset, paginationOptions.limit);
 };
@@ -54,6 +62,7 @@ export const updatePurchaseById = async (purchaseId: string, updateBody: any): P
     }
 
     const { items, ...purchaseData } = updateBody;
+    const totalAmount = items.reduce((sum, item) => sum + item.unitCost * item.quantity, 0);
 
     if (items) {
       await PurchaseItem.destroy({
@@ -68,7 +77,10 @@ export const updatePurchaseById = async (purchaseId: string, updateBody: any): P
       await PurchaseItem.bulkCreate(purchaseItems, { transaction });
     }
 
-    Object.assign(purchase, purchaseData);
+    Object.assign(purchase, {
+      ...purchaseData,
+      totalAmount,
+    });
     await purchase.save({ transaction });
     await transaction.commit();
 

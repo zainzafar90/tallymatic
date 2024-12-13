@@ -44,6 +44,7 @@ export const updatePurchase = {
   }),
   body: Joi.object()
     .keys({
+      supplierId: Joi.string().custom(uuid).required(),
       status: Joi.string().valid(...Object.values(PurchaseStatus)),
       notes: Joi.string().allow(null, ''),
       items: Joi.array().items(purchaseItemSchema).min(1),
