@@ -70,95 +70,80 @@ export const updatePurchaseById = async (purchaseId: string, updateBody: any): P
       throw new ApiError(httpStatus.NOT_FOUND, 'Purchase not found');
     }
 
-    const { items, ...purchaseData } = updateBody;
+    const { items } = updateBody;
     const totalAmount = items.reduce((sum, item) => sum + item.unitCost * item.quantity, 0);
     const totalQuantity = items.reduce((sum, item) => sum + item.quantity, 0);
-    const newReceivedQty = updateBody.receivedQuantity ?? purchase.receivedQuantity;
+
+    // Map existing items by variantId for comparison
+    const existingItemsMap = purchase.items.reduce((acc, item) => {
+      acc[item.variantId] = item;
+      return acc;
+    }, {});
+
+    // Process each item's received quantity changes
+    for (const newItem of items) {
+      const existingItem = existingItemsMap[newItem.variantId];
+      const previousReceivedQty = existingItem?.receivedQuantity || 0;
+      const newReceivedQty = newItem.receivedQuantity || 0;
+      const receivedDifference = newReceivedQty - previousReceivedQty;
+
+      if (receivedDifference !== 0) {
+        await adjustStock(
+          newItem.variantId,
+          receivedDifference,
+          receivedDifference > 0 ? TransactionType.RECEIVED : TransactionType.ADJUSTED,
+          `Purchase ${purchase.orderNumber} - ${receivedDifference > 0 ? 'Received' : 'Adjusted'} ${Math.abs(
+            receivedDifference
+          )} units`
+        );
+      }
+    }
+
+    // Calculate total received quantity
+    const newTotalReceivedQty = items.reduce((sum, item) => sum + (item.receivedQuantity || 0), 0);
 
     // Validate status change
-    if (purchaseData.status === PurchaseStatus.CLOSED) {
-      // Check if all items are received before allowing closure
-      if (newReceivedQty !== totalQuantity) {
+    if (updateBody.status === PurchaseStatus.CLOSED) {
+      if (newTotalReceivedQty !== totalQuantity) {
         throw new ApiError(httpStatus.BAD_REQUEST, 'Cannot close purchase order until all items are received');
       }
     }
 
     // If already closed, prevent any changes except notes
-    if (purchase.status === PurchaseStatus.CLOSED && purchaseData.status !== PurchaseStatus.CLOSED) {
+    if (purchase.status === PurchaseStatus.CLOSED && updateBody.status !== PurchaseStatus.CLOSED) {
       throw new ApiError(httpStatus.BAD_REQUEST, 'Cannot modify a closed purchase order');
     }
 
-    const previousReceivedQty = purchase.receivedQuantity || 0;
-    const receivedDifference = newReceivedQty - previousReceivedQty;
+    // Update purchase items
+    await PurchaseItem.destroy({
+      where: { purchaseId },
+      transaction,
+    });
 
-    // If there's a change in received quantity, update inventory
-    if (receivedDifference !== 0) {
-      // For each item, calculate its received quantity based on the total received
-      const currentItems = updateBody.items || purchase.items;
+    const purchaseItems = items.map((item: any) => ({
+      ...item,
+      purchaseId,
+    }));
+    await PurchaseItem.bulkCreate(purchaseItems, { transaction });
 
-      // If receiving items
-      if (receivedDifference > 0) {
-        for (const item of currentItems) {
-          // Calculate what portion of the new received quantity should go to this item
-          const itemReceived = Math.floor((item.quantity / totalQuantity) * receivedDifference);
-
-          if (itemReceived > 0) {
-            await adjustStock(
-              item.variantId,
-              itemReceived,
-              TransactionType.RECEIVED,
-              `Purchase ${purchase.orderNumber} - Received ${itemReceived} units`
-            );
-          }
-        }
-      } else {
-        // If reducing received quantity (e.g., correcting a mistake)
-        for (const item of currentItems) {
-          const itemReduction = Math.floor((item.quantity / totalQuantity) * Math.abs(receivedDifference));
-
-          if (itemReduction > 0) {
-            await adjustStock(
-              item.variantId,
-              -itemReduction,
-              TransactionType.ADJUSTED,
-              `Purchase ${purchase.orderNumber} - Adjusted received quantity by -${itemReduction} units`
-            );
-          }
-        }
-      }
-    }
-
-    if (items) {
-      await PurchaseItem.destroy({
-        where: { purchaseId },
-        transaction,
-      });
-
-      const purchaseItems = items.map((item: any) => ({
-        ...item,
-        purchaseId,
-      }));
-      await PurchaseItem.bulkCreate(purchaseItems, { transaction });
-    }
-
-    // Determine status based on received quantity (if not explicitly set to CLOSED)
-    let status = purchaseData.status;
+    // Determine status based on received quantity
+    let status = updateBody.status;
     if (!status || status !== PurchaseStatus.CLOSED) {
-      if (newReceivedQty === 0) {
+      if (newTotalReceivedQty === 0) {
         status = PurchaseStatus.ORDERED;
-      } else if (newReceivedQty === totalQuantity) {
+      } else if (newTotalReceivedQty === totalQuantity) {
         status = PurchaseStatus.RECEIVED;
-      } else if (newReceivedQty > 0 && newReceivedQty < totalQuantity) {
+      } else if (newTotalReceivedQty > 0 && newTotalReceivedQty < totalQuantity) {
         status = PurchaseStatus.PARTIAL;
       }
     }
 
     Object.assign(purchase, {
-      ...purchaseData,
+      ...updateBody,
       status,
       totalAmount,
       totalQuantity,
-      receivedQuantity: newReceivedQty,
+      receivedQuantity: newTotalReceivedQty,
     });
 
     await purchase.save({ transaction });
