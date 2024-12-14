@@ -10,6 +10,8 @@ services:
       - postgres_data:/var/lib/postgresql/data
     ports:
       - '5432:5432'
+    networks:
+      - app-network
 
   api:
     build:
@@ -41,6 +43,8 @@ services:
       - postgres
     ports:
       - '3001:3001'
+    networks:
+      - app-network
 
   dashboard:
     build:
@@ -50,6 +54,12 @@ services:
       - '4000:4000'
     depends_on:
       - api
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
 
 volumes:
   postgres_data:
