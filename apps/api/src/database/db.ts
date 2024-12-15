@@ -1,7 +1,7 @@
 import { Dialect } from 'sequelize';
 import { Sequelize } from 'sequelize-typescript';
 
-import config from '@/config/config';
+import { config } from '@/config/config';
 import { Category } from '@/modules/category';
 import { Claim, ClaimItem } from '@/modules/claim';
 import { Customer } from '@/modules/customer';

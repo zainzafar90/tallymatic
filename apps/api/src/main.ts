@@ -1,16 +1,25 @@
+import { Status } from '@shared';
+
 import { config } from '@/config/config';
 import { logger } from '@/common/logger';
-import { getDatabaseInstance } from '@/database/db';
+import { db } from '@/db';
+import { OrganizationInsert, organizations } from '@/db/schema';
 
 import app from './app';
 
-const database = getDatabaseInstance();
+app.listen(config.port, async () => {
+  logger.info(`Listening to port ${config.port}`);
 
-database.connect().then(() => {
-  logger.info('Connected to PostgreSQL');
-  app.listen(config.port, () => {
-    logger.info(`Listening to port ${config.port}`);
-  });
+  const newOrganization: OrganizationInsert = {
+    name: 'Tallymatic',
+    address: '123 Main St, Anytown, USA',
+    status: Status.ACTIVE,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
+
+  await db.insert(organizations).values(newOrganization);
+  logger.info('New organization created!');
 });
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -22,7 +31,6 @@ const exitHandler = () => {
     console.log('Server Close');
     server.close(async () => {
       logger.info('Server closed');
-      await database.close();
       process.exit(1);
     });
   } else {
