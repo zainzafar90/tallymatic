@@ -1,21 +1,16 @@
-import { Status } from '@shared';
-
 import { config } from '@/config/config';
 import { logger } from '@/common/logger';
 import { db } from '@/db';
-import { OrganizationInsert, organizations } from '@/db/schema';
+import { organizations } from '@/db/schema';
 
 import app from './app';
 
 app.listen(config.port, async () => {
   logger.info(`Listening to port ${config.port}`);
 
-  const newOrganization: OrganizationInsert = {
+  const newOrganization = {
     name: 'Tallymatic',
     address: '123 Main St, Anytown, USA',
-    status: Status.ACTIVE,
-    createdAt: new Date(),
-    updatedAt: new Date(),
   };
 
   await db.insert(organizations).values(newOrganization);
