@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from 'express';
 import httpStatus from 'http-status';
 import { Error } from 'sequelize';
 
-import config from '@/config/config';
+import { config } from '@/config/config';
 import { logger } from '@/common/logger';
 
 import { ApiError } from './api-error';

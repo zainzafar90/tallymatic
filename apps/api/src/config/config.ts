@@ -12,6 +12,7 @@ const envVarsSchema = Joi.object()
     DB_USER: Joi.string().required().description('Database user').default('postgres'),
     DB_PASSWORD: Joi.string().required().description('Database password').default('password'),
     DB_DIALECT: Joi.string().required().description('Database dialect').default('postgres'),
+    DB_URL: Joi.string().required().description('Database url'),
     JWT_SECRET: Joi.string().required().description('JWT secret key'),
     JWT_ACCESS_EXPIRATION_MINUTES: Joi.number().default(30).description('minutes after which access tokens expire'),
     JWT_REFRESH_EXPIRATION_DAYS: Joi.number().default(30).description('days after which refresh tokens expire'),
@@ -46,6 +47,7 @@ const config = {
     user: envVars.DB_USER,
     password: envVars.DB_PASSWORD,
     dialect: envVars.DB_DIALECT,
+    url: envVars.DB_URL,
   },
   jwt: {
     secret: envVars.JWT_SECRET,
@@ -73,4 +75,4 @@ const config = {
   clientUrl: envVars.CLIENT_URL,
 };
 
-export default config;
+export { config };

@@ -1,6 +1,6 @@
 import express, { Router } from 'express';
 
-import config from '@/config/config';
+import { config } from '@/config/config';
 
 import authRoute from './auth.routes';
 import categoryRoute from './category.routes';

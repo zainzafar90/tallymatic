@@ -5,7 +5,7 @@ import request from 'supertest';
 import { faker } from '@faker-js/faker';
 import { IUser, RoleType, Status, TokenType } from '@shared';
 
-import config from '@/config/config';
+import { config } from '@/config/config';
 import app from '@/app';
 import { setupTestDB } from '@/common/jest/jest.setup';
 import { Organization } from '@/modules/organization';

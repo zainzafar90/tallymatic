@@ -1,4 +1,4 @@
-import config from '@/config/config';
+import { config } from '@/config/config';
 import { logger } from '@/common/logger';
 import { getDatabaseInstance } from '@/database/db';
 

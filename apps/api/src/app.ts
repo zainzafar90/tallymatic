@@ -6,7 +6,7 @@ import httpStatus from 'http-status';
 import passport from 'passport';
 import xss from 'xss-clean';
 
-import config from '@/config/config';
+import { config } from '@/config/config';
 import routes from '@/routes/v1';
 import { ApiError, errorConverter, errorHandler } from '@/common/errors';
 import { morgan } from '@/common/logger';
