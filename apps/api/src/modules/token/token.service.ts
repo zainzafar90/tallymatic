@@ -1,3 +1,4 @@
+import { and,eq } from 'drizzle-orm';
 import httpStatus from 'http-status';
 import jwt from 'jsonwebtoken';
 import moment, { Moment } from 'moment';
@@ -5,10 +6,10 @@ import { AuthResponse, IToken, IUser, TokenType } from '@shared';
 
 import { config } from '@/config/config';
 import { ApiError } from '@/common/errors/api-error';
+import { db } from '@/db';
+import { tokens } from '@/db/schema';
 
 import { userService } from '../user';
-import { User } from '../user/user.model';
-import { Token } from './token.model';
 
 /**
  * Generate token
@@ -42,15 +43,16 @@ export const generateToken = (
  * @param {boolean} [blacklisted]
  * @returns {Promise<Token>}
  */
-export const saveToken = async (token: IToken): Promise<Token> => {
-  const tokenDoc = await Token.create({
+export const saveToken = async (token: IToken) => {
+  const tokenDoc = {
     token: token.token,
     userId: token.user,
     expires: token.expires.toDate(),
     type: token.type,
     blacklisted: token.blacklisted || false,
-  });
-  return tokenDoc;
+  };
+
+  await db.insert(tokens).values(tokenDoc);
 };
 
 /**
@@ -59,22 +61,17 @@ export const saveToken = async (token: IToken): Promise<Token> => {
  * @param {TokenType} type
  * @returns {Promise<Token>}
  */
-export const verifyToken = async (token: string, type: TokenType): Promise<Token> => {
+export const verifyToken = async (token: string, type: TokenType) => {
   try {
     const payload = jwt.verify(token, config.jwt.secret);
-    const tokenDoc = await Token.findOne({
-      where: {
-        token,
-        type,
-        userId: payload.sub,
+
+    const tokenDoc = await db.query.tokens.findFirst({
+      where: and(eq(tokens.token, token), eq(tokens.type, type), eq(tokens.userId, payload.sub)),
+      with: {
+        user: true,
       },
-      include: [
-        {
-          model: User,
-          as: 'user',
-        },
-      ],
     });
+
     if (!tokenDoc) {
       throw new ApiError(httpStatus.NOT_FOUND, 'Token not found');
     }
