@@ -1,101 +1,151 @@
-import { CreateOrderReq, IOptions, IOrder, ListResponse, UpdateOrderReq } from '@shared';
+import { and, count, eq } from 'drizzle-orm';
+import { CreateOrderReq, IOptions, ListResponse, UpdateOrderReq } from '@shared';
 
 import { ApiError } from '@/common/errors/api-error';
-import { getDatabaseInstance } from '@/database/db';
+import { db } from '@/db';
+import { orderItems, orders } from '@/db/schema';
 
-import { buildPaginationOptions, transformPagination } from '../paginate/paginate';
-import { OrderItem } from './order-item.model';
-import { Order } from './order.model';
+import { getPaginationConfig } from '../paginate/pagination';
 
-export const createOrder = async (orderData: CreateOrderReq): Promise<IOrder> => {
-  const transaction = await getDatabaseInstance().transaction();
+const generateOrderNumber = async (organizationId: string) => {
+  const orderNumber = await db.select({ count: count() }).from(orders).where(eq(orders.organizationId, organizationId));
+  return `ORD-${orderNumber}-${organizationId}`;
+};
 
-  try {
-    const subtotalValue = orderData.items.reduce((sum, item) => sum + item.price * item.quantity - item.totalDiscount, 0);
+export const createOrder = async (orderData: CreateOrderReq, organizationId: string) => {
+  return await db.transaction(async (tx) => {
+    const subtotalValue = orderData.items.reduce(
+      (sum, item) => sum + item.price * item.quantity - (item.totalDiscount || 0),
+      0
+    );
     const totalValue = subtotalValue + (orderData.taxAmount || 0) - (orderData.discountAmount || 0);
 
-    const order = await Order.create(
-      {
-        ...orderData,
-        storeId: '00000000-0000-4000-8000-000000000001',
-        subtotal: subtotalValue,
-        total: totalValue,
-      },
-      { transaction }
-    );
+    const orderNumber = await generateOrderNumber(organizationId);
+    const orderNew = {
+      ...orderData,
+      orderNumber,
+      organizationId,
+      status: orderData.status,
+      totalAmount: totalValue,
+      subtotal: subtotalValue,
+      taxAmount: orderData.taxAmount || 0,
+      discountAmount: orderData.discountAmount || 0,
+      currency: 'PKR',
+    };
 
-    if (orderData.items && orderData.items.length > 0) {
-      await OrderItem.bulkCreate(
-        orderData.items.map((item) => ({ ...item, orderId: order.id })),
-        { transaction }
-      );
+    const [order] = await tx.insert(orders).values(orderNew).returning();
+
+    if (orderData.items?.length > 0) {
+      const orderItemsNew = orderData.items.map((item) => ({
+        ...item,
+        orderId: order.id,
+        price: item.price.toString(),
+      }));
+      await tx.insert(orderItems).values(orderItemsNew);
     }
 
-    await transaction.commit();
-    return order.toJSON();
-  } catch (error) {
-    await transaction.rollback();
-    throw error;
-  }
-};
-
-export const queryOrders = async (filter: Record<string, any>, options: IOptions): Promise<ListResponse<Order>> => {
-  const paginationOptions = buildPaginationOptions(filter, options, ['orderNumber']);
-
-  const result = await Order.findAndCountAll({
-    ...paginationOptions,
-    include: [
-      {
-        model: OrderItem,
-        as: 'items',
+    const createdOrder = await tx.query.orders.findFirst({
+      where: eq(orders.id, order.id),
+      with: {
+        items: true,
       },
-    ],
-  });
+    });
 
-  return transformPagination(result.count, result.rows, paginationOptions.offset, paginationOptions.limit);
+    return createdOrder;
+  });
 };
 
-export const getOrderById = async (id: string): Promise<IOrder | null> => {
-  const order = await Order.findByPk(id, {
-    include: [{ model: OrderItem, as: 'items' }],
+export const queryOrders = async (
+  filter: Record<string, any>,
+  options: IOptions,
+  organizationId: string
+): Promise<ListResponse<typeof orders.$inferSelect>> => {
+  const { limit, offset } = getPaginationConfig(options);
+
+  const conditions = [eq(orders.organizationId, organizationId)];
+  if (filter.orderNumber) {
+    conditions.push(eq(orders.orderNumber, filter.orderNumber));
+  }
+  if (filter.status) {
+    conditions.push(eq(orders.status, filter.status));
+  }
+
+  const whereClause = and(...conditions);
+
+  const [ordersCount] = await db.select({ count: count() }).from(orders).where(whereClause);
+
+  const results = await db.query.orders.findMany({
+    where: whereClause,
+    limit,
+    offset,
+    orderBy: orders.createdAt,
+    with: {
+      items: true,
+    },
   });
-  return order ? order.toJSON() : null;
+
+  return {
+    results,
+    limit,
+    offset,
+    pages: Math.ceil(ordersCount.count / limit),
+    count: ordersCount.count,
+  };
 };
 
-export const updateOrderById = async (orderId: string, updateBody: UpdateOrderReq): Promise<IOrder | null> => {
-  const transaction = await getDatabaseInstance().transaction();
+export const getOrderById = async (id: string, organizationId: string) => {
+  const order = await db.query.orders.findFirst({
+    where: and(eq(orders.id, id), eq(orders.organizationId, organizationId)),
+    with: {
+      items: true,
+    },
+  });
 
-  try {
-    const order = await Order.findByPk(orderId, { transaction });
+  return order;
+};
+
+export const updateOrderById = async (orderId: string, updateBody: UpdateOrderReq, organizationId: string) => {
+  return await db.transaction(async (tx) => {
+    const order = await tx.query.orders.findFirst({
+      where: and(eq(orders.id, orderId), eq(orders.organizationId, organizationId)),
+    });
+
     if (!order) {
       throw new ApiError(404, 'Order not found');
     }
 
-    Object.assign(order, updateBody);
-    await order.save({ transaction });
+    const [updatedOrder] = await tx
+      .update(orders)
+      .set(updateBody)
+      .where(and(eq(orders.id, orderId), eq(orders.organizationId, organizationId)))
+      .returning();
 
     if (updateBody.items) {
-      await OrderItem.destroy({ where: { orderId: orderId }, transaction });
-      await OrderItem.bulkCreate(
-        updateBody.items.map((item) => ({ ...item, orderId: orderId })),
-        { transaction }
+      await tx.delete(orderItems).where(eq(orderItems.orderId, orderId));
+      await tx.insert(orderItems).values(
+        updateBody.items.map((item) => ({ ...item, orderId, price: item.price.toString() }))
       );
     }
 
-    await transaction.commit();
+    const result = await tx.query.orders.findFirst({
+      where: eq(orders.id, updatedOrder.id),
+      with: {
+        items: true,
+      },
+    });
 
-    const orderById = await getOrderById(orderId);
-    return orderById;
-  } catch (error) {
-    await transaction.rollback();
-    throw error;
-  }
+    return result;
+  });
 };
 
-export const deleteOrderById = async (orderId: string): Promise<void> => {
-  const order = await Order.findByPk(orderId);
+export const deleteOrderById = async (orderId: string, organizationId: string): Promise<void> => {
+  const order = await db.query.orders.findFirst({
+    where: and(eq(orders.id, orderId), eq(orders.organizationId, organizationId)),
+  });
+
   if (!order) {
     throw new ApiError(404, 'Order not found');
   }
-  await order.destroy();
+
+  await db.delete(orders).where(and(eq(orders.id, orderId), eq(orders.organizationId, organizationId)));
 };
