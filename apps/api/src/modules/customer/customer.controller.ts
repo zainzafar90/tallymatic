@@ -14,25 +14,27 @@ export const createCustomer = catchAsync(async (req: Request, res: Response) => 
   if (!isAllowed) {
     throw new ApiError(httpStatus.FORBIDDEN, 'You do not have permission to create customers');
   }
-  const customer = await customerService.createCustomer(req.body);
+
+  const customer = await customerService.createCustomer(req.body, req.user.organizationId);
   res.status(httpStatus.CREATED).send(customer);
 });
 
 export const getCustomers = catchAsync(async (req: Request, res: Response) => {
   const filter = pick(req.query, ['name', 'email']);
-  const options: IOptions = pick(req.query, ['sortBy', 'limit', 'offset', 'projectBy']);
+  const options: IOptions = pick(req.query, ['sortBy', 'limit', 'offset', 'projectBy', 'includeDeleted']);
   const isAllowed = permissionService.checkPermissions(req.user.role, 'list', 'customers');
   if (!isAllowed) {
     throw new ApiError(httpStatus.FORBIDDEN, 'You do not have permission to list customers');
   }
+
   const wildcardFields = ['name'];
-  const result = await customerService.queryCustomers(filter, options, wildcardFields);
+  const result = await customerService.queryCustomers(filter, options, req.user.organizationId, wildcardFields);
   res.send(result);
 });
 
 export const getCustomer = catchAsync(async (req: Request, res: Response) => {
   if (typeof req.params['customerId'] === 'string') {
-    const customer = await customerService.getCustomerById(req.params['customerId']);
+    const customer = await customerService.getCustomerById(req.params['customerId'], req.user.organizationId);
     if (!customer) {
       throw new ApiError(httpStatus.NOT_FOUND, 'Customer not found');
     }
@@ -46,7 +48,8 @@ export const updateCustomer = catchAsync(async (req: Request, res: Response) => 
     if (!isAllowed) {
       throw new ApiError(httpStatus.FORBIDDEN, 'You do not have permission to update customer');
     }
-    const customer = await customerService.updateCustomerById(req.params['customerId'], req.body);
+
+    const customer = await customerService.updateCustomerById(req.params['customerId'], req.body, req.user.organizationId);
     res.send(customer);
   }
 });
@@ -57,7 +60,8 @@ export const deleteCustomer = catchAsync(async (req: Request, res: Response) => 
     if (!isAllowed) {
       throw new ApiError(httpStatus.FORBIDDEN, 'You do not have permission to delete customer');
     }
-    await customerService.deleteCustomerById(req.params['customerId']);
+
+    await customerService.deleteCustomerById(req.params['customerId'], req.user.organizationId);
     res.status(httpStatus.NO_CONTENT).send();
   }
 });
@@ -69,11 +73,10 @@ export const bulkDeleteCustomers = catchAsync(async (req: Request, res: Response
   }
 
   const customerIds = req.body.customerIds;
-
   if (!Array.isArray(customerIds) || customerIds.length === 0) {
-    return res.status(400).json({ message: 'Invalid input: customerIds must be a non-empty array' });
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Invalid input: customerIds must be a non-empty array');
   }
 
-  await customerService.bulkDeleteCustomers(customerIds);
-  res.status(httpStatus.OK).send({});
+  await customerService.bulkDeleteCustomers(customerIds, req.user.organizationId);
+  res.status(httpStatus.NO_CONTENT).send();
 });
