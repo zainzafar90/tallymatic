@@ -121,18 +121,20 @@ export const updateUserById = async (id: string, userBody: UpdateUserReq, organi
   return userDTO(updatedUser);
 };
 
-export const updateUserPassword = async (userId: string, updatedPassword: string, organizationId: string) => {
+export const updateUserPassword = async (userId: string, updatedPassword: string, organizationId?: string) => {
+  const conditions = [eq(users.id, userId)];
+  if (organizationId) {
+    conditions.push(eq(users.organizationId, organizationId));
+  }
+  const whereClause = and(...conditions);
   const user = await db.query.users.findFirst({
-    where: and(eq(users.id, userId), eq(users.organizationId, organizationId)),
+    where: whereClause,
   });
   if (!user) {
     throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
   }
   const newHashedPassword = await hashPassword(updatedPassword);
-  await db
-    .update(users)
-    .set({ password: newHashedPassword })
-    .where(and(eq(users.id, userId), eq(users.organizationId, organizationId)));
+  await db.update(users).set({ password: newHashedPassword }).where(whereClause);
   return userDTO(user);
 };
 
@@ -145,9 +147,16 @@ export const deleteUserById = async (id: string, organizationId: string) => {
   return userDTO(deletedUser);
 };
 
-export const getUserById = async (id: string, organizationId: string) => {
+export const getUserById = async (id: string, organizationId?: string) => {
+  const conditions = [eq(users.id, id)];
+  if (organizationId) {
+    conditions.push(eq(users.organizationId, organizationId));
+  }
+
+  const whereClause = and(...conditions);
+
   const user = await db.query.users.findFirst({
-    where: and(eq(users.id, id), eq(users.organizationId, organizationId)),
+    where: whereClause,
     with: {
       organization: true,
     },

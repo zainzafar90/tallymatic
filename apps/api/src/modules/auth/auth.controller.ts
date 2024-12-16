@@ -39,13 +39,14 @@ export const forgotPassword = catchAsync(async (req: Request, res: Response<void
 });
 
 export const resetPassword = catchAsync(async (req: Request, res: Response<void>) => {
-  await authService.resetPassword(req.query['token'] as string, req.body.password, req.user?.organizationId);
+  await authService.resetPassword(req.query['token'] as string, req.body.password);
   res.status(httpStatus.NO_CONTENT).send();
 });
 
 export const sendVerificationEmail = catchAsync(async (req: Request, res: Response<void>) => {
   const user = req.user as IUser;
 
+  console.log('user', user);
   if (!user) {
     throw new Error('User not found');
   }
