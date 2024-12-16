@@ -43,21 +43,6 @@ export class Category extends Model {
   })
   description: string;
 
-  @ForeignKey(() => Category)
-  @Column({
-    type: DataType.UUID,
-    allowNull: true,
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE',
-  })
-  parentCategoryId: string | null;
-
-  @BelongsTo(() => Category, 'parentCategoryId')
-  parentCategory: Category;
-
-  @HasMany(() => Category, 'parentCategoryId')
-  childCategories: Category[];
-
   @Column({
     type: DataType.ENUM({ values: Object.values(Status) }),
     allowNull: false,

@@ -17,7 +17,7 @@ export const categories = pgTable('categories', {
     .notNull()
     .references(() => organizations.id),
   name: varchar('name', { length: 255 }).notNull(),
-  description: text('description'),
+  description: text('description').default(''),
   status: EnumStatus('status').notNull().default(Status.ACTIVE),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),

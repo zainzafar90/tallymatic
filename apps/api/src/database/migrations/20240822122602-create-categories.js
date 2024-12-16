@@ -18,16 +18,6 @@ module.exports = {
         type: Sequelize.TEXT,
         allowNull: true,
       },
-      parentCategoryId: {
-        type: Sequelize.UUID,
-        allowNull: true,
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE',
-        references: {
-          model: 'categories',
-          key: 'id',
-        },
-      },
       status: {
         type: Sequelize.ENUM('active', 'inactive'),
         allowNull: false,

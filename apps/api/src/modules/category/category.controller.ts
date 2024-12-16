@@ -14,7 +14,8 @@ export const createCategory = catchAsync(async (req: Request, res: Response) => 
   if (!isAllowed) {
     throw new ApiError(httpStatus.FORBIDDEN, 'You do not have permission to create categories');
   }
-  const category = await categoryService.createCategory(req.body);
+  const organizationId = req.user.organizationId;
+  const category = await categoryService.createCategory(req.body, organizationId);
   res.status(httpStatus.CREATED).send(category);
 });
 
@@ -24,17 +25,19 @@ export const getCategories = catchAsync(async (req: Request, res: Response) => {
     throw new ApiError(httpStatus.FORBIDDEN, 'You do not have permission to list categories');
   }
 
-  const filter = pick(req.query, ['name', 'parentCategoryId', 'status']);
+  const filter = pick(req.query, ['name', 'status']);
   const options: IOptions = pick(req.query, ['sortBy', 'limit', 'offset', 'projectBy', 'includeDeleted']);
-  const wildcardFields = ['name'];
-  const result = await categoryService.queryCategories(filter, options, wildcardFields);
+  const organizationId = req.user.organizationId;
+
+  const result = await categoryService.queryCategories(filter, options, organizationId);
   res.send(result);
 });
 
 export const getCategory = catchAsync(async (req: Request, res: Response) => {
   if (typeof req.params['categoryId'] === 'string') {
     const includeDeleted = req.query.includeDeleted === 'true';
-    const category = await categoryService.getCategoryById(req.params['categoryId'], includeDeleted);
+    const organizationId = req.user.organizationId;
+    const category = await categoryService.getCategoryById(req.params['categoryId'], includeDeleted, organizationId);
     if (!category) {
       throw new ApiError(httpStatus.NOT_FOUND, 'Category not found');
     }
@@ -48,7 +51,8 @@ export const updateCategory = catchAsync(async (req: Request, res: Response) => 
     if (!isAllowed) {
       throw new ApiError(httpStatus.FORBIDDEN, 'You do not have permission to update category');
     }
-    const category = await categoryService.updateCategoryById(req.params['categoryId'], req.body);
+    const organizationId = req.user.organizationId;
+    const category = await categoryService.updateCategoryById(req.params['categoryId'], req.body, organizationId);
     res.send(category);
   }
 });
@@ -59,7 +63,8 @@ export const deleteCategory = catchAsync(async (req: Request, res: Response) => 
     if (!isAllowed) {
       throw new ApiError(httpStatus.FORBIDDEN, 'You do not have permission to delete category');
     }
-    await categoryService.deleteCategoryById(req.params['categoryId']);
+    const organizationId = req.user.organizationId;
+    await categoryService.deleteCategoryById(req.params['categoryId'], organizationId);
     res.status(httpStatus.NO_CONTENT).send();
   }
 });
@@ -75,7 +80,7 @@ export const bulkDeteteCategories = catchAsync(async (req: Request, res: Respons
   if (!Array.isArray(categoryIds) || categoryIds.length === 0) {
     return res.status(400).json({ message: 'Invalid input: categoryIds must be a non-empty array' });
   }
-
-  await categoryService.bulkDeleteCategories(categoryIds);
+  const organizationId = req.user.organizationId;
+  await categoryService.bulkDeleteCategories(categoryIds, organizationId);
   res.status(httpStatus.OK).send({});
 });

@@ -1,85 +1,132 @@
+import { and, eq, inArray, sql } from 'drizzle-orm';
 import httpStatus from 'http-status';
 import { CreateCategoryReq, ICategory, IOptions, ListResponse, UpdateCategoryReq } from '@shared';
 
 import { ApiError } from '@/common/errors/api-error';
 import { getDatabaseInstance } from '@/database/db';
+import { db } from '@/db';
+import { categories, Category } from '@/db/schema';
 
-import { buildPaginationOptions, transformPagination } from '../paginate/paginate';
-import { Category } from './category.model';
+import { getPaginationConfig } from '../paginate/pagination';
 
-export const createCategory = async (categoryBody: CreateCategoryReq): Promise<ICategory> => {
-  const category = await Category.create(categoryBody);
-  return category.toJSON();
+export const createCategory = async (categoryBody: CreateCategoryReq, organizationId: string): Promise<ICategory> => {
+  const [category] = await db
+    .insert(categories)
+    .values({
+      name: categoryBody.name,
+      organizationId,
+    })
+    .returning();
+
+  return category;
 };
 
 export const queryCategories = async (
   filter: Record<string, any>,
   options: IOptions,
-  wildcardFields: string[] = []
+  organizationId: string
 ): Promise<ListResponse<Category>> => {
-  const paginationOptions = buildPaginationOptions(filter, options, wildcardFields);
+  const { limit, offset } = getPaginationConfig(options);
 
-  const result = await Category.findAndCountAll({
-    ...paginationOptions,
-    paranoid: !options.includeDeleted,
-  });
-  return transformPagination(result.count, result.rows, paginationOptions.offset, paginationOptions.limit);
-};
-
-export const getCategoryById = async (id: string, includeDeleted = false): Promise<ICategory | null> => {
-  const category = await Category.findByPk(id, { paranoid: !includeDeleted });
-  return category ? category.toJSON() : null;
-};
-
-export const updateCategoryById = async (categoryId: string, updateBody: UpdateCategoryReq): Promise<ICategory | null> => {
-  const category = await Category.findByPk(categoryId);
-  if (!category) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Category not found');
+  const conditions = [eq(categories.organizationId, organizationId)];
+  if (filter.name) {
+    conditions.push(eq(categories.name, filter.name));
   }
-  Object.assign(category, updateBody);
-  await category.save();
-  return category.toJSON();
+
+  const whereClause = and(...conditions);
+
+  const [countResult] = await db
+    .select({ count: sql<number>`count(*)` })
+    .from(categories)
+    .where(whereClause);
+
+  const results = await db
+    .select()
+    .from(categories)
+    .where(whereClause)
+    .limit(limit)
+    .offset(offset)
+    .orderBy(categories.createdAt);
+
+  return {
+    results,
+    limit,
+    offset,
+    pages: Math.ceil(countResult.count / limit),
+    count: countResult.count,
+  };
 };
 
-export const deleteCategoryById = async (categoryId: string): Promise<ICategory | null> => {
-  const category = await Category.findByPk(categoryId);
-  if (!category) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Category not found');
-  }
-  await category.destroy();
-  return category.toJSON();
+export const getCategoryById = async (
+  id: string,
+  includeDeleted = false,
+  organizationId: string
+): Promise<ICategory | null> => {
+  const [category] = await db
+    .select()
+    .from(categories)
+    .where(and(eq(categories.id, id), eq(categories.organizationId, organizationId)))
+    .limit(1);
+
+  return category;
 };
 
-// TODO: not used yet in the app
-export const permanentlyDeleteCategoryById = async (categoryId: string): Promise<ICategory | null> => {
-  const category = await Category.findByPk(categoryId, { paranoid: false });
-  if (!category) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Category not found');
-  }
-  await category.destroy({ force: true });
-  return category.toJSON();
-};
-
-export const bulkDeleteCategories = async (categoryIds: string[]): Promise<ICategory[]> => {
-  const transaction = await getDatabaseInstance().transaction();
-  try {
-    const categories = await Category.findAll({
-      where: { id: categoryIds },
-      transaction,
-    });
-
-    if (categories.length !== categoryIds.length) {
-      throw new Error('One or more category IDs are invalid');
+export const updateCategoryById = async (
+  categoryId: string,
+  updateBody: UpdateCategoryReq,
+  organizationId: string
+): Promise<ICategory | null> => {
+  return await db.transaction(async (tx) => {
+    const category = await getCategoryById(categoryId, false, organizationId);
+    if (!category) {
+      throw new ApiError(httpStatus.NOT_FOUND, 'Category not found');
     }
 
-    await Category.destroy({
-      where: { id: categoryIds },
-      transaction,
+    const updatedBody = {
+      ...updateBody,
+      updatedAt: new Date(),
+    };
+
+    const [updatedCategory] = await tx
+      .update(categories)
+      .set(updatedBody)
+      .where(and(eq(categories.id, categoryId), eq(categories.organizationId, organizationId)))
+      .returning();
+
+    return updatedCategory;
+  });
+};
+
+export const deleteCategoryById = async (categoryId: string, organizationId: string): Promise<ICategory | null> => {
+  const category = await getCategoryById(categoryId, false, organizationId);
+  if (!category) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Category not found');
+  }
+
+  await db.delete(categories).where(and(eq(categories.id, categoryId), eq(categories.organizationId, organizationId)));
+  return category;
+};
+
+export const bulkDeleteCategories = async (categoryIds: string[], organizationId: string): Promise<ICategory[]> => {
+  const transaction = await getDatabaseInstance().transaction();
+  try {
+    await db.transaction(async (tx) => {
+      const existingCategories = await tx
+        .select()
+        .from(categories)
+        .where(and(inArray(categories.id, categoryIds), eq(categories.organizationId, organizationId)));
+
+      if (existingCategories.length !== categoryIds.length) {
+        throw new ApiError(httpStatus.NOT_FOUND, 'One or more categories not found');
+      }
+
+      await tx
+        .delete(categories)
+        .where(and(inArray(categories.id, categoryIds), eq(categories.organizationId, organizationId)));
+      return existingCategories;
     });
 
-    await transaction.commit();
-
-    return categories.map((category) => category.toJSON());
+    return [];
   } catch (error) {
     if (transaction) await transaction.rollback();
     console.error('Error in bulkDeleteCategories:', error);

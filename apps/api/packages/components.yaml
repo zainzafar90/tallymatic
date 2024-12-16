@@ -57,10 +57,6 @@ components:
           type: string
         description:
           type: string
-        parentCategoryId:
-          type: string
-          format: uuid
-          nullable: true
         status:
           type: string
           enum: [active, inactive]
@@ -68,7 +64,6 @@ components:
         id: 00000000-0000-4000-8000-000000000001
         name: Electronics
         description: Electronic devices and accessories
-        parentCategoryId: null
         status: active
 
     Product:

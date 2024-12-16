@@ -13,6 +13,7 @@ import {
 
 import { ApiError } from '@/common/errors/api-error';
 
+import { hashPassword as dbHashPassword, sanitizeUser, users, verifyPassword } from '../../db/schema/user.schema';
 import { Organization } from '../organization';
 import { paginate } from '../paginate/paginate';
 import { hashPassword, User } from './user.model';
@@ -223,4 +224,57 @@ export const updateUserPassword = async (userId: string, updatedPassword: string
   user.password = newHashedPassword;
   await user.save();
   return userToIUser(user);
+};
+
+/**
+ * Example create user method
+ * @param {UserInsert} userData
+ * @returns {Promise<IUser>}
+ */
+export const createUserFromDb = async (userData: UserInsert): Promise<IUser> => {
+  const hashedPassword = await dbHashPassword(userData.password);
+
+  const user = await User.create({
+    ...userData,
+    role: RoleType.Member,
+    password: hashedPassword,
+  });
+
+  return sanitizeUser(user);
+};
+
+/**
+ * Example get user method
+ * @param {string} id
+ * @returns {Promise<IUser | null>}
+ */
+export const getUserByIdFromDb = async (id: string): Promise<IUser | null> => {
+  const user = await User.findByPk(id);
+
+  if (!user) {
+    throw new Error('User not found');
+  }
+
+  return sanitizeUser(user);
+};
+
+/**
+ * Example login method
+ * @param {string} email
+ * @param {string} password
+ * @returns {Promise<IUser | null>}
+ */
+export const validateUser = async (email: string, password: string): Promise<IUser | null> => {
+  const user = await User.findOne({ where: { email } });
+
+  if (!user) {
+    throw new Error('Invalid credentials');
+  }
+
+  const isPasswordValid = await verifyPassword(password, user.password);
+  if (!isPasswordValid) {
+    throw new Error('Invalid credentials');
+  }
+
+  return sanitizeUser(user);
 };

@@ -6,10 +6,10 @@ import { uuid } from '@/common/validate/custom.validation';
 const createCategoryBody: Record<keyof CreateCategoryReq, any> = {
   name: Joi.string().required(),
   description: Joi.string().optional(),
-  parentCategoryId: Joi.string().custom(uuid).optional().allow(null),
   status: Joi.string().valid(Status.ACTIVE, Status.INACTIVE).required(),
   createdAt: Joi.date().optional(),
   updatedAt: Joi.date().optional(),
+  organizationId: Joi.string().optional(),
 };
 
 export const createCategory = {
@@ -19,7 +19,6 @@ export const createCategory = {
 export const getCategories = {
   query: Joi.object().keys({
     name: Joi.string(),
-    parentCategoryId: Joi.string().custom(uuid),
     status: Joi.string().valid(Status.ACTIVE, Status.INACTIVE),
     sortBy: Joi.string(),
     projectBy: Joi.string(),
@@ -47,7 +46,6 @@ export const updateCategory = {
       id: Joi.string().custom(uuid).optional(),
       name: Joi.string(),
       description: Joi.string(),
-      parentCategoryId: Joi.string().custom(uuid).allow(null),
       status: Joi.string().valid(Status.ACTIVE, Status.INACTIVE),
     })
     .min(1),

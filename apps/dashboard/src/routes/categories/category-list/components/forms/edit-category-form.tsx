@@ -11,9 +11,8 @@ export const EditCategoryForm = (props: { category: ICategory; onClose: () => vo
   const handleSubmit = async (data: CategoryFormData) => {
     await mutateAsync(
       {
-        id: props.category.id,
         ...data,
-        parentCategoryId: data.parentCategoryId ? data.parentCategoryId : undefined,
+        id: props.category.id,
         status: data.status as Status,
       },
       {

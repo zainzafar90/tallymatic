@@ -65,8 +65,8 @@ export interface ICategory extends Dates {
   id: string;
   name: string;
   description?: string;
-  parentCategoryId?: string | null;
   status: Status;
+  organizationId: string;
 }
 
 export interface IProductVariant extends Dates {
