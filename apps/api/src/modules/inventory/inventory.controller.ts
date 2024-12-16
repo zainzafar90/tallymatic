@@ -14,20 +14,17 @@ export const adjustStock = catchAsync(async (req: Request, res: Response) => {
   if (!isAllowed) {
     throw new ApiError(httpStatus.FORBIDDEN, 'You do not have permission to adjust stock');
   }
+
   const { variantId, quantity, type, notes } = req.body;
-  const transaction = await inventoryService.adjustStock(variantId, quantity, type as TransactionType, notes);
+  const transaction = await inventoryService.adjustStock(
+    variantId,
+    quantity,
+    type as TransactionType,
+    req.user.organizationId,
+    notes
+  );
   res.status(httpStatus.OK).send(transaction);
 });
-
-// export const getInventoryLevels = catchAsync(async (req: Request, res: Response) => {
-//   const isAllowed = permissionService.checkPermissions(req.user.role, 'view', 'inventory');
-//   if (!isAllowed) {
-//     throw new ApiError(httpStatus.FORBIDDEN, 'You do not have permission to view inventory levels');
-//   }
-//   const { productId } = req.params;
-//   const levels = await inventoryService.getInventoryLevels(productId);
-//   res.status(httpStatus.OK).send(levels);
-// });
 
 export const getAllInventoryLevels = catchAsync(async (req: Request, res: Response) => {
   const isAllowed = permissionService.checkPermissions(req.user.role, 'view', 'inventory');
@@ -39,7 +36,7 @@ export const getAllInventoryLevels = catchAsync(async (req: Request, res: Respon
   const options: IOptions = pick(req.query, ['sortBy', 'limit', 'offset', 'projectBy']);
   const wildcardFields = ['name'];
 
-  const levels = await inventoryService.getAllInventoryLevels(filter, options, wildcardFields);
+  const levels = await inventoryService.getAllInventoryLevels(filter, options, req.user.organizationId, wildcardFields);
   res.status(httpStatus.OK).send(levels);
 });
 
@@ -48,6 +45,7 @@ export const getLowStockAlerts = catchAsync(async (req: Request, res: Response) 
   if (!isAllowed) {
     throw new ApiError(httpStatus.FORBIDDEN, 'You do not have permission to view low stock alerts');
   }
-  const alerts = await inventoryService.checkLowStockAlerts();
+
+  const alerts = await inventoryService.checkLowStockAlerts(req.user.organizationId);
   res.status(httpStatus.OK).send(alerts);
 });

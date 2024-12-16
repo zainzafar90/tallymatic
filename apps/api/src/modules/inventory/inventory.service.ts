@@ -1,109 +1,121 @@
-import { Op, Sequelize } from 'sequelize';
-import { InventoryLevelsResponse, IOptions, LowStockAlertsResponse, TransactionType } from '@shared';
+import { and, eq, lte, sql } from 'drizzle-orm';
+import httpStatus from 'http-status';
+import { IOptions, TransactionType } from '@shared';
 
-import { getDatabaseInstance } from '@/database/db';
+import { ApiError } from '@/common/errors/api-error';
+import { db } from '@/db';
+import { Inventory, inventory, products, variants } from '@/db/schema';
 
-import { Product } from '../product';
-import { ProductVariant } from '../product-variant';
-import { Inventory } from './inventory.model';
+import { getPaginationConfig } from '../paginate/pagination';
 
-export const createClaimAdjustment = async (variantId: string, quantity: number, notes?: string): Promise<Inventory> => {
-  const transaction = await getDatabaseInstance().transaction();
-  try {
-    const inventoryCreated = await adjustStock(variantId, quantity, TransactionType.ADJUSTED, notes);
-    await transaction.commit();
-
-    return inventoryCreated;
-  } catch (error) {
-    await transaction.rollback();
-    throw error;
-  }
+const inventoryDTO = (inventory: Inventory) => {
+  return inventory;
 };
 
-// export const getInventoryLevels = async (productId: string): Promise<ProductVariant[]> => {
-//   return ProductVariant.findAll({
-//     where: { productId },
-//     attributes: ['id', 'name', 'stock', 'lowStockThreshold', 'reorderPoint', 'reorderQuantity'],
-//   });
-// };
+export const createClaimAdjustment = async (variantId: string, quantity: number, organizationId: string, notes?: string) => {
+  return adjustStock(variantId, quantity, TransactionType.ADJUSTED, organizationId, notes);
+};
 
 export const getAllInventoryLevels = async (
   filter: Record<string, any>,
   options: IOptions,
+  organizationId: string,
   wildcardFields: string[] = []
-): Promise<InventoryLevelsResponse> => {
-  const searchFilter = {};
-  for (const [key, value] of Object.entries(filter)) {
-    if (wildcardFields.includes(key)) {
-      searchFilter[key] = { [Op.iLike]: `%${value}%` };
-    } else {
-      searchFilter[key] = value;
-    }
+) => {
+  const { limit, offset } = getPaginationConfig(options);
+
+  const conditions = [eq(products.organizationId, organizationId)];
+
+  if (filter.name) {
+    conditions.push(
+      wildcardFields.includes('name') ? sql`${products.name} ILIKE ${`%${filter.name}%`}` : eq(products.name, filter.name)
+    );
   }
 
-  const paginationOptions = buildPaginationOptions({}, options, wildcardFields);
-  const result = await ProductVariant.findAndCountAll({
-    ...paginationOptions,
-    attributes: ['id', 'name', 'sku', 'stock', 'lowStockThreshold', 'reorderPoint', 'reorderQuantity'],
-    include: [
-      {
-        model: Product,
-        attributes: ['name'],
-        where: searchFilter,
-      },
-    ],
-  });
+  const whereClause = and(...conditions);
 
-  return transformPagination(result.count, result.rows, paginationOptions.offset, paginationOptions.limit);
+  const [variantsCount] = await db
+    .select({ count: sql<number>`count(*)` })
+    .from(variants)
+    .innerJoin(products, eq(variants.productId, products.id))
+    .where(whereClause);
+
+  const results = await db
+    .select({
+      id: variants.id,
+      name: variants.name,
+      sku: variants.sku,
+      stock: variants.stock,
+      lowStockThreshold: variants.lowStockThreshold,
+      reorderPoint: variants.reorderPoint,
+      reorderQuantity: variants.reorderQuantity,
+      productName: products.name,
+    })
+    .from(variants)
+    .innerJoin(products, eq(variants.productId, products.id))
+    .where(whereClause)
+    .limit(limit)
+    .offset(offset)
+    .orderBy(variants.createdAt);
+
+  return {
+    results,
+    limit,
+    offset,
+    pages: Math.ceil(variantsCount.count / limit),
+    count: variantsCount.count,
+  };
 };
 
-export const checkLowStockAlerts = async (): Promise<LowStockAlertsResponse> => {
-  const result = await ProductVariant.findAndCountAll({
-    where: {
-      stock: {
-        [Op.lte]: Sequelize.col('lowStockThreshold'),
-      },
-    },
-    order: [['stock', 'ASC']],
-  });
+export const checkLowStockAlerts = async (organizationId: string) => {
+  const results = await db
+    .select()
+    .from(variants)
+    .innerJoin(products, eq(variants.productId, products.id))
+    .where(and(eq(products.organizationId, organizationId), lte(variants.stock, variants.lowStockThreshold)))
+    .orderBy(variants.stock);
 
-  return transformPagination(result.count, result.rows, 0, result.count);
+  return {
+    results,
+    count: results.length,
+    limit: results.length,
+    offset: 0,
+    pages: 1,
+  };
 };
 
 export const adjustStock = async (
   variantId: string,
   quantity: number,
   type: TransactionType,
+  organizationId: string,
   notes?: string
-): Promise<Inventory> => {
-  const transaction = await getDatabaseInstance().transaction();
-  try {
-    const variant = await ProductVariant.findByPk(variantId, { transaction });
+) => {
+  return db.transaction(async (tx) => {
+    const [variant] = await tx
+      .select()
+      .from(variants)
+      .where(and(eq(variants.id, variantId), eq(products.organizationId, organizationId)))
+      .limit(1);
+
     if (!variant) {
-      throw new Error('Product variant not found');
+      throw new ApiError(httpStatus.NOT_FOUND, 'Product variant not found');
     }
 
     const newStock = variant.stock + quantity;
     if (newStock < 0) {
-      throw new Error('Insufficient stock');
+      throw new ApiError(httpStatus.BAD_REQUEST, 'Insufficient stock');
     }
 
-    await variant.update({ stock: newStock }, { transaction });
-
-    const inventoryCreated = await Inventory.create(
-      {
+    const [inventoryCreated] = await tx
+      .insert(inventory)
+      .values({
         variantId,
         quantity,
         type,
-        notes,
-      },
-      { transaction }
-    );
-    await transaction.commit();
+      })
+      .returning();
 
-    return inventoryCreated.toJSON();
-  } catch (error) {
-    await transaction.rollback();
-    throw error;
-  }
+    return inventoryDTO(inventoryCreated);
+  });
 };

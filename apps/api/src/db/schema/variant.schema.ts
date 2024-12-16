@@ -1,4 +1,4 @@
-import { relations } from 'drizzle-orm';
+import { relations, sql } from 'drizzle-orm';
 import { customType, integer, numeric, pgTable, timestamp, uuid, varchar } from 'drizzle-orm/pg-core';
 import { Status } from '@shared';
 
@@ -27,10 +27,10 @@ export const variants = pgTable('variants', {
   barcode: varchar('barcode', { length: 255 }),
   price: numeric('price').notNull(),
   costPrice: numeric('cost_price'),
-  stock: integer('stock').notNull().default(0),
-  lowStockThreshold: integer('low_stock_threshold').notNull().default(0),
-  reorderPoint: integer('reorder_point').notNull().default(0),
-  reorderQuantity: integer('reorder_quantity').notNull().default(0),
+  stock: integer('stock'),
+  lowStockThreshold: integer('low_stock_threshold'),
+  reorderPoint: integer('reorder_point'),
+  reorderQuantity: integer('reorder_quantity'),
   status: EnumStatus('status').notNull().default(Status.ACTIVE),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),

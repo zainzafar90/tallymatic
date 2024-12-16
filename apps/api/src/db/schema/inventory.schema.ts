@@ -15,13 +15,16 @@ export const inventory = pgTable('inventory', {
   variantId: uuid('variant_id')
     .notNull()
     .references(() => variants.id),
-  quantity: integer('quantity').notNull().default(0),
+  quantity: integer('quantity').notNull(),
   type: EnumTransactionType('type').notNull(),
   notes: text('notes'),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
   deletedAt: timestamp('deleted_at'),
 });
+
+export type Inventory = typeof inventory.$inferSelect;
+export type InventoryInsert = typeof inventory.$inferInsert;
 
 export const inventoryRelations = relations(inventory, ({ one }) => ({
   variant: one(variants, {
