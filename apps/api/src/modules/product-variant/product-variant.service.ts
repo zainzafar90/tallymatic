@@ -1,46 +1,50 @@
-import { Op, WhereOptions } from 'sequelize';
+import { and, count, eq, ilike } from 'drizzle-orm';
 import { IOptions, ListResponse } from '@shared';
 
-import { buildPaginationOptions, transformPagination } from '../paginate/paginate';
-import { Product } from '../product/product.model';
-import { ProductVariant } from './product-variant.model';
+import { db } from '@/db';
+import { variants } from '@/db/schema';
+
+import { getPaginationConfig } from '../paginate/pagination';
 
 export const queryProductVariants = async (
   filter: Record<string, any>,
   options: IOptions,
+  organizationId: string,
   wildcardFields: string[] = []
-): Promise<ListResponse<ProductVariant>> => {
-  const paginationOptions = buildPaginationOptions(filter, options, wildcardFields);
+): Promise<ListResponse<typeof variants.$inferSelect>> => {
+  const { limit, offset } = getPaginationConfig(options);
 
-  const variantWhere: WhereOptions = {};
+  const conditions = [eq(variants.organizationId, organizationId)];
+
   if (filter.name) {
-    variantWhere.name = { [Op.iLike]: `%${filter.name}%` };
+    conditions.push(ilike(variants.name, `%${filter.name}%`));
   }
   if (filter.sku) {
-    variantWhere.sku = { [Op.iLike]: `%${filter.sku}%` };
+    conditions.push(ilike(variants.sku, `%${filter.sku}%`));
   }
   if (filter.status) {
-    variantWhere.status = filter.status;
+    conditions.push(eq(variants.status, filter.status));
   }
 
-  const productWhere: WhereOptions = {};
-  if (filter.productName) {
-    productWhere.name = { [Op.iLike]: `%${filter.productName}%` };
-  }
+  const whereClause = and(...conditions);
 
-  const result = await ProductVariant.findAndCountAll({
-    ...paginationOptions,
-    where: variantWhere,
-    include: [
-      {
-        model: Product,
-        as: 'product',
-        where: productWhere,
-        required: Object.keys(productWhere).length > 0,
-      },
-    ],
-    order: [['productId', 'ASC']],
+  const [variantsCount] = await db.select({ count: count() }).from(variants).where(whereClause);
+
+  const results = await db.query.variants.findMany({
+    where: whereClause,
+    limit,
+    offset,
+    orderBy: variants.productId,
+    with: {
+      product: true,
+    },
   });
 
-  return transformPagination(result.count, result.rows, paginationOptions.offset, paginationOptions.limit);
+  return {
+    results,
+    limit,
+    offset,
+    pages: Math.ceil(variantsCount.count / limit),
+    count: variantsCount.count,
+  };
 };

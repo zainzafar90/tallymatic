@@ -18,6 +18,6 @@ export const getProductVariants = catchAsync(async (req: Request, res: Response)
   const filter = pick(req.query, ['name', 'sku', 'status', 'productName']);
   const options: IOptions = pick(req.query, ['sortBy', 'limit', 'offset', 'projectBy']);
 
-  const result = await productVariantService.queryProductVariants(filter, options);
+  const result = await productVariantService.queryProductVariants(filter, options, req.user.organizationId);
   res.send(result);
 });
