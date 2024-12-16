@@ -15,7 +15,7 @@ export const createStore = catchAsync(async (req: Request, res: Response) => {
     throw new ApiError(httpStatus.FORBIDDEN, 'You do not have permission to create stores');
   }
 
-  const store = await storeService.createStore(req.body);
+  const store = await storeService.createStore(req.body, req.user.organizationId);
   res.status(httpStatus.CREATED).send(store);
 });
 
@@ -27,13 +27,13 @@ export const getStores = catchAsync(async (req: Request, res: Response) => {
     throw new ApiError(httpStatus.FORBIDDEN, 'You do not have permission to list stores');
   }
 
-  const result = await storeService.queryStores(filter, options);
+  const result = await storeService.queryStores(filter, options, req.user.organizationId);
   res.send(result);
 });
 
 export const getStore = catchAsync(async (req: Request, res: Response) => {
   if (typeof req.params['storeId'] === 'string') {
-    const store = await storeService.getStoreById(req.params['storeId']);
+    const store = await storeService.getStoreById(req.params['storeId'], req.user.organizationId);
     if (!store) {
       throw new ApiError(httpStatus.NOT_FOUND, 'Store not found');
     }
@@ -43,14 +43,24 @@ export const getStore = catchAsync(async (req: Request, res: Response) => {
 
 export const updateStore = catchAsync(async (req: Request, res: Response) => {
   if (typeof req.params['storeId'] === 'string') {
-    const store = await storeService.updateStoreById(req.params['storeId'], req.body);
+    const isAllowed = permissionService.checkPermissions(req.user.role, 'update', 'stores');
+    if (!isAllowed) {
+      throw new ApiError(httpStatus.FORBIDDEN, 'You do not have permission to update stores');
+    }
+
+    const store = await storeService.updateStoreById(req.params['storeId'], req.body, req.user.organizationId);
     res.send(store);
   }
 });
 
 export const deleteStore = catchAsync(async (req: Request, res: Response) => {
   if (typeof req.params['storeId'] === 'string') {
-    await storeService.deleteStoreById(req.params['storeId']);
+    const isAllowed = permissionService.checkPermissions(req.user.role, 'delete', 'stores');
+    if (!isAllowed) {
+      throw new ApiError(httpStatus.FORBIDDEN, 'You do not have permission to delete stores');
+    }
+
+    await storeService.deleteStoreById(req.params['storeId'], req.user.organizationId);
     res.status(httpStatus.NO_CONTENT).send();
   }
 });
