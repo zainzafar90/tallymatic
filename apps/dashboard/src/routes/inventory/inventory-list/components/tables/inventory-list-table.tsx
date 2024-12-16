@@ -15,7 +15,7 @@ import { FetchError } from '@/lib/is-fetch-error';
 import { useInventoryTableColumns } from '../../hooks/use-inventory-table-columns';
 
 type InventoryTableProps = {
-  results: IProductVariant[];
+  results: (IProductVariant & { productName: string })[];
   count: number;
   hasResults: boolean;
   isLoading: boolean;

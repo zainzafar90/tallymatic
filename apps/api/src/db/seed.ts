@@ -126,8 +126,21 @@ async function main() {
       products: {
         count: 10,
         columns: {
-          name: funcs.string(),
-          description: funcs.string(),
+          name: funcs.valuesFromArray({
+            values: [
+              'iPhone 14 Pro',
+              'Samsung Galaxy S23',
+              'MacBook Air M2',
+              'Sony WH-1000XM4',
+              'Nintendo Switch OLED',
+              'iPad Air 5th Gen',
+              'Dell XPS 13',
+              'AirPods Pro 2nd Gen',
+              'PlayStation 5',
+              'Xbox Series X',
+            ],
+          }),
+          description: funcs.loremIpsum({ sentencesCount: 1 }),
           price: funcs.number({
             minValue: 100,
             maxValue: 1000,
@@ -138,8 +151,10 @@ async function main() {
       variants: {
         count: 20,
         columns: {
-          name: funcs.string(),
-          sku: funcs.string(),
+          name: funcs.valuesFromArray({
+            values: ['Red', 'Blue', 'Green', 'Yellow', 'Purple', 'Orange', 'Pink', 'Gray', 'Black', 'White'],
+          }),
+          sku: funcs.phoneNumber({ template: 'SKU-####' }),
           price: funcs.number({
             minValue: 100,
             maxValue: 1000,

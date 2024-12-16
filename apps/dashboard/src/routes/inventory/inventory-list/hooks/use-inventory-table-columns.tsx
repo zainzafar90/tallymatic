@@ -7,7 +7,7 @@ import { TextCell, TextHeader } from '@/components/table/table-cells/common/text
 
 import { InventoryActions } from '../components/tables/inventory-table-actions';
 
-const columnHelper = createColumnHelper<IProductVariant>();
+const columnHelper = createColumnHelper<IProductVariant & { productName: string }>();
 
 export const useInventoryTableColumns = () => {
   return [
@@ -15,7 +15,7 @@ export const useInventoryTableColumns = () => {
       header: ({ column }) => <SortedHeader text="Name" column={column} />,
       cell: ({ row }) => (
         <div className="flex flex-col h-full w-full gap-x-3 overflow-hidden">
-          <div className="truncate">{row.original.product?.name}</div>
+          <div className="truncate">{row.original.productName}</div>
           <div className="text-sm text-gray-500">{row.getValue('name')}</div>
         </div>
       ),
