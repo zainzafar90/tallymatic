@@ -1,71 +1,122 @@
+import { and, count, eq } from 'drizzle-orm';
 import httpStatus from 'http-status';
 import { CreatePurchaseReq, IOptions, ListResponse, PurchaseStatus, TransactionType } from '@shared';
 
 import { ApiError } from '@/common/errors/api-error';
-import { getDatabaseInstance } from '@/database/db';
+import { db } from '@/db';
+import { purchaseItems, purchases } from '@/db/schema';
 
 import { adjustStock } from '../inventory/inventory.service';
-import { buildPaginationOptions, transformPagination } from '../paginate/paginate';
-import { Supplier } from '../supplier/supplier.model';
-import { PurchaseItem } from './purchase-item.model';
-import { Purchase } from './purchase.model';
+import { getPaginationConfig } from '../paginate/pagination';
 
-export const createPurchase = async (purchaseData: CreatePurchaseReq): Promise<Purchase> => {
-  const transaction = await getDatabaseInstance().transaction();
-  try {
+const generatePurchaseNumber = async (organizationId: string) => {
+  const purchaseCount = await db
+    .select({ count: count() })
+    .from(purchases)
+    .where(eq(purchases.organizationId, organizationId));
+  return `PO-${purchaseCount}-${organizationId}`;
+};
+
+export const createPurchase = async (purchaseData: CreatePurchaseReq, organizationId: string) => {
+  return await db.transaction(async (tx) => {
     const { items, ...purchaseBody } = purchaseData;
     const totalAmount = items.reduce((sum, item) => sum + item.unitCost * item.quantity, 0);
     const totalQuantity = items.reduce((sum, item) => sum + item.quantity, 0);
 
-    const purchase = await Purchase.create(
-      {
-        ...purchaseBody,
-        totalAmount,
-        totalQuantity,
-        receivedQuantity: 0,
-        storeId: '00000000-0000-4000-8000-000000000001',
-      },
-      { transaction }
-    );
+    const purchaseNumber = await generatePurchaseNumber(organizationId);
+    const purchaseNew = {
+      ...purchaseBody,
+      purchaseNumber,
+      organizationId,
+      totalAmount: totalAmount.toString(),
+      totalQuantity,
+      receivedQuantity: 0,
+      status: PurchaseStatus.ORDERED,
+    };
 
-    if (items && items.length > 0) {
-      const purchaseItems = items.map((item: any) => ({
+    const [purchase] = await tx.insert(purchases).values(purchaseNew).returning();
+
+    if (items?.length > 0) {
+      const purchaseItemsNew = items.map((item) => ({
         ...item,
         purchaseId: purchase.id,
+        organizationId,
+        unitCost: item.unitCost.toString(),
       }));
-      await PurchaseItem.bulkCreate(purchaseItems, { transaction });
+      await tx.insert(purchaseItems).values(purchaseItemsNew);
     }
 
-    await transaction.commit();
-    return purchase;
-  } catch (error) {
-    await transaction.rollback();
-    throw error;
-  }
-};
-
-export const queryPurchases = async (filter: Record<string, any>, options: IOptions): Promise<ListResponse<Purchase>> => {
-  const paginationOptions = buildPaginationOptions(filter, options);
-  const result = await Purchase.findAndCountAll({
-    ...paginationOptions,
-    include: [PurchaseItem, Supplier],
-  });
-  return transformPagination(result.count, result.rows, paginationOptions.offset, paginationOptions.limit);
-};
-
-export const getPurchaseById = async (id: string): Promise<Purchase | null> => {
-  return Purchase.findByPk(id, {
-    include: [PurchaseItem],
-  });
-};
-
-export const updatePurchaseById = async (purchaseId: string, updateBody: any): Promise<Purchase | null> => {
-  const transaction = await getDatabaseInstance().transaction();
-  try {
-    const purchase = await Purchase.findByPk(purchaseId, {
-      transaction,
-      include: [PurchaseItem],
+    const createdPurchase = await tx.query.purchases.findFirst({
+      where: eq(purchases.id, purchase.id),
+      with: {
+        items: true,
+        supplier: true,
+      },
     });
+
+    return createdPurchase;
+  });
+};
+
+export const queryPurchases = async (
+  filter: Record<string, any>,
+  options: IOptions,
+  organizationId: string
+): Promise<ListResponse<typeof purchases.$inferSelect>> => {
+  const { limit, offset } = getPaginationConfig(options);
+
+  const conditions = [eq(purchases.organizationId, organizationId)];
+  if (filter.status) {
+    conditions.push(eq(purchases.status, filter.status));
+  }
+  if (filter.supplierId) {
+    conditions.push(eq(purchases.supplierId, filter.supplierId));
+  }
+
+  const whereClause = and(...conditions);
+
+  const [purchasesCount] = await db.select({ count: count() }).from(purchases).where(whereClause);
+
+  const results = await db.query.purchases.findMany({
+    where: whereClause,
+    limit,
+    offset,
+    orderBy: purchases.createdAt,
+    with: {
+      items: true,
+      supplier: true,
+    },
+  });
+
+  return {
+    results,
+    limit,
+    offset,
+    pages: Math.ceil(purchasesCount.count / limit),
+    count: purchasesCount.count,
+  };
+};
+
+export const getPurchaseById = async (id: string, organizationId: string) => {
+  const purchase = await db.query.purchases.findFirst({
+    where: and(eq(purchases.id, id), eq(purchases.organizationId, organizationId)),
+    with: {
+      items: true,
+      supplier: true,
+    },
+  });
+  return purchase;
+};
+
+export const updatePurchaseById = async (purchaseId: string, updateBody: any, organizationId: string) => {
+  return await db.transaction(async (tx) => {
+    const purchase = await tx.query.purchases.findFirst({
+      where: and(eq(purchases.id, purchaseId), eq(purchases.organizationId, organizationId)),
+      with: {
+        items: true,
+      },
+    });
+
     if (!purchase) {
       throw new ApiError(httpStatus.NOT_FOUND, 'Purchase not found');
     }
@@ -92,7 +143,7 @@ export const updatePurchaseById = async (purchaseId: string, updateBody: any): P
           newItem.variantId,
           receivedDifference,
           receivedDifference > 0 ? TransactionType.RECEIVED : TransactionType.ADJUSTED,
-          `Purchase ${purchase.orderNumber} - ${receivedDifference > 0 ? 'Received' : 'Adjusted'} ${Math.abs(
+          `Purchase ${purchase.purchaseNumber} - ${receivedDifference > 0 ? 'Received' : 'Adjusted'} ${Math.abs(
             receivedDifference
           )} units`
         );
@@ -115,16 +166,15 @@ export const updatePurchaseById = async (purchaseId: string, updateBody: any): P
     }
 
     // Update purchase items
-    await PurchaseItem.destroy({
-      where: { purchaseId },
-      transaction,
-    });
+    await tx.delete(purchaseItems).where(eq(purchaseItems.purchaseId, purchaseId));
 
-    const purchaseItems = items.map((item: any) => ({
+    const purchaseItemsNew = items.map((item) => ({
       ...item,
       purchaseId,
+      organizationId,
+      unitCost: item.unitCost.toString(),
     }));
-    await PurchaseItem.bulkCreate(purchaseItems, { transaction });
+    await tx.insert(purchaseItems).values(purchaseItemsNew);
 
     // Determine status based on received quantity
     let status = updateBody.status;
@@ -138,35 +188,42 @@ export const updatePurchaseById = async (purchaseId: string, updateBody: any): P
       }
     }
 
-    Object.assign(purchase, {
+    const purchaseUpdate = {
       ...updateBody,
       status,
-      totalAmount,
+      totalAmount: totalAmount.toString(),
       totalQuantity,
       receivedQuantity: newTotalReceivedQty,
+    };
+
+    const [updatedPurchase] = await tx
+      .update(purchases)
+      .set(purchaseUpdate)
+      .where(and(eq(purchases.id, purchaseId), eq(purchases.organizationId, organizationId)))
+      .returning();
+
+    const result = await tx.query.purchases.findFirst({
+      where: eq(purchases.id, updatedPurchase.id),
+      with: {
+        items: true,
+        supplier: true,
+      },
     });
 
-    await purchase.save({ transaction });
-    await transaction.commit();
-
-    return purchase;
-  } catch (error) {
-    await transaction.rollback();
-    throw error;
-  }
+    return result;
+  });
 };
 
-export const deletePurchaseById = async (purchaseId: string): Promise<void> => {
-  const transaction = await getDatabaseInstance().transaction();
-  try {
-    const purchase = await Purchase.findByPk(purchaseId, { transaction });
-    if (!purchase) {
-      throw new ApiError(httpStatus.NOT_FOUND, 'Purchase not found');
-    }
-    await purchase.destroy({ transaction });
-    await transaction.commit();
-  } catch (error) {
-    await transaction.rollback();
-    throw error;
+export const deletePurchaseById = async (purchaseId: string, organizationId: string) => {
+  const purchase = await getPurchaseById(purchaseId, organizationId);
+  if (!purchase) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Purchase not found');
   }
+
+  const [deletedPurchase] = await db
+    .delete(purchases)
+    .where(and(eq(purchases.id, purchaseId), eq(purchases.organizationId, organizationId)))
+    .returning();
+
+  return deletedPurchase;
 };

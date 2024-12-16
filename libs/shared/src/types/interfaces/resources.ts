@@ -127,6 +127,7 @@ export interface IPurchase extends Dates {
   id?: string;
   organizationId?: string;
   supplierId: string;
+  purchaseNumber: string;
   status: PurchaseStatus;
   totalAmount?: number;
   notes?: string;

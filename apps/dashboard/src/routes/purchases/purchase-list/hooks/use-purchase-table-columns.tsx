@@ -14,9 +14,9 @@ const columnHelper = createColumnHelper<IPurchase>();
 
 export const usePurchaseTableColumns = () => {
   return [
-    columnHelper.accessor('orderNumber', {
+    columnHelper.accessor('purchaseNumber', {
       header: ({ column }) => <SortedHeader text="Purchase #" column={column} />,
-      cell: ({ row }) => <TextCell text={row.getValue('orderNumber')} />,
+      cell: ({ row }) => <TextCell text={row.getValue('purchaseNumber')} />,
     }),
     columnHelper.accessor('status', {
       header: () => <TextHeader text="Status" />,

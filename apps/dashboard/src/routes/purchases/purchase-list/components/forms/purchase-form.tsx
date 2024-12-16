@@ -86,7 +86,7 @@ export const PurchaseForm: React.FC<PurchaseFormProps> = ({ purchase, isPending,
             <FieldGroup>
               <div className="grid gap-0.5">
                 <CardTitle className="group flex items-center gap-2 text-lg">Purchase Details</CardTitle>
-                {purchase?.orderNumber && <CardDescription>Order #: {purchase.orderNumber}</CardDescription>}
+                {purchase?.purchaseNumber && <CardDescription>Purchase #: {purchase.purchaseNumber}</CardDescription>}
                 <CardDescription>Date: {new Date().toLocaleDateString()}</CardDescription>
               </div>
 

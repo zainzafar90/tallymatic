@@ -18,7 +18,7 @@ export const purchases = pgTable('purchases', {
     .notNull()
     .references(() => organizations.id),
   supplierId: uuid('supplier_id').references(() => suppliers.id),
-  orderNumber: varchar('order_number', { length: 255 }).notNull(),
+  purchaseNumber: varchar('purchase_number', { length: 255 }).notNull(),
   status: EnumPurchaseStatus('status').notNull().default(PurchaseStatus.DRAFT),
   totalAmount: numeric('total_amount').notNull(),
   expectedArrivalDate: timestamp('expected_arrival_date'),
@@ -39,7 +39,7 @@ export const purchaseItems = pgTable('purchase_items', {
     .notNull()
     .references(() => variants.id),
   quantity: integer('quantity').notNull(),
-  price: numeric('price').notNull(),
+  unitCost: numeric('unit_cost').notNull(),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
   deletedAt: timestamp('deleted_at'),

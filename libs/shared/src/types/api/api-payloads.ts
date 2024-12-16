@@ -64,7 +64,7 @@ export type CreateOrderReq = Omit<
 export type UpdateOrderReq = Partial<IOrder>;
 
 // Purchase
-export type CreatePurchaseReq = Omit<IPurchase, 'id'> & {
+export type CreatePurchaseReq = Omit<IPurchase, 'id' | 'purchaseNumber'> & {
   items: Omit<IPurchaseItem, 'id' | 'purchaseId'>[];
 };
 export type UpdatePurchaseReq = Partial<IPurchase> & {
