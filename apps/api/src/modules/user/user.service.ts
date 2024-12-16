@@ -1,280 +1,164 @@
+import { and, count, eq, ne } from 'drizzle-orm';
 import httpStatus from 'http-status';
-import { Op } from 'sequelize';
-import {
-  CreateUserReq,
-  IOptions,
-  IUser,
-  RegisterUserReq,
-  RoleType,
-  UpdateUserReq,
-  UserListResponse,
-  UserProfileResponse,
-} from '@shared';
+import { CreateUserReq, IOptions, RegisterUserReq, RoleType, UpdateUserReq } from '@shared';
 
 import { ApiError } from '@/common/errors/api-error';
+import { db } from '@/db';
+import { Organization, User, users } from '@/db/schema';
 
-import { hashPassword as dbHashPassword, sanitizeUser, users, verifyPassword } from '../../db/schema/user.schema';
-import { Organization } from '../organization';
-import { paginate } from '../paginate/paginate';
-import { hashPassword, User } from './user.model';
+import { getPaginationConfig } from '../paginate/pagination';
+import { hashPassword, sanitizeUser } from './user.utils';
 
-/**
- * Convert User model to IUser
- * @param {User} user
- * @returns {IUser}
- */
-export const userToIUser = (user: User): IUser => {
-  if (!user) {
-    return null;
-  }
-
+const userDTO = (user: User, organization?: Organization) => {
+  const sanitizedUser = sanitizeUser(user);
   return {
-    id: user.id,
-    name: user.name,
-    email: user.email,
-    contact: user.contact,
-    isEmailVerified: user.isEmailVerified,
-    organizationId: user.organizationId,
-    role: user.role,
+    ...sanitizedUser,
+    organization,
   };
 };
 
-/**
- * Check if email is taken
- * @param {string} email - The user's email
- * @param {string} [excludeUserId] - The id of the user to be excluded from the check
- * @returns {Promise<boolean>}
- */
-export const isEmailTaken = async (email: string, excludeUserId?: string): Promise<boolean> => {
+export const isEmailTaken = async (email: string, excludeUserId?: string) => {
   if (excludeUserId) {
-    const user = await User.findOne({ where: { email, id: { [Op.ne]: excludeUserId } }, paranoid: true });
+    const user = await db.query.users.findFirst({
+      where: and(eq(users.email, email), ne(users.id, excludeUserId)),
+      with: {
+        organization: true,
+      },
+    });
     return !!user;
   }
 
-  const user = await getUserByEmail(email);
+  const user = await db.query.users.findFirst({
+    where: eq(users.email, email),
+    with: {
+      organization: true,
+    },
+  });
   return !!user;
 };
 
-/**
- * Create a user
- * @param {CreateUserReq} userBody
- * @returns {Promise<IUser>}
- */
-export const createUser = async (userBody: CreateUserReq): Promise<IUser> => {
-  const isEmailAlreadyTaken = await isEmailTaken(userBody.email);
-
-  if (isEmailAlreadyTaken) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
-  }
-
-  const newHashedPassword = await hashPassword(userBody.password);
-  const user = await User.create({
-    ...userBody,
-    role: RoleType.Member,
-    password: newHashedPassword,
-  });
-
-  return userToIUser(user);
-};
-
-/**
- * Register a user
- * @param {RegisterUserReq} userBody
- * @returns {Promise<IUser>}
- */
-export const registerUser = async (userBody: RegisterUserReq): Promise<IUser> => {
+export const createUser = async (userBody: CreateUserReq, organizationId: string) => {
   const isEmailAlreadyTaken = await isEmailTaken(userBody.email);
   if (isEmailAlreadyTaken) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
   }
 
-  const newHashedPassword = await hashPassword(userBody.password);
-  const user = await User.create({
-    ...userBody,
-    role: RoleType.Member,
-    password: newHashedPassword,
-  });
+  const hashedPassword = await hashPassword(userBody.password);
+  const [user] = await db
+    .insert(users)
+    .values({
+      ...userBody,
+      organizationId,
+      role: RoleType.Member,
+      password: hashedPassword,
+    })
+    .returning();
 
-  return userToIUser(user);
+  return userDTO(user);
 };
 
-/**
- * Query for users
- * @param {Object} filter - filter
- * @param {Object} options - Query options
- * @returns {Promise<QueryResult>}
- */
-export const queryUsers = async (filter: Record<string, any>, options: IOptions): Promise<UserListResponse> => {
-  const result = await paginate(User, filter, options);
-  return result;
+export const registerUser = async (userBody: RegisterUserReq, organizationId: string) => {
+  const isEmailAlreadyTaken = await isEmailTaken(userBody.email, organizationId);
+  if (isEmailAlreadyTaken) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
+  }
+
+  const hashedPassword = await hashPassword(userBody.password);
+  const [user] = await db
+    .insert(users)
+    .values({
+      ...userBody,
+      organizationId,
+      role: RoleType.Member,
+      password: hashedPassword,
+    })
+    .returning();
+
+  return userDTO(user);
 };
 
-/**
- * Get user by id
- * @param string id
- * @returns {Promise<IUser | null>}
- */
-export const getUserById = async (id: string): Promise<IUser | null> => {
-  const user = await User.findByPk(id);
+export const queryUsers = async (filter: Record<string, any>, options: IOptions, organizationId: string) => {
+  const { limit, offset } = getPaginationConfig(options);
 
-  return userToIUser(user);
-};
+  const conditions = [eq(users.organizationId, organizationId)];
+  if (filter.name) {
+    conditions.push(eq(users.name, filter.name));
+  }
 
-/**
- * Get user self by id
- * @param string id
- * @returns {Promise<IUser | null>}
- */
-export const getMe = async (id: string): Promise<UserProfileResponse | null> => {
-  const user = await User.findByPk(id, {
-    include: [
-      {
-        model: Organization,
-        as: 'organization',
-      },
-    ],
+  const whereClause = and(...conditions);
+
+  const [usersCount] = await db.select({ count: count() }).from(users).where(whereClause);
+
+  const results = await db.query.users.findMany({
+    where: whereClause,
+    limit,
+    offset,
+    orderBy: users.createdAt,
+    with: {
+      organization: true,
+    },
   });
 
   return {
-    id: user.id,
-    name: user.name,
-    role: user.role,
-    email: user.email,
-    contact: user.contact,
-    organization: user.organization,
-    organizationId: user.organizationId,
-    isEmailVerified: user.isEmailVerified,
+    results: results.map((user) => userDTO(user, user.organization)),
+    limit,
+    offset,
+    pages: Math.ceil(usersCount.count / limit),
+    count: usersCount.count,
   };
 };
 
-/**
- * Get user by email
- * @param {string} email
- * @returns {Promise<IUser | null>}
- */
-export const getUserByEmail = async (email: string): Promise<IUser | null> => User.findOne({ where: { email } });
+export const updateUserById = async (id: string, userBody: UpdateUserReq, organizationId: string) => {
+  if (userBody.password) {
+    userBody.password = await hashPassword(userBody.password);
+  }
 
-/**
- * Get user by email including password
- * @param {string} email
- * @returns {Promise<IUser | null>}
- */
-export const getUserByEmailWithPassword = async (email: string): Promise<IUser | null> => {
-  return User.scope('withPassword').findOne({ where: { email } });
+  const [updatedUser] = await db
+    .update(users)
+    .set(userBody)
+    .where(and(eq(users.id, id), eq(users.organizationId, organizationId)))
+    .returning();
+
+  return userDTO(updatedUser);
 };
 
-/**
- * Update user by id
- * @param {string}} userId
- * @param {UpdateUserReq} updateBody
- * @returns {Promise<IUser | null>}
- */
-export const updateUserById = async (userId: string, updateBody: UpdateUserReq): Promise<IUser | null> => {
-  const user = await User.findByPk(userId);
-  if (!user) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
-  }
+export const deleteUserById = async (id: string, organizationId: string) => {
+  const [deletedUser] = await db
+    .delete(users)
+    .where(and(eq(users.id, id), eq(users.organizationId, organizationId)))
+    .returning();
 
-  if (updateBody.email && (await isEmailTaken(updateBody.email, userId))) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
-  }
-
-  if (updateBody.password) {
-    // TODO: Do not allow password update here, use another endpoint
-    const updatedHashPassword = await hashPassword(updateBody.password);
-    Object.assign(user, {
-      ...updateBody,
-      password: updatedHashPassword,
-    });
-  } else {
-    Object.assign(user, updateBody);
-  }
-
-  await user.save();
-
-  return userToIUser(user);
+  return userDTO(deletedUser);
 };
 
-/**
- * Delete user by id
- * @param {string} userId
- * @returns {Promise<IUser | null>}
- */
-export const deleteUserById = async (userId: string): Promise<IUser | null> => {
-  const user = await User.findByPk(userId);
-  if (!user) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
-  }
-  await user.destroy();
-  return userToIUser(user);
-};
-
-/**
- * Update user password
- * @param string userId
- * @param {UpdateUserReq} updateBody
- * @returns {Promise<User | null>}
- */
-export const updateUserPassword = async (userId: string, updatedPassword: string): Promise<IUser | null> => {
-  const user = await User.findByPk(userId);
-  if (!user) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
-  }
-  const newHashedPassword = await hashPassword(updatedPassword);
-  user.password = newHashedPassword;
-  await user.save();
-  return userToIUser(user);
-};
-
-/**
- * Example create user method
- * @param {UserInsert} userData
- * @returns {Promise<IUser>}
- */
-export const createUserFromDb = async (userData: UserInsert): Promise<IUser> => {
-  const hashedPassword = await dbHashPassword(userData.password);
-
-  const user = await User.create({
-    ...userData,
-    role: RoleType.Member,
-    password: hashedPassword,
+export const getUserById = async (id: string, organizationId: string) => {
+  const user = await db.query.users.findFirst({
+    where: and(eq(users.id, id), eq(users.organizationId, organizationId)),
+    with: {
+      organization: true,
+    },
   });
 
-  return sanitizeUser(user);
+  if (!user) return null;
+
+  return userDTO(user, user.organization);
 };
 
-/**
- * Example get user method
- * @param {string} id
- * @returns {Promise<IUser | null>}
- */
-export const getUserByIdFromDb = async (id: string): Promise<IUser | null> => {
-  const user = await User.findByPk(id);
-
-  if (!user) {
-    throw new Error('User not found');
-  }
-
-  return sanitizeUser(user);
+export const getMe = async (id: string, organizationId: string) => {
+  const user = await getUserById(id, organizationId);
+  if (!user) return null;
+  return user;
 };
 
-/**
- * Example login method
- * @param {string} email
- * @param {string} password
- * @returns {Promise<IUser | null>}
- */
-export const validateUser = async (email: string, password: string): Promise<IUser | null> => {
-  const user = await User.findOne({ where: { email } });
+export const getUserByEmail = async (email: string, includePassword = false) => {
+  const user = await db.query.users.findFirst({
+    where: eq(users.email, email),
+    with: {
+      organization: true,
+    },
+  });
 
-  if (!user) {
-    throw new Error('Invalid credentials');
-  }
+  if (!user) return null;
 
-  const isPasswordValid = await verifyPassword(password, user.password);
-  if (!isPasswordValid) {
-    throw new Error('Invalid credentials');
-  }
-
-  return sanitizeUser(user);
+  return includePassword ? user : userDTO(user, user.organization);
 };

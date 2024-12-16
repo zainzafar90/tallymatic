@@ -15,7 +15,7 @@ export const createUser = catchAsync(async (req: Request, res: Response<UserResp
     throw new ApiError(httpStatus.FORBIDDEN, 'You do not have permission to create users');
   }
 
-  const user = await userService.createUser(req.body);
+  const user = await userService.createUser(req.body, req.user.organizationId);
   res.status(httpStatus.CREATED).send(user);
 });
 
@@ -27,12 +27,12 @@ export const getUsers = catchAsync(async (req: Request, res: Response<UserListRe
     throw new ApiError(httpStatus.FORBIDDEN, 'You do not have permission to list users');
   }
 
-  const result = await userService.queryUsers(filter, options);
+  const result = await userService.queryUsers(filter, options, req.user.organizationId);
   res.send(result);
 });
 
 export const getMe = catchAsync(async (req: Request, res: Response<UserProfileResponse>) => {
-  const user = await userService.getMe(req.user['id']);
+  const user = await userService.getMe(req.user['id'], req.user.organizationId);
 
   if (!user) {
     throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
@@ -47,7 +47,7 @@ export const getMe = catchAsync(async (req: Request, res: Response<UserProfileRe
 
 export const getUser = catchAsync(async (req: Request, res: Response<UserResponse>) => {
   if (typeof req.params['userId'] === 'string') {
-    const user = await userService.getUserById(req.params['userId']);
+    const user = await userService.getUserById(req.params['userId'], req.user.organizationId);
     if (!user) {
       throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
     }
@@ -69,7 +69,7 @@ export const updateUser = catchAsync(async (req: Request, res: Response<UserResp
       throw new ApiError(httpStatus.FORBIDDEN, 'You can only update your own profile');
     }
 
-    const user = await userService.updateUserById(userId, req.body);
+    const user = await userService.updateUserById(userId, req.body, req.user.organizationId);
     res.send(user);
   }
 });
@@ -82,7 +82,7 @@ export const deleteUser = catchAsync(async (req: Request, res: Response<UserDele
       throw new ApiError(httpStatus.FORBIDDEN, 'You do not have permission to delete users');
     }
 
-    await userService.deleteUserById(req.params['userId']);
+    await userService.deleteUserById(req.params['userId'], req.user.organizationId);
     res.status(httpStatus.NO_CONTENT).send();
   }
 });

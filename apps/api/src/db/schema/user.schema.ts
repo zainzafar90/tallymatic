@@ -1,4 +1,3 @@
-import bcrypt from 'bcryptjs';
 import { relations } from 'drizzle-orm';
 import { boolean, customType, pgTable, timestamp, uuid, varchar } from 'drizzle-orm/pg-core';
 import { RoleType } from '@shared';
@@ -25,25 +24,11 @@ export const users = pgTable('users', {
   role: EnumRoleType('role').notNull(),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
+  deletedAt: timestamp('deleted_at'),
 });
 
 export type User = typeof users.$inferSelect;
 export type UserInsert = typeof users.$inferInsert;
-
-export type SafeUser = Omit<User, 'password'>;
-
-export const hashPassword = async (password: string): Promise<string> => {
-  return bcrypt.hash(password, 8);
-};
-
-export const verifyPassword = async (password: string, hashedPassword: string): Promise<boolean> => {
-  return bcrypt.compare(password, hashedPassword);
-};
-
-export const sanitizeUser = (user: User): SafeUser => {
-  const { password, ...safeUser } = user;
-  return safeUser;
-};
 
 export const usersRelations = relations(users, ({ one, many }) => ({
   organization: one(organizations, {
