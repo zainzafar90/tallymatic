@@ -1,5 +1,5 @@
 {
-  "id": "96c9a241-d607-403f-be88-3b17438dc615",
+  "id": "91be1278-f071-4932-b9a5-e69c336aede4",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -189,8 +189,7 @@
           "name": "quantity",
           "type": "integer",
           "primaryKey": false,
-          "notNull": true,
-          "default": 0
+          "notNull": true
         },
         "type": {
           "name": "type",
@@ -281,6 +280,12 @@
           "type": "numeric",
           "primaryKey": false,
           "notNull": true
+        },
+        "total_discount": {
+          "name": "total_discount",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
         },
         "created_at": {
           "name": "created_at",
@@ -378,32 +383,31 @@
           "name": "total_amount",
           "type": "numeric",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "subtotal": {
           "name": "subtotal",
           "type": "numeric",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "tax_amount": {
           "name": "tax_amount",
           "type": "numeric",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "discount_amount": {
           "name": "discount_amount",
           "type": "numeric",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "currency": {
           "name": "currency",
           "type": "varchar(3)",
           "primaryKey": false,
-          "notNull": true,
-          "default": "'PKR'"
+          "notNull": true
         },
         "closed_at": {
           "name": "closed_at",
@@ -671,8 +675,8 @@
           "primaryKey": false,
           "notNull": true
         },
-        "price": {
-          "name": "price",
+        "unit_cost": {
+          "name": "unit_cost",
           "type": "numeric",
           "primaryKey": false,
           "notNull": true
@@ -756,8 +760,8 @@
           "primaryKey": false,
           "notNull": false
         },
-        "order_number": {
-          "name": "order_number",
+        "purchase_number": {
+          "name": "purchase_number",
           "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true
@@ -1165,6 +1169,12 @@
           "primaryKey": false,
           "notNull": false,
           "default": "now()"
+        },
+        "deleted_at": {
+          "name": "deleted_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
         }
       },
       "indexes": {},
@@ -1254,29 +1264,25 @@
           "name": "stock",
           "type": "integer",
           "primaryKey": false,
-          "notNull": true,
-          "default": 0
+          "notNull": false
         },
         "low_stock_threshold": {
           "name": "low_stock_threshold",
           "type": "integer",
           "primaryKey": false,
-          "notNull": true,
-          "default": 0
+          "notNull": false
         },
         "reorder_point": {
           "name": "reorder_point",
           "type": "integer",
           "primaryKey": false,
-          "notNull": true,
-          "default": 0
+          "notNull": false
         },
         "reorder_quantity": {
           "name": "reorder_quantity",
           "type": "integer",
           "primaryKey": false,
-          "notNull": true,
-          "default": 0
+          "notNull": false
         },
         "status": {
           "name": "status",

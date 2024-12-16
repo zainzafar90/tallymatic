@@ -57,8 +57,8 @@ export const createUser = async (userBody: CreateUserReq, organizationId: string
   return userDTO(user);
 };
 
-export const registerUser = async (userBody: RegisterUserReq, organizationId: string) => {
-  const isEmailAlreadyTaken = await isEmailTaken(userBody.email, organizationId);
+export const registerUser = async (userBody: RegisterUserReq) => {
+  const isEmailAlreadyTaken = await isEmailTaken(userBody.email);
   if (isEmailAlreadyTaken) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
   }
@@ -68,7 +68,6 @@ export const registerUser = async (userBody: RegisterUserReq, organizationId: st
     .insert(users)
     .values({
       ...userBody,
-      organizationId,
       role: RoleType.Member,
       password: hashedPassword,
     })

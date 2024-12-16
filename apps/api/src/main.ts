@@ -1,20 +1,10 @@
 import { config } from '@/config/config';
 import { logger } from '@/common/logger';
-import { db } from '@/db';
-import { organizations } from '@/db/schema';
 
 import app from './app';
 
 app.listen(config.port, async () => {
   logger.info(`Listening to port ${config.port}`);
-
-  const newOrganization = {
-    name: 'Tallymatic',
-    address: '123 Main St, Anytown, USA',
-  };
-
-  await db.insert(organizations).values(newOrganization);
-  logger.info('New organization created!');
 });
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -1,13 +1,12 @@
-import { and, count, eq, ne } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 import httpStatus from 'http-status';
-import { IUser, TokenType, UserAuthResponse } from '@shared';
+import { IUser, TokenType } from '@shared';
 
 import { ApiError } from '@/common/errors/api-error';
 import { db } from '@/db';
 import { tokens } from '@/db/schema';
 
 import { tokenService } from '../token';
-import { Token } from '../token/token.model';
 import { userService } from '../user';
 import { isPasswordMatch } from '../user/user.model';
 import { getUserByEmail } from '../user/user.service';
@@ -71,7 +70,11 @@ export const refreshAuth = async (refreshToken: string, organizationId?: string)
  * @param {string} newPassword
  * @returns {Promise<void>}
  */
-export const resetPassword = async (resetPasswordToken: string, newPassword: string, organizationId?: string): Promise<void> => {
+export const resetPassword = async (
+  resetPasswordToken: string,
+  newPassword: string,
+  organizationId?: string
+): Promise<void> => {
   try {
     const resetPasswordTokenDoc = await tokenService.verifyToken(resetPasswordToken, TokenType.ACCESS);
     const user = await userService.getUserById(resetPasswordTokenDoc.userId, organizationId);
@@ -98,9 +101,13 @@ export const verifyEmail = async (verifyEmailToken: string, organizationId?: str
       throw new Error();
     }
     await db.delete(tokens).where(eq(tokens.id, verifyEmailTokenDoc.id));
-    const updatedUser = await userService.updateUserById(user.id, {
-      isEmailVerified: true,
-    }, organizationId);
+    const updatedUser = await userService.updateUserById(
+      user.id,
+      {
+        isEmailVerified: true,
+      },
+      organizationId
+    );
     return updatedUser;
   } catch (error) {
     throw new ApiError(httpStatus.UNAUTHORIZED, 'Email verification failed');
