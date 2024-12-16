@@ -1,78 +1,120 @@
+import { and, count, eq, ilike } from 'drizzle-orm';
 import httpStatus from 'http-status';
-import { CreateSupplierReq, IOptions, ISupplier, ListResponse, UpdateSupplierReq } from '@shared';
+import { CreateSupplierReq, IOptions, ListResponse, Status, UpdateSupplierReq } from '@shared';
 
 import { ApiError } from '@/common/errors/api-error';
-import { getDatabaseInstance } from '@/database/db';
+import { db } from '@/db';
+import { suppliers } from '@/db/schema';
 
-import { buildPaginationOptions, transformPagination } from '../paginate/paginate';
-import { Supplier } from './supplier.model';
+import { getPaginationConfig } from '../paginate/pagination';
 
-export const createSupplier = async (supplierBody: CreateSupplierReq): Promise<ISupplier> => {
-  const supplier = await Supplier.create(supplierBody);
-  return supplier.toJSON();
+export const createSupplier = async (supplierBody: CreateSupplierReq, organizationId: string) => {
+  const supplierNew = {
+    ...supplierBody,
+    organizationId,
+    status: Status.ACTIVE,
+  };
+  const [supplier] = await db.insert(suppliers).values(supplierNew).returning();
+  return supplier;
 };
 
 export const querySuppliers = async (
   filter: Record<string, any>,
   options: IOptions,
+  organizationId: string,
   wildcardFields: string[] = []
-): Promise<ListResponse<Supplier>> => {
-  const paginationOptions = buildPaginationOptions(filter, options, wildcardFields);
-  const result = await Supplier.findAndCountAll({
-    ...paginationOptions,
-    paranoid: !options.includeDeleted,
+): Promise<ListResponse<typeof suppliers.$inferSelect>> => {
+  const { limit, offset } = getPaginationConfig(options);
+
+  const conditions = [eq(suppliers.organizationId, organizationId)];
+  if (filter.companyName && wildcardFields.includes('companyName')) {
+    conditions.push(ilike(suppliers.companyName, `%${filter.companyName}%`));
+  }
+  if (filter.email) {
+    conditions.push(eq(suppliers.email, filter.email));
+  }
+
+  const whereClause = and(...conditions);
+
+  const [suppliersCount] = await db.select({ count: count() }).from(suppliers).where(whereClause);
+
+  const results = await db.query.suppliers.findMany({
+    where: whereClause,
+    limit,
+    offset,
+    orderBy: suppliers.createdAt,
   });
 
-  return transformPagination(result.count, result.rows, paginationOptions.offset, paginationOptions.limit);
+  return {
+    results,
+    limit,
+    offset,
+    pages: Math.ceil(suppliersCount.count / limit),
+    count: suppliersCount.count,
+  };
 };
 
-export const getSupplierById = async (id: string): Promise<ISupplier | null> => {
-  const supplier = await Supplier.findByPk(id);
-  return supplier ? supplier.toJSON() : null;
+export const getSupplierById = async (id: string, organizationId: string) => {
+  const supplier = await db.query.suppliers.findFirst({
+    where: and(eq(suppliers.id, id), eq(suppliers.organizationId, organizationId)),
+  });
+  return supplier;
 };
 
-export const updateSupplierById = async (supplierId: string, updateBody: UpdateSupplierReq): Promise<ISupplier | null> => {
-  const supplier = await Supplier.findByPk(supplierId);
+export const updateSupplierById = async (supplierId: string, updateBody: UpdateSupplierReq, organizationId: string) => {
+  const supplier = await getSupplierById(supplierId, organizationId);
   if (!supplier) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Supplier not found');
   }
-  Object.assign(supplier, updateBody);
-  await supplier.save();
-  return supplier.toJSON();
+
+  const [updatedSupplier] = await db
+    .update(suppliers)
+    .set(updateBody)
+    .where(and(eq(suppliers.id, supplierId), eq(suppliers.organizationId, organizationId)))
+    .returning();
+
+  return updatedSupplier;
 };
 
-export const deleteSupplierById = async (supplierId: string): Promise<ISupplier | null> => {
-  const supplier = await Supplier.findByPk(supplierId);
+export const deleteSupplierById = async (supplierId: string, organizationId: string) => {
+  const supplier = await getSupplierById(supplierId, organizationId);
   if (!supplier) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Supplier not found');
   }
-  await supplier.destroy();
-  return supplier.toJSON();
+
+  const [deletedSupplier] = await db
+    .delete(suppliers)
+    .where(and(eq(suppliers.id, supplierId), eq(suppliers.organizationId, organizationId)))
+    .returning();
+
+  return deletedSupplier;
 };
 
-export const bulkDeleteSuppliers = async (supplierIds: string[]): Promise<ISupplier[]> => {
-  const transaction = await getDatabaseInstance().transaction();
-  try {
-    const suppliers = await Supplier.findAll({
-      where: { id: supplierIds },
-      transaction,
+export const bulkDeleteSuppliers = async (supplierIds: string[], organizationId: string) => {
+  return await db.transaction(async (tx) => {
+    const existingSuppliers = await tx.query.suppliers.findMany({
+      where: and(
+        eq(suppliers.organizationId, organizationId),
+        // @ts-expect-error: Type inference issue with array of strings
+        suppliers.id.in(supplierIds)
+      ),
     });
 
-    if (suppliers.length !== supplierIds.length) {
+    if (existingSuppliers.length !== supplierIds.length) {
       throw new Error('One or more supplier IDs are invalid');
     }
 
-    await Supplier.destroy({
-      where: { id: supplierIds },
-      transaction,
-    });
+    const deletedSuppliers = await tx
+      .delete(suppliers)
+      .where(
+        and(
+          eq(suppliers.organizationId, organizationId),
+          // @ts-expect-error: Type inference issue with array of strings
+          suppliers.id.in(supplierIds)
+        )
+      )
+      .returning();
 
-    await transaction.commit();
-
-    return suppliers.map((supplier) => supplier.toJSON());
-  } catch (error) {
-    if (transaction) await transaction.rollback();
-    console.error('Error in bulkDeleteSuppliers:', error);
-    throw error;
-  }
+    return deletedSuppliers;
+  });
 };
