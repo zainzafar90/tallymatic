@@ -92,20 +92,31 @@ export const adjustStock = async (
   notes?: string
 ) => {
   return db.transaction(async (tx) => {
-    const [variant] = await tx
+    const [productsAndVariants] = await tx
       .select()
       .from(variants)
+      .innerJoin(products, eq(variants.productId, products.id))
       .where(and(eq(variants.id, variantId), eq(products.organizationId, organizationId)))
       .limit(1);
 
-    if (!variant) {
+    if (!productsAndVariants) {
       throw new ApiError(httpStatus.NOT_FOUND, 'Product variant not found');
     }
 
-    const newStock = variant.stock + quantity;
+    const newStock = Number(productsAndVariants.variants.stock) + quantity;
     if (newStock < 0) {
       throw new ApiError(httpStatus.BAD_REQUEST, 'Insufficient stock');
     }
+
+    const updateStock = {
+      stock: newStock,
+    };
+
+    await tx
+      .update(variants)
+      // TODO: Fix this type error
+      .set(updateStock as any)
+      .where(eq(variants.id, variantId));
 
     const [inventoryCreated] = await tx
       .insert(inventory)

@@ -171,7 +171,7 @@ CREATE TABLE "variants" (
 	"barcode" varchar(255),
 	"price" numeric NOT NULL,
 	"cost_price" numeric,
-	"stock" integer,
+	"stock" numeric,
 	"low_stock_threshold" integer,
 	"reorder_point" integer,
 	"reorder_quantity" integer,

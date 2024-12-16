@@ -27,7 +27,7 @@ export const variants = pgTable('variants', {
   barcode: varchar('barcode', { length: 255 }),
   price: numeric('price').notNull(),
   costPrice: numeric('cost_price'),
-  stock: integer('stock'),
+  stock: numeric('stock'),
   lowStockThreshold: integer('low_stock_threshold'),
   reorderPoint: integer('reorder_point'),
   reorderQuantity: integer('reorder_quantity'),
