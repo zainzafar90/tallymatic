@@ -1,7 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { NextFunction, Request, Response } from 'express';
 import httpStatus from 'http-status';
-import { Error } from 'sequelize';
 
 import { config } from '@/config/config';
 import { logger } from '@/common/logger';

@@ -173,7 +173,7 @@ export const getMe = async (id: string, organizationId: string) => {
   return user;
 };
 
-export const getUserByEmail = async (email: string, includePassword = false) => {
+export const getUserByEmail = async (email: string) => {
   const user = await db.query.users.findFirst({
     where: eq(users.email, email),
     with: {
@@ -183,5 +183,18 @@ export const getUserByEmail = async (email: string, includePassword = false) => 
 
   if (!user) return null;
 
-  return includePassword ? user : userDTO(user, user.organization);
+  return userDTO(user, user.organization);
+};
+
+export const getUserByEmailAndPassword = async (email: string) => {
+  const user = await db.query.users.findFirst({
+    where: eq(users.email, email),
+    with: {
+      organization: true,
+    },
+  });
+
+  if (!user) return null;
+
+  return user;
 };

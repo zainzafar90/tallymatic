@@ -3,7 +3,6 @@ import httpStatus from 'http-status';
 import { CreateCategoryReq, ICategory, IOptions, ListResponse, UpdateCategoryReq } from '@shared';
 
 import { ApiError } from '@/common/errors/api-error';
-import { getDatabaseInstance } from '@/database/db';
 import { db } from '@/db';
 import { categories, Category } from '@/db/schema';
 
@@ -108,28 +107,21 @@ export const deleteCategoryById = async (categoryId: string, organizationId: str
 };
 
 export const bulkDeleteCategories = async (categoryIds: string[], organizationId: string): Promise<ICategory[]> => {
-  const transaction = await getDatabaseInstance().transaction();
-  try {
-    await db.transaction(async (tx) => {
-      const existingCategories = await tx
-        .select()
-        .from(categories)
-        .where(and(inArray(categories.id, categoryIds), eq(categories.organizationId, organizationId)));
+  await db.transaction(async (tx) => {
+    const existingCategories = await tx
+      .select()
+      .from(categories)
+      .where(and(inArray(categories.id, categoryIds), eq(categories.organizationId, organizationId)));
 
-      if (existingCategories.length !== categoryIds.length) {
-        throw new ApiError(httpStatus.NOT_FOUND, 'One or more categories not found');
-      }
+    if (existingCategories.length !== categoryIds.length) {
+      throw new ApiError(httpStatus.NOT_FOUND, 'One or more categories not found');
+    }
 
-      await tx
-        .delete(categories)
-        .where(and(inArray(categories.id, categoryIds), eq(categories.organizationId, organizationId)));
-      return existingCategories;
-    });
+    await tx
+      .delete(categories)
+      .where(and(inArray(categories.id, categoryIds), eq(categories.organizationId, organizationId)));
+    return existingCategories;
+  });
 
-    return [];
-  } catch (error) {
-    if (transaction) await transaction.rollback();
-    console.error('Error in bulkDeleteCategories:', error);
-    throw error;
-  }
+  return [];
 };

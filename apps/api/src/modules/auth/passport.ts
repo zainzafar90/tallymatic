@@ -4,7 +4,7 @@ import { TokenType } from '@shared';
 
 import { config } from '@/config/config';
 
-import { User } from '../user/user.model';
+import { userService } from '../user';
 
 interface IPayload extends JwtPayload {
   sub: string;
@@ -23,7 +23,7 @@ const jwtStrategy = new JwtStrategy(
       if (payload.type !== TokenType.ACCESS) {
         throw new Error('Invalid token type');
       }
-      const user = await User.findByPk(payload.sub);
+      const user = await userService.getUserById(payload.sub);
       if (!user) {
         return done(null, false);
       }
