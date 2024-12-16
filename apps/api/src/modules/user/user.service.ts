@@ -1,6 +1,6 @@
 import { and, count, eq, ne } from 'drizzle-orm';
 import httpStatus from 'http-status';
-import { CreateUserReq, IOptions, RegisterUserReq, RoleType, UpdateUserReq } from '@shared';
+import { CreateUserReq, IOptions, IUser, RegisterUserReq, RoleType, UpdateUserReq } from '@shared';
 
 import { ApiError } from '@/common/errors/api-error';
 import { db } from '@/db';
@@ -120,6 +120,21 @@ export const updateUserById = async (id: string, userBody: UpdateUserReq, organi
     .returning();
 
   return userDTO(updatedUser);
+};
+
+export const updateUserPassword = async (userId: string, updatedPassword: string, organizationId: string) => {
+  const user = await db.query.users.findFirst({
+    where: and(eq(users.id, userId), eq(users.organizationId, organizationId)),
+  });
+  if (!user) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
+  }
+  const newHashedPassword = await hashPassword(updatedPassword);
+  await db
+    .update(users)
+    .set({ password: newHashedPassword })
+    .where(and(eq(users.id, userId), eq(users.organizationId, organizationId)));
+  return userDTO(user);
 };
 
 export const deleteUserById = async (id: string, organizationId: string) => {

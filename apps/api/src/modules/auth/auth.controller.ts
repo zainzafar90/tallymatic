@@ -10,7 +10,7 @@ import { userService } from '../user';
 import * as authService from './auth.service';
 
 export const register = catchAsync(async (req: Request, res: Response<UserAuthResponse>) => {
-  const user = await userService.registerUser(req.body);
+  const user = await userService.registerUser(req.body, req.user?.organizationId);
   const tokens = await tokenService.generateAuthTokens(user);
   res.status(httpStatus.CREATED).send({ user, tokens });
 });
@@ -39,7 +39,7 @@ export const forgotPassword = catchAsync(async (req: Request, res: Response<void
 });
 
 export const resetPassword = catchAsync(async (req: Request, res: Response<void>) => {
-  await authService.resetPassword(req.query['token'] as string, req.body.password);
+  await authService.resetPassword(req.query['token'] as string, req.body.password, req.user?.organizationId);
   res.status(httpStatus.NO_CONTENT).send();
 });
 
