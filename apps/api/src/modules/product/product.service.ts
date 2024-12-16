@@ -1,158 +1,191 @@
+import { and, count, eq, ilike } from 'drizzle-orm';
 import httpStatus from 'http-status';
-import { CreateProductReq, IOptions, IProduct, ListResponse, UpdateProductReq } from '@shared';
+import { CreateProductReq, IOptions, ListResponse, Status, UpdateProductReq } from '@shared';
 
 import { ApiError } from '@/common/errors/api-error';
-import { getDatabaseInstance } from '@/database/db';
+import { db } from '@/db';
+import { products, variants } from '@/db/schema';
 
-import { Category } from '../category';
-import { buildPaginationOptions, transformPagination } from '../paginate/paginate';
-import { ProductVariant } from '../product-variant/product-variant.model';
-import { Product } from './product.model';
+import { getPaginationConfig } from '../paginate/pagination';
 
-export const createProduct = async (productBody: CreateProductReq): Promise<IProduct> => {
-  const { variants, ...productData } = productBody;
+export const createProduct = async (productBody: CreateProductReq, organizationId: string) => {
+  return await db.transaction(async (tx) => {
+    const { variants: productVariants, ...productData } = productBody;
 
-  const transaction = await getDatabaseInstance().transaction();
+    const productNew = {
+      ...productData,
+      organizationId,
+      status: Status.ACTIVE,
+      categoryId: productData.categoryId ?? null,
+    };
 
-  try {
-    const product = await Product.create(
-      {
-        ...productData,
-        categoryId: productData.categoryId ?? null,
-      },
-      { transaction }
-    );
+    const [product] = await tx.insert(products).values(productNew).returning();
 
-    if (variants && variants.length > 0) {
-      const variantsWithProductId = variants.map((variant) => ({
+    if (productVariants?.length > 0) {
+      const variantsNew = productVariants.map((variant) => ({
         ...variant,
+        price: variant.price.toString(),
         productId: product.id,
+        organizationId,
+        status: Status.ACTIVE,
       }));
-      await ProductVariant.bulkCreate(variantsWithProductId, { transaction });
+
+      await tx.insert(variants).values(variantsNew);
     }
 
-    const createdProduct = await Product.findByPk(product.id, {
-      include: [
-        { model: ProductVariant, as: 'variants' },
-        { model: Category, as: 'category' },
-      ],
-      transaction,
+    const createdProduct = await tx.query.products.findFirst({
+      where: eq(products.id, product.id),
+      with: {
+        variants: true,
+        category: true,
+      },
     });
 
-    await transaction.commit();
-
-    return createdProduct.toJSON();
-  } catch (error) {
-    await transaction.rollback();
-    throw error;
-  }
+    return createdProduct;
+  });
 };
 
 export const queryProducts = async (
   filter: Record<string, any>,
   options: IOptions,
+  organizationId: string,
   wildcardFields: string[] = []
-): Promise<ListResponse<Product>> => {
-  const paginationOptions = buildPaginationOptions(filter, options, wildcardFields);
-  const result = await Product.findAndCountAll({
-    ...paginationOptions,
-    include: [
-      { model: ProductVariant, as: 'variants' },
-      { model: Category, as: 'category' },
-    ],
+): Promise<ListResponse<typeof products.$inferSelect>> => {
+  const { limit, offset } = getPaginationConfig(options);
+
+  const conditions = [eq(products.organizationId, organizationId)];
+  if (filter.name && wildcardFields.includes('name')) {
+    conditions.push(ilike(products.name, `%${filter.name}%`));
+  }
+  if (filter.status) {
+    conditions.push(eq(products.status, filter.status));
+  }
+
+  const whereClause = and(...conditions);
+
+  const [productsCount] = await db.select({ count: count() }).from(products).where(whereClause);
+
+  const results = await db.query.products.findMany({
+    where: whereClause,
+    limit,
+    offset,
+    orderBy: products.createdAt,
+    with: {
+      variants: true,
+      category: true,
+    },
   });
 
-  return transformPagination(result.count, result.rows, paginationOptions.offset, paginationOptions.limit);
+  return {
+    results,
+    limit,
+    offset,
+    pages: Math.ceil(productsCount.count / limit),
+    count: productsCount.count,
+  };
 };
 
-export const getProductById = async (id: string): Promise<IProduct | null> => {
-  const product = await Product.findByPk(id, {
-    include: [
-      { model: ProductVariant, as: 'variants' },
-      { model: Category, as: 'category' },
-    ],
+export const getProductById = async (id: string, organizationId: string) => {
+  const product = await db.query.products.findFirst({
+    where: and(eq(products.id, id), eq(products.organizationId, organizationId)),
+    with: {
+      variants: true,
+      category: true,
+    },
   });
-  return product ? product.toJSON() : null;
+  return product;
 };
 
-export const updateProductById = async (productId: string, updateBody: UpdateProductReq): Promise<IProduct | null> => {
-  const transaction = await getDatabaseInstance().transaction();
+export const updateProductById = async (productId: string, updateBody: UpdateProductReq, organizationId: string) => {
+  return await db.transaction(async (tx) => {
+    const product = await tx.query.products.findFirst({
+      where: and(eq(products.id, productId), eq(products.organizationId, organizationId)),
+    });
 
-  try {
-    const product = await Product.findByPk(productId, { transaction });
     if (!product) {
       throw new ApiError(httpStatus.NOT_FOUND, 'Product not found');
     }
 
-    const { variants, ...productData } = updateBody;
+    const { variants: productVariants, ...productData } = updateBody;
 
-    Object.assign(product, {
+    const productUpdate = {
       ...productData,
+      organizationId,
       categoryId: productData.categoryId ?? null,
-    });
-    await product.save({ transaction });
+    };
 
-    if (variants) {
-      await ProductVariant.destroy({ where: { productId }, transaction });
+    const [updatedProduct] = await tx
+      .update(products)
+      .set(productUpdate)
+      .where(and(eq(products.id, productId), eq(products.organizationId, organizationId)))
+      .returning();
 
-      if (variants.length > 0) {
-        const variantsWithProductId = variants.map((variant) => ({
-          ...variant,
-          productId,
-        }));
-        await ProductVariant.bulkCreate(variantsWithProductId, { transaction });
+    if (productVariants) {
+      await tx.delete(variants).where(eq(variants.productId, productId));
+
+      const variantsNew = productVariants.map((variant) => ({
+        ...variant,
+        price: variant.price.toString(),
+        productId,
+        organizationId,
+        status: Status.ACTIVE,
+      }));
+      if (productVariants.length > 0) {
+        await tx.insert(variants).values(variantsNew);
       }
     }
 
-    const updatedProduct = await Product.findByPk(productId, {
-      include: [
-        { model: ProductVariant, as: 'variants' },
-        { model: Category, as: 'category' },
-      ],
-      transaction,
+    const result = await tx.query.products.findFirst({
+      where: eq(products.id, updatedProduct.id),
+      with: {
+        variants: true,
+        category: true,
+      },
     });
 
-    await transaction.commit();
-
-    return updatedProduct.toJSON();
-  } catch (error) {
-    await transaction.rollback();
-    throw error;
-  }
+    return result;
+  });
 };
 
-export const deleteProductById = async (productId: string): Promise<IProduct | null> => {
-  const product = await Product.findByPk(productId);
+export const deleteProductById = async (productId: string, organizationId: string) => {
+  const product = await getProductById(productId, organizationId);
   if (!product) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Product not found');
   }
-  await product.destroy();
-  return product.toJSON();
+
+  const [deletedProduct] = await db
+    .delete(products)
+    .where(and(eq(products.id, productId), eq(products.organizationId, organizationId)))
+    .returning();
+
+  return deletedProduct;
 };
 
-export const bulkDeleteProducts = async (productIds: string[]): Promise<IProduct[]> => {
-  const transaction = await getDatabaseInstance().transaction();
-  try {
-    const products = await Product.findAll({
-      where: { id: productIds },
-      transaction,
+export const bulkDeleteProducts = async (productIds: string[], organizationId: string) => {
+  return await db.transaction(async (tx) => {
+    const existingProducts = await tx.query.products.findMany({
+      where: and(
+        eq(products.organizationId, organizationId),
+        // @ts-expect-error: Type inference issue with array of strings
+        products.id.in(productIds)
+      ),
     });
 
-    if (products.length !== productIds.length) {
+    if (existingProducts.length !== productIds.length) {
       throw new Error('One or more product IDs are invalid');
     }
 
-    await Product.destroy({
-      where: { id: productIds },
-      transaction,
-    });
+    const deletedProducts = await tx
+      .delete(products)
+      .where(
+        and(
+          eq(products.organizationId, organizationId),
+          // @ts-expect-error: Type inference issue with array of strings
+          products.id.in(productIds)
+        )
+      )
+      .returning();
 
-    await transaction.commit();
-
-    return products.map((product) => product.toJSON());
-  } catch (error) {
-    if (transaction) await transaction.rollback();
-    console.error('Error in bulkDeleteProducts:', error);
-    throw error;
-  }
+    return deletedProducts;
+  });
 };
