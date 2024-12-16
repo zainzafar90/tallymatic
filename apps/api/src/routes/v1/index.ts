@@ -4,7 +4,6 @@ import { config } from '@/config/config';
 
 import authRoute from './auth.routes';
 import categoryRoute from './category.routes';
-import claimRoute from './claim.routes';
 import customerRoute from './customer.routes';
 import inventoryRoute from './inventory.routes';
 import orderRoute from './order.routes';
@@ -56,10 +55,6 @@ const defaultIRoute: IRoute[] = [
   {
     path: '/inventory',
     route: inventoryRoute,
-  },
-  {
-    path: '/claims',
-    route: claimRoute,
   },
   {
     path: '/customers',

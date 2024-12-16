@@ -3,7 +3,6 @@ import { InventoryLevelsResponse, IOptions, LowStockAlertsResponse, TransactionT
 
 import { getDatabaseInstance } from '@/database/db';
 
-import { buildPaginationOptions, transformPagination } from '../paginate/paginate';
 import { Product } from '../product';
 import { ProductVariant } from '../product-variant';
 import { Inventory } from './inventory.model';

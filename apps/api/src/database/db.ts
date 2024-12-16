@@ -3,7 +3,6 @@ import { Sequelize } from 'sequelize-typescript';
 
 import { config } from '@/config/config';
 import { Category } from '@/modules/category';
-import { Claim, ClaimItem } from '@/modules/claim';
 import { Customer } from '@/modules/customer';
 import { Inventory } from '@/modules/inventory/inventory.model';
 import { Order, OrderItem } from '@/modules/order';
@@ -67,8 +66,6 @@ export class Database {
       ProductVariant,
       Category,
       Inventory,
-      Claim,
-      ClaimItem,
       Customer,
       Supplier,
       Order,
