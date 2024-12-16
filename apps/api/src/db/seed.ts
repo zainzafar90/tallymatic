@@ -42,6 +42,7 @@ const schema = {
   orderItems,
   purchases,
   purchaseItems,
+  inventory,
 };
 
 const db = drizzle(pool, {
@@ -165,6 +166,17 @@ async function main() {
           }),
         },
       },
+      inventory: {
+        count: 100,
+        columns: {
+          quantity: funcs.int({
+            minValue: 1,
+            maxValue: 10,
+          }),
+          type: funcs.valuesFromArray({ values: ['sold', 'received', 'adjusted'] }),
+          notes: funcs.loremIpsum({ sentencesCount: 2 }),
+        },
+      },
       customers: {
         count: 100,
         columns: {
@@ -277,6 +289,8 @@ async function main() {
     console.log('✅ Stores seeded:', seededStores.length);
     const seededVariants = await db.select().from(variants);
     console.log('✅ Variants seeded:', seededVariants.length);
+    const seededInventory = await db.select().from(inventory);
+    console.log('✅ Inventory seeded:', seededInventory.length);
     const seededCustomers = await db.select().from(customers);
     console.log('✅ Customers seeded:', seededCustomers.length);
     const seededSuppliers = await db.select().from(suppliers);
