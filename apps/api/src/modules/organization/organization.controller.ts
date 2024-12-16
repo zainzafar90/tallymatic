@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import httpStatus from 'http-status';
-import { IOptions } from '@shared';
+import { IOptions, OrganizationResponse, OrganizationListResponse } from '@shared';
 
 import { catchAsync } from '@/utils/catch-async';
 import { pick } from '@/utils/pick';
@@ -9,7 +9,7 @@ import { ApiError } from '@/common/errors/api-error';
 import { permissionService } from '../permissions/permission.service';
 import * as organizationService from './organization.service';
 
-export const createOrganization = catchAsync(async (req: Request, res: Response) => {
+export const createOrganization = catchAsync(async (req: Request, res: Response<OrganizationResponse>) => {
   const isAllowed = permissionService.checkPermissions(req.user.role, 'create', 'organizations');
   if (!isAllowed) {
     throw new ApiError(httpStatus.FORBIDDEN, 'You do not have permission to create organizations');
@@ -19,7 +19,7 @@ export const createOrganization = catchAsync(async (req: Request, res: Response)
   res.status(httpStatus.CREATED).send(organization);
 });
 
-export const getOrganizations = catchAsync(async (req: Request, res: Response) => {
+export const getOrganizations = catchAsync(async (req: Request, res: Response<OrganizationListResponse>) => {
   const filter = pick(req.query, ['name', 'status']);
   const options: IOptions = pick(req.query, ['sortBy', 'limit', 'offset', 'projectBy']);
   const isAllowed = permissionService.checkPermissions(req.user.role, 'list', 'organizations');
