@@ -37,7 +37,7 @@ export const useSupplierTableColumns = () => {
       enableHiding: false,
     }),
     columnHelper.accessor('email', {
-      header: ({ column }) => <TextHeader text="Email" />,
+      header: () => <TextHeader text="Email" />,
       cell: ({ row }) => (
         <div className="flex flex-col h-full w-full gap-x-3 overflow-hidden">
           <div className="truncate">{row.original.email}</div>
