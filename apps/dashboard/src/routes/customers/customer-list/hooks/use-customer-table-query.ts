@@ -7,14 +7,15 @@ type UseCustomerTableQueryProps = {
 const DEFAULT_PAGE_SIZE = 10;
 
 export const useCustomerTableQuery = ({ pageSize = DEFAULT_PAGE_SIZE }: UseCustomerTableQueryProps) => {
-  const queryObject = useQueryParams(['offset', 'sortBy', 'name', 'email', 'phone', 'createdAt', 'updatedAt']);
+  const queryObject = useQueryParams(['offset', 'sortBy', 'sortOrder', 'name', 'email', 'phone', 'createdAt', 'updatedAt']);
 
-  const { offset, sortBy, name, email, phone, createdAt, updatedAt } = queryObject;
+  const { offset, sortBy, sortOrder, name, email, phone, createdAt, updatedAt } = queryObject;
 
   const searchParams = {
     limit: pageSize,
     offset: offset ? Number(offset) : 0,
-    sortBy: sortBy || 'createdAt:desc',
+    sortBy: sortBy || 'createdAt',
+    sortOrder: sortOrder || 'desc',
     name,
     email,
     phone,

@@ -110,13 +110,17 @@ export const useDataTable = <TData>({
     const state = updater(sorting);
 
     setSearchParams((prev) => {
+      const newSearch = new URLSearchParams(prev);
+
       if (!state.length) {
-        prev.delete(sortingKey);
-        return prev;
+        newSearch.delete(sortingKey);
+        newSearch.delete('sortOrder');
+        return newSearch;
       }
 
-      const newSearch = new URLSearchParams(prev);
-      newSearch.set(sortingKey, state.map((sort) => `${sort.id}:${sort.desc ? 'desc' : 'asc'}`).join(','));
+      const [firstSort] = state;
+      newSearch.set(sortingKey, firstSort.id);
+      newSearch.set('sortOrder', firstSort.desc ? 'desc' : 'asc');
 
       return newSearch;
     });

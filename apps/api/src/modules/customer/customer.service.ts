@@ -1,4 +1,4 @@
-import { and, count, eq, ilike, inArray, isNull } from 'drizzle-orm';
+import { and, asc, count, desc, eq, ilike, inArray, isNull } from 'drizzle-orm';
 import httpStatus from 'http-status';
 import { CreateCustomerReq, IOptions, UpdateCustomerReq } from '@shared';
 
@@ -7,6 +7,14 @@ import { db } from '@/db';
 import { Customer, customers } from '@/db/schema';
 
 import { getPaginationConfig } from '../paginate/pagination';
+
+type OrderDirection = 'asc' | 'desc';
+type OrderField = keyof (typeof customers)['_']['columns'];
+
+interface OrderParams {
+  field: OrderField;
+  direction: OrderDirection;
+}
 
 const customerDTO = (customer: Customer) => {
   return customer;
@@ -50,15 +58,17 @@ export const queryCustomers = async (
 
   const whereClause = and(...conditions);
 
+  const orderParams: OrderParams = {
+    field: (options.sortBy as OrderField) || 'createdAt',
+    direction: (options.sortOrder as OrderDirection) || 'desc',
+  };
+
+  const orderFn = orderParams.direction === 'asc' ? asc : desc;
+  const orderByClause = orderFn(customers[orderParams.field as keyof (typeof customers)['_']['columns']]);
+
   const [customersCount] = await db.select({ count: count() }).from(customers).where(whereClause);
 
-  const results = await db
-    .select()
-    .from(customers)
-    .where(whereClause)
-    .limit(limit)
-    .offset(offset)
-    .orderBy(customers.createdAt);
+  const results = await db.select().from(customers).where(whereClause).limit(limit).offset(offset).orderBy(orderByClause);
 
   return {
     results: results.map(customerDTO),

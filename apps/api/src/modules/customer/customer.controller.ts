@@ -21,7 +21,7 @@ export const createCustomer = catchAsync(async (req: Request, res: Response) => 
 
 export const getCustomers = catchAsync(async (req: Request, res: Response) => {
   const filter = pick(req.query, ['name', 'email']);
-  const options: IOptions = pick(req.query, ['sortBy', 'limit', 'offset', 'projectBy', 'includeDeleted']);
+  const options: IOptions = pick(req.query, ['sortBy', 'sortOrder', 'limit', 'offset', 'projectBy', 'includeDeleted']);
   const isAllowed = permissionService.checkPermissions(req.user.role, 'list', 'customers');
   if (!isAllowed) {
     throw new ApiError(httpStatus.FORBIDDEN, 'You do not have permission to list customers');

@@ -21,6 +21,7 @@ export const getCustomers = {
     name: Joi.string(),
     email: Joi.string(),
     sortBy: Joi.string(),
+    sortOrder: Joi.string(),
     projectBy: Joi.string(),
     limit: Joi.number().integer(),
     offset: Joi.number().integer(),
