@@ -33,7 +33,7 @@ export const getAllInventoryLevels = catchAsync(async (req: Request, res: Respon
   }
 
   const filter = pick(req.query, ['name']);
-  const options: IOptions = pick(req.query, ['sortBy', 'limit', 'offset', 'projectBy']);
+  const options: IOptions = pick(req.query, ['sortBy', 'sortOrder', 'limit', 'offset', 'projectBy']);
   const wildcardFields = ['name'];
 
   const levels = await inventoryService.getAllInventoryLevels(filter, options, req.user.organizationId, wildcardFields);

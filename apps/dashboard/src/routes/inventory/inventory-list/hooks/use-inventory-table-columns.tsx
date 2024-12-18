@@ -37,7 +37,7 @@ export const useInventoryTableColumns = () => {
       enableHiding: false,
     }),
     columnHelper.accessor('stock', {
-      header: ({ column }) => <SortedHeader text="Status" column={column} />,
+      header: () => <TextHeader text="Status" />,
       cell: ({ row }) => {
         const stock = row.getValue<number>('stock');
         const lowStockThreshold = row.getValue<number>('lowStockThreshold') || 0;

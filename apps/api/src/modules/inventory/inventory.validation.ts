@@ -22,6 +22,7 @@ export const getInventoryLevelsSchema = {
   query: Joi.object().keys({
     name: Joi.string(),
     sortBy: Joi.string(),
+    sortOrder: Joi.string().valid('asc', 'desc'),
     projectBy: Joi.string(),
     limit: Joi.number().integer(),
     offset: Joi.number().integer(),

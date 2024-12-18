@@ -1,4 +1,4 @@
-import { and, eq, lte, sql } from 'drizzle-orm';
+import { and, asc, desc, eq, lte, sql } from 'drizzle-orm';
 import httpStatus from 'http-status';
 import { IOptions, TransactionType } from '@shared';
 
@@ -7,6 +7,14 @@ import { db } from '@/db';
 import { Inventory, inventory, products, variants } from '@/db/schema';
 
 import { getPaginationConfig } from '../paginate/pagination';
+
+type OrderDirection = 'asc' | 'desc';
+type OrderField = keyof (typeof variants)['_']['columns'];
+
+interface OrderParams {
+  field: OrderField;
+  direction: OrderDirection;
+}
 
 const inventoryDTO = (inventory: Inventory) => {
   return inventory;
@@ -34,6 +42,20 @@ export const getAllInventoryLevels = async (
 
   const whereClause = and(...conditions);
 
+  const orderParams: OrderParams = {
+    field: (options.sortBy as OrderField) || 'createdAt',
+    direction: (options.sortOrder as OrderDirection) || 'desc',
+  };
+
+  console.log('Sorting params:', {
+    sortBy: options.sortBy,
+    sortOrder: options.sortOrder,
+    orderParams,
+  });
+
+  const orderFn = orderParams.direction === 'asc' ? asc : desc;
+  const orderByClause = orderFn(variants[orderParams.field as keyof (typeof variants)['_']['columns']]);
+
   const [variantsCount] = await db
     .select({ count: sql<number>`count(*)` })
     .from(variants)
@@ -56,7 +78,7 @@ export const getAllInventoryLevels = async (
     .where(whereClause)
     .limit(limit)
     .offset(offset)
-    .orderBy(variants.createdAt);
+    .orderBy(orderByClause);
 
   return {
     results,
