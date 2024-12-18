@@ -26,7 +26,7 @@ export const getCategories = catchAsync(async (req: Request, res: Response) => {
   }
 
   const filter = pick(req.query, ['name', 'status']);
-  const options: IOptions = pick(req.query, ['sortBy', 'limit', 'offset', 'projectBy', 'includeDeleted']);
+  const options: IOptions = pick(req.query, ['sortBy', 'sortOrder', 'limit', 'offset', 'projectBy', 'includeDeleted']);
   const organizationId = req.user.organizationId;
 
   const result = await categoryService.queryCategories(filter, options, organizationId);

@@ -1,4 +1,4 @@
-import { and, eq, inArray, sql } from 'drizzle-orm';
+import { and, asc, desc, eq, inArray, sql } from 'drizzle-orm';
 import httpStatus from 'http-status';
 import { CreateCategoryReq, ICategory, IOptions, ListResponse, UpdateCategoryReq } from '@shared';
 
@@ -7,6 +7,14 @@ import { db } from '@/db';
 import { categories, Category } from '@/db/schema';
 
 import { getPaginationConfig } from '../paginate/pagination';
+
+type OrderDirection = 'asc' | 'desc';
+type OrderField = keyof (typeof categories)['_']['columns'];
+
+interface OrderParams {
+  field: OrderField;
+  direction: OrderDirection;
+}
 
 export const createCategory = async (categoryBody: CreateCategoryReq, organizationId: string): Promise<ICategory> => {
   const [category] = await db
@@ -34,18 +42,26 @@ export const queryCategories = async (
 
   const whereClause = and(...conditions);
 
+  const orderParams: OrderParams = {
+    field: (options.sortBy as OrderField) || 'createdAt',
+    direction: (options.sortOrder as OrderDirection) || 'desc',
+  };
+
+  console.log('Sorting params:', {
+    sortBy: options.sortBy,
+    sortOrder: options.sortOrder,
+    orderParams,
+  });
+
+  const orderFn = orderParams.direction === 'asc' ? asc : desc;
+  const orderByClause = orderFn(categories[orderParams.field as keyof (typeof categories)['_']['columns']]);
+
   const [countResult] = await db
     .select({ count: sql<number>`count(*)` })
     .from(categories)
     .where(whereClause);
 
-  const results = await db
-    .select()
-    .from(categories)
-    .where(whereClause)
-    .limit(limit)
-    .offset(offset)
-    .orderBy(categories.createdAt);
+  const results = await db.select().from(categories).where(whereClause).limit(limit).offset(offset).orderBy(orderByClause);
 
   return {
     results,
