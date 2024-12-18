@@ -22,7 +22,8 @@ const generatePurchaseNumber = async (organizationId: string) => {
     .select({ count: count() })
     .from(purchases)
     .where(eq(purchases.organizationId, organizationId));
-  return `PO-${purchaseCount}-${organizationId}`;
+  const paddedPurchaseNumber = (purchaseCount[0].count + 1).toString().padStart(4, '0');
+  return `PO-${paddedPurchaseNumber}`;
 };
 
 export const createPurchase = async (purchaseData: CreatePurchaseReq, organizationId: string) => {

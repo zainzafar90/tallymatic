@@ -15,7 +15,7 @@ export const CreateOrderForm: React.FC<{ onClose: () => void }> = ({ onClose }) 
     await mutateAsync(data as CreateOrderReq, {
       onSuccess: (successData) => {
         toast.success('Order created', {
-          description: `Order #${successData.id} was successfully created`,
+          description: `Order #${successData.orderNumber} was successfully created`,
           closeButton: true,
         });
       },

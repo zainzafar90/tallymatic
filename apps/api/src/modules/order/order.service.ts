@@ -16,8 +16,9 @@ interface OrderParams {
 }
 
 const generateOrderNumber = async (organizationId: string) => {
-  const orderNumber = await db.select({ count: count() }).from(orders).where(eq(orders.organizationId, organizationId));
-  return `ORD-${orderNumber}-${organizationId}`;
+  const orderCount = await db.select({ count: count() }).from(orders).where(eq(orders.organizationId, organizationId));
+  const orderNumber = (orderCount[0].count + 1).toString().padStart(4, '0');
+  return `ORD-${orderNumber}`;
 };
 
 export const createOrder = async (orderData: CreateOrderReq, organizationId: string) => {

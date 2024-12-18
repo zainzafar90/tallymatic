@@ -212,9 +212,22 @@ async function main() {
         },
       },
       orders: {
-        count: 100,
+        count: 10,
         columns: {
-          orderNumber: funcs.phoneNumber({ template: 'ORD-####' }),
+          orderNumber: funcs.valuesFromArray({
+            values: [
+              'ORD-0001',
+              'ORD-0002',
+              'ORD-0003',
+              'ORD-0004',
+              'ORD-0005',
+              'ORD-0006',
+              'ORD-0007',
+              'ORD-0008',
+              'ORD-0009',
+              'ORD-0010',
+            ],
+          }),
           status: funcs.valuesFromArray({ values: ['pending', 'paid', 'unpaid', 'partiallyPaid', 'refunded', 'voided'] }),
           totalAmount: funcs.number({
             minValue: 100,
@@ -256,9 +269,22 @@ async function main() {
       },
 
       purchases: {
-        count: 100,
+        count: 10,
         columns: {
-          purchaseNumber: funcs.phoneNumber({ template: 'PO-####' }),
+          purchaseNumber: funcs.valuesFromArray({
+            values: [
+              'PO-0001',
+              'PO-0002',
+              'PO-0003',
+              'PO-0004',
+              'PO-0005',
+              'PO-0006',
+              'PO-0007',
+              'PO-0008',
+              'PO-0009',
+              'PO-0010',
+            ],
+          }),
           status: funcs.valuesFromArray({ values: ['draft', 'ordered', 'partial', 'received', 'closed'] }),
           totalAmount: funcs.number({
             minValue: 100,
