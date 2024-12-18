@@ -1,4 +1,4 @@
-import { and, count, eq } from 'drizzle-orm';
+import { and, asc, count, desc, eq } from 'drizzle-orm';
 import httpStatus from 'http-status';
 import { CreateOrganizationReq, IOptions, ListResponse, UpdateOrganizationReq } from '@shared';
 
@@ -7,6 +7,14 @@ import { db } from '@/db';
 import { organizations } from '@/db/schema';
 
 import { getPaginationConfig } from '../paginate/pagination';
+
+type OrderDirection = 'asc' | 'desc';
+type OrderField = keyof (typeof organizations)['_']['columns'];
+
+interface OrderParams {
+  field: OrderField;
+  direction: OrderDirection;
+}
 
 export const createOrganization = async (organizationBody: CreateOrganizationReq) => {
   const [organization] = await db.insert(organizations).values(organizationBody).returning();
@@ -26,13 +34,21 @@ export const queryOrganizations = async (
 
   const whereClause = conditions.length ? and(...conditions) : undefined;
 
+  const orderParams: OrderParams = {
+    field: (options.sortBy as OrderField) || 'createdAt',
+    direction: (options.sortOrder as OrderDirection) || 'desc',
+  };
+
+  const orderFn = orderParams.direction === 'asc' ? asc : desc;
+  const orderByClause = orderFn(organizations[orderParams.field as keyof (typeof organizations)['_']['columns']]);
+
   const [organizationsCount] = await db.select({ count: count() }).from(organizations).where(whereClause);
 
   const results = await db.query.organizations.findMany({
     where: whereClause,
     limit,
     offset,
-    orderBy: organizations.createdAt,
+    orderBy: orderByClause,
   });
 
   return {

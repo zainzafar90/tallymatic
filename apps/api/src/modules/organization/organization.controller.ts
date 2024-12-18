@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import httpStatus from 'http-status';
-import { IOptions, OrganizationResponse, OrganizationListResponse } from '@shared';
+import { IOptions, OrganizationListResponse, OrganizationResponse } from '@shared';
 
 import { catchAsync } from '@/utils/catch-async';
 import { pick } from '@/utils/pick';
@@ -21,7 +21,7 @@ export const createOrganization = catchAsync(async (req: Request, res: Response<
 
 export const getOrganizations = catchAsync(async (req: Request, res: Response<OrganizationListResponse>) => {
   const filter = pick(req.query, ['name', 'status']);
-  const options: IOptions = pick(req.query, ['sortBy', 'limit', 'offset', 'projectBy']);
+  const options: IOptions = pick(req.query, ['sortBy', 'sortOrder', 'limit', 'offset', 'projectBy']);
   const isAllowed = permissionService.checkPermissions(req.user.role, 'list', 'organizations');
   if (!isAllowed) {
     throw new ApiError(httpStatus.FORBIDDEN, 'You do not have permission to list organizations');
