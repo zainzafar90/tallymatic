@@ -4,7 +4,7 @@ import { CreateProductReq, IOptions, ListResponse, Status, UpdateProductReq } fr
 
 import { ApiError } from '@/common/errors/api-error';
 import { db } from '@/db';
-import { products, variants } from '@/db/schema';
+import { Product, products, variants } from '@/db/schema';
 
 import { getPaginationConfig } from '../paginate/pagination';
 
@@ -124,42 +124,37 @@ export const updateProductById = async (productId: string, updateBody: UpdatePro
 
     const { variants: productVariants, ...productData } = updateBody;
 
-    const productUpdate = {
-      ...productData,
-      organizationId,
-      categoryId: productData.categoryId ?? null,
-    };
-
     const [updatedProduct] = await tx
       .update(products)
-      .set(productUpdate)
+      .set({
+        ...productData,
+        organizationId,
+        categoryId: productData.categoryId ?? null,
+      } as Product)
       .where(and(eq(products.id, productId), eq(products.organizationId, organizationId)))
       .returning();
 
-    if (productVariants) {
+    if (productVariants?.length > 0) {
       await tx.delete(variants).where(eq(variants.productId, productId));
 
-      const variantsNew = productVariants.map((variant) => ({
-        ...variant,
-        price: variant.price.toString(),
-        productId,
-        organizationId,
-        status: Status.ACTIVE,
-      }));
-      if (productVariants.length > 0) {
-        await tx.insert(variants).values(variantsNew);
-      }
+      await tx.insert(variants).values(
+        productVariants.map((variant) => ({
+          ...variant,
+          price: variant.price.toString(),
+          productId,
+          organizationId,
+          status: Status.ACTIVE,
+        }))
+      );
     }
 
-    const result = await tx.query.products.findFirst({
+    return await tx.query.products.findFirst({
       where: eq(products.id, updatedProduct.id),
       with: {
         variants: true,
         category: true,
       },
     });
-
-    return result;
   });
 };
 

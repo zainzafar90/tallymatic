@@ -1,5 +1,5 @@
 import { relations } from 'drizzle-orm';
-import { customType, pgTable, text, timestamp, uuid, varchar } from 'drizzle-orm/pg-core';
+import { customType, foreignKey, pgTable, text, timestamp, uuid, varchar } from 'drizzle-orm/pg-core';
 import { ProductStatus } from '@shared';
 
 import { categories } from './category.schema';
@@ -12,19 +12,32 @@ const EnumProductStatus = customType<{
   dataType: () => 'text',
 });
 
-export const products = pgTable('products', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  organizationId: uuid('organization_id')
-    .notNull()
-    .references(() => organizations.id),
-  categoryId: uuid('category_id').references(() => categories.id),
-  name: varchar('name', { length: 255 }).notNull(),
-  description: text('description'),
-  status: EnumProductStatus('status').notNull().default(ProductStatus.ACTIVE),
-  createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at').defaultNow(),
-  deletedAt: timestamp('deleted_at'),
-});
+export const products = pgTable(
+  'products',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    organizationId: uuid('organization_id')
+      .notNull()
+      .references(() => organizations.id),
+    categoryId: uuid('category_id').references(() => categories.id),
+    name: varchar('name', { length: 255 }).notNull(),
+    description: text('description'),
+    status: EnumProductStatus('status').notNull().default(ProductStatus.ACTIVE),
+    createdAt: timestamp('created_at').defaultNow(),
+    updatedAt: timestamp('updated_at').defaultNow(),
+    deletedAt: timestamp('deleted_at'),
+  },
+  (table) => ({
+    fk_organization: foreignKey({
+      columns: [table.organizationId],
+      foreignColumns: [organizations.id],
+    })
+      .onDelete('cascade')
+      .onUpdate('cascade'),
+  })
+);
+
+export type Product = typeof products.$inferSelect;
 
 export const productsRelations = relations(products, ({ one, many }) => ({
   organization: one(organizations, {
