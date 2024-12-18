@@ -28,6 +28,7 @@ export const getPurchases = {
     status: Joi.string().valid(...Object.values(PurchaseStatus)),
     supplierId: Joi.string().custom(uuid),
     sortBy: Joi.string(),
+    sortOrder: Joi.string().valid('asc', 'desc'),
     projectBy: Joi.string(),
     limit: Joi.number().integer(),
     offset: Joi.number().integer(),

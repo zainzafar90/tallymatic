@@ -26,7 +26,7 @@ export const getPurchases = catchAsync(async (req: Request, res: Response) => {
   }
 
   const filter = pick(req.query, ['status', 'supplierId']);
-  const options: IOptions = pick(req.query, ['sortBy', 'limit', 'offset', 'projectBy']);
+  const options: IOptions = pick(req.query, ['sortBy', 'sortOrder', 'limit', 'offset', 'projectBy']);
   const result = await purchaseService.queryPurchases(filter, options, req.user.organizationId);
   res.send(result);
 });
