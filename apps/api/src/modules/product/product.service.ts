@@ -1,4 +1,4 @@
-import { and, count, eq, ilike } from 'drizzle-orm';
+import { and, asc, count, desc, eq, ilike } from 'drizzle-orm';
 import httpStatus from 'http-status';
 import { CreateProductReq, IOptions, ListResponse, Status, UpdateProductReq } from '@shared';
 
@@ -7,6 +7,14 @@ import { db } from '@/db';
 import { products, variants } from '@/db/schema';
 
 import { getPaginationConfig } from '../paginate/pagination';
+
+type OrderDirection = 'asc' | 'desc';
+type OrderField = keyof (typeof products)['_']['columns'];
+
+interface OrderParams {
+  field: OrderField;
+  direction: OrderDirection;
+}
 
 export const createProduct = async (productBody: CreateProductReq, organizationId: string) => {
   return await db.transaction(async (tx) => {
@@ -63,13 +71,21 @@ export const queryProducts = async (
 
   const whereClause = and(...conditions);
 
+  const orderParams: OrderParams = {
+    field: (options.sortBy as OrderField) || 'createdAt',
+    direction: (options.sortOrder as OrderDirection) || 'desc',
+  };
+
+  const orderFn = orderParams.direction === 'asc' ? asc : desc;
+  const orderByClause = orderFn(products[orderParams.field as keyof (typeof products)['_']['columns']]);
+
   const [productsCount] = await db.select({ count: count() }).from(products).where(whereClause);
 
   const results = await db.query.products.findMany({
     where: whereClause,
     limit,
     offset,
-    orderBy: products.createdAt,
+    orderBy: orderByClause,
     with: {
       variants: true,
       category: true,

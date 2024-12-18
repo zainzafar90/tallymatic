@@ -25,6 +25,7 @@ export const getProducts = {
     name: Joi.string(),
     status: Joi.string().valid(ProductStatus.ACTIVE, ProductStatus.ARCHIVED, ProductStatus.DRAFT),
     sortBy: Joi.string(),
+    sortOrder: Joi.string().valid('asc', 'desc'),
     projectBy: Joi.string(),
     limit: Joi.number().integer(),
     offset: Joi.number().integer(),

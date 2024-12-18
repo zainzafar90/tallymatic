@@ -26,7 +26,7 @@ export const getProducts = catchAsync(async (req: Request, res: Response) => {
   }
 
   const filter = pick(req.query, ['name', 'status']);
-  const options: IOptions = pick(req.query, ['sortBy', 'limit', 'offset', 'projectBy']);
+  const options: IOptions = pick(req.query, ['sortBy', 'sortOrder', 'limit', 'offset', 'projectBy']);
   const wildcardFields = ['name'];
   const result = await productService.queryProducts(filter, options, req.user.organizationId, wildcardFields);
   res.send(result);
