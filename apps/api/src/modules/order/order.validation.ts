@@ -32,6 +32,7 @@ export const getOrders = {
   query: Joi.object().keys({
     status: Joi.string().valid(...Object.values(OrderStatus)),
     sortBy: Joi.string(),
+    sortOrder: Joi.string().valid('asc', 'desc'),
     projectBy: Joi.string(),
     limit: Joi.number().integer(),
     offset: Joi.number().integer(),
