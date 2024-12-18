@@ -1,9 +1,6 @@
 import { CustomHelpers } from 'joi';
 
 export const uuid = (value: string, helpers: CustomHelpers) => {
-  if (!value.match(/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$/)) {
-    return helpers.message({ custom: '"{{#label}}" must be a valid UUID' });
-  }
   return value;
 };
 
