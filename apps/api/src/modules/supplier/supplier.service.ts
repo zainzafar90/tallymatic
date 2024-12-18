@@ -1,4 +1,4 @@
-import { and, count, eq, ilike } from 'drizzle-orm';
+import { and, asc, count, desc, eq, ilike } from 'drizzle-orm';
 import httpStatus from 'http-status';
 import { CreateSupplierReq, IOptions, ListResponse, Status, UpdateSupplierReq } from '@shared';
 
@@ -7,6 +7,14 @@ import { db } from '@/db';
 import { suppliers } from '@/db/schema';
 
 import { getPaginationConfig } from '../paginate/pagination';
+
+type OrderDirection = 'asc' | 'desc';
+type OrderField = keyof (typeof suppliers)['_']['columns'];
+
+interface OrderParams {
+  field: OrderField;
+  direction: OrderDirection;
+}
 
 export const createSupplier = async (supplierBody: CreateSupplierReq, organizationId: string) => {
   const supplierNew = {
@@ -36,13 +44,21 @@ export const querySuppliers = async (
 
   const whereClause = and(...conditions);
 
+  const orderParams: OrderParams = {
+    field: (options.sortBy as OrderField) || 'createdAt',
+    direction: (options.sortOrder as OrderDirection) || 'desc',
+  };
+
+  const orderFn = orderParams.direction === 'asc' ? asc : desc;
+  const orderByClause = orderFn(suppliers[orderParams.field as keyof (typeof suppliers)['_']['columns']]);
+
   const [suppliersCount] = await db.select({ count: count() }).from(suppliers).where(whereClause);
 
   const results = await db.query.suppliers.findMany({
     where: whereClause,
     limit,
     offset,
-    orderBy: suppliers.createdAt,
+    orderBy: orderByClause,
   });
 
   return {

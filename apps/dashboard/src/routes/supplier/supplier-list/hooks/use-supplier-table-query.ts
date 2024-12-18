@@ -10,6 +10,7 @@ export const useSupplierTableQuery = ({ pageSize = DEFAULT_PAGE_SIZE }: UseSuppl
   const queryObject = useQueryParams([
     'offset',
     'sortBy',
+    'sortOrder',
     'companyName',
     'contactName',
     'email',
@@ -18,12 +19,13 @@ export const useSupplierTableQuery = ({ pageSize = DEFAULT_PAGE_SIZE }: UseSuppl
     'updatedAt',
   ]);
 
-  const { offset, sortBy, companyName, contactName, email, phone, createdAt, updatedAt } = queryObject;
+  const { offset, sortBy, sortOrder, companyName, contactName, email, phone, createdAt, updatedAt } = queryObject;
 
   const searchParams = {
     limit: pageSize,
     offset: offset ? Number(offset) : 0,
-    sortBy: sortBy || 'createdAt:desc',
+    sortBy: sortBy || 'createdAt',
+    sortOrder: sortOrder || 'desc',
     company_name: companyName,
     contact_name: contactName,
     email,

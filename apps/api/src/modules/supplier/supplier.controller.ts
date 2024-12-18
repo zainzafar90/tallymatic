@@ -20,7 +20,7 @@ export const createSupplier = catchAsync(async (req: Request, res: Response) => 
 
 export const getSuppliers = catchAsync(async (req: Request, res: Response) => {
   const filter = pick(req.query, ['companyName', 'contactName', 'email']);
-  const options: IOptions = pick(req.query, ['sortBy', 'limit', 'offset', 'projectBy']);
+  const options: IOptions = pick(req.query, ['sortBy', 'sortOrder', 'limit', 'offset', 'projectBy']);
   const isAllowed = permissionService.checkPermissions(req.user.role, 'list', 'suppliers');
   if (!isAllowed) {
     throw new ApiError(httpStatus.FORBIDDEN, 'You do not have permission to list suppliers');
