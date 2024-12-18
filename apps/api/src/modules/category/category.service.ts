@@ -47,12 +47,6 @@ export const queryCategories = async (
     direction: (options.sortOrder as OrderDirection) || 'desc',
   };
 
-  console.log('Sorting params:', {
-    sortBy: options.sortBy,
-    sortOrder: options.sortOrder,
-    orderParams,
-  });
-
   const orderFn = orderParams.direction === 'asc' ? asc : desc;
   const orderByClause = orderFn(categories[orderParams.field as keyof (typeof categories)['_']['columns']]);
 
