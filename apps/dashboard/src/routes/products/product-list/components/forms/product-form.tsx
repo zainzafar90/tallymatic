@@ -221,6 +221,7 @@ export const ProductForm = ({ product, isPending, onSubmit, onClose }: ProductFo
                             inputMode="decimal"
                             type="number"
                             placeholder="0"
+                            value={typeof field.value === 'string' ? field.value : field.value.toString()}
                             onChange={(e) => {
                               const value = e.target.value;
                               field.onChange(parseFloat(value) || 0);
