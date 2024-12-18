@@ -42,7 +42,7 @@ RUN echo '{\
       "SMTP_PORT": 587,\
       "SMTP_USERNAME": "deshaun.shields@ethereal.email",\
       "SMTP_PASSWORD": "ZZbKZDM41QryBjeVpP",\
-      "EMAIL_FROM": "support@meelio.io",\
+      "EMAIL_FROM": "support@tallymatic.io",\
       "COOKIE_SECRET": "thisisasamplesecret",\
       "CLIENT_URL": "http://localhost:4000"\
     }\
