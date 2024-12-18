@@ -4,7 +4,7 @@ import { CreateCustomerReq, IOptions, UpdateCustomerReq } from '@shared';
 
 import { ApiError } from '@/common/errors/api-error';
 import { db } from '@/db';
-import { Customer, customers, users } from '@/db/schema';
+import { Customer, customers } from '@/db/schema';
 
 import { getPaginationConfig } from '../paginate/pagination';
 
