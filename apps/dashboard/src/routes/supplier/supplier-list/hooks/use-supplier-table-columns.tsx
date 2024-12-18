@@ -28,20 +28,23 @@ export const useSupplierTableColumns = () => {
     }),
     columnHelper.accessor('companyName', {
       header: ({ column }) => <SortedHeader text="Company Name" column={column} />,
-      cell: ({ row }) => <TextCell text={row.getValue('companyName')} />,
+      cell: ({ row }) => (
+        <div className="flex flex-col h-full w-full gap-x-3 overflow-hidden">
+          <TextCell text={row.getValue('companyName')} />
+          <div className="text-sm text-gray-500">{row.original.contactName}</div>
+        </div>
+      ),
       enableHiding: false,
     }),
-    columnHelper.accessor('contactName', {
-      header: () => <TextHeader text="Contact Name" />,
-      cell: ({ getValue }) => <TextCell text={getValue()} />,
-    }),
     columnHelper.accessor('email', {
-      header: () => <TextHeader text="Email" />,
-      cell: ({ getValue }) => <TextCell text={getValue()} />,
-    }),
-    columnHelper.accessor('phone', {
-      header: () => <TextHeader text="Phone" />,
-      cell: ({ getValue }) => <TextCell text={getValue()} />,
+      header: ({ column }) => <TextHeader text="Email" />,
+      cell: ({ row }) => (
+        <div className="flex flex-col h-full w-full gap-x-3 overflow-hidden">
+          <div className="truncate">{row.original.email}</div>
+          <div className="text-sm text-gray-500">{row.original.phone || 'Phone not provided'}</div>
+        </div>
+      ),
+      enableHiding: false,
     }),
     columnHelper.accessor('address', {
       header: () => <TextHeader text="Address" />,
