@@ -67,6 +67,10 @@ async function main() {
           name: funcs.companyName({ isUnique: true }),
           email: funcs.email(),
           contact: funcs.phoneNumber({ template: '+1 (###) ###-####' }),
+          createdAt: funcs.date({
+            minDate: '2023-01-01',
+            maxDate: '2024-12-16',
+          }),
         },
       },
       stores: {
@@ -75,6 +79,10 @@ async function main() {
           name: funcs.companyName({ isUnique: true }),
           address: funcs.streetAddress({ isUnique: true }),
           status: funcs.valuesFromArray({ values: ['active', 'inactive'] }),
+          createdAt: funcs.date({
+            minDate: '2023-01-01',
+            maxDate: '2024-12-16',
+          }),
         },
       },
       users: {
@@ -95,6 +103,10 @@ async function main() {
           isEmailVerified: funcs.boolean(),
           contact: funcs.phoneNumber({ template: '+1 (###) ###-####' }),
           role: funcs.valuesFromArray({ values: ['super-admin'] }),
+          createdAt: funcs.date({
+            minDate: '2023-01-01',
+            maxDate: '2024-12-16',
+          }),
         },
       },
       categories: {
@@ -121,6 +133,10 @@ async function main() {
             isUnique: true,
           }),
           description: funcs.loremIpsum({ sentencesCount: 2 }),
+          createdAt: funcs.date({
+            minDate: '2023-01-01',
+            maxDate: '2024-12-16',
+          }),
         },
       },
       products: {
@@ -146,6 +162,10 @@ async function main() {
             maxValue: 1000,
           }),
           status: funcs.valuesFromArray({ values: ['active', 'inactive'] }),
+          createdAt: funcs.date({
+            minDate: '2023-01-01',
+            maxDate: '2024-12-16',
+          }),
         },
       },
       variants: {
@@ -179,6 +199,10 @@ async function main() {
             minValue: 1,
             maxValue: 10,
           }),
+          createdAt: funcs.date({
+            minDate: '2023-01-01',
+            maxDate: '2024-12-16',
+          }),
         },
       },
       inventory: {
@@ -190,6 +214,10 @@ async function main() {
           }),
           type: funcs.valuesFromArray({ values: ['sold', 'received', 'adjusted'] }),
           notes: funcs.loremIpsum({ sentencesCount: 2 }),
+          createdAt: funcs.date({
+            minDate: '2023-01-01',
+            maxDate: '2024-12-16',
+          }),
         },
       },
       customers: {
@@ -248,6 +276,10 @@ async function main() {
           currency: funcs.valuesFromArray({
             values: ['USD', 'EUR', 'GBP', 'JPY', 'CAD', 'AUD', 'CHF', 'CNY', 'INR', 'BRL', 'MXN', 'ZAR'],
           }),
+          createdAt: funcs.date({
+            minDate: '2023-01-01',
+            maxDate: '2024-12-16',
+          }),
         },
       },
       orderItems: {
@@ -290,7 +322,14 @@ async function main() {
             minValue: 100,
             maxValue: 1000,
           }),
-          expectedArrivalDate: funcs.date(),
+          createdAt: funcs.date({
+            minDate: '2023-01-01',
+            maxDate: '2024-12-16',
+          }),
+          expectedArrivalDate: funcs.date({
+            minDate: '2023-01-01',
+            maxDate: '2024-12-16',
+          }),
           receivedQuantity: funcs.int({
             minValue: 1,
             maxValue: 100,
