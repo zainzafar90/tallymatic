@@ -1,4 +1,4 @@
-import { and, count, eq, ilike, inArray, isNull, or } from 'drizzle-orm';
+import { and, count, eq, ilike, inArray, isNull } from 'drizzle-orm';
 import httpStatus from 'http-status';
 import { CreateCustomerReq, IOptions, UpdateCustomerReq } from '@shared';
 

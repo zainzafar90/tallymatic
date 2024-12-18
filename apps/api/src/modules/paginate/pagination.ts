@@ -1,12 +1,11 @@
 export type PaginationParams = {
-  page?: number;
+  offset?: number;
   limit?: number;
 };
 
 export const getPaginationConfig = (params: PaginationParams) => {
-  const page = params.page || 1;
+  const offset = params.offset || 0;
   const limit = params.limit || 10;
-  const offset = (page - 1) * limit;
 
   return {
     limit,
