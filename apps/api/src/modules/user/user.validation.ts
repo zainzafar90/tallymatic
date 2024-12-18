@@ -21,6 +21,7 @@ export const getUsers = {
     name: Joi.string(),
     role: Joi.string(),
     sortBy: Joi.string(),
+    sortOrder: Joi.string().valid('asc', 'desc'),
     projectBy: Joi.string(),
     limit: Joi.number().integer(),
     offset: Joi.number().integer(),

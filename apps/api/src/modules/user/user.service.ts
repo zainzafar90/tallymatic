@@ -1,6 +1,6 @@
-import { and, count, eq, ne } from 'drizzle-orm';
+import { and, asc, count, desc, eq, ne } from 'drizzle-orm';
 import httpStatus from 'http-status';
-import { CreateUserReq, IOptions, IUser, RegisterUserReq, RoleType, UpdateUserReq } from '@shared';
+import { CreateUserReq, IOptions, RegisterUserReq, RoleType, UpdateUserReq } from '@shared';
 
 import { ApiError } from '@/common/errors/api-error';
 import { db } from '@/db';
@@ -8,6 +8,14 @@ import { Organization, User, users } from '@/db/schema';
 
 import { getPaginationConfig } from '../paginate/pagination';
 import { hashPassword, sanitizeUser } from './user.utils';
+
+type OrderDirection = 'asc' | 'desc';
+type OrderField = keyof (typeof users)['_']['columns'];
+
+interface OrderParams {
+  field: OrderField;
+  direction: OrderDirection;
+}
 
 const userDTO = (user: User, organization?: Organization) => {
   const sanitizedUser = sanitizeUser(user);
@@ -86,13 +94,21 @@ export const queryUsers = async (filter: Record<string, any>, options: IOptions,
 
   const whereClause = and(...conditions);
 
+  const orderParams: OrderParams = {
+    field: (options.sortBy as OrderField) || 'createdAt',
+    direction: (options.sortOrder as OrderDirection) || 'desc',
+  };
+
+  const orderFn = orderParams.direction === 'asc' ? asc : desc;
+  const orderByClause = orderFn(users[orderParams.field as keyof (typeof users)['_']['columns']]);
+
   const [usersCount] = await db.select({ count: count() }).from(users).where(whereClause);
 
   const results = await db.query.users.findMany({
     where: whereClause,
     limit,
     offset,
-    orderBy: users.createdAt,
+    orderBy: orderByClause,
     with: {
       organization: true,
     },
