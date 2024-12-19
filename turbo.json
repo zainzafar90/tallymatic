@@ -20,6 +20,11 @@
     },
     "clean": {
       "cache": false
+    },
+    "start": {
+      "cache": false,
+      "dependsOn": ["build"],
+      "env": ["NEXT_PUBLIC_API_HOST"]
     }
   }
 }
