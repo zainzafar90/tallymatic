@@ -14,6 +14,7 @@
     "dev:api": "turbo run dev --filter=api",
     "dev:web": "turbo run dev --filter=web",
     "start": "turbo run start",
+    "start:all": "turbo run start",
     "start:api": "turbo run start --filter=api",
     "start:web": "turbo run start --filter=web",
     "clean": "turbo run clean",
