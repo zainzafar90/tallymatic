@@ -6,12 +6,6 @@ const envVarsSchema = Joi.object()
   .keys({
     NODE_ENV: Joi.string().valid('production', 'development', 'test').required(),
     PORT: Joi.number().default(3000),
-    DB_HOST: Joi.string().required().description('Database host name').default('localhost'),
-    DB_PORT: Joi.number().default(5432),
-    DB_NAME: Joi.string().required().description('Database name').default('tallymatic'),
-    DB_USER: Joi.string().required().description('Database user').default('postgres'),
-    DB_PASSWORD: Joi.string().required().description('Database password').default('password'),
-    DB_DIALECT: Joi.string().required().description('Database dialect').default('postgres'),
     DB_URL: Joi.string().required().description('Database url'),
     JWT_SECRET: Joi.string().required().description('JWT secret key'),
     JWT_ACCESS_EXPIRATION_MINUTES: Joi.number().default(30).description('minutes after which access tokens expire'),
@@ -41,12 +35,6 @@ const config = {
   env: envVars.NODE_ENV,
   port: envVars.PORT,
   db: {
-    host: envVars.DB_HOST,
-    port: envVars.DB_PORT,
-    name: envVars.DB_NAME,
-    user: envVars.DB_USER,
-    password: envVars.DB_PASSWORD,
-    dialect: envVars.DB_DIALECT,
     url: envVars.DB_URL,
   },
   jwt: {

@@ -48,7 +48,7 @@ export const useCategoryTableColumns = () => {
       cell: ({ getValue }) => <TextCell text={getValue()} />,
       enableSorting: false,
       meta: {
-        className: 'hidden md:table-cell',
+        className: 'hidden md:table-cell max-w-xs',
       },
     }),
     columnHelper.accessor('status', {

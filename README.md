@@ -32,36 +32,47 @@
 2. Install dependencies:
 
    ```
-   npm install
+   yarn
    ```
 
 3. Set up environment variables:
 
    - Copy `.env.example` to `.env` in the `apps/api` directory
-   - Copy `.env.example` to `.env` in the `apps/dashboard` directory
+   - Copy `.env.example` to `.env` in the `apps/web` directory
    - Update the `.env` file with your database credentials and other configuration
 
 4. Set up the database:
-   ```
-   npm run db:create
-   npm run migrate:dev
-   npm run seed:dev
-   ```
+   
+```
+yarn db:generate
+yarn db:migrate
+yarn db:seed 
+```
+
+🚧 In case db:seed fails run it twice
 
 ## Running the Projects
+
+### Run All
+
+To start all the projects within apps
+
+```
+yarn dev
+```
 
 ### API (Backend)
 
 To start the API server in development mode:
 
 ```
-nx serve api
+yarn dev:api
 ```
 
-### Dashboard (Frontend)
+### Web Dashboard (Frontend)
 
 To start client in development mode:
 
 ```
-nx serve dashboard
+yarn dev:web
 ```
