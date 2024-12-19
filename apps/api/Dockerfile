@@ -1,54 +1,47 @@
-FROM node:20-alpine as builder
+FROM node:18-alpine AS base
 
+# The web Dockerfile is copy-pasted into our main docs at /docs/handbook/deploying-with-docker.
+# Make sure you update this Dockerfile, the Dockerfile in the web workspace and copy that over to Dockerfile in the docs.
+
+FROM base AS builder
+# Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
+RUN apk update
+RUN apk add --no-cache libc6-compat
+# Set working directory
+WORKDIR /app
+RUN yarn global add turbo
+COPY . .
+RUN turbo prune api --docker
+
+# Add lockfile and package.json's of isolated subworkspace
+FROM base AS installer
+RUN apk update
+RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
-# Copy root package files
-COPY package*.json ./
+# First install dependencies (as they change less often)
+COPY --from=builder /app/out/json/ .
+RUN yarn install
 
-# Install dependencies
-RUN npm install
+# Build the project and its dependencies
+COPY --from=builder /app/out/full/ .
 
-# Install PM2 globally
-RUN npm install pm2 -g
+# Uncomment and use build args to enable remote caching
+# ARG TURBO_TEAM
+# ENV TURBO_TEAM=$TURBO_TEAM
 
-# Copy source code
-COPY . .
+# ARG TURBO_TOKEN
+# ENV TURBO_TOKEN=$TURBO_TOKEN
 
-# Build API
-RUN npm run build:api
+RUN yarn turbo build --filter=api...
 
-# Create PM2 config
-RUN echo '{\
-  "apps": [{\
-    "name": "api",\
-    "script": "dist/apps/api/main.js",\
-    "instances": "max",\
-    "exec_mode": "cluster",\
-    "env": {\
-      "NODE_ENV": "production",\
-      "PORT": 3001,\
-      "DB_HOST": "postgres",\
-      "DB_PORT": 5432,\
-      "DB_NAME": "tallymatic",\
-      "DB_USER": "postgres",\
-      "DB_PASSWORD": "postgres",\
-      "DB_DIALECT": "postgres",\
-      "JWT_SECRET": "f2NQW9ElfcRPlqsDEqcvmlETauLjPyqpJZhyIKsa",\
-      "JWT_ACCESS_EXPIRATION_MINUTES": 100,\
-      "JWT_REFRESH_EXPIRATION_DAYS": 30,\
-      "JWT_RESET_PASSWORD_EXPIRATION_MINUTES": 10,\
-      "JWT_VERIFY_EMAIL_EXPIRATION_MINUTES": 10,\
-      "SMTP_HOST": "smtp.ethereal.email",\
-      "SMTP_PORT": 587,\
-      "SMTP_USERNAME": "deshaun.shields@ethereal.email",\
-      "SMTP_PASSWORD": "ZZbKZDM41QryBjeVpP",\
-      "EMAIL_FROM": "support@tallymatic.io",\
-      "COOKIE_SECRET": "thisisasamplesecret",\
-      "CLIENT_URL": "http://localhost:4000"\
-    }\
-  }]\
-}' > process.json
+FROM base AS runner
+WORKDIR /app
 
-EXPOSE 3000
+# Don't run production as root
+RUN addgroup --system --gid 1001 expressjs
+RUN adduser --system --uid 1001 expressjs
+USER expressjs
+COPY --from=installer /app .
 
-CMD ["pm2-runtime", "start", "process.json"] 
+CMD node apps/api/dist/index.js

@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import httpStatus from 'http-status';
-import { IOptions } from '@shared';
+import { IOptions } from '@repo/shared';
 
 import { catchAsync } from '@/utils/catch-async';
 import { pick } from '@/utils/pick';

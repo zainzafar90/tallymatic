@@ -1,6 +1,6 @@
 import { relations } from 'drizzle-orm';
 import { boolean, customType, pgTable, timestamp, uuid, varchar } from 'drizzle-orm/pg-core';
-import { RoleType } from '@shared';
+import { RoleType } from '@repo/shared';
 
 import { organizations } from './organization.schema';
 import { tokens } from './token.schema';

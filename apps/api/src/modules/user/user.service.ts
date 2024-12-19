@@ -1,6 +1,6 @@
 import { and, asc, count, desc, eq, ne } from 'drizzle-orm';
 import httpStatus from 'http-status';
-import { CreateUserReq, IOptions, RegisterUserReq, RoleType, UpdateUserReq } from '@shared';
+import { CreateUserReq, IOptions, RegisterUserReq, RoleType, UpdateUserReq } from '@repo/shared';
 
 import { ApiError } from '@/common/errors/api-error';
 import { db } from '@/db';

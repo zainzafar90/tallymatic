@@ -1,5 +1,5 @@
 import Joi from 'joi';
-import { CreateCustomerReq } from '@shared';
+import { CreateCustomerReq } from '@repo/shared';
 
 import { uuid } from '@/common/validate/custom.validation';
 

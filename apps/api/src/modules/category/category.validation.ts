@@ -1,5 +1,5 @@
 import Joi from 'joi';
-import { CreateCategoryReq, Status } from '@shared';
+import { CreateCategoryReq, Status } from '@repo/shared';
 
 import { uuid } from '@/common/validate/custom.validation';
 

@@ -1,5 +1,5 @@
 import Joi from 'joi';
-import { CreateProductVariantReq, Status } from '@shared';
+import { CreateProductVariantReq, Status } from '@repo/shared';
 
 export const createProductVariantBody: Record<keyof CreateProductVariantReq, any> = {
   name: Joi.string().required(),

@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import httpStatus from 'http-status';
-import { IOptions, TransactionType } from '@shared';
+import { IOptions, TransactionType } from '@repo/shared';
 
 import { catchAsync } from '@/utils/catch-async';
 import { ApiError } from '@/common/errors/api-error';

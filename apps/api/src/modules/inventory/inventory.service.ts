@@ -1,6 +1,6 @@
 import { and, asc, desc, eq, lte, sql } from 'drizzle-orm';
 import httpStatus from 'http-status';
-import { IOptions, TransactionType } from '@shared';
+import { IOptions, TransactionType } from '@repo/shared';
 
 import { ApiError } from '@/common/errors/api-error';
 import { db } from '@/db';

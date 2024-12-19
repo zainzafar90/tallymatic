@@ -1,4 +1,4 @@
-import { RoleType } from '@shared';
+import { RoleType } from '@repo/shared';
 
 import permissions from './permissions.json';
 

@@ -20,7 +20,7 @@ function generateFiles(resourceName) {
     path.join('hooks', 'api', `${resourceName}.hooks.ts`),
   ];
 
-  const resourceDir = path.join(process.cwd(), 'apps', 'dashboard', 'src');
+  const resourceDir = path.join(process.cwd(), 'apps', 'web', 'src');
 
   if (!fs.existsSync(resourceDir)) {
     fs.mkdirSync(resourceDir, { recursive: true });

@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import httpStatus from 'http-status';
-import { AuthResponse, IUser, UserAuthResponse } from '@shared';
+import { AuthResponse, IUser, UserAuthResponse } from '@repo/shared';
 
 import { catchAsync } from '@/utils/catch-async';
 
@@ -29,7 +29,7 @@ export const logout = catchAsync(async (req: Request, res: Response<void>) => {
 
 export const refreshTokens = catchAsync(async (req: Request, res: Response<UserAuthResponse>) => {
   const userWithTokens = await authService.refreshAuth(req.body.refreshToken);
-  res.send({ ...userWithTokens });
+  res.send({ ...userWithTokens } as UserAuthResponse);
 });
 
 export const forgotPassword = catchAsync(async (req: Request, res: Response<void>) => {

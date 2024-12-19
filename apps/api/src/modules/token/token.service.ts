@@ -1,8 +1,8 @@
-import { and,eq } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 import httpStatus from 'http-status';
 import jwt from 'jsonwebtoken';
 import moment, { Moment } from 'moment';
-import { AuthResponse, IToken, IUser, TokenType } from '@shared';
+import { AuthResponse, IToken, IUser, TokenType } from '@repo/shared';
 
 import { config } from '@/config/config';
 import { ApiError } from '@/common/errors/api-error';
@@ -66,7 +66,7 @@ export const verifyToken = async (token: string, type: TokenType) => {
     const payload = jwt.verify(token, config.jwt.secret);
 
     const tokenDoc = await db.query.tokens.findFirst({
-      where: and(eq(tokens.token, token), eq(tokens.type, type), eq(tokens.userId, payload.sub)),
+      where: and(eq(tokens.token, token), eq(tokens.type, type), eq(tokens.userId, payload.sub as string)),
       with: {
         user: true,
       },

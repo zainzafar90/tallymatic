@@ -1,18 +1,16 @@
 {
-  "extends": "../../tsconfig.base.json",
-  "files": [],
-  "include": [],
-  "references": [
-    {
-      "path": "./tsconfig.app.json"
-    },
-    {
-      "path": "./tsconfig.spec.json"
-    }
-  ],
+  "extends": "@repo/typescript-config/base.json",
   "compilerOptions": {
-    "composite": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true
-  }
+    "lib": ["ES2015"],
+    "outDir": "./dist",
+    "types": ["node", "express", "jest"],
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@repo/*": ["./packages/*"]
+    }
+  },
+  "exclude": ["node_modules", "**/public/sounds/**"],
+  "include": ["src"]
 }

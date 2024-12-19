@@ -1,5 +1,5 @@
 import { and, asc, count, desc, eq, ilike } from 'drizzle-orm';
-import { IOptions, ListResponse } from '@shared';
+import { IOptions, ListResponse } from '@repo/shared';
 
 import { db } from '@/db';
 import { variants } from '@/db/schema';

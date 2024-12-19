@@ -1,6 +1,6 @@
 import { relations } from 'drizzle-orm';
 import { customType, pgTable, text, timestamp, uuid, varchar } from 'drizzle-orm/pg-core';
-import { Status } from '@shared';
+import { Status } from '@repo/shared';
 
 import { organizations } from './organization.schema';
 import { products } from './product.schema';

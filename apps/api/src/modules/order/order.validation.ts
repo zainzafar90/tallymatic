@@ -1,5 +1,5 @@
 import Joi from 'joi';
-import { CreateOrderReq, OrderStatus } from '@shared';
+import { CreateOrderReq, OrderStatus } from '@repo/shared';
 
 import { uuid } from '@/common/validate/custom.validation';
 

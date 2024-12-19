@@ -1,6 +1,6 @@
 import { and, eq } from 'drizzle-orm';
 import httpStatus from 'http-status';
-import { IUser, TokenType } from '@shared';
+import { IUser, TokenType } from '@repo/shared';
 
 import { ApiError } from '@/common/errors/api-error';
 import { db } from '@/db';

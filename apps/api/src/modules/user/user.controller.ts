@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import httpStatus from 'http-status';
-import { IOptions, RoleType, UserDeleteResponse, UserListResponse, UserProfileResponse, UserResponse } from '@shared';
+import { IOptions, RoleType, UserDeleteResponse, UserListResponse, UserProfileResponse, UserResponse } from '@repo/shared';
 
 import { catchAsync } from '@/utils/catch-async';
 import { pick } from '@/utils/pick';

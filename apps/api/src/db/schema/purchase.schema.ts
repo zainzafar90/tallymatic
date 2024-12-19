@@ -1,6 +1,6 @@
 import { relations } from 'drizzle-orm';
 import { customType, foreignKey, integer, numeric, pgTable, text, timestamp, uuid, varchar } from 'drizzle-orm/pg-core';
-import { PurchaseStatus } from '@shared';
+import { PurchaseStatus } from '@repo/shared';
 
 import { organizations } from './organization.schema';
 import { suppliers } from './supplier.schema';

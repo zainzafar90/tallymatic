@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import httpStatus from 'http-status';
 import passport from 'passport';
-import { IUser } from '@shared';
+import { IUser } from '@repo/shared';
 
 import { ApiError } from '@/common/errors/api-error';
 

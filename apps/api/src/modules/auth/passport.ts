@@ -1,6 +1,6 @@
 import { JwtPayload } from 'jsonwebtoken';
 import { ExtractJwt, Strategy as JwtStrategy } from 'passport-jwt';
-import { TokenType } from '@shared';
+import { TokenType } from '@repo/shared';
 
 import { config } from '@/config/config';
 

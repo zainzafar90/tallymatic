@@ -1,6 +1,6 @@
 import { relations, sql } from 'drizzle-orm';
 import { customType, foreignKey, integer, numeric, pgTable, timestamp, uuid, varchar } from 'drizzle-orm/pg-core';
-import { Status } from '@shared';
+import { Status } from '@repo/shared';
 
 import { inventory } from './inventory.schema';
 import { orderItems } from './order.schema';

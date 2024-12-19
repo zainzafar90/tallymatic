@@ -11,12 +11,11 @@ const specs = swaggerJsdoc({
   apis: ['apps/api/packages/components.yaml', 'apps/api/src/routes/v1/**/*.ts'],
 });
 
-router.use('/', swaggerUi.serve);
-router.get(
-  '/',
-  swaggerUi.setup(specs, {
+router.use('/', swaggerUi.serve as any);
+router.get('/', (req, res) => {
+  return swaggerUi.setup(specs, {
     explorer: true,
-  })
-);
+  });
+});
 
 export default router;

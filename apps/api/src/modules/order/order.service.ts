@@ -1,5 +1,5 @@
 import { and, asc, count, desc, eq } from 'drizzle-orm';
-import { CreateOrderReq, IOptions, ListResponse, UpdateOrderReq } from '@shared';
+import { CreateOrderReq, IOptions, ListResponse, UpdateOrderReq } from '@repo/shared';
 
 import { ApiError } from '@/common/errors/api-error';
 import { db } from '@/db';

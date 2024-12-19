@@ -1,6 +1,6 @@
 import { and, asc, count, desc, eq } from 'drizzle-orm';
 import httpStatus from 'http-status';
-import { CreateOrganizationReq, IOptions, ListResponse, UpdateOrganizationReq } from '@shared';
+import { CreateOrganizationReq, IOptions, ListResponse, UpdateOrganizationReq } from '@repo/shared';
 
 import { ApiError } from '@/common/errors/api-error';
 import { db } from '@/db';

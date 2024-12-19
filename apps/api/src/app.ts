@@ -42,15 +42,15 @@ app.use(express.urlencoded({ extended: true }));
 app.use(xss());
 
 // gzip compression
-app.use(compression());
+app.use(compression() as any);
 
 // jwt authentication
-app.use(passport.initialize());
+app.use(passport.initialize() as any);
 passport.use('jwt', jwtStrategy);
 
 // limit repeated failed requests to auth endpoints
 if (config.env === 'production') {
-  app.use('/v1/auth', authLimiter);
+  app.use('/v1/auth', authLimiter as any);
 }
 
 // v1 api routes

@@ -1,5 +1,5 @@
 import Joi from 'joi';
-import { PurchaseStatus } from '@shared';
+import { PurchaseStatus } from '@repo/shared';
 
 import { uuid } from '@/common/validate/custom.validation';
 

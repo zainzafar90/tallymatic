@@ -1,5 +1,5 @@
 import Joi from 'joi';
-import { CreateUserReq, RoleType } from '@shared';
+import { CreateUserReq, RoleType } from '@repo/shared';
 
 import { password, uuid } from '@/common/validate/custom.validation';
 

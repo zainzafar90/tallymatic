@@ -1,6 +1,6 @@
 import { relations } from 'drizzle-orm';
 import { customType, foreignKey, integer, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core';
-import { TransactionType } from '@shared';
+import { TransactionType } from '@repo/shared';
 
 import { variants } from './variant.schema';
 
