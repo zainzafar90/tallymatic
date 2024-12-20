@@ -3,9 +3,7 @@ import { Redis } from 'ioredis';
 import { config } from '@/config/config';
 import { logger } from '@/common/logger';
 
-const redisUrl = config.redis.host;
-
-export const redis = new Redis(redisUrl);
+export const redis = new Redis(config.redis.port, config.redis.host);
 
 redis.on('error', (error) => {
   logger.error('Redis connection error:', error);
