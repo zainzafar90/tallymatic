@@ -62,8 +62,9 @@ export const useProductTableColumns = () => {
       header: () => <TextHeader text="Price" align="right" />,
       cell: ({ getValue }) => {
         const prices = getValue();
-        const min = Math.min(...prices);
-        const max = Math.max(...prices);
+        const hasPrices = prices.length > 0;
+        const min = hasPrices ? Math.min(...prices) : 0;
+        const max = hasPrices ? Math.max(...prices) : 0;
         const formattedPrice = min === max ? `${min}` : `${min} - ${max}`;
         return (
           <div className="text-right font-medium">
