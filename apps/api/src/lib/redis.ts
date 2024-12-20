@@ -1,14 +1,10 @@
-import { Redis } from 'ioredis';
+import Redis from 'ioredis';
 
 import { logger } from '@/common/logger';
 
-export const redis = new Redis({
-  host: '23.88.39.74',
-  port: 6379,
-  username: 'default',
-  password: 'dokploy&11ZZ',
-  enableReadyCheck: true,
-});
+const redis = new Redis(
+  'rediss://default:AWikAAIjcDFjNzlmNTM0OGFkZjQ0ZGJhYjg4M2M3YWZmMTk3NWVlNXAxMA@touching-lioness-26788.upstash.io:6379'
+);
 
 redis.on('error', (error) => {
   logger.error('Redis connection error:', error);
