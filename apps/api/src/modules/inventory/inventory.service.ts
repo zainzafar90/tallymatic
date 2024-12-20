@@ -91,12 +91,13 @@ export const checkLowStockAlerts = async (organizationId: string) => {
     .where(and(eq(products.organizationId, organizationId), lte(variants.stock, variants.lowStockThreshold)))
     .orderBy(variants.stock);
 
+  const LIMIT = 10;
   return {
     results,
     count: results.length,
-    limit: results.length,
+    limit: LIMIT,
     offset: 0,
-    pages: 1,
+    pages: Math.ceil(results.length / LIMIT),
   };
 };
 
