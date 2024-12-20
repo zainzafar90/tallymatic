@@ -84,14 +84,16 @@ export const getAllInventoryLevels = async (
 };
 
 export const checkLowStockAlerts = async (organizationId: string) => {
+  const LIMIT = 10;
   const results = await db
     .select()
     .from(variants)
     .innerJoin(products, eq(variants.productId, products.id))
     .where(and(eq(products.organizationId, organizationId), lte(variants.stock, variants.lowStockThreshold)))
-    .orderBy(variants.stock);
+    .orderBy(variants.stock)
+    .limit(LIMIT)
+    .offset(0);
 
-  const LIMIT = 10;
   return {
     results,
     count: results.length,
