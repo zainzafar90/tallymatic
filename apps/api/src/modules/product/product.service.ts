@@ -1,4 +1,4 @@
-import { and, asc, count, desc, eq, ilike } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 import httpStatus from 'http-status';
 import { CreateProductReq, IOptions, ListResponse, Status, UpdateProductReq } from '@repo/shared';
 
@@ -7,14 +7,7 @@ import { db } from '@/db';
 import { Product, products, variants } from '@/db/schema';
 
 import { getPaginationConfig } from '../paginate/pagination';
-
-type OrderDirection = 'asc' | 'desc';
-type OrderField = keyof (typeof products)['_']['columns'];
-
-interface OrderParams {
-  field: OrderField;
-  direction: OrderDirection;
-}
+import { buildOrderByClause, buildQueryConditions, getProductCount } from './utils/product.utils';
 
 export const createProduct = async (productBody: CreateProductReq, organizationId: string) => {
   return await db.transaction(async (tx) => {
@@ -60,32 +53,13 @@ export const queryProducts = async (
   wildcardFields: string[] = []
 ): Promise<ListResponse<typeof products.$inferSelect>> => {
   const { limit, offset } = getPaginationConfig(options);
+  const conditions = buildQueryConditions(filter, organizationId, wildcardFields);
+  const orderByClause = buildOrderByClause(options);
 
-  const conditions = [eq(products.organizationId, organizationId)];
-  if (filter.name && wildcardFields.includes('name')) {
-    conditions.push(ilike(products.name, `%${filter.name}%`));
-  }
-  if (filter.status) {
-    conditions.push(eq(products.status, filter.status));
-  }
-
-  const whereClause = and(...conditions);
-
-  const orderParams: OrderParams = {
-    field: (options.sortBy as OrderField) || 'createdAt',
-    direction: (options.sortOrder as OrderDirection) || 'desc',
-  };
-
-  const orderFn = orderParams.direction === 'asc' ? asc : desc;
-  const orderByClause = orderFn(products[orderParams.field as keyof (typeof products)['_']['columns']]);
-
-  const [productsCount] = await db
-    .select({ count: count(products.id) })
-    .from(products)
-    .where(whereClause);
+  const count = await getProductCount(conditions, organizationId, filter);
 
   const results = await db.query.products.findMany({
-    where: whereClause,
+    where: conditions,
     limit,
     offset,
     orderBy: orderByClause,
@@ -99,8 +73,8 @@ export const queryProducts = async (
     results,
     limit,
     offset,
-    pages: Math.ceil(productsCount.count / limit),
-    count: productsCount.count,
+    pages: Math.ceil(count / limit),
+    count,
   };
 };
 
