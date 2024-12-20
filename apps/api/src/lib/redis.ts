@@ -3,18 +3,9 @@ import { Redis } from 'ioredis';
 import { config } from '@/config/config';
 import { logger } from '@/common/logger';
 
-const redisOptions = {
-  host: config.redis.host,
-  port: config.redis.port,
-  enableReadyCheck: true,
-  retryStrategy: (times: number) => {
-    const delay = Math.min(times * 50, 2000);
-    return delay;
-  },
-  maxRetriesPerRequest: null,
-};
+const redisUrl = config.redis.host;
 
-export const redis = new Redis(redisOptions);
+export const redis = new Redis(redisUrl);
 
 redis.on('error', (error) => {
   logger.error('Redis connection error:', error);
