@@ -1,5 +1,5 @@
 import { relations } from 'drizzle-orm';
-import { boolean, customType, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core';
+import { boolean, customType, index, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core';
 import { TokenType } from '@repo/shared';
 
 import { users } from './user.schema';
@@ -10,18 +10,25 @@ const EnumTokenType = customType<{
   dataType: () => 'text',
 });
 
-export const tokens = pgTable('tokens', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  userId: uuid('user_id')
-    .notNull()
-    .references(() => users.id),
-  token: text('token').notNull(),
-  type: EnumTokenType('type').notNull(),
-  blacklisted: boolean('blacklisted').notNull().default(false),
-  expiresAt: timestamp('expires_at'),
-  createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at').defaultNow(),
-});
+export const tokens = pgTable(
+  'tokens',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id),
+    token: text('token').notNull(),
+    type: EnumTokenType('type').notNull(),
+    blacklisted: boolean('blacklisted').notNull().default(false),
+    expiresAt: timestamp('expires_at'),
+    createdAt: timestamp('created_at').defaultNow(),
+    updatedAt: timestamp('updated_at').defaultNow(),
+  },
+  (table) => ({
+    tokenTypeIdx: index('idx_tokens_token_type').on(table.token, table.type),
+    userIdIdx: index('idx_tokens_user_id').on(table.userId),
+  })
+);
 
 export const tokensRelations = relations(tokens, ({ one }) => ({
   user: one(users, {

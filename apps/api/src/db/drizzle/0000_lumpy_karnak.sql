@@ -199,4 +199,40 @@ ALTER TABLE "suppliers" ADD CONSTRAINT "suppliers_organization_id_organizations_
 ALTER TABLE "tokens" ADD CONSTRAINT "tokens_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "users" ADD CONSTRAINT "users_organization_id_organizations_id_fk" FOREIGN KEY ("organization_id") REFERENCES "public"."organizations"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "variants" ADD CONSTRAINT "variants_organization_id_organizations_id_fk" FOREIGN KEY ("organization_id") REFERENCES "public"."organizations"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "variants" ADD CONSTRAINT "variants_product_id_products_id_fk" FOREIGN KEY ("product_id") REFERENCES "public"."products"("id") ON DELETE cascade ON UPDATE cascade;
+ALTER TABLE "variants" ADD CONSTRAINT "variants_product_id_products_id_fk" FOREIGN KEY ("product_id") REFERENCES "public"."products"("id") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint
+CREATE INDEX "idx_categories_organization_id" ON "categories" USING btree ("organization_id");--> statement-breakpoint
+CREATE INDEX "idx_categories_name" ON "categories" USING btree ("name");--> statement-breakpoint
+CREATE INDEX "idx_customers_organization_id" ON "customers" USING btree ("organization_id");--> statement-breakpoint
+CREATE INDEX "idx_customers_email" ON "customers" USING btree ("email");--> statement-breakpoint
+CREATE INDEX "idx_customers_name" ON "customers" USING btree ("name");--> statement-breakpoint
+CREATE INDEX "idx_customers_organization_id_name" ON "customers" USING btree ("organization_id","name");--> statement-breakpoint
+CREATE INDEX "idx_orders_organization_id" ON "orders" USING btree ("organization_id");--> statement-breakpoint
+CREATE INDEX "idx_orders_order_number" ON "orders" USING btree ("order_number");--> statement-breakpoint
+CREATE INDEX "idx_orders_status" ON "orders" USING btree ("status");--> statement-breakpoint
+CREATE INDEX "idx_orders_organization_id_status" ON "orders" USING btree ("organization_id","status");--> statement-breakpoint
+CREATE INDEX "idx_products_organization_id" ON "products" USING btree ("organization_id");--> statement-breakpoint
+CREATE INDEX "idx_products_name" ON "products" USING btree ("name");--> statement-breakpoint
+CREATE INDEX "idx_products_category_id" ON "products" USING btree ("category_id");--> statement-breakpoint
+CREATE INDEX "idx_products_organization_id_name" ON "products" USING btree ("organization_id","name");--> statement-breakpoint
+CREATE INDEX "idx_purchases_organization_id" ON "purchases" USING btree ("organization_id");--> statement-breakpoint
+CREATE INDEX "idx_purchases_status" ON "purchases" USING btree ("status");--> statement-breakpoint
+CREATE INDEX "idx_purchases_supplier_id" ON "purchases" USING btree ("supplier_id");--> statement-breakpoint
+CREATE INDEX "idx_purchases_organization_id_status" ON "purchases" USING btree ("organization_id","status");--> statement-breakpoint
+CREATE INDEX "idx_stores_organization_id" ON "stores" USING btree ("organization_id");--> statement-breakpoint
+CREATE INDEX "idx_stores_name" ON "stores" USING btree ("name");--> statement-breakpoint
+CREATE INDEX "idx_stores_organization_id_name" ON "stores" USING btree ("organization_id","name");--> statement-breakpoint
+CREATE INDEX "idx_suppliers_organization_id" ON "suppliers" USING btree ("organization_id");--> statement-breakpoint
+CREATE INDEX "idx_suppliers_email" ON "suppliers" USING btree ("email");--> statement-breakpoint
+CREATE INDEX "idx_suppliers_company_name" ON "suppliers" USING btree ("company_name");--> statement-breakpoint
+CREATE INDEX "idx_suppliers_organization_id_company_name" ON "suppliers" USING btree ("organization_id","company_name");--> statement-breakpoint
+CREATE INDEX "idx_tokens_token_type" ON "tokens" USING btree ("token","type");--> statement-breakpoint
+CREATE INDEX "idx_tokens_user_id" ON "tokens" USING btree ("user_id");--> statement-breakpoint
+CREATE INDEX "idx_users_name" ON "users" USING btree ("name");--> statement-breakpoint
+CREATE INDEX "idx_users_email" ON "users" USING btree ("email");--> statement-breakpoint
+CREATE INDEX "idx_users_role" ON "users" USING btree ("role");--> statement-breakpoint
+CREATE INDEX "idx_users_organization_id" ON "users" USING btree ("organization_id");--> statement-breakpoint
+CREATE INDEX "idx_variants_organization_id" ON "variants" USING btree ("organization_id");--> statement-breakpoint
+CREATE INDEX "idx_variants_product_id" ON "variants" USING btree ("product_id");--> statement-breakpoint
+CREATE INDEX "idx_variants_sku" ON "variants" USING btree ("sku");--> statement-breakpoint
+CREATE INDEX "idx_variants_name" ON "variants" USING btree ("name");--> statement-breakpoint
+CREATE INDEX "idx_variants_organization_id_name" ON "variants" USING btree ("organization_id","name");

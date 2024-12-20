@@ -1,5 +1,5 @@
 import { relations, sql } from 'drizzle-orm';
-import { customType, foreignKey, integer, numeric, pgTable, timestamp, uuid, varchar } from 'drizzle-orm/pg-core';
+import { customType, foreignKey, index, integer, numeric, pgTable, timestamp, uuid, varchar } from 'drizzle-orm/pg-core';
 import { Status } from '@repo/shared';
 
 import { inventory } from './inventory.schema';
@@ -45,6 +45,11 @@ export const variants = pgTable(
     })
       .onDelete('cascade')
       .onUpdate('cascade'),
+    organizationIdIdx: index('idx_variants_organization_id').on(table.organizationId),
+    productIdIdx: index('idx_variants_product_id').on(table.productId),
+    skuIdx: index('idx_variants_sku').on(table.sku),
+    nameIdx: index('idx_variants_name').on(table.name),
+    organizationNameIdx: index('idx_variants_organization_id_name').on(table.organizationId, table.name),
   })
 );
 

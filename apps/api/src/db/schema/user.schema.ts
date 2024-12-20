@@ -1,5 +1,5 @@
 import { relations } from 'drizzle-orm';
-import { boolean, customType, pgTable, timestamp, uuid, varchar } from 'drizzle-orm/pg-core';
+import { boolean, customType, index, pgTable, timestamp, uuid, varchar } from 'drizzle-orm/pg-core';
 import { RoleType } from '@repo/shared';
 
 import { organizations } from './organization.schema';
@@ -11,21 +11,30 @@ const EnumRoleType = customType<{
   dataType: () => 'text',
 });
 
-export const users = pgTable('users', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  name: varchar('name', { length: 255 }).notNull(),
-  email: varchar('email', { length: 255 }).notNull().unique(),
-  password: varchar('password', { length: 255 }).notNull(),
-  isEmailVerified: boolean('is_email_verified').default(false),
-  organizationId: uuid('organization_id')
-    .notNull()
-    .references(() => organizations.id),
-  contact: varchar('contact', { length: 255 }),
-  role: EnumRoleType('role').notNull(),
-  createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at').defaultNow(),
-  deletedAt: timestamp('deleted_at'),
-});
+export const users = pgTable(
+  'users',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    name: varchar('name', { length: 255 }).notNull(),
+    email: varchar('email', { length: 255 }).notNull().unique(),
+    password: varchar('password', { length: 255 }).notNull(),
+    isEmailVerified: boolean('is_email_verified').default(false),
+    organizationId: uuid('organization_id')
+      .notNull()
+      .references(() => organizations.id),
+    contact: varchar('contact', { length: 255 }),
+    role: EnumRoleType('role').notNull(),
+    createdAt: timestamp('created_at').defaultNow(),
+    updatedAt: timestamp('updated_at').defaultNow(),
+    deletedAt: timestamp('deleted_at'),
+  },
+  (table) => ({
+    nameIdx: index('idx_users_name').on(table.name),
+    emailIdx: index('idx_users_email').on(table.email),
+    roleIdx: index('idx_users_role').on(table.role),
+    organizationIdIdx: index('idx_users_organization_id').on(table.organizationId),
+  })
+);
 
 export type User = typeof users.$inferSelect;
 export type UserInsert = typeof users.$inferInsert;

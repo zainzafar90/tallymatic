@@ -1,5 +1,16 @@
 import { relations } from 'drizzle-orm';
-import { customType, foreignKey, integer, numeric, pgTable, text, timestamp, uuid, varchar } from 'drizzle-orm/pg-core';
+import {
+  customType,
+  foreignKey,
+  index,
+  integer,
+  numeric,
+  pgTable,
+  text,
+  timestamp,
+  uuid,
+  varchar,
+} from 'drizzle-orm/pg-core';
 import { PurchaseStatus } from '@repo/shared';
 
 import { organizations } from './organization.schema';
@@ -38,6 +49,10 @@ export const purchases = pgTable(
     })
       .onDelete('cascade')
       .onUpdate('cascade'),
+    organizationIdIdx: index('idx_purchases_organization_id').on(table.organizationId),
+    statusIdx: index('idx_purchases_status').on(table.status),
+    supplierIdIdx: index('idx_purchases_supplier_id').on(table.supplierId),
+    organizationStatusIdx: index('idx_purchases_organization_id_status').on(table.organizationId, table.status),
   })
 );
 
