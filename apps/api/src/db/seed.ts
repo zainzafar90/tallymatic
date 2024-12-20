@@ -1,4 +1,5 @@
 import { config } from 'dotenv';
+import { sql } from 'drizzle-orm';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { seed } from 'drizzle-seed';
 import { Pool } from 'pg';
@@ -24,6 +25,9 @@ if (!process.env.DB_URL) {
 }
 
 console.log('DB_URL:', process.env.DB_URL);
+
+const NUMBER_OF_PRODUCTS = 1_000;
+const NUMBER_OF_VARIANTS = 1_000;
 
 const pool = new Pool({
   connectionString: process.env.DB_URL,
@@ -140,7 +144,7 @@ async function main() {
         },
       },
       products: {
-        count: 10,
+        count: NUMBER_OF_PRODUCTS,
         columns: {
           name: funcs.valuesFromArray({
             values: [
@@ -169,12 +173,12 @@ async function main() {
         },
       },
       variants: {
-        count: 20,
+        count: NUMBER_OF_VARIANTS,
         columns: {
           name: funcs.valuesFromArray({
             values: ['Red', 'Blue', 'Green', 'Yellow', 'Purple', 'Orange', 'Pink', 'Gray', 'Black', 'White'],
           }),
-          sku: funcs.phoneNumber({ template: 'SKU-####' }),
+          sku: funcs.phoneNumber({ template: 'SKU-#######' }),
           price: funcs.number({
             minValue: 100,
             maxValue: 1000,
@@ -419,14 +423,23 @@ async function cleanupDatabase(db: any) {
     { name: 'organizations', schema: organizations },
   ];
 
-  for (const table of tables) {
-    try {
-      await db.select().from(table.schema).limit(1);
-      await db.delete(table.schema).execute();
-    } catch (error) {
-      console.log(`ℹ️ Skipping ${table.name} - table might not exist`);
-    }
-  }
+  try {
+    await db.execute(sql`SET session_replication_role = 'replica'`);
 
-  console.log('✨ Database cleaned');
+    for (const table of tables) {
+      try {
+        await db.execute(sql.raw(`TRUNCATE TABLE "${table.name}" RESTART IDENTITY CASCADE`));
+        console.log(`✓ Cleaned ${table.name}`);
+      } catch (error) {
+        console.log(`ℹ️ Skipping ${table.name} - ${(error as Error).message}`);
+      }
+    }
+
+    await db.execute(sql`SET session_replication_role = 'origin'`);
+
+    console.log('✨ Database cleaned');
+  } catch (error) {
+    console.error('Error during cleanup:', error);
+    throw error;
+  }
 }
