@@ -1,10 +1,9 @@
 import Redis from 'ioredis';
 
+import { config } from '@/config/config';
 import { logger } from '@/common/logger';
 
-const redis = new Redis(
-  'rediss://default:AWikAAIjcDFjNzlmNTM0OGFkZjQ0ZGJhYjg4M2M3YWZmMTk3NWVlNXAxMA@touching-lioness-26788.upstash.io:6379'
-);
+export const redis = new Redis(config.redis.host);
 
 redis.on('error', (error) => {
   logger.error('Redis connection error:', error);
