@@ -79,7 +79,10 @@ export const queryProducts = async (
   const orderFn = orderParams.direction === 'asc' ? asc : desc;
   const orderByClause = orderFn(products[orderParams.field as keyof (typeof products)['_']['columns']]);
 
-  const [productsCount] = await db.select({ count: count() }).from(products).where(whereClause);
+  const [productsCount] = await db
+    .select({ count: count(products.id) })
+    .from(products)
+    .where(whereClause);
 
   const results = await db.query.products.findMany({
     where: whereClause,

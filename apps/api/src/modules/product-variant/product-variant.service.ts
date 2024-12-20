@@ -44,7 +44,10 @@ export const queryProductVariants = async (
   const orderFn = orderParams.direction === 'asc' ? asc : desc;
   const orderByClause = orderFn(variants[orderParams.field as keyof (typeof variants)['_']['columns']]);
 
-  const [variantsCount] = await db.select({ count: count() }).from(variants).where(whereClause);
+  const [variantsCount] = await db
+    .select({ count: count(variants.id) })
+    .from(variants)
+    .where(whereClause);
 
   const results = await db.query.variants.findMany({
     where: whereClause,

@@ -66,7 +66,10 @@ export const queryCustomers = async (
   const orderFn = orderParams.direction === 'asc' ? asc : desc;
   const orderByClause = orderFn(customers[orderParams.field as keyof (typeof customers)['_']['columns']]);
 
-  const [customersCount] = await db.select({ count: count() }).from(customers).where(whereClause);
+  const [customersCount] = await db
+    .select({ count: count(customers.id) })
+    .from(customers)
+    .where(whereClause);
 
   const results = await db.select().from(customers).where(whereClause).limit(limit).offset(offset).orderBy(orderByClause);
 

@@ -89,7 +89,10 @@ export const queryOrders = async (
   const orderFn = orderParams.direction === 'asc' ? asc : desc;
   const orderByClause = orderFn(orders[orderParams.field as keyof (typeof orders)['_']['columns']]);
 
-  const [ordersCount] = await db.select({ count: count() }).from(orders).where(whereClause);
+  const [ordersCount] = await db
+    .select({ count: count(orders.id) })
+    .from(orders)
+    .where(whereClause);
 
   const results = await db.query.orders.findMany({
     where: whereClause,

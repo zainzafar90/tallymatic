@@ -102,7 +102,10 @@ export const queryUsers = async (filter: Record<string, any>, options: IOptions,
   const orderFn = orderParams.direction === 'asc' ? asc : desc;
   const orderByClause = orderFn(users[orderParams.field as keyof (typeof users)['_']['columns']]);
 
-  const [usersCount] = await db.select({ count: count() }).from(users).where(whereClause);
+  const [usersCount] = await db
+    .select({ count: count(users.id) })
+    .from(users)
+    .where(whereClause);
 
   const results = await db.query.users.findMany({
     where: whereClause,

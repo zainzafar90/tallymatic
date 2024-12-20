@@ -52,7 +52,10 @@ export const querySuppliers = async (
   const orderFn = orderParams.direction === 'asc' ? asc : desc;
   const orderByClause = orderFn(suppliers[orderParams.field as keyof (typeof suppliers)['_']['columns']]);
 
-  const [suppliersCount] = await db.select({ count: count() }).from(suppliers).where(whereClause);
+  const [suppliersCount] = await db
+    .select({ count: count(suppliers.id) })
+    .from(suppliers)
+    .where(whereClause);
 
   const results = await db.query.suppliers.findMany({
     where: whereClause,

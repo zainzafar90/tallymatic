@@ -42,7 +42,10 @@ export const queryOrganizations = async (
   const orderFn = orderParams.direction === 'asc' ? asc : desc;
   const orderByClause = orderFn(organizations[orderParams.field as keyof (typeof organizations)['_']['columns']]);
 
-  const [organizationsCount] = await db.select({ count: count() }).from(organizations).where(whereClause);
+  const [organizationsCount] = await db
+    .select({ count: count(organizations.id) })
+    .from(organizations)
+    .where(whereClause);
 
   const results = await db.query.organizations.findMany({
     where: whereClause,
