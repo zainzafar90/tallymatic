@@ -42,6 +42,8 @@
    - Update the `.env` file with your database credentials and other configuration
 
 4. Set up the database:
+
+Run `docker run --name drizzly -e POSTGRES_PASSWORD=password -e POSTGRES_DB=tallymatic -d -p 5433:5432 postgres` to start postgres container
    
 ```
 yarn db:generate
@@ -50,6 +52,12 @@ yarn db:seed
 ```
 
 🚧 In case db:seed fails run it twice
+
+5. Set up redis
+
+Run `docker run --name ioredisly -d -p 6379:6379 redis:latest redis-server`
+
+We are using defaults so shouldn't cause a problem here
 
 ## Running the Projects
 
