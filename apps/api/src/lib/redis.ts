@@ -1,9 +1,14 @@
 import { Redis } from 'ioredis';
 
-// import { config } from '@/config/config';
 import { logger } from '@/common/logger';
 
-export const redis = new Redis('redis://default:dokploy&11ZZ@23.88.39.74:6379');
+export const redis = new Redis({
+  host: '23.88.39.74',
+  port: 6379,
+  username: 'default',
+  password: 'dokploy&11ZZ',
+  enableReadyCheck: true,
+});
 
 redis.on('error', (error) => {
   logger.error('Redis connection error:', error);
