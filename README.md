@@ -85,3 +85,9 @@ To start client in development mode:
 ```
 yarn dev:web
 ```
+
+### Debugging Common Issues
+
+#### Environment Variables in Turbo Repo
+
+NOTE: whenever adding a new make sure to include it in the turbo.json so that it can be passed to process.env otherwise the enviroment variable will be `undefined`
