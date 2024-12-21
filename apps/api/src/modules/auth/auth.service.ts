@@ -3,7 +3,7 @@ import httpStatus from 'http-status';
 import { IUser, TokenType } from '@repo/shared';
 
 import { ApiError } from '@/common/errors/api-error';
-import logger from '@/common/logger';
+import { logger } from '@/common/logger';
 import { db } from '@/db';
 import { tokens } from '@/db/schema';
 
