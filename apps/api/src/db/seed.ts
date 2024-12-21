@@ -3,6 +3,7 @@ import { sql } from 'drizzle-orm';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { seed } from 'drizzle-seed';
 import { Pool } from 'pg';
+import { faker } from '@faker-js/faker';
 
 import { variants } from './schema';
 import { categories } from './schema/category.schema';
@@ -52,6 +53,30 @@ const schema = {
 const db = drizzle(pool, {
   schema,
 });
+
+const generateFakeCategory = () => {
+  return faker.commerce.department();
+};
+
+const generateCategories = (count: number = 10) => {
+  return Array.from({ length: count }, () => generateFakeCategory());
+};
+
+const generateFakeProduct = () => {
+  return faker.commerce.productName();
+};
+
+const generateProducts = (count: number = 10) => {
+  return Array.from({ length: count }, () => generateFakeProduct());
+};
+
+const generateFakeVariant = () => {
+  return faker.commerce.productMaterial();
+};
+
+const generateVariants = (count: number = 10) => {
+  return Array.from({ length: count }, () => generateFakeVariant());
+};
 
 async function main() {
   try {
@@ -117,23 +142,7 @@ async function main() {
         count: 10,
         columns: {
           name: funcs.valuesFromArray({
-            values: [
-              'Electronics',
-              'Clothing',
-              'Books',
-              'Home & Garden',
-              'Sports',
-              'Toys',
-              'Beauty',
-              'Automotive',
-              'Health',
-              'Food & Beverage',
-              'Office Supplies',
-              'Pet Supplies',
-              'Tools',
-              'Jewelry',
-              'Art',
-            ],
+            values: generateCategories(10),
             isUnique: true,
           }),
           description: funcs.loremIpsum({ sentencesCount: 2 }),
@@ -147,18 +156,7 @@ async function main() {
         count: NUMBER_OF_PRODUCTS,
         columns: {
           name: funcs.valuesFromArray({
-            values: [
-              'iPhone 14 Pro',
-              'Samsung Galaxy S23',
-              'MacBook Air M2',
-              'Sony WH-1000XM4',
-              'Nintendo Switch OLED',
-              'iPad Air 5th Gen',
-              'Dell XPS 13',
-              'AirPods Pro 2nd Gen',
-              'PlayStation 5',
-              'Xbox Series X',
-            ],
+            values: generateProducts(NUMBER_OF_PRODUCTS),
           }),
           description: funcs.loremIpsum({ sentencesCount: 1 }),
           price: funcs.number({
@@ -176,7 +174,7 @@ async function main() {
         count: NUMBER_OF_VARIANTS,
         columns: {
           name: funcs.valuesFromArray({
-            values: ['Red', 'Blue', 'Green', 'Yellow', 'Purple', 'Orange', 'Pink', 'Gray', 'Black', 'White'],
+            values: generateVariants(NUMBER_OF_VARIANTS),
           }),
           sku: funcs.phoneNumber({ template: 'SKU-#######' }),
           price: funcs.number({
