@@ -47,53 +47,55 @@ export const OrderForm: React.FC<OrderFormProps> = ({ order, isPending, onSubmit
 
   return (
     <div className="">
-      <Form {...form}>
-        <form onSubmit={handleSubmit} className="grid grid-cols-1 xl:grid-cols-3 gap-4">
-          <Card className="bg-muted/50 xl:col-span-2 p-6">
-            <OrderItems form={form} />
-
-            <OrderSummary form={form} />
-
-            <div className="flex justify-end space-x-2 mt-4">
-              <Button onClick={onClose}>Cancel</Button>
-              <Button type="submit" color="blue" disabled={isPending}>
-                {order ? 'Update' : 'Create'} Order
-              </Button>
+    <Form {...form}>
+      <form onSubmit={handleSubmit} className="grid grid-cols-1 xl:grid-cols-3 gap-4">
+        {/* Right Section */}
+        <Card className="bg-muted/50 p-6 order-1 xl:order-2 xl:col-span-1">
+          <FieldGroup>
+            <div className="grid gap-0.5">
+              <CardTitle className="group flex items-center gap-2 text-lg">
+                Order Details
+              </CardTitle>
+              <CardDescription>Date: {new Date().toLocaleDateString()}</CardDescription>
             </div>
-          </Card>
-          <Card className="bg-muted/50 xl:col-span-1 p-6">
-            <FieldGroup>
-              <div className="grid gap-0.5">
-                <CardTitle className="group flex items-center gap-2 text-lg">Order Details</CardTitle>
-                <CardDescription>Date: {new Date().toLocaleDateString()}</CardDescription>
-              </div>
-
-              <CustomerSummary form={form} />
-
-              <div className="flex gap-4 w-full flex-col md:flex-row">
-                <FormField
-                  control={form.control}
-                  name="status"
-                  render={({ field }) => (
-                    <FormItem className="w-full">
-                      <FormLabel>Financial Status</FormLabel>
-                      <Select {...field}>
-                        {Object.entries(orderStatusConfig).map(([status, [_, text]]) => (
-                          <option key={status} value={status}>
-                            {text}
-                          </option>
-                        ))}
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-            </FieldGroup>
-          </Card>
-        </form>
-      </Form>
-    </div>
+            <CustomerSummary form={form} />
+            <div className="flex gap-4 w-full flex-col md:flex-row">
+              <FormField
+                control={form.control}
+                name="status"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormLabel>Financial Status</FormLabel>
+                    <Select {...field}>
+                      {Object.entries(orderStatusConfig).map(([status, [_, text]]) => (
+                        <option key={status} value={status}>
+                          {text}
+                        </option>
+                      ))}
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </FieldGroup>
+        </Card>
+        {/* Left Section */}
+        <Card className="bg-muted/50 p-6 order-2 xl:order-1 xl:col-span-2">
+          <OrderItems form={form} />
+  
+          <OrderSummary form={form} />
+  
+          <div className="flex justify-end space-x-2 mt-4">
+            <Button onClick={onClose}>Cancel</Button>
+            <Button type="submit" color="blue" disabled={isPending}>
+              {order ? 'Update' : 'Create'} Order
+            </Button>
+          </div>
+        </Card>
+      </form>
+    </Form>
+  </div>
   );
 };
 
