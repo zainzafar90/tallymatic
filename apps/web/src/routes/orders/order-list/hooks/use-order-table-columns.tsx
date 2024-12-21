@@ -31,9 +31,9 @@ export const useOrderTableColumns = () => {
         );
       },
     }),
-    columnHelper.accessor('total', {
+    columnHelper.accessor('totalAmount', {
       header: () => <TextHeader text="Total" align="right" />,
-      cell: ({ row }) => <MoneyAmountCell currencyCode="PKR" amount={row.getValue('total')} align="right" />,
+      cell: ({ row }) => <MoneyAmountCell currencyCode="PKR" amount={row.getValue('totalAmount')} align="right" />,
       enableHiding: false,
     }),
     columnHelper.accessor('createdAt', {
