@@ -3,6 +3,7 @@ import httpStatus from 'http-status';
 import { IUser, TokenType } from '@repo/shared';
 
 import { ApiError } from '@/common/errors/api-error';
+import logger from '@/common/logger';
 import { db } from '@/db';
 import { tokens } from '@/db/schema';
 
@@ -17,11 +18,18 @@ import { verifyPassword } from '../user/user.utils';
  * @returns {Promise<IUserDoc>}
  */
 export const loginUserWithEmailAndPassword = async (email: string, password: string): Promise<IUser> => {
-  const user = await userService.getUserByEmailAndPassword(email);
-  if (!user || !(await verifyPassword(password, user.password))) {
-    throw new ApiError(httpStatus.UNAUTHORIZED, 'Incorrect email or password');
+  try {
+    const user = await userService.getUserByEmailAndPassword(email);
+    if (!user || !(await verifyPassword(password, user.password))) {
+      logger.warn('Failed login attempt', { email });
+      throw new ApiError(httpStatus.UNAUTHORIZED, 'Incorrect email or password');
+    }
+    logger.info('User logged in successfully', { userId: user.id, email });
+    return user;
+  } catch (error) {
+    logger.error('Login error', { email, error });
+    throw error;
   }
-  return user;
 };
 
 /**
@@ -30,15 +38,22 @@ export const loginUserWithEmailAndPassword = async (email: string, password: str
  * @returns {Promise<void>}
  */
 export const logout = async (token: string): Promise<void> => {
-  const tokenDoc = await db.query.tokens.findFirst({
-    where: and(eq(tokens.token, token), eq(tokens.type, TokenType.ACCESS)),
-  });
+  try {
+    const tokenDoc = await db.query.tokens.findFirst({
+      where: and(eq(tokens.token, token), eq(tokens.type, TokenType.ACCESS)),
+    });
 
-  if (!tokenDoc) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Not found');
+    if (!tokenDoc) {
+      logger.warn('Logout attempted with invalid token');
+      throw new ApiError(httpStatus.NOT_FOUND, 'Not found');
+    }
+
+    await db.delete(tokens).where(eq(tokens.id, tokenDoc.id));
+    logger.info('User logged out successfully', { userId: tokenDoc.userId });
+  } catch (error) {
+    logger.error('Logout error', { token, error });
+    throw error;
   }
-
-  await db.delete(tokens).where(eq(tokens.id, tokenDoc.id));
 };
 
 /**
@@ -51,13 +66,19 @@ export const refreshAuth = async (refreshToken: string, organizationId?: string)
     const refreshTokenDoc = await tokenService.verifyToken(refreshToken, TokenType.REFRESH);
     const user = await userService.getUserById(refreshTokenDoc.user.id, organizationId);
     if (!user) {
+      logger.warn('Refresh token used for non-existent user', {
+        userId: refreshTokenDoc.user.id,
+        organizationId,
+      });
       throw new Error();
     }
 
     await db.delete(tokens).where(eq(tokens.id, refreshTokenDoc.id));
     const authTokens = await tokenService.generateAuthTokens(user);
+    logger.info('Auth tokens refreshed successfully', { userId: user.id });
     return { user, tokens: authTokens };
   } catch (error) {
+    logger.error('Token refresh error', { refreshToken, organizationId, error });
     throw new ApiError(httpStatus.UNAUTHORIZED, 'Please authenticate');
   }
 };
@@ -73,11 +94,16 @@ export const resetPassword = async (resetPasswordToken: string, newPassword: str
     const resetPasswordTokenDoc = await tokenService.verifyToken(resetPasswordToken, TokenType.ACCESS);
     const user = await userService.getUserById(resetPasswordTokenDoc.userId);
     if (!user) {
+      logger.warn('Password reset attempted for non-existent user', {
+        userId: resetPasswordTokenDoc.userId,
+      });
       throw new Error();
     }
     await userService.updateUserPassword(user.id, newPassword);
     await db.delete(tokens).where(eq(tokens.id, resetPasswordTokenDoc.id));
+    logger.info('Password reset successful', { userId: user.id });
   } catch (error) {
+    logger.error('Password reset error', { resetPasswordToken, error });
     throw new ApiError(httpStatus.UNAUTHORIZED, 'Password reset failed');
   }
 };
@@ -92,6 +118,10 @@ export const verifyEmail = async (verifyEmailToken: string, organizationId?: str
     const verifyEmailTokenDoc = await tokenService.verifyToken(verifyEmailToken, TokenType.VERIFY_EMAIL);
     const user = await userService.getUserById(verifyEmailTokenDoc.userId, organizationId);
     if (!user) {
+      logger.warn('Email verification attempted for non-existent user', {
+        userId: verifyEmailTokenDoc.userId,
+        organizationId,
+      });
       throw new Error();
     }
     await db.delete(tokens).where(eq(tokens.id, verifyEmailTokenDoc.id));
@@ -102,8 +132,10 @@ export const verifyEmail = async (verifyEmailToken: string, organizationId?: str
       },
       organizationId
     );
+    logger.info('Email verified successfully', { userId: user.id });
     return updatedUser;
   } catch (error) {
+    logger.error('Email verification error', { verifyEmailToken, organizationId, error });
     throw new ApiError(httpStatus.UNAUTHORIZED, 'Email verification failed');
   }
 };
