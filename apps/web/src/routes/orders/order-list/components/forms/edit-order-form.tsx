@@ -34,6 +34,10 @@ export const EditOrderForm: React.FC<{ order: IOrder; onClose: () => void }> = (
       }
     );
   };
-  if (isLoading) return <OrderFormSkeleton />;
+
+  if (isLoading) {
+    return <OrderFormSkeleton />;
+  }
+
   return <OrderForm order={result} onSubmit={handleSubmit} onClose={onClose} isPending={isPending} />;
 };
