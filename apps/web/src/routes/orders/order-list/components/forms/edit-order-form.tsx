@@ -11,7 +11,7 @@ import { OrderFormData } from './order.schema';
 
 export const EditOrderForm: React.FC<{ order: IOrder; onClose: () => void }> = ({ order, onClose }) => {
   const { mutateAsync, isPending } = useUpdateOrder(order.id!);
-  const { data: result, isLoading } = useOrder(order.id!);
+  const { data: result, isLoading, error } = useOrder(order.id!);
 
   const handleSubmit = async (data: OrderFormData) => {
     await mutateAsync(
@@ -34,6 +34,15 @@ export const EditOrderForm: React.FC<{ order: IOrder; onClose: () => void }> = (
       }
     );
   };
+
+  if (error) {
+    toast.error('Failed to fetch order', {
+      description: error.message,
+      closeButton: true,
+    });
+    onClose();
+    return;
+  }
 
   if (isLoading) {
     return <OrderFormSkeleton />;
