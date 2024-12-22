@@ -117,7 +117,16 @@ export const getOrderById = async (id: string, organizationId: string) => {
   const order = await db.query.orders.findFirst({
     where: and(eq(orders.id, id), eq(orders.organizationId, organizationId)),
     with: {
-      items: true,
+      items: {
+        with: {
+          variant: {
+            with: {
+              product: true,
+            },
+          },
+        },
+      },
+      customer: true,
     },
   });
 

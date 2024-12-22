@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 import { CircleMinus, CirclePlus } from 'lucide-react';
 import { useFieldArray, useForm, UseFormReturn, useWatch } from 'react-hook-form';
@@ -189,12 +189,14 @@ const OrderSummary = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
 
 const CustomerSummary = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
   const [isCustomerDialogOpen, openCustomerDialog, closeCustomerDialog] = useToggleState();
-  const [selectedCustomer, setSelectedCustomer] = useState<ICustomer | null>(null);
+
+  const customer = useWatch({ name: 'customer' }) as ICustomer;
+  const [selectedCustomer, setSelectedCustomer] = useState<ICustomer | null>(customer);
 
   const handleSelectCustomer = (customer: ICustomer) => {
+    setSelectedCustomer(customer);
     if (!customer?.id) return;
 
-    setSelectedCustomer(customer);
     form.setValue('customerId', customer.id);
     form.clearErrors('customerId');
   };
@@ -232,7 +234,6 @@ const CustomerSummary = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
 
 const OrderItems = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
   const [isProductVariantDialogOpen, openProductVariantDialog, closeProductVariantDialog] = useToggleState();
-  const [selectedVariants, setSelectedVariants] = useState<IProductVariant[]>([]);
 
   const { fields, append, remove } = useFieldArray({
     control: form.control,
@@ -247,13 +248,12 @@ const OrderItems = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
       quantity: 1,
       price: parseFloat(variant.price.toString()),
       totalDiscount: 0,
+      variant,
     });
-    setSelectedVariants([...selectedVariants, variant]);
   };
 
   const removeItem = (index: number) => {
     remove(index);
-    setSelectedVariants(selectedVariants.filter((_, i) => i !== index));
   };
 
   return (
@@ -289,7 +289,7 @@ const OrderItems = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
 
           {fields.map((field, index) => (
             <TableRow key={field.id}>
-              <TableCell>{selectedVariants[index]?.name}</TableCell>
+              <TableCell>{field.variant?.product?.name || 'Unnamed Product'}</TableCell>
               <TableCell>
                 <FormField
                   control={form.control}
