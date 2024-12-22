@@ -1,11 +1,11 @@
 import winston from 'winston';
 
-import { config } from '@/config/config';
+// import { config } from '@/config/config';
 
-interface LoggingInfo {
-  level: string;
-  message: string;
-}
+// interface LoggingInfo {
+//   level: string;
+//   message: string;
+// }
 
 const enumerateErrorFormat = winston.format((info) => {
   if (info instanceof Error) {
