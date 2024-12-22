@@ -1,5 +1,5 @@
 import * as z from 'zod';
-import { OrderStatus } from '@repo/shared';
+import { ICustomer, IProduct, IProductVariant, OrderStatus } from '@repo/shared';
 
 export const OrderSchema = z.object({
   customerId: z.string().uuid('Please select a customer'),
@@ -28,13 +28,14 @@ export const OrderSchema = z.object({
           but as these are just to show the data on the form and not 
           being returned to the server, I am adding as optional and any type. 
           */
-          variant: z
+          variant: z.any().optional(),
+          customer: z
             .object({
-              product: z
-                .object({
-                  name: z.string(),
-                })
-                .optional(),
+              id: z.string().optional(),
+              name: z.string().min(1, 'Name is required'),
+              email: z.string().email('Invalid email'),
+              phone: z.string().optional(),
+              address: z.string().optional(),
             })
             .optional(),
         })
@@ -50,11 +51,8 @@ type BaseOrderFormData = z.infer<typeof OrderSchema>;
 // again these things are just for visualizations
 // and are not being sent to the server
 export type OrderFormData = BaseOrderFormData & {
+  customer?: ICustomer;
   items: (BaseOrderFormData['items'][number] & {
-    variant?: {
-      product: {
-        name: string;
-      };
-    };
+    variant?: IProductVariant;
   })[];
 };

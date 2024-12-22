@@ -126,6 +126,7 @@ export const getOrderById = async (id: string, organizationId: string) => {
           },
         },
       },
+      customer: true,
     },
   });
 

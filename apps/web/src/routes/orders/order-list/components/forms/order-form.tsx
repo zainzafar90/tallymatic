@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 import { CircleMinus, CirclePlus } from 'lucide-react';
 import { useFieldArray, useForm, UseFormReturn, useWatch } from 'react-hook-form';
@@ -190,6 +190,11 @@ const OrderSummary = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
 const CustomerSummary = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
   const [isCustomerDialogOpen, openCustomerDialog, closeCustomerDialog] = useToggleState();
   const [selectedCustomer, setSelectedCustomer] = useState<ICustomer | null>(null);
+  const customer = useWatch({ name: 'customer' }) as ICustomer;
+
+  useEffect(() => {
+    setSelectedCustomer(customer);
+  }, []);
 
   const handleSelectCustomer = (customer: ICustomer) => {
     if (!customer?.id) return;
