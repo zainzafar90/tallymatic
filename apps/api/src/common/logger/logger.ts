@@ -1,11 +1,11 @@
 import winston from 'winston';
 
-import { config } from '@/config/config';
+// import { config } from '@/config/config';
 
-interface LoggingInfo {
-  level: string;
-  message: string;
-}
+// interface LoggingInfo {
+//   level: string;
+//   message: string;
+// }
 
 const enumerateErrorFormat = winston.format((info) => {
   if (info instanceof Error) {
@@ -15,10 +15,12 @@ const enumerateErrorFormat = winston.format((info) => {
 });
 
 export const logger = winston.createLogger({
-  level: config.env === 'development' ? 'debug' : 'info',
+  // level: config.env === 'development' ? 'debug' : 'info',
+  level: 'debug',
   format: winston.format.combine(
     enumerateErrorFormat(),
-    config.env === 'development' ? winston.format.colorize() : winston.format.uncolorize(),
+    // config.env === 'development' ? winston.format.colorize() : winston.format.uncolorize(),
+    winston.format.colorize(),
     winston.format.splat(),
     winston.format.printf((info) => `${info.level}: ${info.message}`)
   ),
