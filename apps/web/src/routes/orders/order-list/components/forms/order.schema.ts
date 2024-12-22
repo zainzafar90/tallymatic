@@ -1,5 +1,5 @@
 import * as z from 'zod';
-import { ICustomer, IProduct, IProductVariant, OrderStatus } from '@repo/shared';
+import { IProductVariant, OrderStatus } from '@repo/shared';
 
 export const OrderSchema = z.object({
   customerId: z.string().uuid('Please select a customer'),
@@ -9,7 +9,8 @@ export const OrderSchema = z.object({
   discountAmount: z.union([z.string(), z.number()]).transform((val) => Number(val || 0)),
   items: z
     .array(
-      z.object({
+      z
+        .object({
           variantId: z.string().uuid('Please select a product'),
           quantity: z
             .union([z.string(), z.number()])
@@ -51,7 +52,6 @@ type BaseOrderFormData = z.infer<typeof OrderSchema>;
 // again these things are just for visualizations
 // and are not being sent to the server
 export type OrderFormData = BaseOrderFormData & {
-  customer?: ICustomer;
   items: (BaseOrderFormData['items'][number] & {
     variant?: IProductVariant;
   })[];
