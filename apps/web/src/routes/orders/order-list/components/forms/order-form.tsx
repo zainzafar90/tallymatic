@@ -289,7 +289,9 @@ const OrderItems = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
 
           {fields.map((field, index) => (
             <TableRow key={field.id}>
-              <TableCell>{selectedVariants[index]?.name}</TableCell>
+              <TableCell>
+                {selectedVariants[index]?.product?.name || field.variant?.product?.name || 'Unknown Produt'}
+              </TableCell>
               <TableCell>
                 <FormField
                   control={form.control}

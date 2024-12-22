@@ -80,7 +80,7 @@ export interface IProductVariant extends Dates {
   reorderPoint?: number;
   reorderQuantity?: number;
   status: Status;
-  products?: IProduct;
+  product?: IProduct;
   variants?: IProductVariant;
 }
 
