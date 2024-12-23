@@ -160,14 +160,30 @@ export const ProductForm = ({ product, isPending, onSubmit, onClose }: ProductFo
               <div className="flex gap-4 w-full flex-col md:flex-row">
                 <FormField
                   control={form.control}
+                  name={`variants.${index}.name`}
+                  render={({ field }) => {
+                    return (
+                      <FormItem>
+                        <FormLabel>Variant Name</FormLabel>
+                        <FormControl>
+                          <Input {...field} placeholder="Default" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    );
+                  }}
+                />
+
+                <FormField
+                  control={form.control}
                   name={`variants.${index}.price`}
                   render={({ field }) => {
                     return (
                       <FormItem>
-                        <FormLabel className="flex items-center gap-1">
+                        <FormLabel>
                           Price
                           <Tooltip>
-                            <TooltipTrigger>
+                            <TooltipTrigger className="inline-flex ml-2 align-text-top">
                               <Info className="w-4 h-4" />
                             </TooltipTrigger>
                             <TooltipContent>
