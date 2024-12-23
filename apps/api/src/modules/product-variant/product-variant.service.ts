@@ -2,9 +2,10 @@ import { and, asc, count, desc, eq, ilike } from 'drizzle-orm';
 import { IOptions, ListResponse } from '@repo/shared';
 
 import { db } from '@/db';
-import { variants } from '@/db/schema';
+import { products, variants } from '@/db/schema';
 
 import { getPaginationConfig } from '../paginate/pagination';
+import { productService } from '../product';
 
 type OrderDirection = 'asc' | 'desc';
 type OrderField = keyof (typeof variants)['_']['columns'];
@@ -55,7 +56,11 @@ export const queryProductVariants = async (
     offset,
     orderBy: orderByClause,
     with: {
-      product: true,
+      product: {
+        with: {
+          category: true,
+        },
+      },
     },
   });
 
@@ -66,4 +71,23 @@ export const queryProductVariants = async (
     pages: Math.ceil(variantsCount.count / limit),
     count: variantsCount.count,
   };
+};
+
+export const queryProductVariantsGrouped = async (
+  filter: Record<string, any>,
+  options: IOptions,
+  organizationId: string,
+  wildcardFields: string[] = []
+): Promise<ListResponse<typeof products.$inferSelect>> => {
+  const productsWithVariants = await productService.queryProducts(
+    {
+      name: filter.productName,
+      status: filter.status,
+    },
+    options,
+    organizationId,
+    wildcardFields
+  );
+
+  return productsWithVariants;
 };

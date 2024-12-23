@@ -5,9 +5,7 @@ import { LetterBox } from '@/components/common/letter-box/letter-box';
 import { DateCell } from '@/components/table/table-cells/common/date-cell';
 import { SortedHeader } from '@/components/table/table-cells/common/sorted-header';
 import { TextCell, TextHeader } from '@/components/table/table-cells/common/text-cell';
-import { VariantCell } from '@/components/table/table-cells/product/variant-cell';
 import { Badge } from '@/components/ui/badge';
-import { Checkbox } from '@/components/ui/checkbox';
 import { parseFloat } from '@/utils/number-utils';
 
 import { ProductActions } from '../components/tables/product-table-actions';
