@@ -248,7 +248,10 @@ const OrderItems = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
       quantity: 1,
       price: parseFloat(variant.price.toString()),
       totalDiscount: 0,
-      variant,
+      variant: {
+        ...variant,
+        product: variant.product,
+      },
     });
   };
 
@@ -289,7 +292,12 @@ const OrderItems = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
 
           {fields.map((field, index) => (
             <TableRow key={field.id}>
-              <TableCell>{field.variant?.product?.name || 'Unnamed Product'}</TableCell>
+              <TableCell>
+                <div className="flex flex-col">
+                  <span className="font-medium">{field.variant?.product?.name}</span>
+                  <span className="text-sm text-muted-foreground">{field.variant?.name} </span>
+                </div>
+              </TableCell>
               <TableCell>
                 <FormField
                   control={form.control}

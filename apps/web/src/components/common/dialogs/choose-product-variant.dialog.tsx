@@ -53,6 +53,17 @@ export function ChooseProductVariantDialog({
     );
   };
 
+  const handleSelectVariant = (product: any, variant: IProductVariant) => {
+    onSelectVariant({
+      ...variant,
+      product: {
+        ...product,
+        category: product.category,
+      },
+    });
+    onClose();
+  };
+
   return (
     <Dialog open={isOpen} onClose={onClose} size="2xl">
       <DialogTitle>Choose Products</DialogTitle>
@@ -163,13 +174,7 @@ export function ChooseProductVariantDialog({
                               <CheckCircleIcon className="size-8 text-green-400" />
                             </div>
                           ) : (
-                            <Button
-                              onClick={() => {
-                                onSelectVariant(variant);
-                                onClose();
-                              }}
-                              color="zinc"
-                            >
+                            <Button onClick={() => handleSelectVariant(product, variant)} color="zinc">
                               Select
                             </Button>
                           )}
