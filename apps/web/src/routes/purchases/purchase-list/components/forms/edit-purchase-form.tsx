@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { toast } from 'sonner';
-import { IPurchase } from '@repo/shared';
+import { IPurchase, UpdatePurchaseReq } from '@repo/shared';
 
 import { useUpdatePurchase } from '@/hooks/api/purchase.hooks';
 
@@ -12,7 +12,7 @@ export const EditPurchaseForm: React.FC<{ purchase: IPurchase; onClose: () => vo
   const { mutateAsync, isPending } = useUpdatePurchase(purchase.id!);
 
   const handleSubmit = async (data: PurchaseFormData) => {
-    await mutateAsync(data, {
+    await mutateAsync(data as UpdatePurchaseReq, {
       onSuccess: () => {
         toast.success('Purchase updated', {
           description: 'Purchase was successfully updated',

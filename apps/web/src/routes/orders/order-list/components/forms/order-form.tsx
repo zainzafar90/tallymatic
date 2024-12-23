@@ -176,11 +176,11 @@ const OrderSummary = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
         </TableRow>
         <TableRow>
           <TableCell className="font-bold">Subtotal</TableCell>
-          <TableCell className="text-right">Rs. {subtotal} </TableCell>
+          <TableCell className="text-right">Rs. {subtotal.toFixed(2)} </TableCell>
         </TableRow>
         <TableRow>
           <TableCell className="font-bold">Total</TableCell>
-          <TableCell className="text-right">Rs. {total} </TableCell>
+          <TableCell className="text-right">Rs. {total.toFixed(2)} </TableCell>
         </TableRow>
       </TableBody>
     </Table>

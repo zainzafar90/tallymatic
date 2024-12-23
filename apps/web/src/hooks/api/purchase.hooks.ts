@@ -40,7 +40,7 @@ export const useCreatePurchase = (options?: UseMutationOptions<PurchaseResponse,
   });
 };
 
-export const useUpdatePurchase = (id: string, options?: UseMutationOptions<PurchaseResponse, Error, PurchaseResponse>) => {
+export const useUpdatePurchase = (id: string, options?: UseMutationOptions<PurchaseResponse, Error, UpdatePurchaseReq>) => {
   return useMutation({
     mutationFn: (payload: UpdatePurchaseReq) => client.purchases.update(id, payload),
     onSuccess: (data: any, variables: any, context: any) => {

@@ -4,7 +4,7 @@ import { CreatePurchaseForm } from '../forms/create-purchase-form';
 
 export function CreatePurchaseDialog({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   return (
-    <Dialog size="2xl" open={isOpen} onClose={onClose}>
+    <Dialog open={isOpen} onClose={onClose} size="6xl">
       <DialogTitle>Create Purchase</DialogTitle>
       <DialogDescription>Fill in the details below to create a new purchase.</DialogDescription>
       <DialogBody>

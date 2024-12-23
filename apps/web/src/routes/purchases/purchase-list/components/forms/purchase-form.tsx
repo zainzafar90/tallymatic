@@ -271,34 +271,42 @@ const SupplierSummary = ({ form }: { form: UseFormReturn<PurchaseFormData> }) =>
 
 const PurchaseItems = ({ form }: { form: UseFormReturn<PurchaseFormData> }) => {
   const [isProductVariantDialogOpen, openProductVariantDialog, closeProductVariantDialog] = useToggleState();
-  const [selectedVariants, setSelectedVariants] = useState<IProductVariant[]>([]);
 
   const { fields, append, remove } = useFieldArray({
     control: form.control,
     name: 'items',
   });
 
+  const quantities = useWatch({
+    control: form.control,
+    name: 'items',
+    defaultValue: [],
+  });
+
+  const calculateSubtotal = (index: number) => {
+    const quantity = Number(form.getValues(`items.${index}.quantity`)) || 0;
+    const unitCost = Number(form.getValues(`items.${index}.unitCost`)) || 0;
+    return quantity * unitCost;
+  };
+
   const handleSelectProductVariant = (variant: IProductVariant) => {
     if (!variant?.id) return;
 
-    const quantity = 1;
-    const unitCost = parseFloat(variant.costPrice.toString());
-
     append({
       variantId: variant.id,
-      quantity,
-      unitCost,
+      quantity: 1,
+      unitCost: parseFloat(variant.costPrice.toString()),
+      variant: {
+        name: variant.name || '',
+        sku: variant.sku || '',
+        product: {
+          name: variant.product?.name || '',
+          category: {
+            name: variant.product?.category?.name || '',
+          },
+        },
+      },
     });
-    setSelectedVariants([...selectedVariants, variant]);
-  };
-
-  const removeItem = (index: number) => {
-    remove(index);
-    setSelectedVariants(selectedVariants.filter((_, i) => i !== index));
-  };
-
-  const calculateItemTotal = (quantity: number, unitCost: number) => {
-    return (Number(quantity) || 0) * (Number(unitCost) || 0);
   };
 
   return (
@@ -320,7 +328,7 @@ const PurchaseItems = ({ form }: { form: UseFormReturn<PurchaseFormData> }) => {
             <TableHeader>Quantity</TableHeader>
             <TableHeader>Unit Cost</TableHeader>
             <TableHeader>Total</TableHeader>
-            <TableHeader>Actions</TableHeader>
+            <TableHeader></TableHeader>
           </TableRow>
         </TableHead>
 
@@ -338,15 +346,15 @@ const PurchaseItems = ({ form }: { form: UseFormReturn<PurchaseFormData> }) => {
               <TableCell>
                 <div className="flex flex-col">
                   <div className="flex items-center gap-2">
-                    <span className="font-medium">{selectedVariants[index]?.product?.name}</span>
-                    {selectedVariants[index]?.product?.category?.name && (
+                    <span className="font-medium">{field.variant?.product?.name}</span>
+                    {field.variant?.product?.category?.name && (
                       <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded-md">
-                        {selectedVariants[index].product.category.name}
+                        {field.variant.product.category.name}
                       </span>
                     )}
                   </div>
                   <span className="text-sm text-muted-foreground">
-                    {selectedVariants[index]?.name} • {selectedVariants[index]?.sku}
+                    {field.variant?.name} • {field.variant?.sku}
                   </span>
                 </div>
               </TableCell>
@@ -395,20 +403,9 @@ const PurchaseItems = ({ form }: { form: UseFormReturn<PurchaseFormData> }) => {
                   )}
                 />
               </TableCell>
+              <TableCell className="text-right">Rs. {calculateSubtotal(index).toFixed(2)}</TableCell>
               <TableCell>
-                {calculateItemTotal(
-                  form.getValues(`items.${index}.quantity`),
-                  form.getValues(`items.${index}.unitCost`)
-                ).toFixed(2)}
-              </TableCell>
-              <TableCell className="text-right">
-                {calculateItemTotal(
-                  form.getValues(`items.${index}.quantity`),
-                  form.getValues(`items.${index}.unitCost`)
-                ).toFixed(2)}
-              </TableCell>
-              <TableCell>
-                <Button type="button" onClick={() => removeItem(index)}>
+                <Button type="button" onClick={() => remove(index)}>
                   <CircleMinus className="text-red-500 w-6 h-6" />
                 </Button>
               </TableCell>

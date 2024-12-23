@@ -100,7 +100,15 @@ export const queryPurchases = async (
     offset,
     orderBy: orderByClause,
     with: {
-      items: true,
+      items: {
+        with: {
+          variant: {
+            with: {
+              product: true,
+            },
+          },
+        },
+      },
       supplier: true,
     },
   });

@@ -31,6 +31,18 @@ export const PurchaseSchema = z.object({
           .union([z.string(), z.number()])
           .transform((val) => Number(val || 0))
           .pipe(z.number().min(0, 'Unit cost must be non-negative')),
+        variant: z
+          .object({
+            name: z.string(),
+            sku: z.string(),
+            product: z.object({
+              name: z.string(),
+              category: z.object({
+                name: z.string(),
+              }),
+            }),
+          })
+          .optional(),
       })
     )
     .min(1, 'At least one item is required'),
