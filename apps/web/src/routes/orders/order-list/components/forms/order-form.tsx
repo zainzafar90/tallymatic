@@ -48,8 +48,8 @@ export const OrderForm: React.FC<OrderFormProps> = ({ order, isPending, onSubmit
   return (
     <div className="">
       <Form {...form}>
-        <form onSubmit={handleSubmit} className="grid grid-cols-1 xl:grid-cols-3 gap-4">
-          <Card className="bg-muted/50 xl:col-span-2 p-6">
+        <form onSubmit={handleSubmit} className="grid grid-cols-1 auto-rows-auto lg:grid-rows-1 lg:grid-cols-3 gap-4">
+          <Card className="bg-muted/50 row-start-2 lg:row-start-1 lg:col-span-2 p-6">
             <OrderItems form={form} />
 
             <OrderSummary form={form} />
@@ -61,7 +61,7 @@ export const OrderForm: React.FC<OrderFormProps> = ({ order, isPending, onSubmit
               </Button>
             </div>
           </Card>
-          <Card className="bg-muted/50 xl:col-span-1 p-6">
+          <Card className="bg-muted/50 row-start-1 lg:row-start-1 lg:col-span-1 p-6">
             <FieldGroup>
               <div className="grid gap-0.5">
                 <CardTitle className="group flex items-center gap-2 text-lg">Order Details</CardTitle>
