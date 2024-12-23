@@ -164,7 +164,17 @@ export const ProductForm = ({ product, isPending, onSubmit, onClose }: ProductFo
                   render={({ field }) => {
                     return (
                       <FormItem>
-                        <FormLabel>Variant Name</FormLabel>
+                        <FormLabel>
+                          Name
+                          <Tooltip>
+                            <TooltipTrigger className="inline-flex ml-2 align-text-top text-muted-foreground">
+                              <Info className="w-4 h-4" />
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              Name is the name of the variant. It is used to identify the variant in the system.
+                            </TooltipContent>
+                          </Tooltip>
+                        </FormLabel>
                         <FormControl>
                           <Input {...field} placeholder="Default" />
                         </FormControl>
@@ -183,7 +193,7 @@ export const ProductForm = ({ product, isPending, onSubmit, onClose }: ProductFo
                         <FormLabel>
                           Price
                           <Tooltip>
-                            <TooltipTrigger className="inline-flex ml-2 align-text-top">
+                            <TooltipTrigger className="inline-flex ml-2 align-text-top text-muted-foreground">
                               <Info className="w-4 h-4" />
                             </TooltipTrigger>
                             <TooltipContent>
