@@ -20,6 +20,10 @@ export const OrderSchema = z.object({
             .union([z.string(), z.number()])
             .transform((val) => Number(val || 0))
             .pipe(z.number().min(0, 'Price must be non-negative')),
+          costPrice: z
+            .union([z.string(), z.number()])
+            .transform((val) => Number(val || 0))
+            .pipe(z.number().min(0, 'Cost price must be non-negative').optional()),
           totalDiscount: z
             .union([z.string(), z.number()])
             .transform((val) => Number(val || 0))

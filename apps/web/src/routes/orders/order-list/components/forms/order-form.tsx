@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 
-import { CircleMinus, CirclePlus } from 'lucide-react';
+import { CircleMinus, CirclePlus, Eye, EyeOff } from 'lucide-react';
 import { useFieldArray, useForm, UseFormReturn, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ICustomer, IOrder, IOrderItem, IProductVariant, OrderStatus } from '@repo/shared';
@@ -234,6 +234,7 @@ const CustomerSummary = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
 
 const OrderItems = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
   const [isProductVariantDialogOpen, openProductVariantDialog, closeProductVariantDialog] = useToggleState();
+  const [showPrices, setShowPrices] = useState(false);
 
   const { fields, append, remove } = useFieldArray({
     control: form.control,
@@ -247,6 +248,7 @@ const OrderItems = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
       variantId: variant.id,
       quantity: 1,
       price: parseFloat(variant.price.toString()),
+      costPrice: parseFloat(variant.costPrice.toString()),
       totalDiscount: 0,
       variant: {
         ...variant,
@@ -277,6 +279,10 @@ const OrderItems = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
             <TableHeader>Product</TableHeader>
             <TableHeader>Quantity</TableHeader>
             <TableHeader>Price</TableHeader>
+            <TableHeader className="flex items-center gap-2 cursor-pointer" onClick={() => setShowPrices(!showPrices)}>
+              Cost
+              <button type="button">{showPrices ? <Eye className="h-3 w-3" /> : <EyeOff className="h-3 w-3" />}</button>
+            </TableHeader>
             <TableHeader>Actions</TableHeader>
           </TableRow>
         </TableHead>
@@ -343,6 +349,17 @@ const OrderItems = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
                     </FormItem>
                   )}
                 />
+              </TableCell>
+              <TableCell>
+                {showPrices ? (
+                  <FormField
+                    control={form.control}
+                    name={`items.${index}.costPrice`}
+                    render={({ field }) => <FormItem>{field.value}</FormItem>}
+                  />
+                ) : (
+                  <span className="text-xs text-muted-foreground">•••••</span>
+                )}
               </TableCell>
               <TableCell>
                 <Button type="button" onClick={() => removeItem(index)}>
