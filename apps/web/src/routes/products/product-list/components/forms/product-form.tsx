@@ -1,4 +1,4 @@
-import { CircleMinus, CirclePlus } from 'lucide-react';
+import { CircleMinus, CirclePlus, Info } from 'lucide-react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -10,6 +10,7 @@ import { Description, FieldGroup, Fieldset, Label } from '@/components/ui/fields
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Select } from '@/components/ui/select';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { useCategories } from '@/hooks/api/category.hooks';
 import { parseFloat } from '@/utils/number-utils';
 import { generateSKU } from '@/utils/product.utils';
@@ -159,6 +160,44 @@ export const ProductForm = ({ product, isPending, onSubmit, onClose }: ProductFo
               <div className="flex gap-4 w-full flex-col md:flex-row">
                 <FormField
                   control={form.control}
+                  name={`variants.${index}.price`}
+                  render={({ field }) => {
+                    return (
+                      <FormItem>
+                        <FormLabel className="flex items-center gap-1">
+                          Price
+                          <Tooltip>
+                            <TooltipTrigger>
+                              <Info className="w-4 h-4" />
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <span className="text-pretty">
+                                Price is the amount of money that the customer pays for the product.
+                              </span>
+                            </TooltipContent>
+                          </Tooltip>
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            {...field}
+                            inputMode="decimal"
+                            type="number"
+                            placeholder="$0.00"
+                            value={typeof field.value === 'string' ? field.value : field.value.toString()}
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              field.onChange(parseFloat(value) || 0);
+                            }}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    );
+                  }}
+                />
+
+                <FormField
+                  control={form.control}
                   name={`variants.${index}.costPrice`}
                   render={({ field }) => {
                     return (
@@ -183,31 +222,6 @@ export const ProductForm = ({ product, isPending, onSubmit, onClose }: ProductFo
                   }}
                 />
 
-                <FormField
-                  control={form.control}
-                  name={`variants.${index}.price`}
-                  render={({ field }) => {
-                    return (
-                      <FormItem>
-                        <FormLabel>Sale Price</FormLabel>
-                        <FormControl>
-                          <Input
-                            {...field}
-                            inputMode="decimal"
-                            type="number"
-                            placeholder="$0.00"
-                            value={typeof field.value === 'string' ? field.value : field.value.toString()}
-                            onChange={(e) => {
-                              const value = e.target.value;
-                              field.onChange(parseFloat(value) || 0);
-                            }}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    );
-                  }}
-                />
                 <FormField
                   control={form.control}
                   name={`variants.${index}.stock`}
@@ -249,11 +263,11 @@ export const ProductForm = ({ product, isPending, onSubmit, onClose }: ProductFo
                   }}
                 />
 
-                <Fieldset className="space-y-2">
+                <Fieldset className="flex flex-col items-center space-y-2">
                   <Label className="hidden md:inline-flex">&nbsp;</Label>
-                  <Button plain onClick={() => removeVariant(index)} disabled={fields.length === 1} className="">
-                    <CircleMinus className="hidden md:inline-flex text-red-500 w-6 h-6" />
-                    <span className="inline-flex md:hidden text-red-500 text-sm">Remove Variant</span>
+                  <Button plain onClick={() => removeVariant(index)} disabled={fields.length === 1}>
+                    <CircleMinus className="md:inline-flex w-6 h-6 text-red-500" />
+                    <span className="inline-flex md:hidden text-sm">Remove Variant</span>
                   </Button>
                 </Fieldset>
               </div>

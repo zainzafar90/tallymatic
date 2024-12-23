@@ -14,7 +14,7 @@ export function EditProductDialog({
   onClose: () => void;
 }) {
   return (
-    <Dialog open={isOpen} onClose={onClose} size="4xl">
+    <Dialog open={isOpen} onClose={onClose} size="6xl">
       <DialogTitle>Edit Product</DialogTitle>
       <DialogDescription>Fill in the details below to edit the product.</DialogDescription>
       <DialogBody>
