@@ -59,6 +59,7 @@ export interface IProduct extends Dates {
   status: ProductStatus;
   categoryId?: string;
   variants: IProductVariant[];
+  category?: ICategory;
 }
 
 export interface ICategory extends Dates {

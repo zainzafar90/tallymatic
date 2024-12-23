@@ -294,8 +294,15 @@ const OrderItems = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
             <TableRow key={field.id}>
               <TableCell>
                 <div className="flex flex-col">
-                  <span className="font-medium">{field.variant?.product?.name}</span>
-                  <span className="text-sm text-muted-foreground">{field.variant?.name} </span>
+                  <div className="flex items-center gap-2">
+                    <span className="font-medium">{field.variant?.product?.name}</span>
+                    {field.variant?.product?.category?.name && (
+                      <span className="text-xs font-semibold text-muted-foreground bg-muted px-1 rounded-md">
+                        {field.variant.product.category.name}
+                      </span>
+                    )}
+                  </div>
+                  <span className="text-sm text-muted-foreground">{field.variant?.name}</span>
                 </div>
               </TableCell>
               <TableCell>

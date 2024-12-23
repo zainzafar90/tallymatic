@@ -11,6 +11,7 @@ const createProductBody: Record<keyof CreateProductReq, any> = {
   status: Joi.string().valid(ProductStatus.ACTIVE, ProductStatus.ARCHIVED, ProductStatus.DRAFT).optional(),
   categoryId: Joi.string().custom(uuid).optional(),
   variants: Joi.array().items(Joi.object().keys(createProductVariantBody)).min(1).required(),
+  category: Joi.object().optional(),
   createdAt: Joi.date().optional(),
   updatedAt: Joi.date().optional(),
 };

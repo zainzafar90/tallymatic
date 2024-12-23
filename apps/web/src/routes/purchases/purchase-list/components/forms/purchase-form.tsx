@@ -335,7 +335,21 @@ const PurchaseItems = ({ form }: { form: UseFormReturn<PurchaseFormData> }) => {
 
           {fields.map((field, index) => (
             <TableRow key={field.id}>
-              <TableCell>{selectedVariants[index]?.name}</TableCell>
+              <TableCell>
+                <div className="flex flex-col">
+                  <div className="flex items-center gap-2">
+                    <span className="font-medium">{selectedVariants[index]?.product?.name}</span>
+                    {selectedVariants[index]?.product?.category?.name && (
+                      <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded-md">
+                        {selectedVariants[index].product.category.name}
+                      </span>
+                    )}
+                  </div>
+                  <span className="text-sm text-muted-foreground">
+                    {selectedVariants[index]?.name} • {selectedVariants[index]?.sku}
+                  </span>
+                </div>
+              </TableCell>
               <TableCell>
                 <FormField
                   control={form.control}
