@@ -23,7 +23,7 @@ export const useProductTableColumns = () => {
           <LetterBox text={row.getValue('name')} />
           <div className="flex flex-col">
             <TextCell text={row.getValue('name')} />
-            <div className="text-sm text-gray-500">
+            <div className="text-sm text-gray-400 dark:text-gray-500">
               {row.original.variants.length > 0 ? `${row.original.variants.length} variants` : <>&mdash;</>}
             </div>
           </div>
@@ -52,9 +52,16 @@ export const useProductTableColumns = () => {
         const min = hasPrices ? Math.min(...prices) : 0;
         const max = hasPrices ? Math.max(...prices) : 0;
         const formattedPrice = min === max ? `${min}` : `${min} - ${max}`;
+
         return (
           <div className="text-right font-medium">
-            <small>&#x20A8;</small> {formattedPrice}
+            {hasPrices ? (
+              <span className="text-right">
+                <small>&#x20A8;</small> {formattedPrice}
+              </span>
+            ) : (
+              <span className="text-gray-500">&mdash;</span>
+            )}
           </div>
         );
       },
