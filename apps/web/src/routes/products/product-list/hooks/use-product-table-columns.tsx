@@ -1,6 +1,7 @@
 import { ICategory, ProductResponse } from '@repo/shared';
 import { createColumnHelper } from '@tanstack/react-table';
 
+import { LetterBox } from '@/components/common/letter-box/letter-box';
 import { DateCell } from '@/components/table/table-cells/common/date-cell';
 import { SortedHeader } from '@/components/table/table-cells/common/sorted-header';
 import { TextCell, TextHeader } from '@/components/table/table-cells/common/text-cell';
@@ -16,16 +17,8 @@ const columnHelper = createColumnHelper<ProductResponse & { category: ICategory 
 export const useProductTableColumns = () => {
   return [
     columnHelper.display({
-      id: 'select',
-      header: ({ table }) => (
-        <Checkbox
-          className="w-0"
-          checked={table.getIsAllPageRowsSelected()}
-          onChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-          aria-label="Select all"
-          indeterminate={table.getIsSomePageRowsSelected() && !table.getIsAllPageRowsSelected()}
-        />
-      ),
+      id: 'initial',
+      header: ({ table }) => <div />,
       cell: ({ row }) => (
         <Checkbox
           className="w-0"
@@ -36,13 +29,20 @@ export const useProductTableColumns = () => {
       ),
       enableSorting: false,
       enableHiding: false,
-      meta: {
-        className: 'hidden sm:table-cell',
-      },
     }),
     columnHelper.accessor('name', {
       header: ({ column }) => <SortedHeader text="Name" column={column} />,
-      cell: ({ row }) => <TextCell text={row.getValue('name')} />,
+      cell: ({ row }) => (
+        <div className="flex items-center gap-3">
+          <LetterBox text={row.getValue('name')} />
+          <div className="flex flex-col">
+            <TextCell text={row.getValue('name')} />
+            <div className="text-sm text-gray-500">
+              {row.original.variants.length > 0 ? `${row.original.variants.length} variants` : <>&mdash;</>}
+            </div>
+          </div>
+        </div>
+      ),
       enableHiding: false,
     }),
     columnHelper.accessor((row) => row.category, {
@@ -91,17 +91,7 @@ export const useProductTableColumns = () => {
         className: 'hidden sm:table-cell',
       },
     }),
-    columnHelper.accessor('variants', {
-      id: 'variants',
-      header: () => <TextHeader text="Variants" align="right" />,
-      cell: ({ row }) => {
-        return <VariantCell variants={row.getValue('variants')} />;
-      },
-      enableSorting: false,
-      meta: {
-        className: 'hidden md:table-cell',
-      },
-    }),
+
     columnHelper.accessor('createdAt', {
       id: 'createdAt',
       header: ({ column }) => <SortedHeader text="Created" column={column} />,
