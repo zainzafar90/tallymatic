@@ -16,20 +16,6 @@ const columnHelper = createColumnHelper<ProductResponse & { category: ICategory 
 
 export const useProductTableColumns = () => {
   return [
-    columnHelper.display({
-      id: 'initial',
-      header: ({ table }) => <div />,
-      cell: ({ row }) => (
-        <Checkbox
-          className="w-0"
-          checked={row.getIsSelected()}
-          onChange={(value) => row.toggleSelected(!!value)}
-          aria-label="Select row"
-        />
-      ),
-      enableSorting: false,
-      enableHiding: false,
-    }),
     columnHelper.accessor('name', {
       header: ({ column }) => <SortedHeader text="Name" column={column} />,
       cell: ({ row }) => (
