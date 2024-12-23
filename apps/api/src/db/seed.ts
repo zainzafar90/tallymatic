@@ -66,7 +66,7 @@ const generateFakeProduct = () => {
   return faker.commerce.productName();
 };
 
-const generateProducts = (count: number = 10) => {
+const generateProducts = (count: number = NUMBER_OF_PRODUCTS) => {
   return Array.from({ length: count }, () => generateFakeProduct());
 };
 
@@ -74,7 +74,7 @@ const generateFakeVariant = () => {
   return faker.commerce.productMaterial();
 };
 
-const generateVariants = (count: number = 10) => {
+const generateVariants = (count: number = NUMBER_OF_VARIANTS) => {
   return Array.from({ length: count }, () => generateFakeVariant());
 };
 
@@ -155,9 +155,6 @@ async function main() {
       products: {
         count: NUMBER_OF_PRODUCTS,
         columns: {
-          name: funcs.valuesFromArray({
-            values: generateProducts(NUMBER_OF_PRODUCTS),
-          }),
           description: funcs.loremIpsum({ sentencesCount: 1 }),
           price: funcs.number({
             minValue: 100,
