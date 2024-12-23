@@ -5,6 +5,7 @@ import { useFieldArray, useForm, UseFormReturn, useWatch } from 'react-hook-form
 import { zodResolver } from '@hookform/resolvers/zod';
 import { IProductVariant, IPurchase, ISupplier, PurchaseStatus } from '@repo/shared';
 
+import { ChooseProductVariantDialog } from '@/components/common/dialogs/choose-product-variant.dialog';
 import { Button } from '@/components/ui/button';
 import { Card, CardDescription, CardTitle } from '@/components/ui/card';
 import { Description, Field, FieldGroup, Fieldset, Label } from '@/components/ui/fieldset';
@@ -15,7 +16,6 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { useToggleState } from '@/hooks/use-toggle-state';
 
 import { purchaseStatusConfig } from '../../config/purchase-status.config';
-import { ChooseProductVariantDialog } from '../dialogs/choose-product-variant.dialog';
 import { ChooseSupplierDialog } from '../dialogs/choose-supplier.dialog';
 import { PurchaseFormData, PurchaseSchema } from './purchase.schema';
 
@@ -404,6 +404,8 @@ const PurchaseItems = ({ form }: { form: UseFormReturn<PurchaseFormData> }) => {
       </Table>
 
       <ChooseProductVariantDialog
+        priceField="costPrice"
+        priceLabel="Cost Price"
         isOpen={isProductVariantDialogOpen}
         onClose={closeProductVariantDialog}
         onSelectVariant={handleSelectProductVariant}

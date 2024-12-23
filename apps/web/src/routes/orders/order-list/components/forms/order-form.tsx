@@ -5,6 +5,7 @@ import { useFieldArray, useForm, UseFormReturn, useWatch } from 'react-hook-form
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ICustomer, IOrder, IOrderItem, IProductVariant, OrderStatus } from '@repo/shared';
 
+import { ChooseProductVariantDialog } from '@/components/common/dialogs/choose-product-variant.dialog';
 import { Button } from '@/components/ui/button';
 import { Card, CardDescription, CardTitle } from '@/components/ui/card';
 import { Description, Field, FieldGroup, Fieldset, Label } from '@/components/ui/fieldset';
@@ -16,7 +17,6 @@ import { useToggleState } from '@/hooks/use-toggle-state';
 
 import { orderStatusConfig } from '../../config/order-status.config';
 import { ChooseCustomerDialog } from '../dialogs/choose-customer.dialog';
-import { ChooseProductVariantDialog } from '../dialogs/choose-product-variant.dialog';
 import { OrderFormData, OrderSchema } from './order.schema';
 
 interface OrderFormProps {
@@ -340,6 +340,8 @@ const OrderItems = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
       </Table>
 
       <ChooseProductVariantDialog
+        priceField="price"
+        priceLabel="Price"
         isOpen={isProductVariantDialogOpen}
         onClose={closeProductVariantDialog}
         onSelectVariant={handleSelectProductVariant}

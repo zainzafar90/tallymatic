@@ -16,6 +16,8 @@ interface ChooseProductVariantDialogProps {
   onClose: () => void;
   onSelectVariant: (variant: IProductVariant) => void;
   selectedVariantId?: string;
+  priceField: 'price' | 'costPrice';
+  priceLabel: string;
 }
 
 export function ChooseProductVariantDialog({
@@ -23,6 +25,8 @@ export function ChooseProductVariantDialog({
   onClose,
   onSelectVariant,
   selectedVariantId,
+  priceField,
+  priceLabel,
 }: ChooseProductVariantDialogProps) {
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -50,7 +54,7 @@ export function ChooseProductVariantDialog({
             <TableHead>
               <TableRow>
                 <TableHeader>Product</TableHeader>
-                <TableHeader>Price</TableHeader>
+                <TableHeader>{priceLabel}</TableHeader>
                 <TableHeader className="text-center">Action</TableHeader>
               </TableRow>
             </TableHead>
@@ -75,7 +79,7 @@ export function ChooseProductVariantDialog({
                     </div>
                   </TableCell>
 
-                  <TableCell>{variant.price}</TableCell>
+                  <TableCell>{variant[priceField]}</TableCell>
                   <TableCell className="text-center">
                     {variant.id === selectedVariantId ? (
                       <div className="flex justify-center w-full">
