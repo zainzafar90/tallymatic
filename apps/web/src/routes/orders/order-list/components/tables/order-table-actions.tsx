@@ -7,7 +7,7 @@ import { ActionMenu } from "@/components/common/action-menu";
 import { useDeleteOrder } from "@/hooks/api/order.hooks";
 import { useToggleState } from "@/hooks/use-toggle-state";
 import { EditOrderDialog } from "../dialogs/edit-order.dialog";
-import { Modal } from "@/components/common/ConfirmDelModal";
+import { Modal } from "@/components/common/confirm-delete-modal";
 
 const DeleteConfirmationModal = ({
   order,
@@ -30,31 +30,34 @@ const DeleteConfirmationModal = ({
 
   return (
     <Modal isOpen={true} onClose={onClose}>
-      <p className="mt-2">
-        Please Enter the Order Number to Delete{" "}
-        <strong>{order.orderNumber}</strong>
+      <p className="mt-2 text-gray-800 dark:text-gray-300">
+        Please enter the order number to delete{" "}
+        <strong className="font-semibold">{order.orderNumber}</strong>
       </p>
       <input
-  type="text"
-  value={inputValue}
-  onChange={(e) => setInputValue(e.target.value)}
-  placeholder={`Type ${order.orderNumber} to confirm`}
-  className="mt-6 p-2 bg-[rgba(36,36,39)] border rounded w-full focus:outline-none focus:ring-0 focus:border-blue-500"
-/>
+        type="text"
+        value={inputValue}
+        onChange={(e) => setInputValue(e.target.value)}
+        placeholder={`Type ${order.orderNumber} to confirm`}
+        className="mt-6 p-2 bg-gray-100 dark:bg-[rgba(36,36,39)] text-gray-800 dark:text-gray-200 border rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
+      />
       <div className="mt-4 flex justify-between">
-      <button
-  type="button"
-  onClick={onClose}
-  className="bg-transparent text-white  hover:bg-[rgba(36,36,39)] py-2 px-4 rounded"
->
-  Cancel
-</button>
-
+        <button
+          type="button"
+          onClick={onClose}
+          className="px-4 py-2 bg-gray-200 dark:bg-transparent text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-[rgba(36,36,39)] rounded"
+        >
+          Cancel
+        </button>
         <button
           type="button"
           onClick={handleDelete}
           disabled={inputValue !== order.orderNumber}
-          className="px-4 py-2 bg-red-600 cursor-pointer rounded"
+          className={`px-4 py-2 rounded ${
+            inputValue === order.orderNumber
+              ? "bg-red-600 text-white hover:bg-red-700"
+              : "bg-red-600 text-white cursor-not-allowed"
+          }`}
         >
           Delete
         </button>

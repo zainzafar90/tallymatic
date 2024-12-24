@@ -5,7 +5,7 @@ import { ActionMenu } from '@/components/common/action-menu';
 import { useDeleteProduct } from '@/hooks/api/products.hooks';
 import { useToggleState } from '@/hooks/use-toggle-state';
 import { EditProductDialog } from '../dialogs/edit-product.dialog';
-import { Modal } from '@/components/common/ConfirmDelModal';
+import { Modal } from '@/components/common/confirm-delete-modal';
 import { useState } from 'react';
 
 const DeleteConfirmationModal = ({
@@ -29,31 +29,34 @@ const DeleteConfirmationModal = ({
 
   return (
     <Modal isOpen={true} onClose={onClose}>
-    <p className="mt-2 mb-4">
-      Please Enter the Product Name to Delete{' '}
-      <strong>{product.name}</strong>
-    </p>
-    <input
-      type="text"
-      value={inputValue}
-      onChange={(e) => setInputValue(e.target.value)}
-      placeholder={`Type ${product.name} to confirm`}
-      className="mt-6 p-2 bg-[rgba(36,36,39)] border rounded w-full focus:outline-none focus:ring-0 focus:border-blue-500"
-    />
+      <p className="mt-2 mb-4 text-gray-800 dark:text-gray-300">
+        Please enter the product name to delete{' '}
+        <strong className="font-semibold">{product.name}</strong>
+      </p>
+      <input
+        type="text"
+        value={inputValue}
+        onChange={(e) => setInputValue(e.target.value)}
+        placeholder={`Type ${product.name} to confirm`}
+        className="mt-6 p-2 bg-gray-100 dark:bg-[rgba(36,36,39)] text-gray-800 dark:text-gray-200 border rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
+      />
       <div className="mt-4 flex justify-between">
         <button
           type="button"
           onClick={onClose}
-          className="bg-transparent text-white hover:bg-[rgba(36,36,39)] py-2 px-4 rounded"
+          className="px-4 py-2 bg-gray-200 dark:bg-transparent text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-[rgba(36,36,39)] rounded"
         >
           Cancel
         </button>
-
         <button
           type="button"
           onClick={handleDelete}
           disabled={inputValue !== product.name}
-          className="px-4 py-2 bg-red-600 cursor-pointer rounded"
+          className={`px-4 py-2 rounded ${
+            inputValue === product.name
+              ? 'bg-red-600 text-white hover:bg-red-700'
+              : 'bg-red-600 text-white cursor-not-allowed'
+          }`}
         >
           Delete
         </button>
