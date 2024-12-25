@@ -405,7 +405,7 @@ const PurchaseItems = ({ form }: { form: UseFormReturn<PurchaseFormData> }) => {
               </TableCell>
               <TableCell className="text-right">Rs. {calculateSubtotal(index).toFixed(2)}</TableCell>
               <TableCell>
-                <Button type="button" onClick={() => remove(index)}>
+                <Button type="button" plain onClick={() => remove(index)}>
                   <CircleMinus className="text-red-500 w-6 h-6" />
                 </Button>
               </TableCell>

@@ -362,7 +362,7 @@ const OrderItems = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
                 )}
               </TableCell>
               <TableCell>
-                <Button type="button" onClick={() => removeItem(index)}>
+                <Button type="button" plain onClick={() => removeItem(index)}>
                   <CircleMinus className="text-red-500 w-6 h-6" />
                 </Button>
               </TableCell>
