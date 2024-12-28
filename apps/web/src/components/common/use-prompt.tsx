@@ -10,6 +10,8 @@ interface PromptOptions {
   confirmText?: string;
   cancelText?: string;
   destructive?: boolean;
+  requireDeleteConfirm:boolean, 
+  deleteConfirmationText:string,
 }
 
 export function usePrompt() {

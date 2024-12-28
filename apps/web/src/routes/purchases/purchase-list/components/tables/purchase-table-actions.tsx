@@ -5,23 +5,25 @@ import { toast } from 'sonner';
 import { IPurchase } from '@repo/shared';
 
 import { ActionMenu } from '@/components/common/action-menu';
-import { usePrompt } from '@/components/common/use-prompt';
+import { useDeleteDialog } from '@/components/common/use-delete-dialog';
 import { useDeletePurchase } from '@/hooks/api/purchase.hooks';
 import { useToggleState } from '@/hooks/use-toggle-state';
 
 import { EditPurchaseDialog } from '../dialogs/edit-purchase.dialog';
 
 export const PurchaseActions: React.FC<{ purchase: IPurchase }> = ({ purchase }) => {
-  const { prompt, PromptDialog } = usePrompt();
+  const { openDeleteDialog, DeleteDialog } = useDeleteDialog();
   const { mutateAsync: deletePurchase } = useDeletePurchase(purchase.id!);
   const [editOpen, showEditModal, closeEditModal] = useToggleState();
 
   const handleDelete = async () => {
-    const confirmed = await prompt({
+    const confirmed = await openDeleteDialog({
       title: 'Delete Purchase',
       description: `Are you sure you want to delete purchase ${purchase.purchaseNumber}?`,
       confirmText: 'Delete',
       cancelText: 'Cancel',
+      requireDeleteConfirm: true,
+      deleteConfirmationText: purchase.purchaseNumber,
     });
 
     if (confirmed) {
@@ -43,7 +45,7 @@ export const PurchaseActions: React.FC<{ purchase: IPurchase }> = ({ purchase })
         ]}
       />
       <EditPurchaseDialog purchase={purchase} isOpen={editOpen} onClose={closeEditModal} />
-      <PromptDialog />
+      <DeleteDialog />
     </>
   );
 };
