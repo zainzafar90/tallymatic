@@ -1,5 +1,4 @@
-import React, { useCallback, useRef, useState } from 'react';
-
+import React, { useCallback, useState, memo } from 'react';
 import { Alert, AlertActions, AlertDescription, AlertTitle } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -14,81 +13,111 @@ interface DeleteDialogOptions {
   deleteConfirmationText?: string;
 }
 
+
+const DeleteDialogContent = memo(({
+  options,
+  onConfirm,
+  onCancel,
+}: {
+  options: DeleteDialogOptions;
+  onConfirm: () => void;
+  onCancel: () => void;
+}) => {
+  const [confirmationText, setConfirmationText] = useState('');
+  const [showError, setShowError] = useState(false);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setConfirmationText(e.target.value);
+    setShowError(false);
+  };
+
+  const handleConfirmClick = () => {
+    if (
+      options.requireDeleteConfirm &&
+      confirmationText !== options.deleteConfirmationText
+    ) {
+      setShowError(true);
+      return;
+    }
+    onConfirm();
+  };
+
+  return (
+    <>
+      <AlertTitle>{options.title}</AlertTitle>
+      <AlertDescription>{options.description}</AlertDescription>
+      {options.requireDeleteConfirm && (
+        <div className="mt-4">
+          <AlertDescription className="mb-2">
+            Type <span className="font-medium">{options.deleteConfirmationText}</span> to confirm
+          </AlertDescription>
+          <Input
+            value={confirmationText}
+            onChange={handleInputChange}
+            placeholder="Type confirmation text"
+            className="w-full"
+          />
+        </div>
+      )}
+      {showError && (
+        <AlertDescription className="mt-2 text-sm text-red-400">
+          Please enter the correct confirmation text.
+        </AlertDescription>
+      )}
+      <AlertActions>
+        <Button plain onClick={onCancel}>
+          {options.cancelText || 'Cancel'}
+        </Button>
+        <Button
+          data-confirm-button
+          onClick={handleConfirmClick}
+          color={options.destructive ? 'rose' : 'zinc'}
+        >
+          {options.confirmText || 'Confirm'}
+        </Button>
+      </AlertActions>
+    </>
+  );
+});
+
+DeleteDialogContent.displayName = 'DeleteDialogContent';
+
 export function useDeleteDialog() {
   const [isOpen, setIsOpen] = useState(false);
   const [options, setOptions] = useState<DeleteDialogOptions | null>(null);
-  const [resolve, setResolve] = useState<((value: boolean) => void) | null>(null);
-  const deleteConfirmationRef = useRef<HTMLInputElement>(null);
-  const [valid, setValid] = useState(true);
+  const [resolvePromise, setResolvePromise] = useState<((value: boolean) => void) | null>(null);
 
-  const openDeleteDialog = useCallback(
-    (dialogOptions: DeleteDialogOptions): Promise<boolean> => {
-      setOptions(dialogOptions);
-      setIsOpen(true);
-      return new Promise((res) => setResolve(() => res));
-    },
-    []
-  );
+  const openDeleteDialog = useCallback((dialogOptions: DeleteDialogOptions): Promise<boolean> => {
+    setOptions(dialogOptions);
+    setIsOpen(true);
+    return new Promise((resolve) => setResolvePromise(() => resolve));
+  }, []);
 
   const handleConfirm = useCallback(() => {
-    if (
-      options?.requireDeleteConfirm &&
-      deleteConfirmationRef.current?.value !== options.deleteConfirmationText
-    ) {
-      setValid(false);
-      return;
-    }
     setIsOpen(false);
-    resolve?.(true);
-    setValid(true);
-  }, [resolve, options]);
+    resolvePromise?.(true);
+    setOptions(null);
+  }, [resolvePromise]);
 
   const handleCancel = useCallback(() => {
     setIsOpen(false);
-    resolve?.(false);
-    setValid(true);
-  }, [resolve]);
+    resolvePromise?.(false);
+    setOptions(null);
+  }, [resolvePromise]);
 
   const DeleteDialog = useCallback(() => {
     if (!options) return null;
 
     return (
       <Alert open={isOpen} onClose={handleCancel}>
-        <AlertTitle>{options.title}</AlertTitle>
-        <AlertDescription>{options.description}</AlertDescription>
-        {options.requireDeleteConfirm && (
-          <div className="mt-4">
-            <AlertDescription className="mb-2">
-              Type <span className="font-medium">{options.deleteConfirmationText}</span> to confirm
-            </AlertDescription>
-            <Input
-              ref={deleteConfirmationRef}
-              onChange={() => setValid(true)} // Reset error state on input change
-              placeholder="Type confirmation text"
-              className="w-full"
-            />
-          </div>
-        )}
-        {!valid && (
-          <AlertDescription className="mt-2 text-sm text-red-400">
-            Please enter the correct confirmation text.
-          </AlertDescription>
-        )}
-        <AlertActions>
-          <Button plain onClick={handleCancel}>
-            {options.cancelText || 'Cancel'}
-          </Button>
-          <Button
-            data-confirm-button
-            onClick={handleConfirm}
-            color={options.destructive ? 'rose' : 'zinc'}
-          >
-            {options.confirmText || 'Confirm'}
-          </Button>
-        </AlertActions>
+        <DeleteDialogContent
+          options={options}
+          onConfirm={handleConfirm}
+          onCancel={handleCancel}
+        />
       </Alert>
     );
-  }, [isOpen, options, handleCancel, handleConfirm, valid]);
+  }, [isOpen, options, handleCancel, handleConfirm]);
 
   return { openDeleteDialog, DeleteDialog };
 }
