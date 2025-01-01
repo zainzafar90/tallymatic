@@ -5,7 +5,7 @@ export interface BaseCustomer {
   id: string;
   name: string;
   status: Status;
-  email?: string;
+  email: string;
   phone?: string;
   address?: string;
   organizationId: string;
