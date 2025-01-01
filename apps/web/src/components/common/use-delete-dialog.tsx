@@ -1,4 +1,5 @@
-import React, { useCallback, useState, memo } from 'react';
+import React, { memo, useCallback, useState } from 'react';
+
 import { Alert, AlertActions, AlertDescription, AlertTitle } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,13 +9,11 @@ interface DeleteDialogOptions {
   description: string;
   confirmText?: string;
   cancelText?: string;
-  destructive?: boolean;
   requireDeleteConfirm?: boolean;
   deleteConfirmationText?: string;
 }
 
-
-const DeleteDialogContent = memo(({
+const DeleteDialogContent = ({
   options,
   onConfirm,
   onCancel,
@@ -32,10 +31,7 @@ const DeleteDialogContent = memo(({
   };
 
   const handleConfirmClick = () => {
-    if (
-      options.requireDeleteConfirm &&
-      confirmationText !== options.deleteConfirmationText
-    ) {
+    if (options.requireDeleteConfirm && confirmationText !== options.deleteConfirmationText) {
       setShowError(true);
       return;
     }
@@ -68,17 +64,13 @@ const DeleteDialogContent = memo(({
         <Button plain onClick={onCancel}>
           {options.cancelText || 'Cancel'}
         </Button>
-        <Button
-          data-confirm-button
-          onClick={handleConfirmClick}
-          color={options.destructive ? 'rose' : 'zinc'}
-        >
+        <Button color="rose" onClick={handleConfirmClick}>
           {options.confirmText || 'Confirm'}
         </Button>
       </AlertActions>
     </>
   );
-});
+};
 
 DeleteDialogContent.displayName = 'DeleteDialogContent';
 
@@ -110,11 +102,7 @@ export function useDeleteDialog() {
 
     return (
       <Alert open={isOpen} onClose={handleCancel}>
-        <DeleteDialogContent
-          options={options}
-          onConfirm={handleConfirm}
-          onCancel={handleCancel}
-        />
+        <DeleteDialogContent options={options} onConfirm={handleConfirm} onCancel={handleCancel} />
       </Alert>
     );
   }, [isOpen, options, handleCancel, handleConfirm]);
