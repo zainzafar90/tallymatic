@@ -55,9 +55,9 @@ export type InventoryLevelsResponse = ResourceListResponse<IProductVariant>;
 export type LowStockAlertsResponse = ResourceListResponse<IProductVariant>;
 
 // Customers
-export type CustomerResponse = ResourceResponse<ICustomer>;
-export type CustomerListResponse = ResourceListResponse<ICustomer>;
-export type CustomerDeleteResponse = DeleteResponse;
+// export type CustomerResponse = ResourceResponse<ICustomer>;
+// export type CustomerListResponse = ResourceListResponse<ICustomer>;
+// export type CustomerDeleteResponse = DeleteResponse;
 
 // Supplier
 export type SupplierResponse = ResourceResponse<ISupplier>;

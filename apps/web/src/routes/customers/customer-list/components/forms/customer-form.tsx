@@ -1,17 +1,18 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { ICustomer } from '@repo/shared';
+import { CustomerListItem, Status } from '@repo/shared';
 
 import { Button } from '@/components/ui/button';
 import { DialogActions } from '@/components/ui/dialog';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { Select } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 
-import { CustomerFormData, CustomerSchema } from './customer.schema';
+import { CreateCustomerSchema, CustomerFormData, UpdateCustomerSchema } from './customer.schema';
 
 interface CustomerFormProps {
-  customer?: ICustomer;
+  customer?: CustomerListItem;
   isPending: boolean;
   onClose: () => void;
   onSubmit: (data: CustomerFormData) => Promise<void>;
@@ -19,12 +20,13 @@ interface CustomerFormProps {
 
 export const CustomerForm = ({ customer, isPending, onSubmit, onClose }: CustomerFormProps) => {
   const form = useForm({
-    resolver: zodResolver(CustomerSchema),
+    resolver: zodResolver(customer ? UpdateCustomerSchema : CreateCustomerSchema),
     defaultValues: {
       name: customer?.name || '',
       email: customer?.email || '',
       phone: customer?.phone || '',
       address: customer?.address || '',
+      ...(customer && { status: customer.status }),
     },
   });
 
@@ -89,6 +91,22 @@ export const CustomerForm = ({ customer, isPending, onSubmit, onClose }: Custome
             </FormItem>
           )}
         />
+        {customer && (
+          <FormField
+            name="status"
+            control={form.control}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Status</FormLabel>
+                <Select {...field}>
+                  <option value={Status.ACTIVE}>Active</option>
+                  <option value={Status.INACTIVE}>Inactive</option>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
         <DialogActions>
           <Button plain onClick={onClose}>
             Cancel

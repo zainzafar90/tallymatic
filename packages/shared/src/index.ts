@@ -5,3 +5,5 @@ export * from './types/api/api-payloads';
 export * from './types/api/api-responses';
 export * from './types/api/api-operations';
 export * from './types/interfaces/pagination';
+
+export * from './types/payloads';

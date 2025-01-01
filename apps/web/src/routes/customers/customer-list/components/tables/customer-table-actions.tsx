@@ -1,6 +1,6 @@
 import { Pencil, Trash } from 'lucide-react';
 import { toast } from 'sonner';
-import { ICustomer } from '@repo/shared';
+import { CustomerListItem } from '@repo/shared';
 
 import { ActionMenu } from '@/components/common/action-menu';
 import { usePrompt } from '@/components/common/use-prompt';
@@ -9,7 +9,7 @@ import { useToggleState } from '@/hooks/use-toggle-state';
 
 import { EditCustomerDialog } from '../dialog/edit-customer.dialog';
 
-export const CustomerActions = ({ customer }: { customer: ICustomer }) => {
+export const CustomerActions = ({ customer }: { customer: CustomerListItem }) => {
   const { prompt, PromptDialog } = usePrompt();
   const { mutateAsync } = useDeleteCustomer(customer.id!);
   const [editOpen, showEditModal, closeEditModal] = useToggleState();

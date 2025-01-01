@@ -1,6 +1,6 @@
-import { and, asc, count, desc, eq, ilike, inArray, isNull } from 'drizzle-orm';
+import { and, asc, count, desc, eq, ilike, inArray, isNull, ne } from 'drizzle-orm';
 import httpStatus from 'http-status';
-import { CreateCustomerReq, IOptions, UpdateCustomerReq } from '@repo/shared';
+import { CreateCustomerPayload, IOptions, UpdateCustomerPayload } from '@repo/shared';
 
 import { ApiError } from '@/common/errors/api-error';
 import { db } from '@/db';
@@ -20,7 +20,15 @@ const customerDTO = (customer: Customer) => {
   return customer;
 };
 
-export const createCustomer = async (customerBody: CreateCustomerReq, organizationId: string) => {
+export const createCustomer = async (customerBody: CreateCustomerPayload, organizationId: string) => {
+  const existingCustomer = await db.query.customers.findFirst({
+    where: and(eq(customers.email, customerBody.email), eq(customers.organizationId, organizationId)),
+  });
+
+  if (existingCustomer) {
+    throw new ApiError(httpStatus.CONFLICT, 'Customer with this email already exists');
+  }
+
   const [customer] = await db
     .insert(customers)
     .values({
@@ -71,10 +79,15 @@ export const queryCustomers = async (
     .from(customers)
     .where(whereClause);
 
-  const results = await db.select().from(customers).where(whereClause).limit(limit).offset(offset).orderBy(orderByClause);
+  const results = await db.query.customers.findMany({
+    where: whereClause,
+    limit,
+    offset,
+    orderBy: orderByClause,
+  });
 
   return {
-    results: results.map(customerDTO),
+    results,
     limit,
     offset,
     pages: Math.ceil(customersCount.count / limit),
@@ -92,7 +105,19 @@ export const getCustomerById = async (id: string, organizationId: string) => {
   return customerDTO(customer);
 };
 
-export const updateCustomerById = async (customerId: string, updateBody: UpdateCustomerReq, organizationId: string) => {
+export const updateCustomerById = async (customerId: string, updateBody: UpdateCustomerPayload, organizationId: string) => {
+  const existingCustomer = await db.query.customers.findFirst({
+    where: and(
+      eq(customers.email, updateBody.email),
+      eq(customers.organizationId, organizationId),
+      ne(customers.id, customerId)
+    ),
+  });
+
+  if (existingCustomer) {
+    throw new ApiError(httpStatus.CONFLICT, 'Customer with this email already exists');
+  }
+
   const [customer] = await db
     .update(customers)
     .set({

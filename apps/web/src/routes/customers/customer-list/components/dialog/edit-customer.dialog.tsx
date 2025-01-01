@@ -1,4 +1,4 @@
-import { ICustomer } from '@repo/shared';
+import { CustomerListItem } from '@repo/shared';
 
 import { Dialog, DialogBody, DialogDescription, DialogTitle } from '@/components/ui/dialog';
 
@@ -9,7 +9,7 @@ export function EditCustomerDialog({
   isOpen,
   onClose,
 }: {
-  customer: ICustomer;
+  customer: CustomerListItem;
   isOpen: boolean;
   onClose: () => void;
 }) {

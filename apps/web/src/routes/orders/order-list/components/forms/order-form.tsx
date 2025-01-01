@@ -351,15 +351,24 @@ const OrderItems = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
                 />
               </TableCell>
               <TableCell>
-                {showPrices ? (
-                  <FormField
-                    control={form.control}
-                    name={`items.${index}.costPrice`}
-                    render={({ field }) => <FormItem>{field.value}</FormItem>}
-                  />
-                ) : (
-                  <span className="text-xs text-muted-foreground">•••••</span>
-                )}
+                <FormField
+                  control={form.control}
+                  name={`items.${index}.costPrice`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          type={showPrices ? 'number' : 'password'}
+                          inputMode="decimal"
+                          step="0.01"
+                          min={0}
+                          onChange={(e) => field.onChange(parseFloat(e.target.value))}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
               </TableCell>
               <TableCell>
                 <Button type="button" plain onClick={() => removeItem(index)}>

@@ -11,6 +11,6 @@
       "@repo/*": ["./packages/*"]
     }
   },
-  "exclude": ["node_modules", "**/public/sounds/**"],
+  "exclude": ["node_modules", "dist"],
   "include": ["src"]
 }

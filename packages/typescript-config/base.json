@@ -18,5 +18,5 @@
     "skipLibCheck": true,
     "strict": false
   },
-  "exclude": ["node_modules", "**/public/sounds/**"]
+  "exclude": ["node_modules", "dist"]
 }

@@ -1,15 +1,13 @@
 import Joi from 'joi';
-import { CreateCustomerReq } from '@repo/shared';
+import { CreateCustomerPayload, Status, UpdateCustomerPayload } from '@repo/shared';
 
 import { uuid } from '@/common/validate/custom.validation';
 
-const createCustomerBody: Record<keyof CreateCustomerReq, any> = {
+const createCustomerBody: Record<keyof CreateCustomerPayload, any> = {
   name: Joi.string().required(),
-  email: Joi.string().optional().email(),
-  phone: Joi.string().optional(),
-  address: Joi.string().optional(),
-  createdAt: Joi.date().optional(),
-  updatedAt: Joi.date().optional(),
+  email: Joi.string().email().allow('', null).optional(),
+  phone: Joi.string().allow('', null).optional(),
+  address: Joi.string().allow('', null).optional(),
 };
 
 export const createCustomer = {
@@ -34,18 +32,19 @@ export const getCustomer = {
   }),
 };
 
+const updateCustomerBody: Record<keyof UpdateCustomerPayload, any> = {
+  name: Joi.string(),
+  email: Joi.string().email().allow('', null),
+  phone: Joi.string().allow('', null),
+  address: Joi.string().allow('', null),
+  status: Joi.string().valid(Status.ACTIVE, Status.INACTIVE).optional(),
+};
+
 export const updateCustomer = {
   params: Joi.object().keys({
     customerId: Joi.required().custom(uuid),
   }),
-  body: Joi.object()
-    .keys({
-      name: Joi.string(),
-      email: Joi.string().email(),
-      phone: Joi.string(),
-      address: Joi.string(),
-    })
-    .min(1),
+  body: Joi.object().keys(updateCustomerBody),
 };
 
 export const deleteCustomer = {
