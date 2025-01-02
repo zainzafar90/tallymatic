@@ -1,5 +1,5 @@
 import * as z from 'zod';
-import { PurchaseStatus } from '@repo/shared';
+import { PaymentMethod, PaymentType, PurchaseStatus } from '@repo/shared';
 
 import { IProductVariantWithProduct } from '@/components/common/dialogs/choose-product-variant.dialog';
 
@@ -28,6 +28,26 @@ export const PurchaseSchema = z.object({
     .min(1, 'At least one item is required'),
   totalQuantity: z.number().min(0).optional(),
   receivedQuantity: z.number().min(0).optional(),
+  paymentMethod: z
+    .nativeEnum(PaymentMethod, {
+      errorMap: () => ({
+        message: 'Please select a valid payment method',
+      }),
+    })
+    .default(PaymentMethod.CASH)
+    .optional(),
+  paymentType: z
+    .nativeEnum(PaymentType, {
+      errorMap: () => ({
+        message: 'Please select payment type',
+      }),
+    })
+    .default(PaymentType.DEBIT)
+    .optional(),
+  amountPaid: z
+    .union([z.string(), z.number()])
+    .transform((val) => Number(val || 0))
+    .pipe(z.number().min(0, 'Amount paid must be non-negative')),
 });
 
 export const CreatePurchaseSchema = PurchaseSchema;

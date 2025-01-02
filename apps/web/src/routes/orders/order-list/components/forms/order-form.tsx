@@ -3,7 +3,7 @@ import React, { useMemo, useState } from 'react';
 import { CircleMinus, CirclePlus, Eye, EyeOff } from 'lucide-react';
 import { useFieldArray, useForm, UseFormReturn, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { ICustomer, IOrder, IOrderItem, IProductVariant, IProductWithCategory, OrderStatus } from '@repo/shared';
+import { ICustomer, IOrder, IOrderItem, OrderStatus, PaymentMethod, PaymentType } from '@repo/shared';
 
 import {
   ChooseProductVariantDialog,
@@ -16,6 +16,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { Select } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { paymentMethodConfig } from '@/config/payment-method.config';
 import { useToggleState } from '@/hooks/use-toggle-state';
 
 import { orderStatusConfig } from '../../config/order-status.config';
@@ -32,13 +33,20 @@ interface OrderFormProps {
 export const OrderForm: React.FC<OrderFormProps> = ({ order, isPending, onSubmit, onClose }) => {
   const form = useForm<OrderFormData>({
     resolver: zodResolver(order ? UpdateOrderSchema : CreateOrderSchema),
-    defaultValues: order || {
-      customerId: '',
-      status: OrderStatus.PENDING,
-      taxAmount: 0,
-      discountAmount: 0,
-      items: [],
-    },
+    defaultValues: order
+      ? {
+          ...order,
+          closedAt: order.closedAt ? new Date(order.closedAt) : null,
+        }
+      : {
+          customerId: '',
+          status: OrderStatus.PENDING,
+          taxAmount: 0,
+          discountAmount: 0,
+          items: [],
+          paymentMethod: PaymentMethod.CASH,
+          amountPaid: 0,
+        },
   });
 
   const handleSubmit = form.handleSubmit(async (data) => {
@@ -82,16 +90,31 @@ export const OrderForm: React.FC<OrderFormProps> = ({ order, isPending, onSubmit
 
                   <FormField
                     control={form.control}
-                    name="status"
+                    name="paymentMethod"
                     render={({ field }) => (
                       <FormItem className="w-full">
                         <FormLabel>Payment Method</FormLabel>
                         <Select {...field}>
-                          {Object.entries(orderStatusConfig).map(([status, [_, text]]) => (
-                            <option key={status} value={status}>
+                          {Object.entries(paymentMethodConfig).map(([method, [_, text, value]]) => (
+                            <option key={method} value={value}>
                               {text}
                             </option>
                           ))}
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="paymentType"
+                    render={({ field }) => (
+                      <FormItem className="w-full">
+                        <FormLabel>Payment Type</FormLabel>
+                        <Select {...field}>
+                          <option value={PaymentType.CREDIT}>Credit</option>
+                          <option value={PaymentType.DEBIT}>Debit</option>
                         </Select>
                         <FormMessage />
                       </FormItem>
@@ -203,6 +226,38 @@ const OrderSummary = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
         <TableRow>
           <TableCell className="font-bold">Total</TableCell>
           <TableCell className="text-right">Rs. {total.toFixed(2)} </TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell className="font-bold">Amount Paid</TableCell>
+          <TableCell className="text-right">
+            <FormField
+              control={form.control}
+              name="amountPaid"
+              render={({ field }) => (
+                <FormItem className="w-full max-w-xs ml-auto">
+                  <FormControl>
+                    <Input
+                      {...field}
+                      type="number"
+                      inputMode="decimal"
+                      step="0.01"
+                      min={0}
+                      value={field.value || '0'}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        field.onChange(val === '0' ? '' : Number(val));
+                      }}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell className="font-bold">Balance Due</TableCell>
+          <TableCell className="text-right">Rs. {(total - (form.watch('amountPaid') || 0)).toFixed(2)}</TableCell>
         </TableRow>
       </TableBody>
     </Table>

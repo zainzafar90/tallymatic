@@ -1,5 +1,5 @@
 import { ResourceListResponse } from '../api/api-operations';
-import { PurchaseStatus } from '../enums.types';
+import { PaymentMethod, PaymentType, PurchaseStatus } from '../enums.types';
 
 type BasePurchase = {
   id: string;
@@ -12,6 +12,10 @@ type BasePurchase = {
   totalQuantity?: number;
   receivedQuantity?: number;
   expectedArrivalDate?: Date;
+  paymentMethod?: PaymentMethod;
+  paymentType?: PaymentType;
+  amountPaid: number;
+  lastPaymentDate?: Date;
 };
 
 type BasePurchaseItem = {
@@ -37,6 +41,9 @@ export interface CreatePurchaseReq {
   receivedQuantity?: number;
   totalQuantity?: number;
   items: BasePurchaseItem[];
+  paymentMethod?: PaymentMethod;
+  paymentType?: PaymentType;
+  amountPaid?: number;
 }
 
 export interface UpdatePurchaseReq extends Partial<CreatePurchaseReq> {}

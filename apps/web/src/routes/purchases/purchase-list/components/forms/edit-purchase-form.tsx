@@ -15,7 +15,7 @@ export const EditPurchaseForm: React.FC<{ purchase: IPurchase; onClose: () => vo
     await mutateAsync(data as UpdatePurchaseReq, {
       onSuccess: () => {
         toast.success('Purchase updated', {
-          description: 'Purchase was successfully updated',
+          description: `Purchase #${purchase.purchaseNumber} was successfully updated`,
           closeButton: true,
         });
       },

@@ -41,6 +41,9 @@ export const createPurchase = async (purchaseData: CreatePurchaseReq, organizati
       totalQuantity,
       receivedQuantity: 0,
       status: PurchaseStatus.ORDERED,
+      paymentMethod: purchaseData.paymentMethod,
+      amountPaid: purchaseData.amountPaid || 0,
+      lastPaymentDate: purchaseData.amountPaid ? new Date() : null,
     };
 
     const [purchase] = await tx.insert(purchases).values(purchaseNew).returning();

@@ -3,7 +3,7 @@ import React, { useMemo, useState } from 'react';
 import { CircleMinus, CirclePlus } from 'lucide-react';
 import { useFieldArray, useForm, UseFormReturn, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { IPurchase, ISupplier, PurchaseStatus } from '@repo/shared';
+import { IPurchase, ISupplier, PaymentMethod, PaymentType, PurchaseStatus } from '@repo/shared';
 
 import {
   ChooseProductVariantDialog,
@@ -16,6 +16,7 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Input } from '@/components/ui/input';
 import { Select } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { paymentMethodConfig } from '@/config/payment-method.config';
 import { useToggleState } from '@/hooks/use-toggle-state';
 
 import { purchaseStatusConfig } from '../../config/purchase-status.config';
@@ -32,21 +33,17 @@ interface PurchaseFormProps {
 export const PurchaseForm: React.FC<PurchaseFormProps> = ({ purchase, isPending, onSubmit, onClose }) => {
   const form = useForm<PurchaseFormData>({
     resolver: zodResolver(purchase ? UpdatePurchaseSchema : CreatePurchaseSchema),
-    defaultValues: purchase
-      ? {
-          ...purchase,
-          expectedArrivalDate: purchase.expectedArrivalDate ? new Date(purchase.expectedArrivalDate) : undefined,
-          items: purchase.items || [],
-        }
-      : {
-          supplierId: '',
-          status: PurchaseStatus.DRAFT,
-          notes: '',
-          items: [],
-          expectedArrivalDate: undefined,
-          totalQuantity: 0,
-          receivedQuantity: 0,
-        },
+    defaultValues: {
+      supplierId: purchase?.supplierId || '',
+      status: purchase?.status || PurchaseStatus.DRAFT,
+      notes: purchase?.notes || '',
+      items: purchase?.items || [],
+      expectedArrivalDate: purchase?.expectedArrivalDate ? new Date(purchase.expectedArrivalDate) : undefined,
+      totalQuantity: purchase?.totalQuantity || 0,
+      receivedQuantity: purchase?.receivedQuantity || 0,
+      paymentMethod: purchase?.paymentMethod || PaymentMethod.CASH,
+      amountPaid: purchase?.amountPaid || 0,
+    },
   });
 
   const handleSubmit = form.handleSubmit(async (data) => {
@@ -134,7 +131,6 @@ export const PurchaseForm: React.FC<PurchaseFormProps> = ({ purchase, isPending,
                           {...field}
                           value={field.value ?? 0}
                           min={0}
-                          max={form.getValues('totalQuantity')}
                           onChange={(e) => {
                             const quantity = parseInt(e.target.value, 10);
                             field.onChange(quantity);
@@ -183,6 +179,39 @@ export const PurchaseForm: React.FC<PurchaseFormProps> = ({ purchase, isPending,
                   </FormItem>
                 )}
               />
+
+              <FormField
+                control={form.control}
+                name="paymentMethod"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormLabel>Payment Method</FormLabel>
+                    <Select {...field}>
+                      {Object.entries(paymentMethodConfig).map(([method, [_, text, value]]) => (
+                        <option key={method} value={value}>
+                          {text}
+                        </option>
+                      ))}
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="paymentType"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormLabel>Payment Type</FormLabel>
+                    <Select {...field}>
+                      <option value={PaymentType.DEBIT}>Debit</option>
+                      <option value={PaymentType.CREDIT}>Credit</option>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </FieldGroup>
           </Card>
         </form>
@@ -214,6 +243,38 @@ const PurchaseSummary = ({ form }: { form: UseFormReturn<PurchaseFormData> }) =>
         <TableRow>
           <TableCell className="font-bold">Total Amount</TableCell>
           <TableCell className="text-right">Rs. {total.toFixed(2)}</TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell className="font-bold">Amount Paid</TableCell>
+          <TableCell className="text-right">
+            <FormField
+              control={form.control}
+              name="amountPaid"
+              render={({ field }) => (
+                <FormItem className="w-full max-w-xs ml-auto">
+                  <FormControl>
+                    <Input
+                      {...field}
+                      type="number"
+                      inputMode="decimal"
+                      step="0.01"
+                      min={0}
+                      value={field.value || '0'}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        field.onChange(val === '0' ? '' : Number(val));
+                      }}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell className="font-bold">Balance Due</TableCell>
+          <TableCell className="text-right">Rs. {(total - (form.watch('amountPaid') || 0)).toFixed(2)}</TableCell>
         </TableRow>
       </TableBody>
     </Table>

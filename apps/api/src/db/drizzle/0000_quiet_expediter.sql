@@ -59,7 +59,10 @@ CREATE TABLE "orders" (
 	"closed_at" timestamp,
 	"created_at" timestamp DEFAULT now(),
 	"updated_at" timestamp DEFAULT now(),
-	"deleted_at" timestamp
+	"deleted_at" timestamp,
+	"payment_method" text,
+	"amount_paid" numeric DEFAULT '0' NOT NULL,
+	"last_payment_date" timestamp
 );
 --> statement-breakpoint
 CREATE TABLE "organizations" (
@@ -111,7 +114,10 @@ CREATE TABLE "purchases" (
 	"notes" text,
 	"created_at" timestamp DEFAULT now(),
 	"updated_at" timestamp DEFAULT now(),
-	"deleted_at" timestamp
+	"deleted_at" timestamp,
+	"payment_method" text,
+	"amount_paid" numeric DEFAULT '0' NOT NULL,
+	"last_payment_date" timestamp
 );
 --> statement-breakpoint
 CREATE TABLE "stores" (

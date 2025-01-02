@@ -17,7 +17,7 @@ export const EditOrderForm: React.FC<{ order: IOrder; onClose: () => void }> = (
     await mutateAsync(data as UpdateOrderReq, {
       onSuccess: () => {
         toast.success('Order updated', {
-          description: `Order was successfully updated`,
+          description: `Order #${order.orderNumber} was successfully updated`,
           closeButton: true,
         });
       },

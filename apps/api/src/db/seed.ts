@@ -276,6 +276,7 @@ async function main() {
             ],
           }),
           status: funcs.valuesFromArray({ values: ['pending', 'paid', 'unpaid', 'partiallyPaid', 'refunded', 'voided'] }),
+          paymentMethod: funcs.valuesFromArray({ values: ['cash', 'other'] }),
           totalAmount: funcs.number({
             minValue: 100,
             maxValue: 1000,
@@ -337,6 +338,7 @@ async function main() {
             ],
           }),
           status: funcs.valuesFromArray({ values: ['draft', 'ordered', 'partial', 'received', 'closed'] }),
+          paymentMethod: funcs.valuesFromArray({ values: ['cash', 'other'] }),
           totalAmount: funcs.number({
             minValue: 100,
             maxValue: 1000,

@@ -1,6 +1,6 @@
 import { relations } from 'drizzle-orm';
 import { customType, foreignKey, index, integer, numeric, pgTable, timestamp, uuid, varchar } from 'drizzle-orm/pg-core';
-import { OrderStatus } from '@repo/shared';
+import { OrderStatus, PaymentMethod, PaymentType } from '@repo/shared';
 
 import { customers } from './customer.schema';
 import { organizations } from './organization.schema';
@@ -8,6 +8,18 @@ import { variants } from './variant.schema';
 
 const EnumOrderStatus = customType<{
   data: OrderStatus;
+}>({
+  dataType: () => 'text',
+});
+
+const EnumPaymentMethod = customType<{
+  data: PaymentMethod;
+}>({
+  dataType: () => 'text',
+});
+
+const EnumPaymentType = customType<{
+  data: PaymentType;
 }>({
   dataType: () => 'text',
 });
@@ -31,6 +43,10 @@ export const orders = pgTable(
     createdAt: timestamp('created_at').defaultNow(),
     updatedAt: timestamp('updated_at').defaultNow(),
     deletedAt: timestamp('deleted_at'),
+    paymentMethod: EnumPaymentMethod('payment_method').default(PaymentMethod.CASH),
+    paymentType: EnumPaymentType('payment_type').default(PaymentType.CREDIT),
+    amountPaid: numeric('amount_paid').default('0').notNull(),
+    lastPaymentDate: timestamp('last_payment_date'),
   },
   (table) => ({
     fk_organization: foreignKey({

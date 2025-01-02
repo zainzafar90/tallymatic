@@ -1,5 +1,5 @@
 import { ResourceListResponse } from '../api/api-operations';
-import { OrderStatus } from '../enums.types';
+import { OrderStatus, PaymentMethod, PaymentType } from '../enums.types';
 
 type BaseOrder = {
   id: string;
@@ -12,6 +12,10 @@ type BaseOrder = {
   subtotal: number;
   taxAmount: number;
   discountAmount: number;
+  paymentMethod?: PaymentMethod;
+  paymentType?: PaymentType;
+  amountPaid: number;
+  lastPaymentDate?: Date;
 };
 
 type BaseOrderItem = {
@@ -41,6 +45,9 @@ export interface CreateOrderReq {
   taxAmount: number;
   discountAmount: number;
   items: BaseOrderItem[];
+  paymentMethod?: PaymentMethod;
+  paymentType?: PaymentType;
+  amountPaid?: number;
 }
 
 export interface UpdateOrderReq extends Partial<CreateOrderReq> {

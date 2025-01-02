@@ -1,5 +1,5 @@
 {
-  "id": "82879627-8136-46e1-b39d-3bc3ece80f06",
+  "id": "2e6b51a9-ae02-4903-8c81-1063be33c788",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -539,6 +539,25 @@
           "type": "timestamp",
           "primaryKey": false,
           "notNull": false
+        },
+        "payment_method": {
+          "name": "payment_method",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "amount_paid": {
+          "name": "amount_paid",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'0'"
+        },
+        "last_payment_date": {
+          "name": "last_payment_date",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
         }
       },
       "indexes": {
@@ -1060,6 +1079,25 @@
         },
         "deleted_at": {
           "name": "deleted_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "payment_method": {
+          "name": "payment_method",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "amount_paid": {
+          "name": "amount_paid",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'0'"
+        },
+        "last_payment_date": {
+          "name": "last_payment_date",
           "type": "timestamp",
           "primaryKey": false,
           "notNull": false

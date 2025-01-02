@@ -39,3 +39,18 @@ export enum PurchaseStatus {
   RECEIVED = 'received',
   CLOSED = 'closed',
 }
+
+export enum PaymentMethod {
+  CASH = 'cash',
+  BANK_TRANSFER = 'bankTransfer',
+  CREDIT_CARD = 'creditCard',
+  DEBIT_CARD = 'debitCard',
+  CHEQUE = 'cheque',
+  ONLINE = 'online',
+  OTHER = 'other',
+}
+
+export enum PaymentType {
+  DEBIT = 'debit',
+  CREDIT = 'credit',
+}

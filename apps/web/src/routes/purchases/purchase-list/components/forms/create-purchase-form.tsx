@@ -15,7 +15,7 @@ export const CreatePurchaseForm: React.FC<{ onClose: () => void }> = ({ onClose 
     await mutateAsync(data as CreatePurchaseReq, {
       onSuccess: (successData) => {
         toast.success('Purchase created', {
-          description: `Purchase #${successData.id} was successfully created`,
+          description: `Purchase #${successData.purchaseNumber} was successfully created`,
           closeButton: true,
         });
       },

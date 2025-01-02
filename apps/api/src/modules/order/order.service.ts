@@ -40,6 +40,9 @@ export const createOrder = async (orderData: CreateOrderReq, organizationId: str
       taxAmount: orderData.taxAmount || 0,
       discountAmount: orderData.discountAmount || 0,
       currency: 'PKR',
+      paymentMethod: orderData.paymentMethod,
+      amountPaid: orderData.amountPaid || 0,
+      lastPaymentDate: orderData.amountPaid ? new Date() : null,
     };
 
     const [order] = await tx.insert(orders).values(orderNew).returning();

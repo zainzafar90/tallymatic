@@ -1,5 +1,5 @@
 import * as z from 'zod';
-import { OrderStatus } from '@repo/shared';
+import { OrderStatus, PaymentMethod, PaymentType } from '@repo/shared';
 
 import { IProductVariantWithProduct } from '@/components/common/dialogs/choose-product-variant.dialog';
 
@@ -27,11 +27,35 @@ export const BaseOrderSchema = z.object({
       })
     )
     .min(1, 'At least one item is required'),
+  paymentMethod: z
+    .nativeEnum(PaymentMethod, {
+      errorMap: () => ({
+        message: 'Please select a valid payment method',
+      }),
+    })
+    .default(PaymentMethod.CASH)
+    .optional(),
+  paymentType: z
+    .nativeEnum(PaymentType, {
+      errorMap: () => ({
+        message: 'Please select payment type',
+      }),
+    })
+    .default(PaymentType.CREDIT)
+    .optional(),
+  amountPaid: z
+    .union([z.string(), z.number()])
+    .transform((val) => Number(val || 0))
+    .pipe(z.number().min(0, 'Amount paid must be non-negative')),
 });
 
 export const CreateOrderSchema = BaseOrderSchema;
 export const UpdateOrderSchema = BaseOrderSchema.extend({
-  closedAt: z.date().optional().nullable(),
+  closedAt: z
+    .union([z.string(), z.date(), z.null()])
+    .transform((val) => (val ? new Date(val) : null))
+    .optional()
+    .nullable(),
 });
 
 export type CreateOrderFormData = z.infer<typeof CreateOrderSchema>;
