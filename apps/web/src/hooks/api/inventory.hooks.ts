@@ -5,6 +5,8 @@ import { client } from '@/lib/client';
 import { FetchError } from '@/lib/is-fetch-error';
 import { queryClient } from '@/lib/query-client';
 
+import { productsQueryKeys } from './products.hooks';
+
 const INVENTORY_QUERY_KEY = 'inventory' as const;
 export const inventoryQueryKeys = {
   lists: () => [INVENTORY_QUERY_KEY],
@@ -17,6 +19,7 @@ export const useAdjustStock = (options?: UseMutationOptions<any, Error, any>) =>
     mutationFn: client.inventory.adjustStock,
     onSuccess: (data: any, variables: any, context: any) => {
       queryClient.invalidateQueries({ queryKey: inventoryQueryKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: productsQueryKeys.lists() });
       options?.onSuccess?.(data, variables, context);
     },
   });
