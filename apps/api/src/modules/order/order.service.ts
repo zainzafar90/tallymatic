@@ -143,9 +143,25 @@ export const updateOrderById = async (orderId: string, updateBody: UpdateOrderRe
       throw new ApiError(404, 'Order not found');
     }
 
+    const subtotalValue = updateBody.items.reduce(
+      (sum, item) => sum + item.price * item.quantity - (item.totalDiscount || 0),
+      0
+    );
+    const totalValue = subtotalValue + (updateBody.taxAmount || 0) - (updateBody.discountAmount || 0);
+
+    const updateBodyNew = {
+      ...updateBody,
+      closedAt: updateBody.closedAt ? new Date(updateBody.closedAt) : null,
+      totalAmount: totalValue,
+      subtotal: subtotalValue,
+      taxAmount: updateBody.taxAmount || 0,
+      discountAmount: updateBody.discountAmount || 0,
+      organizationId,
+    };
+
     const [updatedOrder] = await tx
       .update(orders)
-      .set(updateBody)
+      .set(updateBodyNew)
       .where(and(eq(orders.id, orderId), eq(orders.organizationId, organizationId)))
       .returning();
 
