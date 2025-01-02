@@ -7,6 +7,8 @@ import { FetchError } from '@/lib/is-fetch-error';
 import { queryClient } from '@/lib/query-client';
 import { queryKeysFactory } from '@/lib/query-key-factory';
 
+import { inventoryQueryKeys } from './inventory.hooks';
+
 const PRODUCTS_QUERY_KEY = 'products' as const;
 export const productsQueryKeys = queryKeysFactory(PRODUCTS_QUERY_KEY);
 
@@ -40,6 +42,7 @@ export const useUpdateProduct = (id: string, options?: UseMutationOptions<Produc
     onSuccess: (data: any, variables: any, context: any) => {
       queryClient.invalidateQueries({ queryKey: productsQueryKeys.lists() });
       queryClient.invalidateQueries({ queryKey: productsQueryKeys.detail(data.id) });
+      queryClient.invalidateQueries({ queryKey: inventoryQueryKeys.lists() });
 
       options?.onSuccess?.(data, variables, context);
     },
