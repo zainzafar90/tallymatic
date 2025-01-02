@@ -1,7 +1,7 @@
 import { ResourceListResponse } from '../api/api-operations';
 import { Status } from '../enums.types';
 
-export interface BaseSupplier {
+type BaseSupplier = {
   id: string;
   organizationId: string;
   companyName: string;
@@ -13,7 +13,7 @@ export interface BaseSupplier {
   createdAt: Date;
   updatedAt: Date;
   deletedAt?: Date;
-}
+};
 
 /* ----------------------------
  * LIST VIEW RESPONSE TYPES

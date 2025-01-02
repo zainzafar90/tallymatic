@@ -1,7 +1,7 @@
 import { ResourceListResponse } from '../api/api-operations';
 import { Status } from '../enums.types';
 
-interface BaseCategory {
+type BaseCategory = {
   id: string;
   name: string;
   description?: string;
@@ -10,7 +10,7 @@ interface BaseCategory {
   createdAt: Date;
   updatedAt: Date;
   deletedAt?: Date;
-}
+};
 
 /* ----------------------------
  * LIST VIEW TYPES
@@ -33,3 +33,4 @@ export interface UpdateCategoryReq extends Partial<CreateCategoryReq> {
  * RESPONSES
  * ---------------------------- */
 export type CategoryListResponse = ResourceListResponse<ICategory>;
+export type CategoryResponse = ICategory;

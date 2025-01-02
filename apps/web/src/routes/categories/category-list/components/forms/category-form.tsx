@@ -9,9 +9,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { Select } from '@/components/ui/select';
 
-import { CategorySchema } from './category.schema';
-
-export type CategoryFormData = z.infer<typeof CategorySchema>;
+import { CategoryFormData, CreateCategorySchema, UpdateCategorySchema } from './category.schema';
 
 interface CategoryFormProps {
   category?: ICategory;
@@ -22,11 +20,11 @@ interface CategoryFormProps {
 
 export const CategoryForm = ({ category, isPending, onSubmit, onClose }: CategoryFormProps) => {
   const form = useForm({
-    resolver: zodResolver(CategorySchema),
+    resolver: zodResolver(category ? UpdateCategorySchema : CreateCategorySchema),
     defaultValues: {
       name: category?.name || '',
       description: category?.description || '',
-      status: category?.status || Status.ACTIVE,
+      ...(category && { status: category.status }),
     },
   });
 
@@ -67,20 +65,22 @@ export const CategoryForm = ({ category, isPending, onSubmit, onClose }: Categor
           )}
         />
 
-        <FormField
-          name="status"
-          control={form.control}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Status</FormLabel>
-              <Select {...field}>
-                <option value={Status.ACTIVE}>Active</option>
-                <option value={Status.INACTIVE}>Inactive</option>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        {category && (
+          <FormField
+            name="status"
+            control={form.control}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Status</FormLabel>
+                <Select {...field}>
+                  <option value={Status.ACTIVE}>Active</option>
+                  <option value={Status.INACTIVE}>Inactive</option>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
 
         <DialogActions>
           <Button plain onClick={onClose}>

@@ -1,15 +1,11 @@
 import Joi from 'joi';
-import { CreateCategoryReq, Status } from '@repo/shared';
+import { CreateCategoryReq, Status, UpdateCategoryReq } from '@repo/shared';
 
 import { uuid } from '@/common/validate/custom.validation';
 
 const createCategoryBody: Record<keyof CreateCategoryReq, any> = {
   name: Joi.string().required(),
   description: Joi.string().optional(),
-  status: Joi.string().valid(Status.ACTIVE, Status.INACTIVE).required(),
-  createdAt: Joi.date().optional(),
-  updatedAt: Joi.date().optional(),
-  organizationId: Joi.string().optional(),
 };
 
 export const createCategory = {
@@ -38,18 +34,17 @@ export const getCategory = {
   }),
 };
 
+const updateCategoryBody: Record<keyof UpdateCategoryReq, any> = {
+  name: Joi.string().optional(),
+  description: Joi.string().optional(),
+  status: Joi.string().valid(Status.ACTIVE, Status.INACTIVE).optional(),
+};
+
 export const updateCategory = {
   params: Joi.object().keys({
     categoryId: Joi.required().custom(uuid),
   }),
-  body: Joi.object()
-    .keys({
-      id: Joi.string().custom(uuid).optional(),
-      name: Joi.string(),
-      description: Joi.string(),
-      status: Joi.string().valid(Status.ACTIVE, Status.INACTIVE),
-    })
-    .min(1),
+  body: Joi.object().keys(updateCategoryBody).min(1),
 };
 
 export const deleteCategory = {

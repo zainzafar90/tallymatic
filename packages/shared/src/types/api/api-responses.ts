@@ -1,6 +1,5 @@
 import {
   IAccessAndRefreshTokens,
-  ICategory,
   IOrder,
   IOrganization,
   IProduct,
@@ -9,6 +8,7 @@ import {
   IStore,
   IUser,
 } from '../interfaces/resources';
+import { ICategory } from '../payloads/category';
 import { DeleteResponse, ResourceListResponse, ResourceResponse } from './api-operations';
 
 // Auth

@@ -19,7 +19,6 @@ interface SupplierFormProps {
 }
 
 export const SupplierForm = ({ supplier, isPending, onSubmit, onClose }: SupplierFormProps) => {
-  console.log(supplier);
   const form = useForm({
     resolver: zodResolver(supplier ? UpdateSupplierSchema : CreateSupplierSchema),
     defaultValues: {

@@ -1,7 +1,7 @@
 import { ResourceListResponse } from '../api/api-operations';
 import { Status } from '../enums.types';
 
-export interface BaseCustomer {
+type BaseCustomer = {
   id: string;
   name: string;
   status: Status;
@@ -9,7 +9,7 @@ export interface BaseCustomer {
   phone?: string;
   address?: string;
   organizationId: string;
-}
+};
 
 /* ----------------------------
  * LIST VIEW TYPES
@@ -71,10 +71,3 @@ export type CustomerListResponse = ResourceListResponse<ICustomer>;
 //   createdAt: Date;
 //   updatedAt: Date;
 // }
-
-// Response types
-// export type CustomerResponse = ResourceResponse<CustomerDetail>;
-// export type CustomerActionResponse = ResourceResponse<{ success: boolean; message: string; customer?: CustomerDetail }>;
-
-// export type CreateCustomerReq = Omit<ICustomer, 'id'>;
-// export type UpdateCustomerReq = Partial<ICustomer>;
