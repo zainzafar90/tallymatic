@@ -26,6 +26,7 @@ export const createProduct = async (productBody: CreateProductReq, organizationI
       const variantsNew = productVariants.map((variant) => ({
         ...variant,
         price: variant.price.toString(),
+        lowStockThreshold: 0,
         productId: product.id,
         organizationId,
         status: Status.ACTIVE,

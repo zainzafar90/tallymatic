@@ -164,7 +164,7 @@ export const ProductForm = ({ product, isPending, onSubmit, onClose }: ProductFo
                         <FormLabel>
                           Name
                           <Tooltip>
-                            <TooltipTrigger className="inline-flex ml-2 align-text-top text-muted-foreground">
+                            <TooltipTrigger className="inline-flex ml-2 align-text-top text-muted-foreground" tabIndex={-1}>
                               <Info className="w-4 h-4" />
                             </TooltipTrigger>
                             <TooltipContent>
@@ -190,7 +190,7 @@ export const ProductForm = ({ product, isPending, onSubmit, onClose }: ProductFo
                         <FormLabel>
                           Price
                           <Tooltip>
-                            <TooltipTrigger className="inline-flex ml-2 align-text-top text-muted-foreground">
+                            <TooltipTrigger className="inline-flex ml-2 align-text-top text-muted-foreground" tabIndex={-1}>
                               <Info className="w-4 h-4" />
                             </TooltipTrigger>
                             <TooltipContent>
@@ -278,7 +278,7 @@ export const ProductForm = ({ product, isPending, onSubmit, onClose }: ProductFo
                       <FormItem className="w-full md:w-1/4">
                         <FormLabel>SKU</FormLabel>
                         <FormControl>
-                          <Input {...field} readOnly placeholder="Auto-generated SKU" />
+                          <Input {...field} readOnly placeholder="Auto-generated SKU" tabIndex={-1} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -294,7 +294,7 @@ export const ProductForm = ({ product, isPending, onSubmit, onClose }: ProductFo
                   </Button>
                 </Fieldset>
               </div>
-              <div className="flex flex-col sm:flex-row gap-x-4 w-full flex-1"></div>
+              <div className="flex flex-col sm:flex-row gap-x-4 w-full flex-1" />
             </FieldGroup>
           ))}
         </FieldGroup>

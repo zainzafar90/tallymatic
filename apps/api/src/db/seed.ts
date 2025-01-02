@@ -27,8 +27,8 @@ if (!process.env.DB_URL) {
 
 console.log('DB_URL:', process.env.DB_URL);
 
-const NUMBER_OF_PRODUCTS = 1_000;
-const NUMBER_OF_VARIANTS = 1_000;
+const NUMBER_OF_PRODUCTS = 1_0;
+const NUMBER_OF_VARIANTS = 1_0;
 
 const pool = new Pool({
   connectionString: process.env.DB_URL,
