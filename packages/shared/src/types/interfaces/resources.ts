@@ -1,12 +1,7 @@
 import { Moment } from 'moment';
 
-import { OrderStatus, PurchaseStatus, Status, TokenType } from '../enums.types';
+import { Status, TokenType } from '../enums.types';
 import { RoleType } from '../role.types';
-
-type Dates = {
-  createdAt?: Date;
-  updatedAt?: Date;
-};
 
 export type IAccessAndRefreshTokens = {
   access: {
@@ -50,27 +45,4 @@ export interface IStore {
   name: string;
   location: string;
   organizationId: string;
-}
-
-export interface IPurchase extends Dates {
-  id?: string;
-  organizationId?: string;
-  supplierId: string;
-  purchaseNumber: string;
-  status: PurchaseStatus;
-  totalAmount?: number;
-  notes?: string;
-  orderNumber?: string;
-  totalQuantity?: number;
-  receivedQuantity?: number;
-  expectedArrivalDate?: Date;
-  items?: IPurchaseItem[];
-}
-
-export interface IPurchaseItem extends Dates {
-  id?: string;
-  purchaseId?: string;
-  variantId: string;
-  quantity: number;
-  unitCost: number;
 }

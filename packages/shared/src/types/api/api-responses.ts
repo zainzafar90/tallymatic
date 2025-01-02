@@ -1,4 +1,4 @@
-import { IAccessAndRefreshTokens, IOrganization, IPurchase, IStore, IUser } from '../interfaces/resources';
+import { IAccessAndRefreshTokens, IOrganization, IStore, IUser } from '../interfaces/resources';
 import { DeleteResponse, ResourceListResponse, ResourceResponse } from './api-operations';
 
 // Auth
@@ -22,8 +22,3 @@ export type OrganizationDeleteResponse = DeleteResponse;
 export type StoreResponse = ResourceResponse<IStore>;
 export type StoreListResponse = ResourceListResponse<IStore>;
 export type StoreDeleteResponse = DeleteResponse;
-
-// Purchase
-export type PurchaseResponse = ResourceResponse<IPurchase>;
-export type PurchaseListResponse = ResourceListResponse<IPurchase>;
-export type PurchaseDeleteResponse = DeleteResponse;

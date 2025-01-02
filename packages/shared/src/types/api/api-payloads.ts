@@ -1,4 +1,4 @@
-import { IOrganization, IPurchase, IPurchaseItem, IStore, IUser } from '../interfaces/resources';
+import { IOrganization, IStore, IUser } from '../interfaces/resources';
 
 // Auth
 export type EmailPassReq = { email: string; password: string };
@@ -21,12 +21,4 @@ export type AdjustStockReq = {
   productId: string;
   variantId: string;
   quantity: number;
-};
-
-// Purchase
-export type CreatePurchaseReq = Omit<IPurchase, 'id' | 'purchaseNumber'> & {
-  items: Omit<IPurchaseItem, 'id' | 'purchaseId'>[];
-};
-export type UpdatePurchaseReq = Partial<IPurchase> & {
-  items?: Omit<IPurchaseItem, 'id' | 'purchaseId'>[];
 };

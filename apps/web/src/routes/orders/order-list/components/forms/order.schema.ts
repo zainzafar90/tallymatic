@@ -1,5 +1,5 @@
 import * as z from 'zod';
-import { IProductVariant, IProductWithCategory, OrderStatus } from '@repo/shared';
+import { OrderStatus } from '@repo/shared';
 
 import { IProductVariantWithProduct } from '@/components/common/dialogs/choose-product-variant.dialog';
 

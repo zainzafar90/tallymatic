@@ -1,11 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {
-  CreatePurchaseReq,
-  PurchaseDeleteResponse,
-  PurchaseListResponse,
-  PurchaseResponse,
-  UpdatePurchaseReq,
-} from '@repo/shared';
+import { CreatePurchaseReq, PurchaseListResponse, PurchaseResponse, UpdatePurchaseReq } from '@repo/shared';
 import { QueryKey, useMutation, UseMutationOptions, useQuery, UseQueryOptions } from '@tanstack/react-query';
 
 import { client } from '@/lib/client';
@@ -52,10 +46,7 @@ export const useUpdatePurchase = (id: string, options?: UseMutationOptions<Purch
   });
 };
 
-export const useDeletePurchase = (
-  id: string,
-  options?: UseMutationOptions<PurchaseDeleteResponse, FetchError, PurchaseDeleteResponse>
-) => {
+export const useDeletePurchase = (id: string, options?: UseMutationOptions<void, FetchError, void>) => {
   return useMutation({
     mutationFn: () => client.purchases.delete(id),
     onSuccess: (data: any, variables: any, context: any) => {
@@ -67,7 +58,7 @@ export const useDeletePurchase = (
   });
 };
 
-export const useBulkDeletePurchases = (options?: UseMutationOptions<PurchaseDeleteResponse[], FetchError, string[]>) => {
+export const useBulkDeletePurchases = (options?: UseMutationOptions<void[], FetchError, string[]>) => {
   return useMutation({
     mutationFn: (ids: string[]) => client.purchases.bulkDelete(ids),
     onSuccess: (data, variables, context) => {

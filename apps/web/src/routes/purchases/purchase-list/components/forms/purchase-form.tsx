@@ -3,9 +3,12 @@ import React, { useMemo, useState } from 'react';
 import { CircleMinus, CirclePlus } from 'lucide-react';
 import { useFieldArray, useForm, UseFormReturn, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { IProductVariant, IPurchase, ISupplier, PurchaseStatus } from '@repo/shared';
+import { IPurchase, ISupplier, PurchaseStatus } from '@repo/shared';
 
-import { ChooseProductVariantDialog } from '@/components/common/dialogs/choose-product-variant.dialog';
+import {
+  ChooseProductVariantDialog,
+  IProductVariantWithProduct,
+} from '@/components/common/dialogs/choose-product-variant.dialog';
 import { Button } from '@/components/ui/button';
 import { Card, CardDescription, CardTitle } from '@/components/ui/card';
 import { Description, Field, FieldGroup, Fieldset, Label } from '@/components/ui/fieldset';
@@ -17,7 +20,7 @@ import { useToggleState } from '@/hooks/use-toggle-state';
 
 import { purchaseStatusConfig } from '../../config/purchase-status.config';
 import { ChooseSupplierDialog } from '../dialogs/choose-supplier.dialog';
-import { PurchaseFormData, PurchaseSchema } from './purchase.schema';
+import { CreatePurchaseSchema, PurchaseFormData, UpdatePurchaseSchema } from './purchase.schema';
 
 interface PurchaseFormProps {
   purchase?: IPurchase;
@@ -28,7 +31,7 @@ interface PurchaseFormProps {
 
 export const PurchaseForm: React.FC<PurchaseFormProps> = ({ purchase, isPending, onSubmit, onClose }) => {
   const form = useForm<PurchaseFormData>({
-    resolver: zodResolver(PurchaseSchema),
+    resolver: zodResolver(purchase ? UpdatePurchaseSchema : CreatePurchaseSchema),
     defaultValues: purchase
       ? {
           ...purchase,
@@ -48,14 +51,11 @@ export const PurchaseForm: React.FC<PurchaseFormProps> = ({ purchase, isPending,
 
   const handleSubmit = form.handleSubmit(async (data) => {
     try {
-      const { supplier, ...purchaseData } = data;
-
       const totalQuantity = data.items.reduce((sum, item) => sum + Number(item.quantity), 0);
 
-      console.log('Purchase Data:', purchaseData);
       await onSubmit({
-        ...purchaseData,
-        status: purchaseData.status || PurchaseStatus.DRAFT,
+        ...data,
+        status: data.status || PurchaseStatus.DRAFT,
         totalQuantity,
         receivedQuantity: data?.receivedQuantity || 0,
       });
@@ -222,9 +222,8 @@ const PurchaseSummary = ({ form }: { form: UseFormReturn<PurchaseFormData> }) =>
 
 const SupplierSummary = ({ form }: { form: UseFormReturn<PurchaseFormData> }) => {
   const [isSupplierDialogOpen, openSupplierDialog, closeSupplierDialog] = useToggleState();
-  const [selectedSupplier, setSelectedSupplier] = useState<ISupplier | undefined>(
-    (form.getValues().supplier as ISupplier) || undefined
-  );
+  const supplier = useWatch({ name: 'supplier' }) as ISupplier;
+  const [selectedSupplier, setSelectedSupplier] = useState<ISupplier | undefined>(supplier);
 
   const handleSelectSupplier = (supplier: ISupplier) => {
     if (!supplier?.id) return;
@@ -289,23 +288,14 @@ const PurchaseItems = ({ form }: { form: UseFormReturn<PurchaseFormData> }) => {
     return quantity * unitCost;
   };
 
-  const handleSelectProductVariant = (variant: IProductVariant) => {
+  const handleSelectProductVariant = (variant: IProductVariantWithProduct) => {
     if (!variant?.id) return;
 
     append({
       variantId: variant.id,
       quantity: 1,
       unitCost: parseFloat(variant.costPrice.toString()),
-      variant: {
-        name: variant.name || '',
-        sku: variant.sku || '',
-        product: {
-          name: variant.product?.name || '',
-          category: {
-            name: variant.product?.category?.name || '',
-          },
-        },
-      },
+      variant,
     });
   };
 

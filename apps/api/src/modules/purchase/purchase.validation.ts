@@ -1,5 +1,5 @@
 import Joi from 'joi';
-import { PurchaseStatus } from '@repo/shared';
+import { CreatePurchaseReq, PurchaseStatus, UpdatePurchaseReq } from '@repo/shared';
 
 import { uuid } from '@/common/validate/custom.validation';
 
@@ -9,18 +9,20 @@ const purchaseItemSchema = Joi.object().keys({
   unitCost: Joi.number().positive().required(),
 });
 
+const createPurchaseBody: Record<keyof CreatePurchaseReq, any> = {
+  supplierId: Joi.string().custom(uuid).required(),
+  status: Joi.string()
+    .valid(...Object.values(PurchaseStatus))
+    .required(),
+  notes: Joi.string().allow(null, ''),
+  expectedArrivalDate: Joi.date().allow(null),
+  receivedQuantity: Joi.number().integer().min(0),
+  totalQuantity: Joi.number().integer().min(0),
+  items: Joi.array().items(purchaseItemSchema).min(1).required(),
+};
+
 export const createPurchase = {
-  body: Joi.object().keys({
-    supplierId: Joi.string().custom(uuid).required(),
-    status: Joi.string()
-      .valid(...Object.values(PurchaseStatus))
-      .required(),
-    notes: Joi.string().allow(null, ''),
-    expectedArrivalDate: Joi.date().allow(null),
-    receivedQuantity: Joi.number().integer().min(0),
-    totalQuantity: Joi.number().integer().min(0),
-    items: Joi.array().items(purchaseItemSchema).min(1).required(),
-  }),
+  body: Joi.object().keys(createPurchaseBody),
 };
 
 export const getPurchases = {
@@ -41,21 +43,15 @@ export const getPurchase = {
   }),
 };
 
+const updatePurchaseBody: Record<keyof UpdatePurchaseReq, any> = {
+  ...createPurchaseBody,
+};
+
 export const updatePurchase = {
   params: Joi.object().keys({
     purchaseId: Joi.required().custom(uuid),
   }),
-  body: Joi.object()
-    .keys({
-      supplierId: Joi.string().custom(uuid).required(),
-      status: Joi.string().valid(...Object.values(PurchaseStatus)),
-      notes: Joi.string().allow(null, ''),
-      expectedArrivalDate: Joi.date().allow(null),
-      receivedQuantity: Joi.number().integer().min(0),
-      totalQuantity: Joi.number().integer().min(0),
-      items: Joi.array().items(purchaseItemSchema).min(1),
-    })
-    .min(1),
+  body: Joi.object().keys(updatePurchaseBody),
 };
 
 export const deletePurchase = {

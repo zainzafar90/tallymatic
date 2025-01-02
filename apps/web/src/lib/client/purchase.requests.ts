@@ -1,10 +1,4 @@
-import {
-  CreatePurchaseReq,
-  PurchaseDeleteResponse,
-  PurchaseListResponse,
-  PurchaseResponse,
-  UpdatePurchaseReq,
-} from '@repo/shared';
+import { CreatePurchaseReq, PurchaseListResponse, PurchaseResponse, UpdatePurchaseReq } from '@repo/shared';
 
 import { deleteRequest, getRequest, patchRequest, postRequest } from './common';
 
@@ -25,11 +19,11 @@ async function updatePurchase(id: string, payload: UpdatePurchaseReq) {
 }
 
 async function deletePurchase(id: string) {
-  return deleteRequest<PurchaseDeleteResponse>(`/v1/purchases/${id}`);
+  return deleteRequest<void>(`/v1/purchases/${id}`);
 }
 
 async function bulkDeletePurchases(ids: string[]) {
-  return deleteRequest<PurchaseDeleteResponse[]>(`/v1/purchases`, { purchaseIds: ids });
+  return deleteRequest<void[]>(`/v1/purchases`, { purchaseIds: ids });
 }
 
 export const purchases = {

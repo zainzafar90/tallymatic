@@ -215,9 +215,9 @@ const CustomerSummary = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
   const [isCustomerDialogOpen, openCustomerDialog, closeCustomerDialog] = useToggleState();
 
   const handleSelectCustomer = (customer: ICustomer) => {
-    setSelectedCustomer(customer);
     if (!customer?.id) return;
 
+    setSelectedCustomer(customer);
     form.setValue('customerId', customer.id);
     form.clearErrors('customerId');
   };

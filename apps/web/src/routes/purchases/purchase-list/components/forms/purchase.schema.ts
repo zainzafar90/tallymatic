@@ -1,6 +1,8 @@
 import * as z from 'zod';
 import { PurchaseStatus } from '@repo/shared';
 
+import { IProductVariantWithProduct } from '@/components/common/dialogs/choose-product-variant.dialog';
+
 export const PurchaseSchema = z.object({
   supplierId: z.string().uuid('Please select a supplier'),
   status: z.nativeEnum(PurchaseStatus).default(PurchaseStatus.DRAFT),
@@ -8,16 +10,6 @@ export const PurchaseSchema = z.object({
   expectedArrivalDate: z
     .union([z.string(), z.date()])
     .transform((val) => (val ? new Date(val) : undefined))
-    .optional(),
-  supplier: z
-    .object({
-      id: z.string().uuid(),
-      companyName: z.string(),
-      email: z.string().email(),
-      contactName: z.string(),
-      phone: z.string(),
-      address: z.string(),
-    })
     .optional(),
   items: z
     .array(
@@ -31,18 +23,6 @@ export const PurchaseSchema = z.object({
           .union([z.string(), z.number()])
           .transform((val) => Number(val || 0))
           .pipe(z.number().min(0, 'Unit cost must be non-negative')),
-        variant: z
-          .object({
-            name: z.string(),
-            sku: z.string(),
-            product: z.object({
-              name: z.string(),
-              category: z.object({
-                name: z.string(),
-              }),
-            }),
-          })
-          .optional(),
       })
     )
     .min(1, 'At least one item is required'),
@@ -50,4 +30,17 @@ export const PurchaseSchema = z.object({
   receivedQuantity: z.number().min(0).optional(),
 });
 
-export type PurchaseFormData = z.infer<typeof PurchaseSchema>;
+export const CreatePurchaseSchema = PurchaseSchema;
+export const UpdatePurchaseSchema = CreatePurchaseSchema;
+
+export type CreatePurchaseFormData = z.infer<typeof CreatePurchaseSchema>;
+export type UpdatePurchaseFormData = z.infer<typeof UpdatePurchaseSchema>;
+
+// Extend with additional fields like 'variant', 'product'
+// again these things are just for visualizations
+// and are not being sent to the server
+export type PurchaseFormData = (CreatePurchaseFormData | UpdatePurchaseFormData) & {
+  items: (CreatePurchaseFormData['items'][number] & {
+    variant?: IProductVariantWithProduct;
+  })[];
+};
