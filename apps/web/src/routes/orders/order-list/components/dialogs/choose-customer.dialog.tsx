@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import { CheckCircleIcon } from '@heroicons/react/16/solid';
-import { CustomerListItem } from '@repo/shared';
+import { ICustomer } from '@repo/shared';
 import { keepPreviousData } from '@tanstack/react-query';
 
 import { Button } from '@/components/ui/button';
@@ -13,7 +13,7 @@ import { useCustomers } from '@/hooks/api/customer.hooks';
 interface ChooseCustomerDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  onSelectCustomer: (customer: CustomerListItem) => void;
+  onSelectCustomer: (customer: ICustomer) => void;
   selectedCustomerId?: string;
 }
 

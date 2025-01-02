@@ -14,14 +14,14 @@ export interface BaseCustomer {
 /* ----------------------------
  * LIST VIEW TYPES
  * ---------------------------- */
-export interface CustomerListItem extends BaseCustomer {
+export interface ICustomer extends BaseCustomer {
   totalOrders: number;
   lastOrderDate?: Date;
   lifetimeValue: number;
   createdAt: Date;
 }
 
-export type CustomerListResponse = ResourceListResponse<CustomerListItem>;
+export type CustomerListResponse = ResourceListResponse<ICustomer>;
 
 /* -----------------------------
  * CREATE/UPDATE OPERATION TYPES

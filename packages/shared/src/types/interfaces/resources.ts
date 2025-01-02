@@ -85,13 +85,13 @@ export interface IProductVariant extends Dates {
   variants?: IProductVariant;
 }
 
-export interface ICustomer extends Dates {
-  id?: string;
-  name: string;
-  email: string;
-  phone?: string;
-  address?: string;
-}
+// export interface ICustomer extends Dates {
+//   id?: string;
+//   name: string;
+//   email: string;
+//   phone?: string;
+//   address?: string;
+// }
 
 export interface ISupplier extends Dates {
   id?: string;

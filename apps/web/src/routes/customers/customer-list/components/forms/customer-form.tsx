@@ -1,6 +1,6 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { CustomerListItem, Status } from '@repo/shared';
+import { ICustomer, Status } from '@repo/shared';
 
 import { Button } from '@/components/ui/button';
 import { DialogActions } from '@/components/ui/dialog';
@@ -12,7 +12,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { CreateCustomerSchema, CustomerFormData, UpdateCustomerSchema } from './customer.schema';
 
 interface CustomerFormProps {
-  customer?: CustomerListItem;
+  customer?: ICustomer;
   isPending: boolean;
   onClose: () => void;
   onSubmit: (data: CustomerFormData) => Promise<void>;

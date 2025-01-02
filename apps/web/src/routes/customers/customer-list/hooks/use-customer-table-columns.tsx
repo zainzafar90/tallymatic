@@ -1,4 +1,4 @@
-import { CustomerListItem } from '@repo/shared';
+import { ICustomer } from '@repo/shared';
 import { createColumnHelper } from '@tanstack/react-table';
 
 import { SortedHeader } from '@/components/table/table-cells/common/sorted-header';
@@ -7,7 +7,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 
 import { CustomerActions } from '../components/tables/customer-table-actions';
 
-const columnHelper = createColumnHelper<CustomerListItem>();
+const columnHelper = createColumnHelper<ICustomer>();
 
 export const useCustomerTableColumns = () => {
   return [
