@@ -1,11 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {
-  CreateProductReq,
-  ProductDeleteResponse,
-  ProductListResponse,
-  ProductResponse,
-  UpdateProductReq,
-} from '@repo/shared';
+import { CreateProductReq, ProductListResponse, ProductResponse, UpdateProductReq } from '@repo/shared';
 import { QueryKey, useMutation, UseMutationOptions, useQuery, UseQueryOptions } from '@tanstack/react-query';
 
 import { client } from '@/lib/client';
@@ -40,7 +34,7 @@ export const useCreateProduct = (options?: UseMutationOptions<ProductResponse, E
   });
 };
 
-export const useUpdateProduct = (id: string, options?: UseMutationOptions<ProductResponse, Error, ProductResponse>) => {
+export const useUpdateProduct = (id: string, options?: UseMutationOptions<ProductResponse, Error, UpdateProductReq>) => {
   return useMutation({
     mutationFn: (payload: UpdateProductReq) => client.products.update(id, payload),
     onSuccess: (data: any, variables: any, context: any) => {
@@ -53,10 +47,7 @@ export const useUpdateProduct = (id: string, options?: UseMutationOptions<Produc
   });
 };
 
-export const useDeleteProduct = (
-  id: string,
-  options?: UseMutationOptions<ProductDeleteResponse, FetchError, ProductDeleteResponse>
-) => {
+export const useDeleteProduct = (id: string, options?: UseMutationOptions<void, FetchError, void>) => {
   return useMutation({
     mutationFn: () => client.products.delete(id),
     onSuccess: (data: any, variables: any, context: any) => {
@@ -69,7 +60,7 @@ export const useDeleteProduct = (
   });
 };
 
-export const useBulkDeleteProducts = (options?: UseMutationOptions<ProductDeleteResponse[], FetchError, string[]>) => {
+export const useBulkDeleteProducts = (options?: UseMutationOptions<void[], FetchError, string[]>) => {
   return useMutation({
     mutationFn: (ids: string[]) => client.products.bulkDelete(ids),
     onSuccess: (data, variables, context) => {

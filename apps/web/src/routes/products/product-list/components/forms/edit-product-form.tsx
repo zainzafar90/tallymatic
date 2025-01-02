@@ -3,7 +3,8 @@ import { IProduct, Status } from '@repo/shared';
 
 import { useUpdateProduct } from '@/hooks/api/products.hooks';
 
-import { ProductForm, ProductFormData } from './product-form';
+import { ProductForm } from './product-form';
+import { ProductFormData } from './product.schema';
 
 export const EditProductForm = (props: { product: IProduct; onClose: () => void }) => {
   const { mutateAsync, isPending } = useUpdateProduct(props.product.id);
@@ -11,7 +12,6 @@ export const EditProductForm = (props: { product: IProduct; onClose: () => void 
   const handleSubmit = async (data: ProductFormData) => {
     await mutateAsync(
       {
-        id: props.product.id,
         ...data,
         categoryId: data.categoryId ? data.categoryId : undefined,
         variants: data.variants.map((variant) => ({

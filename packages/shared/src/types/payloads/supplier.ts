@@ -10,9 +10,6 @@ type BaseSupplier = {
   phone?: string;
   address?: string;
   status: Status;
-  createdAt: Date;
-  updatedAt: Date;
-  deletedAt?: Date;
 };
 
 /* ----------------------------
@@ -22,6 +19,7 @@ export interface ISupplier extends BaseSupplier {
   // totalPurchases: number;
   // lastPurchaseDate?: Date;
   // totalSpent: number;
+  createdAt: Date;
 }
 
 export type SupplierListResponse = ResourceListResponse<ISupplier>;

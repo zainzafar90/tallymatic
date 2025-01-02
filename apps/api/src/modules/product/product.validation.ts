@@ -1,5 +1,5 @@
 import Joi from 'joi';
-import { CreateProductReq, ProductStatus } from '@repo/shared';
+import { CreateProductReq, ProductStatus, UpdateProductReq } from '@repo/shared';
 
 import { uuid } from '@/common/validate/custom.validation';
 
@@ -8,12 +8,8 @@ import { createProductVariantBody } from '../product-variant/product-variant.val
 const createProductBody: Record<keyof CreateProductReq, any> = {
   name: Joi.string().required(),
   description: Joi.string().allow('').optional(),
-  status: Joi.string().valid(ProductStatus.ACTIVE, ProductStatus.ARCHIVED, ProductStatus.DRAFT).optional(),
   categoryId: Joi.string().custom(uuid).optional(),
   variants: Joi.array().items(Joi.object().keys(createProductVariantBody)).min(1).required(),
-  category: Joi.object().optional(),
-  createdAt: Joi.date().optional(),
-  updatedAt: Joi.date().optional(),
 };
 
 export const createProduct = {
@@ -39,20 +35,19 @@ export const getProduct = {
   }),
 };
 
+const updateProductBody: Record<keyof UpdateProductReq, any> = {
+  name: Joi.string().optional(),
+  description: Joi.string().allow('').optional(),
+  categoryId: Joi.string().custom(uuid).optional(),
+  status: Joi.string().valid(ProductStatus.ACTIVE, ProductStatus.ARCHIVED, ProductStatus.DRAFT).optional(),
+  variants: Joi.array().items(Joi.object().keys(createProductVariantBody)).min(1).optional(),
+};
+
 export const updateProduct = {
   params: Joi.object().keys({
     productId: Joi.required().custom(uuid),
   }),
-  body: Joi.object()
-    .keys({
-      id: Joi.string().custom(uuid).optional(),
-      name: Joi.string(),
-      description: Joi.string().allow('').optional(),
-      status: Joi.string().valid(ProductStatus.ACTIVE, ProductStatus.ARCHIVED, ProductStatus.DRAFT).optional(),
-      categoryId: Joi.string().custom(uuid).optional(),
-      variants: Joi.array().items(Joi.object().keys(createProductVariantBody)).min(1),
-    })
-    .min(1),
+  body: Joi.object().keys(updateProductBody),
 };
 
 export const deleteProduct = {

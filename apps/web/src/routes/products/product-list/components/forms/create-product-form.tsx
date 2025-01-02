@@ -3,7 +3,8 @@ import { Status } from '@repo/shared';
 
 import { useCreateProduct } from '@/hooks/api/products.hooks';
 
-import { ProductForm, ProductFormData } from './product-form';
+import { ProductForm } from './product-form';
+import { ProductFormData } from './product.schema';
 
 export const CreateProductForm = (props: { onClose: () => void }) => {
   const { mutateAsync, isPending } = useCreateProduct();

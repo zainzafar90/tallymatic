@@ -1,6 +1,5 @@
 import { CircleMinus, CirclePlus, Info } from 'lucide-react';
 import { useFieldArray, useForm } from 'react-hook-form';
-import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { IProduct, ProductStatus } from '@repo/shared';
 
@@ -15,9 +14,7 @@ import { useCategories } from '@/hooks/api/category.hooks';
 import { parseFloat } from '@/utils/number-utils';
 import { generateSKU } from '@/utils/product.utils';
 
-import { ProductSchema } from './product.schema';
-
-export type ProductFormData = z.infer<typeof ProductSchema>;
+import { CreateProductSchema, ProductFormData, UpdateProductSchema } from './product.schema';
 
 interface ProductFormProps {
   product?: IProduct;
@@ -30,12 +27,12 @@ export const ProductForm = ({ product, isPending, onSubmit, onClose }: ProductFo
   const { results: categories, isLoading: isCategoriesLoading } = useCategories();
 
   const form = useForm({
-    resolver: zodResolver(ProductSchema),
+    resolver: zodResolver(product ? UpdateProductSchema : CreateProductSchema),
     defaultValues: {
       name: product?.name || '',
       categoryId: product?.categoryId ? product?.categoryId : undefined,
       description: product?.description || '',
-      status: product?.status || ProductStatus.ACTIVE,
+      ...(product && { status: product.status }),
       variants: product?.variants.map((variant) => ({
         name: variant.name,
         sku: variant.sku,

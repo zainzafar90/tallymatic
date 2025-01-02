@@ -2,7 +2,7 @@ import {
   IAccessAndRefreshTokens,
   IOrder,
   IOrganization,
-  IProduct,
+  // IProduct,
   IProductVariant,
   IPurchase,
   IStore,
@@ -34,9 +34,9 @@ export type StoreListResponse = ResourceListResponse<IStore>;
 export type StoreDeleteResponse = DeleteResponse;
 
 // Product
-export type ProductResponse = ResourceResponse<IProduct>;
-export type ProductListResponse = ResourceListResponse<IProduct & { category: ICategory }>;
-export type ProductDeleteResponse = DeleteResponse;
+// export type ProductResponse = ResourceResponse<IProduct>;
+// export type ProductListResponse = ResourceListResponse<IProduct & { category: ICategory }>;
+// export type ProductDeleteResponse = DeleteResponse;
 
 // ProductVariant
 export type ProductVariantResponse = ResourceResponse<IProductVariant>;

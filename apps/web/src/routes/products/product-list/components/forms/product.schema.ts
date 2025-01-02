@@ -1,10 +1,9 @@
 import * as z from 'zod';
 import { ProductStatus } from '@repo/shared';
 
-export const ProductSchema = z.object({
+export const BaseProductSchema = z.object({
   name: z.string().min(3, 'Name is required'),
   description: z.string().optional(),
-  status: z.enum([ProductStatus.ACTIVE, ProductStatus.ARCHIVED, ProductStatus.DRAFT]),
   categoryId: z.string().optional(),
   variants: z
     .array(
@@ -18,3 +17,13 @@ export const ProductSchema = z.object({
     )
     .min(1, 'At least one variant is required'),
 });
+
+export const CreateProductSchema = BaseProductSchema;
+
+export const UpdateProductSchema = BaseProductSchema.extend({
+  status: z.enum([ProductStatus.ACTIVE, ProductStatus.ARCHIVED, ProductStatus.DRAFT]),
+});
+
+export type CreateProductFormData = z.infer<typeof CreateProductSchema>;
+export type UpdateProductFormData = z.infer<typeof UpdateProductSchema>;
+export type ProductFormData = CreateProductFormData | UpdateProductFormData;

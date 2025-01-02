@@ -1,4 +1,4 @@
-import { ICategory, ProductResponse } from '@repo/shared';
+import { ProductResponse } from '@repo/shared';
 import { createColumnHelper } from '@tanstack/react-table';
 
 import { LetterBox } from '@/components/common/letter-box/letter-box';
@@ -10,7 +10,7 @@ import { parseFloat } from '@/utils/number-utils';
 
 import { ProductActions } from '../components/tables/product-table-actions';
 
-const columnHelper = createColumnHelper<ProductResponse & { category: ICategory }>();
+const columnHelper = createColumnHelper<ProductResponse>();
 
 export const useProductTableColumns = () => {
   return [
