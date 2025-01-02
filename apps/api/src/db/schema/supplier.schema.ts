@@ -4,6 +4,7 @@ import { Status } from '@repo/shared';
 
 import { organizations } from './organization.schema';
 import { purchases } from './purchase.schema';
+import { stores } from './store.schema';
 
 const EnumStatus = customType<{
   data: Status;
@@ -18,6 +19,9 @@ export const suppliers = pgTable(
     organizationId: uuid('organization_id')
       .notNull()
       .references(() => organizations.id),
+    storeId: uuid('store_id')
+      .notNull()
+      .references(() => stores.id),
     companyName: varchar('company_name', { length: 255 }).notNull(),
     contactName: varchar('contact_name', { length: 255 }),
     email: varchar('email', { length: 255 }),
@@ -36,6 +40,8 @@ export const suppliers = pgTable(
       table.organizationId,
       table.companyName
     ),
+    storeIdIdx: index('idx_suppliers_store_id').on(table.storeId),
+    storeNameIdx: index('idx_suppliers_store_id_name').on(table.storeId, table.companyName),
   })
 );
 
@@ -47,4 +53,8 @@ export const suppliersRelations = relations(suppliers, ({ one, many }) => ({
     references: [organizations.id],
   }),
   purchases: many(purchases),
+  store: one(stores, {
+    fields: [suppliers.storeId],
+    references: [stores.id],
+  }),
 }));

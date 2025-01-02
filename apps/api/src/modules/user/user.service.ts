@@ -1,10 +1,10 @@
 import { and, asc, count, desc, eq, ne } from 'drizzle-orm';
 import httpStatus from 'http-status';
-import { CreateUserReq, IOptions, RegisterUserReq, RoleType, UpdateUserReq } from '@repo/shared';
+import { CreateUserReq, IOptions, IStore, RegisterUserReq, RoleType, UpdateUserReq } from '@repo/shared';
 
 import { ApiError } from '@/common/errors/api-error';
 import { db } from '@/db';
-import { Organization, User, users } from '@/db/schema';
+import { Organization, stores, User, users } from '@/db/schema';
 
 import { getPaginationConfig } from '../paginate/pagination';
 import { hashPassword, sanitizeUser } from './user.utils';
@@ -17,11 +17,12 @@ interface OrderParams {
   direction: OrderDirection;
 }
 
-const userDTO = (user: User, organization?: Organization) => {
+const userDTO = (user: User, organization?: Organization, stores?: IStore[]) => {
   const sanitizedUser = sanitizeUser(user);
   return {
     ...sanitizedUser,
     organization,
+    stores: stores || [],
   };
 };
 
@@ -183,13 +184,24 @@ export const getUserById = async (id: string, organizationId?: string) => {
 
   if (!user) return null;
 
-  return userDTO(user, user.organization);
+  return await userDTO(user, user.organization);
 };
 
 export const getMe = async (id: string, organizationId: string) => {
-  const user = await getUserById(id, organizationId);
+  const user = await db.query.users.findFirst({
+    where: and(eq(users.id, id), eq(users.organizationId, organizationId)),
+    with: {
+      organization: true,
+    },
+  });
+
   if (!user) return null;
-  return user;
+
+  const storesList = await db.query.stores.findMany({
+    where: eq(stores.organizationId, user.organizationId),
+  });
+
+  return await userDTO(user, user.organization, storesList);
 };
 
 export const getUserByEmail = async (email: string) => {
@@ -202,7 +214,7 @@ export const getUserByEmail = async (email: string) => {
 
   if (!user) return null;
 
-  return userDTO(user, user.organization);
+  return await userDTO(user, user.organization);
 };
 
 export const getUserByEmailAndPassword = async (email: string) => {

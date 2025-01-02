@@ -14,6 +14,7 @@ import {
 import { PaymentMethod, PaymentType, PurchaseStatus } from '@repo/shared';
 
 import { organizations } from './organization.schema';
+import { stores } from './store.schema';
 import { suppliers } from './supplier.schema';
 import { variants } from './variant.schema';
 
@@ -42,10 +43,14 @@ export const purchases = pgTable(
     organizationId: uuid('organization_id')
       .notNull()
       .references(() => organizations.id),
+    storeId: uuid('store_id')
+      .notNull()
+      .references(() => stores.id),
     supplierId: uuid('supplier_id').references(() => suppliers.id),
+
     purchaseNumber: varchar('purchase_number', { length: 255 }).notNull(),
     status: EnumPurchaseStatus('status').notNull().default(PurchaseStatus.DRAFT),
-    totalAmount: numeric('total_amount').notNull(),
+    totalAmount: numeric('total_amount'),
     expectedArrivalDate: timestamp('expected_arrival_date'),
     receivedQuantity: integer('received_quantity').notNull().default(0),
     totalQuantity: integer('total_quantity').notNull().default(0),
@@ -69,6 +74,8 @@ export const purchases = pgTable(
     statusIdx: index('idx_purchases_status').on(table.status),
     supplierIdIdx: index('idx_purchases_supplier_id').on(table.supplierId),
     organizationStatusIdx: index('idx_purchases_organization_id_status').on(table.organizationId, table.status),
+    storeIdIdx: index('idx_purchases_store_id').on(table.storeId),
+    storeStatusIdx: index('idx_purchases_store_id_status').on(table.storeId, table.status),
   })
 );
 
@@ -108,6 +115,10 @@ export const purchasesRelations = relations(purchases, ({ one, many }) => ({
   organization: one(organizations, {
     fields: [purchases.organizationId],
     references: [organizations.id],
+  }),
+  store: one(stores, {
+    fields: [purchases.storeId],
+    references: [stores.id],
   }),
   supplier: one(suppliers, {
     fields: [purchases.supplierId],

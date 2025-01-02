@@ -28,7 +28,7 @@ if (!process.env.DB_URL) {
 console.log('DB_URL:', process.env.DB_URL);
 
 const NUMBER_OF_ORGANIZATIONS = 1;
-const NUMBER_OF_STORES = 1;
+const NUMBER_OF_STORES = 2;
 const NUMBER_OF_USERS = 1;
 const NUMBER_OF_CATEGORIES = 1;
 const NUMBER_OF_PRODUCTS = 1;

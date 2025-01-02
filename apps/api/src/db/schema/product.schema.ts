@@ -4,6 +4,7 @@ import { ProductStatus } from '@repo/shared';
 
 import { categories } from './category.schema';
 import { organizations } from './organization.schema';
+import { stores } from './store.schema';
 import { variants } from './variant.schema';
 
 const EnumProductStatus = customType<{
@@ -26,6 +27,9 @@ export const products = pgTable(
     createdAt: timestamp('created_at').defaultNow(),
     updatedAt: timestamp('updated_at').defaultNow(),
     deletedAt: timestamp('deleted_at'),
+    storeId: uuid('store_id')
+      .notNull()
+      .references(() => stores.id),
   },
   (table) => ({
     fk_organization: foreignKey({
@@ -38,6 +42,8 @@ export const products = pgTable(
     nameIdx: index('idx_products_name').on(table.name),
     categoryIdIdx: index('idx_products_category_id').on(table.categoryId),
     organizationNameIdx: index('idx_products_organization_id_name').on(table.organizationId, table.name),
+    storeIdIdx: index('idx_products_store_id').on(table.storeId),
+    storeNameIdx: index('idx_products_store_id_name').on(table.storeId, table.name),
   })
 );
 
@@ -53,4 +59,8 @@ export const productsRelations = relations(products, ({ one, many }) => ({
     references: [categories.id],
   }),
   variants: many(variants),
+  store: one(stores, {
+    fields: [products.storeId],
+    references: [stores.id],
+  }),
 }));

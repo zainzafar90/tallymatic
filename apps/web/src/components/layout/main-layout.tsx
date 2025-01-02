@@ -46,8 +46,9 @@ import { SidebarLayout } from '@/components/ui/sidebar-layout';
 import { useLogout } from '@/hooks/api/auth.hooks';
 import { useMe } from '@/hooks/api/users.hooks';
 import { API_TOKEN_KEY } from '@/utils/common.utils';
-import { getInitials } from '@/utils/string.utils';
 import { useTheme } from '@/providers/theme/theme-provider';
+
+import { StoreSwitcher } from '../store-switcher';
 
 function AccountDropdownMenu({ anchor }: { anchor: 'top start' | 'bottom end' }) {
   const navigate = useNavigate();
@@ -103,6 +104,9 @@ export const MainLayout = () => {
     <SidebarLayout
       navbar={
         <Navbar>
+          <NavbarSection>
+            <StoreSwitcher />
+          </NavbarSection>
           <NavbarSpacer />
           <NavbarSection>
             <Dropdown>
@@ -117,19 +121,7 @@ export const MainLayout = () => {
       sidebar={
         <Sidebar>
           <SidebarHeader>
-            <Dropdown>
-              <DropdownButton as={SidebarItem}>
-                <Avatar slot="icon" initials={getInitials(user?.organization?.name)} className="bg-blue-600 text-white" />
-                <SidebarLabel>{user?.organization?.name}</SidebarLabel>
-                <ChevronDownIcon />
-              </DropdownButton>
-              <DropdownMenu className="min-w-80 lg:min-w-64" anchor="bottom start">
-                <DropdownItem href="/settings">
-                  <Cog8ToothIcon />
-                  <DropdownLabel>Settings</DropdownLabel>
-                </DropdownItem>
-              </DropdownMenu>
-            </Dropdown>
+            <StoreSwitcher />
           </SidebarHeader>
 
           <SidebarBody>
