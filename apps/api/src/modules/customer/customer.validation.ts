@@ -1,9 +1,9 @@
 import Joi from 'joi';
-import { CreateCustomerPayload, Status, UpdateCustomerPayload } from '@repo/shared';
+import { CreateCustomerReq, Status, UpdateCustomerReq } from '@repo/shared';
 
 import { uuid } from '@/common/validate/custom.validation';
 
-const createCustomerBody: Record<keyof CreateCustomerPayload, any> = {
+const createCustomerBody: Record<keyof CreateCustomerReq, any> = {
   name: Joi.string().required(),
   email: Joi.string().email().allow('', null).optional(),
   phone: Joi.string().allow('', null).optional(),
@@ -32,7 +32,7 @@ export const getCustomer = {
   }),
 };
 
-const updateCustomerBody: Record<keyof UpdateCustomerPayload, any> = {
+const updateCustomerBody: Record<keyof UpdateCustomerReq, any> = {
   name: Joi.string(),
   email: Joi.string().email().allow('', null),
   phone: Joi.string().allow('', null),

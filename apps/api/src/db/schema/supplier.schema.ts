@@ -1,8 +1,15 @@
 import { relations } from 'drizzle-orm';
-import { index, pgTable, text, timestamp, uuid, varchar } from 'drizzle-orm/pg-core';
+import { customType, index, pgTable, text, timestamp, uuid, varchar } from 'drizzle-orm/pg-core';
+import { Status } from '@repo/shared';
 
 import { organizations } from './organization.schema';
 import { purchases } from './purchase.schema';
+
+const EnumStatus = customType<{
+  data: Status;
+}>({
+  dataType: () => 'text',
+});
 
 export const suppliers = pgTable(
   'suppliers',
@@ -16,6 +23,7 @@ export const suppliers = pgTable(
     email: varchar('email', { length: 255 }),
     phone: varchar('phone', { length: 255 }),
     address: text('address'),
+    status: EnumStatus('status').notNull().default(Status.ACTIVE),
     createdAt: timestamp('created_at').defaultNow(),
     updatedAt: timestamp('updated_at').defaultNow(),
     deletedAt: timestamp('deleted_at'),
@@ -30,6 +38,8 @@ export const suppliers = pgTable(
     ),
   })
 );
+
+export type Supplier = typeof suppliers.$inferSelect;
 
 export const suppliersRelations = relations(suppliers, ({ one, many }) => ({
   organization: one(organizations, {

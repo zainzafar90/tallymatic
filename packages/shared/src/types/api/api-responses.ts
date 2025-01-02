@@ -54,15 +54,10 @@ export type CategoryDeleteResponse = DeleteResponse;
 export type InventoryLevelsResponse = ResourceListResponse<IProductVariant>;
 export type LowStockAlertsResponse = ResourceListResponse<IProductVariant>;
 
-// Customers
-// export type CustomerResponse = ResourceResponse<ICustomer>;
-// export type CustomerListResponse = ResourceListResponse<ICustomer>;
-// export type CustomerDeleteResponse = DeleteResponse;
-
 // Supplier
-export type SupplierResponse = ResourceResponse<ISupplier>;
-export type SupplierListResponse = ResourceListResponse<ISupplier>;
-export type SupplierDeleteResponse = DeleteResponse;
+// export type SupplierResponse = ResourceResponse<ISupplier>;
+// export type SupplierListResponse = ResourceListResponse<ISupplier>;
+// export type SupplierDeleteResponse = DeleteResponse;
 
 // Order
 export type OrderResponse = ResourceResponse<IOrder>;

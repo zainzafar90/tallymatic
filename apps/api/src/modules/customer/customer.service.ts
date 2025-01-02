@@ -1,6 +1,6 @@
 import { and, asc, count, desc, eq, ilike, inArray, isNull, ne } from 'drizzle-orm';
 import httpStatus from 'http-status';
-import { CreateCustomerPayload, IOptions, UpdateCustomerPayload } from '@repo/shared';
+import { CreateCustomerReq, IOptions, UpdateCustomerReq } from '@repo/shared';
 
 import { ApiError } from '@/common/errors/api-error';
 import { db } from '@/db';
@@ -20,7 +20,7 @@ const customerDTO = (customer: Customer) => {
   return customer;
 };
 
-export const createCustomer = async (customerBody: CreateCustomerPayload, organizationId: string) => {
+export const createCustomer = async (customerBody: CreateCustomerReq, organizationId: string) => {
   const existingCustomer = await db.query.customers.findFirst({
     where: and(eq(customers.email, customerBody.email), eq(customers.organizationId, organizationId)),
   });
@@ -105,7 +105,7 @@ export const getCustomerById = async (id: string, organizationId: string) => {
   return customerDTO(customer);
 };
 
-export const updateCustomerById = async (customerId: string, updateBody: UpdateCustomerPayload, organizationId: string) => {
+export const updateCustomerById = async (customerId: string, updateBody: UpdateCustomerReq, organizationId: string) => {
   const existingCustomer = await db.query.customers.findFirst({
     where: and(
       eq(customers.email, updateBody.email),
@@ -127,7 +127,7 @@ export const updateCustomerById = async (customerId: string, updateBody: UpdateC
     .returning();
 
   if (!customer) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'Customer not found');
+    throw new ApiError(httpStatus.NOT_FOUND, 'Customer could not be updated');
   }
 
   return customerDTO(customer);

@@ -1,9 +1,9 @@
-import { CreateSupplierReq, SupplierListResponse, SupplierResponse, UpdateSupplierReq } from '@repo/shared';
+import { BaseSupplier, CreateSupplierReq, SupplierListResponse, UpdateSupplierReq } from '@repo/shared';
 
 import { deleteRequest, getRequest, patchRequest, postRequest } from './common';
 
 async function retrieveSupplier(id: string, query?: Record<string, any>) {
-  return getRequest<SupplierResponse>(`/v1/suppliers/${id}`, query);
+  return getRequest<BaseSupplier>(`/v1/suppliers/${id}`, query);
 }
 
 async function listSuppliers(query?: Record<string, any>) {
@@ -11,11 +11,11 @@ async function listSuppliers(query?: Record<string, any>) {
 }
 
 async function createSupplier(payload: CreateSupplierReq) {
-  return postRequest<SupplierResponse>('/v1/suppliers', payload);
+  return postRequest<BaseSupplier>('/v1/suppliers', payload);
 }
 
 async function updateSupplier(id: string, payload: UpdateSupplierReq) {
-  return patchRequest<SupplierResponse>(`/v1/suppliers/${id}`, payload);
+  return patchRequest<BaseSupplier>(`/v1/suppliers/${id}`, payload);
 }
 
 async function deleteSupplier(id: string) {

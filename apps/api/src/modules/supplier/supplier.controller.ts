@@ -20,7 +20,7 @@ export const createSupplier = catchAsync(async (req: Request, res: Response) => 
 
 export const getSuppliers = catchAsync(async (req: Request, res: Response) => {
   const filter = pick(req.query, ['companyName', 'contactName', 'email']);
-  const options: IOptions = pick(req.query, ['sortBy', 'sortOrder', 'limit', 'offset', 'projectBy']);
+  const options: IOptions = pick(req.query, ['sortBy', 'sortOrder', 'limit', 'offset', 'projectBy', 'includeDeleted']);
   const isAllowed = permissionService.checkPermissions(req.user.role, 'list', 'suppliers');
   if (!isAllowed) {
     throw new ApiError(httpStatus.FORBIDDEN, 'You do not have permission to list suppliers');
@@ -68,6 +68,12 @@ export const bulkDeleteSuppliers = catchAsync(async (req: Request, res: Response
   if (!isAllowed) {
     throw new ApiError(httpStatus.FORBIDDEN, 'You do not have permission to delete suppliers');
   }
-  await supplierService.bulkDeleteSuppliers(req.body.supplierIds, req.user.organizationId);
+
+  const supplierIds = req.body.supplierIds;
+  if (!Array.isArray(supplierIds) || supplierIds.length === 0) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Invalid input: supplierIds must be a non-empty array');
+  }
+
+  await supplierService.bulkDeleteSuppliers(supplierIds, req.user.organizationId);
   res.status(httpStatus.NO_CONTENT).send();
 });

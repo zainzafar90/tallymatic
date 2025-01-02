@@ -1,10 +1,10 @@
-import { and, asc, count, desc, eq, ilike } from 'drizzle-orm';
+import { and, asc, count, desc, eq, ilike, inArray, isNull, ne } from 'drizzle-orm';
 import httpStatus from 'http-status';
-import { CreateSupplierReq, IOptions, ListResponse, Status, UpdateSupplierReq } from '@repo/shared';
+import { CreateSupplierReq, IOptions, UpdateSupplierReq } from '@repo/shared';
 
 import { ApiError } from '@/common/errors/api-error';
 import { db } from '@/db';
-import { suppliers } from '@/db/schema';
+import { Supplier, suppliers } from '@/db/schema';
 
 import { getPaginationConfig } from '../paginate/pagination';
 
@@ -16,14 +16,31 @@ interface OrderParams {
   direction: OrderDirection;
 }
 
-export const createSupplier = async (supplierBody: CreateSupplierReq, organizationId: string) => {
-  const supplierNew = {
-    ...supplierBody,
-    organizationId,
-    status: Status.ACTIVE,
+const supplierDTO = (supplier: Supplier) => {
+  return {
+    ...supplier,
+    status: supplier.status,
   };
-  const [supplier] = await db.insert(suppliers).values(supplierNew).returning();
-  return supplier;
+};
+
+export const createSupplier = async (supplierBody: CreateSupplierReq, organizationId: string) => {
+  const existingSupplier = await db.query.suppliers.findFirst({
+    where: and(eq(suppliers.email, supplierBody.email), eq(suppliers.organizationId, organizationId)),
+  });
+
+  if (existingSupplier) {
+    throw new ApiError(httpStatus.CONFLICT, 'Supplier with this email already exists');
+  }
+
+  const [supplier] = await db
+    .insert(suppliers)
+    .values({
+      ...supplierBody,
+      organizationId,
+    })
+    .returning();
+
+  return supplierDTO(supplier);
 };
 
 export const querySuppliers = async (
@@ -31,7 +48,7 @@ export const querySuppliers = async (
   options: IOptions,
   organizationId: string,
   wildcardFields: string[] = []
-): Promise<ListResponse<typeof suppliers.$inferSelect>> => {
+) => {
   const { limit, offset } = getPaginationConfig(options);
 
   const conditions = [eq(suppliers.organizationId, organizationId)];
@@ -50,7 +67,7 @@ export const querySuppliers = async (
   };
 
   const orderFn = orderParams.direction === 'asc' ? asc : desc;
-  const orderByClause = orderFn(suppliers[orderParams.field as keyof (typeof suppliers)['_']['columns']]);
+  const orderByClause = orderFn(suppliers[orderParams.field]);
 
   const [suppliersCount] = await db
     .select({ count: count(suppliers.id) })
@@ -77,22 +94,40 @@ export const getSupplierById = async (id: string, organizationId: string) => {
   const supplier = await db.query.suppliers.findFirst({
     where: and(eq(suppliers.id, id), eq(suppliers.organizationId, organizationId)),
   });
-  return supplier;
-};
 
-export const updateSupplierById = async (supplierId: string, updateBody: UpdateSupplierReq, organizationId: string) => {
-  const supplier = await getSupplierById(supplierId, organizationId);
   if (!supplier) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Supplier not found');
   }
 
-  const [updatedSupplier] = await db
+  return supplierDTO(supplier);
+};
+
+export const updateSupplierById = async (supplierId: string, updateBody: UpdateSupplierReq, organizationId: string) => {
+  const existingSupplier = await db.query.suppliers.findFirst({
+    where: and(
+      eq(suppliers.email, updateBody.email),
+      eq(suppliers.organizationId, organizationId),
+      ne(suppliers.id, supplierId)
+    ),
+  });
+
+  if (existingSupplier) {
+    throw new ApiError(httpStatus.CONFLICT, 'Supplier with this email already exists');
+  }
+
+  const [supplier] = await db
     .update(suppliers)
-    .set(updateBody)
-    .where(and(eq(suppliers.id, supplierId), eq(suppliers.organizationId, organizationId)))
+    .set({
+      ...updateBody,
+    })
+    .where(and(eq(suppliers.id, supplierId), eq(suppliers.organizationId, organizationId), isNull(suppliers.deletedAt)))
     .returning();
 
-  return updatedSupplier;
+  if (!supplier) {
+    throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'Failed to update supplier');
+  }
+
+  return supplierDTO(supplier);
 };
 
 export const deleteSupplierById = async (supplierId: string, organizationId: string) => {
@@ -106,34 +141,21 @@ export const deleteSupplierById = async (supplierId: string, organizationId: str
     .where(and(eq(suppliers.id, supplierId), eq(suppliers.organizationId, organizationId)))
     .returning();
 
-  return deletedSupplier;
+  return supplierDTO(deletedSupplier);
 };
 
 export const bulkDeleteSuppliers = async (supplierIds: string[], organizationId: string) => {
-  return await db.transaction(async (tx) => {
-    const existingSuppliers = await tx.query.suppliers.findMany({
-      where: and(
-        eq(suppliers.organizationId, organizationId),
-        // @ts-expect-error: Type inference issue with array of strings
-        suppliers.id.in(supplierIds)
-      ),
-    });
+  return db.transaction(async (tx) => {
+    const existingSuppliers = await tx
+      .select()
+      .from(suppliers)
+      .where(and(inArray(suppliers.id, supplierIds), eq(suppliers.organizationId, organizationId)));
 
     if (existingSuppliers.length !== supplierIds.length) {
-      throw new Error('One or more supplier IDs are invalid');
+      throw new ApiError(httpStatus.NOT_FOUND, 'One or more suppliers not found');
     }
 
-    const deletedSuppliers = await tx
-      .delete(suppliers)
-      .where(
-        and(
-          eq(suppliers.organizationId, organizationId),
-          // @ts-expect-error: Type inference issue with array of strings
-          suppliers.id.in(supplierIds)
-        )
-      )
-      .returning();
-
-    return deletedSuppliers;
+    await tx.delete(suppliers).where(and(inArray(suppliers.id, supplierIds), eq(suppliers.organizationId, organizationId)));
+    return existingSuppliers.map(supplierDTO);
   });
 };

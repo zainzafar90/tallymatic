@@ -132,6 +132,7 @@ CREATE TABLE "suppliers" (
 	"email" varchar(255),
 	"phone" varchar(255),
 	"address" text,
+	"status" text DEFAULT 'active' NOT NULL,
 	"created_at" timestamp DEFAULT now(),
 	"updated_at" timestamp DEFAULT now(),
 	"deleted_at" timestamp

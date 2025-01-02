@@ -1,4 +1,4 @@
-import { ISupplier } from '@repo/shared';
+import { SupplierListItem } from '@repo/shared';
 
 import { Dialog, DialogBody, DialogDescription, DialogTitle } from '@/components/ui/dialog';
 
@@ -9,7 +9,7 @@ export function EditSupplierDialog({
   isOpen,
   onClose,
 }: {
-  supplier: ISupplier;
+  supplier: SupplierListItem;
   isOpen: boolean;
   onClose: () => void;
 }) {

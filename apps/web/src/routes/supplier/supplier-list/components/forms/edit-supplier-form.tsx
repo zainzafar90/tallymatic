@@ -1,12 +1,12 @@
 import { toast } from 'sonner';
-import { ISupplier } from '@repo/shared';
+import { SupplierListItem } from '@repo/shared';
 
 import { useUpdateSupplier } from '@/hooks/api/supplier.hooks';
 
 import { SupplierForm } from './supplier-form';
 import { SupplierFormData } from './supplier.schema';
 
-export const EditSupplierForm = (props: { supplier: ISupplier; onClose: () => void }) => {
+export const EditSupplierForm = (props: { supplier: SupplierListItem; onClose: () => void }) => {
   const { mutateAsync, isPending } = useUpdateSupplier(props.supplier.id!);
 
   const handleSubmit = async (data: SupplierFormData) => {

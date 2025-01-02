@@ -1,16 +1,14 @@
 import Joi from 'joi';
-import { CreateSupplierReq } from '@repo/shared';
+import { CreateSupplierReq, Status, UpdateSupplierReq } from '@repo/shared';
 
 import { uuid } from '@/common/validate/custom.validation';
 
 const createSupplierBody: Record<keyof CreateSupplierReq, any> = {
   companyName: Joi.string().required(),
   contactName: Joi.string().required(),
-  email: Joi.string().required().email(),
-  phone: Joi.string().optional(),
-  address: Joi.string().optional(),
-  createdAt: Joi.date().optional(),
-  updatedAt: Joi.date().optional(),
+  email: Joi.string().required().allow('', null).email(),
+  phone: Joi.string().optional().allow('', null),
+  address: Joi.string().optional().allow('', null),
 };
 
 export const createSupplier = {
@@ -36,19 +34,20 @@ export const getSupplier = {
   }),
 };
 
+const updateSupplierBody: Record<keyof UpdateSupplierReq, any> = {
+  companyName: Joi.string(),
+  contactName: Joi.string(),
+  email: Joi.string().email(),
+  phone: Joi.string().allow('', null),
+  address: Joi.string().allow('', null),
+  status: Joi.string().valid(Status.ACTIVE, Status.INACTIVE).optional(),
+};
+
 export const updateSupplier = {
   params: Joi.object().keys({
     supplierId: Joi.required().custom(uuid),
   }),
-  body: Joi.object()
-    .keys({
-      companyName: Joi.string(),
-      contactName: Joi.string(),
-      email: Joi.string().email(),
-      phone: Joi.string(),
-      address: Joi.string(),
-    })
-    .min(1),
+  body: Joi.object().keys(updateSupplierBody).min(1),
 };
 
 export const deleteSupplier = {

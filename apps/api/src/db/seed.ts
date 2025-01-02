@@ -226,7 +226,6 @@ async function main() {
           email: funcs.email(),
           phone: funcs.phoneNumber({ template: '+1 (###) ###-####' }),
           address: funcs.streetAddress(),
-          status: funcs.valuesFromArray({ values: ['active', 'inactive'] }),
           createdAt: funcs.date({
             minDate: '2023-01-01',
             maxDate: '2024-12-16',
@@ -241,6 +240,11 @@ async function main() {
           contactName: funcs.fullName(),
           email: funcs.email(),
           phone: funcs.phoneNumber({ template: '+1 (###) ###-####' }),
+          createdAt: funcs.date({
+            minDate: '2023-01-01',
+            maxDate: '2024-12-16',
+          }),
+          deletedAt: funcs.default({ defaultValue: null }),
         },
       },
       orders: {

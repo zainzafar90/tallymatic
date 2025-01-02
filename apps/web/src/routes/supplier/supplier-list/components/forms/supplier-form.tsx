@@ -1,31 +1,34 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { ISupplier } from '@repo/shared';
+import { Status, SupplierListItem } from '@repo/shared';
 
 import { Button } from '@/components/ui/button';
 import { DialogActions } from '@/components/ui/dialog';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { Select } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 
-import { SupplierFormData, SupplierSchema } from './supplier.schema';
+import { CreateSupplierSchema, SupplierFormData, UpdateSupplierSchema } from './supplier.schema';
 
 interface SupplierFormProps {
-  supplier?: ISupplier;
+  supplier?: SupplierListItem;
   isPending: boolean;
   onClose: () => void;
   onSubmit: (data: SupplierFormData) => Promise<void>;
 }
 
 export const SupplierForm = ({ supplier, isPending, onSubmit, onClose }: SupplierFormProps) => {
+  console.log(supplier);
   const form = useForm({
-    resolver: zodResolver(SupplierSchema),
+    resolver: zodResolver(supplier ? UpdateSupplierSchema : CreateSupplierSchema),
     defaultValues: {
       companyName: supplier?.companyName || '',
       contactName: supplier?.contactName || '',
       email: supplier?.email || '',
       phone: supplier?.phone || '',
       address: supplier?.address || '',
+      ...(supplier && { status: supplier.status }),
     },
   });
 
@@ -103,6 +106,24 @@ export const SupplierForm = ({ supplier, isPending, onSubmit, onClose }: Supplie
             </FormItem>
           )}
         />
+
+        {supplier && (
+          <FormField
+            name="status"
+            control={form.control}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Status</FormLabel>
+                <Select {...field}>
+                  <option value={Status.ACTIVE}>Active</option>
+                  <option value={Status.INACTIVE}>Inactive</option>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
+
         <DialogActions>
           <Button plain onClick={onClose}>
             Cancel

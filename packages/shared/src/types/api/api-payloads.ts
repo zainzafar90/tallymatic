@@ -49,12 +49,12 @@ export type AdjustStockReq = {
 };
 
 // Customer
-export type CreateCustomerReq = Omit<ICustomer, 'id'>;
-export type UpdateCustomerReq = Partial<ICustomer>;
+// export type CreateCustomerReq = Omit<ICustomer, 'id'>;
+// export type UpdateCustomerReq = Partial<ICustomer>;
 
 // Supplier
-export type CreateSupplierReq = Omit<ISupplier, 'id'>;
-export type UpdateSupplierReq = Partial<ISupplier>;
+// export type CreateSupplierReq = Omit<ISupplier, 'id'>;
+// export type UpdateSupplierReq = Partial<ISupplier>;
 
 // Order
 export type CreateOrderReq = Omit<

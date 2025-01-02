@@ -1,4 +1,4 @@
-import { CreateCustomerReq, CustomerListResponse, CustomerResponse, UpdateCustomerReq } from '@repo/shared';
+import { BaseCustomer, CreateCustomerReq, CustomerListResponse, UpdateCustomerReq } from '@repo/shared';
 import { QueryKey, useMutation, UseMutationOptions, useQuery, UseQueryOptions } from '@tanstack/react-query';
 
 import { client } from '@/lib/client';
@@ -22,7 +22,7 @@ export const useCustomers = (
   return { ...data, ...rest };
 };
 
-export const useCreateCustomer = (options?: UseMutationOptions<CustomerResponse, Error, CreateCustomerReq>) => {
+export const useCreateCustomer = (options?: UseMutationOptions<BaseCustomer, Error, CreateCustomerReq>) => {
   return useMutation({
     mutationFn: (payload: CreateCustomerReq) => client.customers.create(payload),
     onSuccess: (data: any, variables: any, context: any) => {
@@ -33,7 +33,7 @@ export const useCreateCustomer = (options?: UseMutationOptions<CustomerResponse,
   });
 };
 
-export const useUpdateCustomer = (id: string, options?: UseMutationOptions<CustomerResponse, Error, UpdateCustomerReq>) => {
+export const useUpdateCustomer = (id: string, options?: UseMutationOptions<BaseCustomer, Error, UpdateCustomerReq>) => {
   return useMutation({
     mutationFn: (payload: UpdateCustomerReq) => client.customers.update(id, payload),
     onSuccess: (data: any, variables: any, context: any) => {

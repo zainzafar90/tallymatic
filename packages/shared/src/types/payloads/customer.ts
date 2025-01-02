@@ -23,17 +23,17 @@ export interface CustomerListItem extends BaseCustomer {
 
 export type CustomerListResponse = ResourceListResponse<CustomerListItem>;
 
-/* ----------------------------
+/* -----------------------------
  * CREATE/UPDATE OPERATION TYPES
- * ---------------------------- */
-export interface CreateCustomerPayload {
+ * ----------------------------- */
+export interface CreateCustomerReq {
   name: string;
   email?: string;
   phone?: string;
   address?: string;
 }
 
-export interface UpdateCustomerPayload extends Partial<CreateCustomerPayload> {
+export interface UpdateCustomerReq extends Partial<CreateCustomerReq> {
   status?: Status;
 }
 
@@ -48,10 +48,9 @@ export interface CustomerMetrics {
 }
 
 /*
- * ----------------------------
- * ----------------------------
+ * -----------------------------
  * DETAIL VIEW TYPES
- * ----------------------------
+ * -----------------------------
  */
 export interface CustomerOrder {
   id: string;
