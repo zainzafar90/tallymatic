@@ -1,6 +1,6 @@
 import { Pencil, Trash } from 'lucide-react';
 import { toast } from 'sonner';
-import { SupplierListItem } from '@repo/shared';
+import { ISupplier } from '@repo/shared';
 
 import { ActionMenu } from '@/components/common/action-menu';
 import { usePrompt } from '@/components/common/use-prompt';
@@ -9,7 +9,7 @@ import { useToggleState } from '@/hooks/use-toggle-state';
 
 import { EditSupplierDialog } from '../dialogs/edit-supplier.dialog';
 
-export const SupplierActions = ({ supplier }: { supplier: SupplierListItem }) => {
+export const SupplierActions = ({ supplier }: { supplier: ISupplier }) => {
   const { prompt, PromptDialog } = usePrompt();
   const { mutateAsync } = useDeleteSupplier(supplier.id!);
   const [editOpen, showEditModal, closeEditModal] = useToggleState();

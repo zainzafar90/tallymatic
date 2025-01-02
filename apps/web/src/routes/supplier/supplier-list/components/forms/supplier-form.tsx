@@ -1,6 +1,6 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Status, SupplierListItem } from '@repo/shared';
+import { ISupplier, Status } from '@repo/shared';
 
 import { Button } from '@/components/ui/button';
 import { DialogActions } from '@/components/ui/dialog';
@@ -12,7 +12,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { CreateSupplierSchema, SupplierFormData, UpdateSupplierSchema } from './supplier.schema';
 
 interface SupplierFormProps {
-  supplier?: SupplierListItem;
+  supplier?: ISupplier;
   isPending: boolean;
   onClose: () => void;
   onSubmit: (data: SupplierFormData) => Promise<void>;

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import { CheckCircleIcon } from '@heroicons/react/16/solid';
-import { SupplierListItem } from '@repo/shared';
+import { ISupplier } from '@repo/shared';
 import { keepPreviousData } from '@tanstack/react-query';
 
 import { Button } from '@/components/ui/button';
@@ -13,7 +13,7 @@ import { useSuppliers } from '@/hooks/api/supplier.hooks';
 interface ChooseSupplierDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  onSelectSupplier: (supplier: SupplierListItem) => void;
+  onSelectSupplier: (supplier: ISupplier) => void;
   selectedSupplierId?: string;
 }
 

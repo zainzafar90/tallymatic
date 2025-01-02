@@ -18,13 +18,13 @@ export interface BaseSupplier {
 /* ----------------------------
  * LIST VIEW TYPES
  * ---------------------------- */
-export interface SupplierListItem extends BaseSupplier {
+export interface ISupplier extends BaseSupplier {
   totalPurchases: number;
   lastPurchaseDate?: Date;
   totalSpent: number;
 }
 
-export type SupplierListResponse = ResourceListResponse<SupplierListItem>;
+export type SupplierListResponse = ResourceListResponse<ISupplier>;
 
 /* ----------------------------
  * CREATE/UPDATE OPERATION TYPES

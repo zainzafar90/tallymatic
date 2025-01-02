@@ -93,14 +93,14 @@ export interface IProductVariant extends Dates {
 //   address?: string;
 // }
 
-export interface ISupplier extends Dates {
-  id?: string;
-  companyName: string;
-  email?: string;
-  contactName?: string;
-  phone?: string;
-  address?: string;
-}
+// export interface ISupplier extends Dates {
+//   id?: string;
+//   companyName: string;
+//   email?: string;
+//   contactName?: string;
+//   phone?: string;
+//   address?: string;
+// }
 
 export interface IOrder extends Dates {
   id?: string;
