@@ -78,7 +78,6 @@ export const ProductForm = ({ product, isPending, onSubmit, onClose }: ProductFo
   return (
     <Form {...form}>
       <form onSubmit={handleSubmit}>
-        {JSON.stringify(form.formState.errors)}
         <FieldGroup>
           <div className="flex gap-4 w-full flex-col md:flex-row">
             <FormField

@@ -35,16 +35,14 @@ export const LowStockWarnings = () => {
               <TableRow key={item.id}>
                 <TableCell>
                   <div className="flex flex-col h-full w-full gap-x-3 overflow-hidden">
-                    <div className="truncate">{item.products?.name}</div>
-                    <div className="text-sm text-gray-500">{item.variants?.name}</div>
+                    <div className="truncate">{item.productName}</div>
+                    <div className="text-sm text-gray-500">{item.name}</div>
                   </div>
                 </TableCell>
-                <TableCell className="hidden md:table-cell">{item.variants?.stock}</TableCell>
-                <TableCell className="hidden md:table-cell lg:hidden xl:table-cell">
-                  {item.variants?.lowStockThreshold}
-                </TableCell>
+                <TableCell className="hidden md:table-cell">{item.stock}</TableCell>
+                <TableCell className="hidden md:table-cell lg:hidden xl:table-cell">{item.lowStockThreshold}</TableCell>
                 <TableCell>
-                  <StockStatus stock={item.variants?.stock || 0} lowStockThreshold={item.variants?.lowStockThreshold || 0} />
+                  <StockStatus stock={item.stock} lowStockThreshold={item.lowStockThreshold} />
                 </TableCell>
               </TableRow>
             ))}

@@ -22,13 +22,6 @@ export const useAdjustStock = (options?: UseMutationOptions<any, Error, any>) =>
   });
 };
 
-// export const useInventoryLevels = (productId: string) => {
-//   return useQuery({
-//     queryKey: ['inventoryLevels', productId],
-//     queryFn: () => client.inventory.getInventoryLevels(productId),
-//   });
-// };
-
 export const useAllInventoryLevels = (
   query?: Record<string, any>,
   options?: Omit<
