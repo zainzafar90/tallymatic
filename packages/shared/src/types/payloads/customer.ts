@@ -1,4 +1,4 @@
-import { ResourceListResponse, ResourceResponse } from '../api/api-operations';
+import { ResourceListResponse } from '../api/api-operations';
 import { Status } from '../enums.types';
 
 export interface BaseCustomer {
@@ -21,8 +21,6 @@ export interface ICustomer extends BaseCustomer {
   createdAt: Date;
 }
 
-export type CustomerListResponse = ResourceListResponse<ICustomer>;
-
 /* -----------------------------
  * CREATE/UPDATE OPERATION TYPES
  * ----------------------------- */
@@ -37,36 +35,41 @@ export interface UpdateCustomerReq extends Partial<CreateCustomerReq> {
   status?: Status;
 }
 
+/* ----------------------------
+ * RESPONSES
+ * ---------------------------- */
+export type CustomerListResponse = ResourceListResponse<ICustomer>;
+
 // Analytics and Metrics
-export interface CustomerMetrics {
-  totalOrders: number;
-  averageOrderValue: number;
-  lifetimeValue: number;
-  lastOrderDate?: Date;
-  firstOrderDate?: Date;
-  orderFrequency: number;
-}
+// export interface CustomerMetrics {
+//   totalOrders: number;
+//   averageOrderValue: number;
+//   lifetimeValue: number;
+//   lastOrderDate?: Date;
+//   firstOrderDate?: Date;
+//   orderFrequency: number;
+// }
 
 /*
  * -----------------------------
  * DETAIL VIEW TYPES
  * -----------------------------
  */
-export interface CustomerOrder {
-  id: string;
-  orderNumber: string;
-  total: number;
-  status: string;
-  createdAt: Date;
-}
+// export interface CustomerOrder {
+//   id: string;
+//   orderNumber: string;
+//   total: number;
+//   status: string;
+//   createdAt: Date;
+// }
 
-export interface CustomerDetail extends BaseCustomer {
-  orders: CustomerOrder[];
-  notes?: string;
-  tags: string[];
-  createdAt: Date;
-  updatedAt: Date;
-}
+// export interface CustomerDetail extends BaseCustomer {
+//   orders: CustomerOrder[];
+//   notes?: string;
+//   tags: string[];
+//   createdAt: Date;
+//   updatedAt: Date;
+// }
 
 // Response types
 // export type CustomerResponse = ResourceResponse<CustomerDetail>;

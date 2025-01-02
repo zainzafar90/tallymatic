@@ -1,6 +1,5 @@
 import {
   ICategory,
-  ICustomer,
   IOrder,
   IOrganization,
   IProduct,
@@ -8,7 +7,6 @@ import {
   IPurchase,
   IPurchaseItem,
   IStore,
-  ISupplier,
   IUser,
 } from '../interfaces/resources';
 

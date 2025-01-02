@@ -1,14 +1,12 @@
 import {
   IAccessAndRefreshTokens,
   ICategory,
-  ICustomer,
   IOrder,
   IOrganization,
   IProduct,
   IProductVariant,
   IPurchase,
   IStore,
-  ISupplier,
   IUser,
 } from '../interfaces/resources';
 import { DeleteResponse, ResourceListResponse, ResourceResponse } from './api-operations';

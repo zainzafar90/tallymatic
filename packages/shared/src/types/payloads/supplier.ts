@@ -24,8 +24,6 @@ export interface ISupplier extends BaseSupplier {
   totalSpent: number;
 }
 
-export type SupplierListResponse = ResourceListResponse<ISupplier>;
-
 /* ----------------------------
  * CREATE/UPDATE OPERATION TYPES
  * ---------------------------- */
@@ -41,31 +39,36 @@ export interface UpdateSupplierReq extends Partial<CreateSupplierReq> {
   status?: Status;
 }
 
+/* ----------------------------
+ * RESPONSES
+ * ---------------------------- */
+export type SupplierListResponse = ResourceListResponse<ISupplier>;
+
 // Analytics and Metrics
-export interface SupplierMetrics {
-  totalPurchases: number;
-  averagePurchaseValue: number;
-  totalSpent: number;
-  lastPurchaseDate?: Date;
-  firstPurchaseDate?: Date;
-  purchaseFrequency: number;
-}
+// export interface SupplierMetrics {
+//   totalPurchases: number;
+//   averagePurchaseValue: number;
+//   totalSpent: number;
+//   lastPurchaseDate?: Date;
+//   firstPurchaseDate?: Date;
+//   purchaseFrequency: number;
+// }
 
 /*
  * ----------------------------
  * DETAIL VIEW TYPES
  * ----------------------------
  */
-export interface SupplierPurchase {
-  id: string;
-  purchaseNumber: string;
-  total: number;
-  status: string;
-  createdAt: Date;
-}
+// export interface SupplierPurchase {
+//   id: string;
+//   purchaseNumber: string;
+//   total: number;
+//   status: string;
+//   createdAt: Date;
+// }
 
-export interface SupplierDetail extends BaseSupplier {
-  purchases: SupplierPurchase[];
-  notes?: string;
-  tags: string[];
-}
+// export interface SupplierDetail extends BaseSupplier {
+//   purchases: SupplierPurchase[];
+//   notes?: string;
+//   tags: string[];
+// }

@@ -5,6 +5,7 @@ import { PlaceholderCell } from '../placeholder-cell';
 type CellProps = {
   text?: string | number;
   align?: 'left' | 'right';
+  className?: string;
 };
 
 type HeaderProps = {
@@ -12,17 +13,21 @@ type HeaderProps = {
   align?: 'left' | 'right';
 };
 
-export const TextCell = ({ text, align }: CellProps) => {
+export const TextCell = ({ text, align, className }: CellProps) => {
   if (!text) {
     return <PlaceholderCell />;
   }
 
   return (
     <div
-      className={cn('flex h-full w-full items-center gap-x-3 overflow-hidden', {
-        'justify-start text-left': align === 'left',
-        'justify-end text-right': align === 'right',
-      })}
+      className={cn(
+        'flex h-full w-full items-center gap-x-3 overflow-hidden',
+        {
+          'justify-start text-left': align === 'left',
+          'justify-end text-right': align === 'right',
+        },
+        className
+      )}
     >
       <span className="truncate">{text}</span>
     </div>
