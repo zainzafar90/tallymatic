@@ -29,6 +29,7 @@
     "db:studio": "cd apps/api && npx drizzle-kit studio",
     "db:seed": "cd apps/api && npx tsx ./src/db/seed.ts",
     "db:up": "npm run db:generate && npm run db:migrate",
+    "db:push": "cd apps/api && npx drizzle-kit push",
     "db:export": "cd apps/api && npx drizzle-kit export"
   },
   "devDependencies": {
