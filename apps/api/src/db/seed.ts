@@ -27,8 +27,19 @@ if (!process.env.DB_URL) {
 
 console.log('DB_URL:', process.env.DB_URL);
 
-const NUMBER_OF_PRODUCTS = 1_0;
-const NUMBER_OF_VARIANTS = 1_0;
+const NUMBER_OF_ORGANIZATIONS = 1;
+const NUMBER_OF_STORES = 1;
+const NUMBER_OF_USERS = 1;
+const NUMBER_OF_CATEGORIES = 1;
+const NUMBER_OF_PRODUCTS = 1;
+const NUMBER_OF_VARIANTS = 1;
+const NUMBER_OF_INVENTORY = 1;
+const NUMBER_OF_ORDERS = 1;
+const NUMBER_OF_ORDER_ITEMS = 1;
+const NUMBER_OF_PURCHASES = 1;
+const NUMBER_OF_PURCHASE_ITEMS = 1;
+const NUMBER_OF_SUPPLIERS = 1;
+const NUMBER_OF_CUSTOMERS = 1;
 
 const pool = new Pool({
   connectionString: process.env.DB_URL,
@@ -91,7 +102,7 @@ async function main() {
 
     await seed(db, schema).refine((funcs) => ({
       organizations: {
-        count: 1,
+        count: NUMBER_OF_ORGANIZATIONS,
         columns: {
           name: funcs.companyName({ isUnique: true }),
           email: funcs.email(),
@@ -103,7 +114,7 @@ async function main() {
         },
       },
       stores: {
-        count: 6,
+        count: NUMBER_OF_STORES,
         columns: {
           name: funcs.companyName({ isUnique: true }),
           address: funcs.streetAddress({ isUnique: true }),
@@ -115,17 +126,17 @@ async function main() {
         },
       },
       users: {
-        count: 10,
+        count: NUMBER_OF_USERS,
         columns: {
           name: funcs.fullName(),
           email: funcs.weightedRandom([
             {
               value: funcs.default({ defaultValue: 'admin@tallymatic.com' }),
-              weight: 0.2,
+              weight: 1,
             },
             {
               value: funcs.email(),
-              weight: 0.8,
+              weight: 0,
             },
           ]),
           password: funcs.default({ defaultValue: hashedPassword }),
@@ -139,10 +150,10 @@ async function main() {
         },
       },
       categories: {
-        count: 10,
+        count: NUMBER_OF_CATEGORIES,
         columns: {
           name: funcs.valuesFromArray({
-            values: generateCategories(10),
+            values: generateCategories(NUMBER_OF_CATEGORIES),
             isUnique: true,
           }),
           description: funcs.loremIpsum({ sentencesCount: 2 }),
@@ -205,7 +216,7 @@ async function main() {
         },
       },
       inventory: {
-        count: 100,
+        count: NUMBER_OF_INVENTORY,
         columns: {
           quantity: funcs.int({
             minValue: 1,
@@ -220,7 +231,7 @@ async function main() {
         },
       },
       customers: {
-        count: 100,
+        count: NUMBER_OF_CUSTOMERS,
         columns: {
           name: funcs.fullName(),
           email: funcs.email(),
@@ -234,7 +245,7 @@ async function main() {
         },
       },
       suppliers: {
-        count: 120,
+        count: NUMBER_OF_SUPPLIERS,
         columns: {
           companyName: funcs.companyName(),
           contactName: funcs.fullName(),
@@ -248,7 +259,7 @@ async function main() {
         },
       },
       orders: {
-        count: 10,
+        count: NUMBER_OF_ORDERS,
         columns: {
           orderNumber: funcs.valuesFromArray({
             values: [
@@ -291,7 +302,7 @@ async function main() {
         },
       },
       orderItems: {
-        count: 400,
+        count: NUMBER_OF_ORDER_ITEMS,
         columns: {
           quantity: funcs.int({
             minValue: 1,
@@ -309,7 +320,7 @@ async function main() {
       },
 
       purchases: {
-        count: 10,
+        count: NUMBER_OF_PURCHASES,
         columns: {
           purchaseNumber: funcs.valuesFromArray({
             values: [
@@ -350,7 +361,7 @@ async function main() {
         },
       },
       purchaseItems: {
-        count: 400,
+        count: NUMBER_OF_PURCHASE_ITEMS,
         columns: {
           quantity: funcs.int({
             minValue: 1,
