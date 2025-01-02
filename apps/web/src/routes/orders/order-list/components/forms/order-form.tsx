@@ -1,11 +1,14 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 
 import { CircleMinus, CirclePlus, Eye, EyeOff } from 'lucide-react';
 import { useFieldArray, useForm, UseFormReturn, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { ICustomer, IOrder, IOrderItem, IProductVariant, OrderStatus } from '@repo/shared';
+import { ICustomer, IOrder, IOrderItem, IProductVariant, IProductWithCategory, OrderStatus } from '@repo/shared';
 
-import { ChooseProductVariantDialog } from '@/components/common/dialogs/choose-product-variant.dialog';
+import {
+  ChooseProductVariantDialog,
+  IProductVariantWithProduct,
+} from '@/components/common/dialogs/choose-product-variant.dialog';
 import { Button } from '@/components/ui/button';
 import { Card, CardDescription, CardTitle } from '@/components/ui/card';
 import { Description, Field, FieldGroup, Fieldset, Label } from '@/components/ui/fieldset';
@@ -17,7 +20,7 @@ import { useToggleState } from '@/hooks/use-toggle-state';
 
 import { orderStatusConfig } from '../../config/order-status.config';
 import { ChooseCustomerDialog } from '../dialogs/choose-customer.dialog';
-import { OrderFormData, OrderSchema } from './order.schema';
+import { CreateOrderSchema, OrderFormData, UpdateOrderSchema } from './order.schema';
 
 interface OrderFormProps {
   order?: IOrder;
@@ -28,10 +31,9 @@ interface OrderFormProps {
 
 export const OrderForm: React.FC<OrderFormProps> = ({ order, isPending, onSubmit, onClose }) => {
   const form = useForm<OrderFormData>({
-    resolver: zodResolver(OrderSchema),
+    resolver: zodResolver(order ? UpdateOrderSchema : CreateOrderSchema),
     defaultValues: order || {
       customerId: '',
-      currency: 'PKR',
       status: OrderStatus.PENDING,
       taxAmount: 0,
       discountAmount: 0,
@@ -48,7 +50,57 @@ export const OrderForm: React.FC<OrderFormProps> = ({ order, isPending, onSubmit
   return (
     <div className="">
       <Form {...form}>
-        <form onSubmit={handleSubmit} className="grid grid-cols-1 auto-rows-auto lg:grid-rows-1 lg:grid-cols-3 gap-4">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <Card className="bg-muted/50 p-6">
+            <FieldGroup>
+              <div className="grid gap-0.5">
+                <CardTitle className="group flex items-center gap-2 text-lg">Order Details</CardTitle>
+                <CardDescription>Date: {new Date().toLocaleDateString()}</CardDescription>
+              </div>
+
+              <div className="flex gap-4 w-full flex-row">
+                <CustomerSummary form={form} />
+
+                <div className="flex gap-4 w-full flex-row">
+                  <FormField
+                    control={form.control}
+                    name="status"
+                    render={({ field }) => (
+                      <FormItem className="w-full">
+                        <FormLabel>Financial Status</FormLabel>
+                        <Select {...field}>
+                          {Object.entries(orderStatusConfig).map(([status, [_, text]]) => (
+                            <option key={status} value={status}>
+                              {text}
+                            </option>
+                          ))}
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="status"
+                    render={({ field }) => (
+                      <FormItem className="w-full">
+                        <FormLabel>Payment Method</FormLabel>
+                        <Select {...field}>
+                          {Object.entries(orderStatusConfig).map(([status, [_, text]]) => (
+                            <option key={status} value={status}>
+                              {text}
+                            </option>
+                          ))}
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
+            </FieldGroup>
+          </Card>
           <Card className="bg-muted/50 row-start-2 lg:row-start-1 lg:col-span-2 p-6">
             <OrderItems form={form} />
 
@@ -60,36 +112,6 @@ export const OrderForm: React.FC<OrderFormProps> = ({ order, isPending, onSubmit
                 {order ? 'Update' : 'Create'} Order
               </Button>
             </div>
-          </Card>
-          <Card className="bg-muted/50 row-start-1 lg:row-start-1 lg:col-span-1 p-6">
-            <FieldGroup>
-              <div className="grid gap-0.5">
-                <CardTitle className="group flex items-center gap-2 text-lg">Order Details</CardTitle>
-                <CardDescription>Date: {new Date().toLocaleDateString()}</CardDescription>
-              </div>
-
-              <CustomerSummary form={form} />
-
-              <div className="flex gap-4 w-full flex-col md:flex-row">
-                <FormField
-                  control={form.control}
-                  name="status"
-                  render={({ field }) => (
-                    <FormItem className="w-full">
-                      <FormLabel>Financial Status</FormLabel>
-                      <Select {...field}>
-                        {Object.entries(orderStatusConfig).map(([status, [_, text]]) => (
-                          <option key={status} value={status}>
-                            {text}
-                          </option>
-                        ))}
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-            </FieldGroup>
           </Card>
         </form>
       </Form>
@@ -188,10 +210,9 @@ const OrderSummary = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
 };
 
 const CustomerSummary = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
-  const [isCustomerDialogOpen, openCustomerDialog, closeCustomerDialog] = useToggleState();
-
   const customer = useWatch({ name: 'customer' }) as ICustomer;
   const [selectedCustomer, setSelectedCustomer] = useState<ICustomer | null>(customer);
+  const [isCustomerDialogOpen, openCustomerDialog, closeCustomerDialog] = useToggleState();
 
   const handleSelectCustomer = (customer: ICustomer) => {
     setSelectedCustomer(customer);
@@ -241,19 +262,15 @@ const OrderItems = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
     name: 'items',
   });
 
-  const handleSelectProductVariant = (variant: IProductVariant) => {
+  const handleSelectProductVariant = (variant: IProductVariantWithProduct) => {
     if (!variant?.id) return;
 
     append({
       variantId: variant.id,
       quantity: 1,
       price: parseFloat(variant.price.toString()),
-      costPrice: parseFloat(variant.costPrice.toString()),
       totalDiscount: 0,
-      variant: {
-        ...variant,
-        product: variant.product,
-      },
+      variant,
     });
   };
 
@@ -301,10 +318,10 @@ const OrderItems = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
               <TableCell>
                 <div className="flex flex-col">
                   <div className="flex items-center gap-2">
-                    <span className="font-medium">{field.variant?.product?.name}</span>
-                    {field.variant?.product?.category?.name && (
+                    <span className="font-medium">{field?.variant?.product?.name}</span>
+                    {field?.variant?.product?.category?.name && (
                       <span className="text-xs font-semibold text-muted-foreground bg-muted px-1 rounded-md">
-                        {field.variant.product.category.name}
+                        {field?.variant?.product?.category?.name}
                       </span>
                     )}
                   </div>
@@ -350,26 +367,7 @@ const OrderItems = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
                   )}
                 />
               </TableCell>
-              <TableCell>
-                <FormField
-                  control={form.control}
-                  name={`items.${index}.costPrice`}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <Input
-                          {...field}
-                          type={showPrices ? 'number' : 'password'}
-                          inputMode="decimal"
-                          step="0.01"
-                          min={0}
-                          onChange={(e) => field.onChange(parseFloat(e.target.value))}
-                        />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-              </TableCell>
+              <TableCell>{showPrices ? field.variant?.costPrice : '*****'}</TableCell>
               <TableCell>
                 <Button type="button" plain onClick={() => removeItem(index)}>
                   <CircleMinus className="text-red-500 w-6 h-6" />

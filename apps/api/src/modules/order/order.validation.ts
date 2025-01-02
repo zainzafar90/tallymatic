@@ -1,11 +1,10 @@
 import Joi from 'joi';
-import { CreateOrderReq, OrderStatus } from '@repo/shared';
+import { CreateOrderReq, OrderStatus, UpdateOrderReq } from '@repo/shared';
 
 import { uuid } from '@/common/validate/custom.validation';
 
 const createOrderBody: Record<keyof CreateOrderReq, any> = {
   customerId: Joi.string().custom(uuid).optional(),
-  currency: Joi.string().optional().default('PKR'),
   status: Joi.string()
     .valid(...Object.values(OrderStatus))
     .required(),
@@ -46,27 +45,16 @@ export const getOrder = {
   }),
 };
 
+const updateOrderBody: Record<keyof UpdateOrderReq, any> = {
+  ...createOrderBody,
+  closedAt: Joi.date().optional().allow(null),
+};
+
 export const updateOrder = {
   params: Joi.object().keys({
     orderId: Joi.string().custom(uuid).required(),
   }),
-  body: Joi.object()
-    .keys({
-      ...createOrderBody,
-      customerId: Joi.string().custom(uuid),
-      orderNumber: Joi.string(),
-      items: Joi.array().items(
-        Joi.object({
-          id: Joi.string().custom(uuid),
-          orderId: Joi.string().custom(uuid),
-          variantId: Joi.string().custom(uuid),
-          quantity: Joi.number().integer().min(1),
-          price: Joi.number(),
-          totalDiscount: Joi.number(),
-        })
-      ),
-    })
-    .min(1),
+  body: Joi.object().keys(updateOrderBody),
 };
 
 export const deleteOrder = {

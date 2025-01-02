@@ -1,0 +1,48 @@
+import { ResourceListResponse } from '../api/api-operations';
+import { OrderStatus } from '../enums.types';
+
+type BaseOrder = {
+  id: string;
+  orderNumber: string;
+  customerId: string;
+  closedAt?: Date;
+  currency: string;
+  status: OrderStatus;
+  totalAmount: number;
+  subtotal: number;
+  taxAmount: number;
+  discountAmount: number;
+};
+
+type BaseOrderItem = {
+  id: string;
+  orderId?: string;
+  variantId: string;
+  quantity: number;
+  price: number;
+  totalDiscount: number;
+};
+
+export interface IOrder extends BaseOrder {
+  items: BaseOrderItem[];
+  createdAt: Date;
+}
+
+export interface IOrderItem extends BaseOrderItem {
+  createdAt: Date;
+}
+
+export type OrderListResponse = ResourceListResponse<IOrder>;
+export type OrderResponse = IOrder;
+
+export interface CreateOrderReq {
+  customerId: string;
+  status: OrderStatus;
+  taxAmount: number;
+  discountAmount: number;
+  items: BaseOrderItem[];
+}
+
+export interface UpdateOrderReq extends Partial<CreateOrderReq> {
+  closedAt?: Date;
+}

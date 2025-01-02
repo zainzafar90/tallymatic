@@ -1,4 +1,4 @@
-import { CreateOrderReq, OrderDeleteResponse, OrderListResponse, OrderResponse, UpdateOrderReq } from '@repo/shared';
+import { CreateOrderReq, OrderListResponse, OrderResponse, UpdateOrderReq } from '@repo/shared';
 
 import { deleteRequest, getRequest, patchRequest, postRequest } from './common';
 
@@ -19,11 +19,11 @@ async function updateOrder(id: string, payload: UpdateOrderReq) {
 }
 
 async function deleteOrder(id: string) {
-  return deleteRequest<OrderDeleteResponse>(`/v1/orders/${id}`);
+  return deleteRequest<void>(`/v1/orders/${id}`);
 }
 
 async function bulkDeleteOrders(ids: string[]) {
-  return deleteRequest<OrderDeleteResponse[]>('/v1/orders', { orderIds: ids });
+  return deleteRequest<void[]>('/v1/orders', { orderIds: ids });
 }
 
 export const orders = {

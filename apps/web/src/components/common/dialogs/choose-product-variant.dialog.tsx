@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import { CheckCircleIcon } from '@heroicons/react/16/solid';
-import { IProductVariant } from '@repo/shared';
+import { IProductVariant, IProductWithCategory } from '@repo/shared';
 import { keepPreviousData } from '@tanstack/react-query';
 
 import { LetterBox } from '@/components/common/letter-box/letter-box';
@@ -13,10 +13,14 @@ import { useProducts } from '@/hooks/api/products.hooks';
 import { cn } from '@/utils/cn';
 import { parseFloat } from '@/utils/number-utils';
 
+export interface IProductVariantWithProduct extends IProductVariant {
+  product: IProductWithCategory;
+}
+
 interface ChooseProductVariantDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  onSelectVariant: (variant: IProductVariant) => void;
+  onSelectVariant: (variant: IProductVariantWithProduct) => void;
   selectedVariantId?: string;
   priceField: 'price' | 'costPrice';
   priceLabel: string;
@@ -53,14 +57,8 @@ export function ChooseProductVariantDialog({
     );
   };
 
-  const handleSelectVariant = (product: any, variant: IProductVariant) => {
-    onSelectVariant({
-      ...variant,
-      product: {
-        ...product,
-        category: product.category,
-      },
-    });
+  const handleSelectVariant = (variant: IProductVariantWithProduct) => {
+    onSelectVariant(variant);
     onClose();
   };
 
@@ -174,7 +172,7 @@ export function ChooseProductVariantDialog({
                               <CheckCircleIcon className="size-8 text-green-400" />
                             </div>
                           ) : (
-                            <Button onClick={() => handleSelectVariant(product, variant)} color="zinc">
+                            <Button onClick={() => handleSelectVariant({ ...variant, product })} color="zinc">
                               Select
                             </Button>
                           )}

@@ -1,7 +1,6 @@
 import { Moment } from 'moment';
 
 import { OrderStatus, PurchaseStatus, Status, TokenType } from '../enums.types';
-import { IProduct } from '../payloads/product';
 import { RoleType } from '../role.types';
 
 type Dates = {
@@ -51,54 +50,6 @@ export interface IStore {
   name: string;
   location: string;
   organizationId: string;
-}
-
-// export interface IProduct extends Dates {
-//   id: string;
-//   name: string;
-//   description?: string;
-//   status: ProductStatus;
-//   categoryId?: string;
-//   variants: IProductVariant[];
-//   category?: ICategory;
-// }
-
-// export interface IProductVariant extends Dates {
-//   id?: string;
-//   name: string;
-//   sku: string;
-//   price: number;
-//   costPrice: number;
-//   stock: number;
-//   lowStockThreshold?: number;
-//   reorderPoint?: number;
-//   reorderQuantity?: number;
-//   status: Status;
-//   product?: IProduct;
-//   variants?: IProductVariant;
-// }
-
-export interface IOrder extends Dates {
-  id?: string;
-  orderNumber: string;
-  customerId: string;
-  closedAt?: Date;
-  currency: string;
-  status: OrderStatus;
-  totalAmount: number;
-  subtotal: number;
-  taxAmount: number;
-  discountAmount: number;
-  items: IOrderItem[];
-}
-
-export interface IOrderItem extends Dates {
-  id?: string;
-  orderId?: string;
-  variantId: string;
-  quantity: number;
-  price: number;
-  totalDiscount: number;
 }
 
 export interface IPurchase extends Dates {

@@ -19,8 +19,12 @@ export interface IProduct extends BaseProduct {
   createdAt: Date;
 }
 
-export type ProductListResponse = ResourceListResponse<IProduct & { category: ICategory }>;
-export type ProductResponse = IProduct & { category: ICategory };
+export interface IProductWithCategory extends IProduct {
+  category: ICategory;
+}
+
+export type ProductListResponse = ResourceListResponse<IProductWithCategory>;
+export type ProductResponse = IProductWithCategory;
 
 /* -----------------------------
  * CREATE/UPDATE OPERATION TYPES

@@ -53,9 +53,9 @@ export type StoreDeleteResponse = DeleteResponse;
 // export type LowStockAlertsResponse = ResourceListResponse<IProductVariant>;
 
 // Order
-export type OrderResponse = ResourceResponse<IOrder>;
-export type OrderListResponse = ResourceListResponse<IOrder>;
-export type OrderDeleteResponse = DeleteResponse;
+// export type OrderResponse = ResourceResponse<IOrder>;
+// export type OrderListResponse = ResourceListResponse<IOrder>;
+// export type OrderDeleteResponse = DeleteResponse;
 
 // Purchase
 export type PurchaseResponse = ResourceResponse<IPurchase>;

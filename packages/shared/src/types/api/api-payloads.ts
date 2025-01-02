@@ -1,4 +1,4 @@
-import { IOrder, IOrganization, IPurchase, IPurchaseItem, IStore, IUser } from '../interfaces/resources';
+import { IOrganization, IPurchase, IPurchaseItem, IStore, IUser } from '../interfaces/resources';
 
 // Auth
 export type EmailPassReq = { email: string; password: string };
@@ -16,19 +16,6 @@ export type UpdateOrganizationReq = Partial<IOrganization>;
 export type CreateStoreReq = Omit<IStore, 'id'>;
 export type UpdateStoreReq = Partial<IStore>;
 
-// Product
-// export type CreateProductReq = Omit<IProduct, 'id'>;
-// export type UpdateProductReq = Partial<IProduct>;
-
-// ProductVariant
-// export type CreateProductVariantReq = Omit<IProductVariant, 'id'>;
-// export type UpdateProductVariantReq = Partial<IProductVariant>;
-// export type UpdateProductVariantBatchReq = UpdateProductVariantReq[];
-
-// Category
-// export type CreateCategoryReq = Omit<ICategory, 'id'>;
-// export type UpdateCategoryReq = Partial<ICategory>;
-
 // Inventory
 export type AdjustStockReq = {
   productId: string;
@@ -37,11 +24,11 @@ export type AdjustStockReq = {
 };
 
 // Order
-export type CreateOrderReq = Omit<
-  IOrder,
-  'id' | 'orderNumber' | 'closedAt' | 'createdAt' | 'updatedAt' | 'totalAmount' | 'subtotal'
->;
-export type UpdateOrderReq = Partial<IOrder>;
+// export type CreateOrderReq = Omit<
+//   IOrder,
+//   'id' | 'orderNumber' | 'closedAt' | 'createdAt' | 'updatedAt' | 'totalAmount' | 'subtotal'
+// >;
+// export type UpdateOrderReq = Partial<IOrder>;
 
 // Purchase
 export type CreatePurchaseReq = Omit<IPurchase, 'id' | 'purchaseNumber'> & {
