@@ -1,4 +1,4 @@
-import { IOrder, IOrganization, IProductVariant, IPurchase, IPurchaseItem, IStore, IUser } from '../interfaces/resources';
+import { IOrder, IOrganization, IPurchase, IPurchaseItem, IStore, IUser } from '../interfaces/resources';
 
 // Auth
 export type EmailPassReq = { email: string; password: string };
@@ -21,9 +21,9 @@ export type UpdateStoreReq = Partial<IStore>;
 // export type UpdateProductReq = Partial<IProduct>;
 
 // ProductVariant
-export type CreateProductVariantReq = Omit<IProductVariant, 'id'>;
-export type UpdateProductVariantReq = Partial<IProductVariant>;
-export type UpdateProductVariantBatchReq = UpdateProductVariantReq[];
+// export type CreateProductVariantReq = Omit<IProductVariant, 'id'>;
+// export type UpdateProductVariantReq = Partial<IProductVariant>;
+// export type UpdateProductVariantBatchReq = UpdateProductVariantReq[];
 
 // Category
 // export type CreateCategoryReq = Omit<ICategory, 'id'>;

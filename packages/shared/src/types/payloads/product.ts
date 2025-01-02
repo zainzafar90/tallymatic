@@ -1,7 +1,7 @@
 import { ResourceListResponse } from '../api/api-operations';
 import { ProductStatus } from '../enums.types';
-import { IProductVariant } from '../interfaces/resources';
 import { ICategory } from './category';
+import { IProductVariant } from './product-variant';
 
 type BaseProduct = {
   id: string;

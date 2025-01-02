@@ -4,11 +4,10 @@ import { customers } from './customer.requests';
 import { inventory } from './inventory.requests';
 import { orders } from './order.requests';
 import { products } from './product.requests';
+import { purchases } from './purchase.requests';
 import { stores } from './stores.requests';
 import { suppliers } from './supplier.requests';
 import { users } from './users.requests';
-import { variants } from './variant.requests';
-import { purchases } from './purchase.requests';
 
 export const client = {
   auth,
@@ -20,6 +19,5 @@ export const client = {
   customers,
   suppliers,
   orders,
-  variants,
   purchases,
 };

@@ -3,7 +3,7 @@ import {
   IOrder,
   IOrganization,
   // IProduct,
-  IProductVariant,
+  // IProductVariant,
   IPurchase,
   IStore,
   IUser,
@@ -39,9 +39,9 @@ export type StoreDeleteResponse = DeleteResponse;
 // export type ProductDeleteResponse = DeleteResponse;
 
 // ProductVariant
-export type ProductVariantResponse = ResourceResponse<IProductVariant>;
-export type ProductVariantListResponse = ResourceListResponse<IProductVariant>;
-export type ProductVariantDeleteResponse = DeleteResponse;
+// export type ProductVariantResponse = ResourceResponse<IProductVariant>;
+// export type ProductVariantListResponse = ResourceListResponse<IProductVariant>;
+// export type ProductVariantDeleteResponse = DeleteResponse;
 
 // Category
 // export type CategoryResponse = ResourceResponse<ICategory>;
@@ -49,8 +49,8 @@ export type ProductVariantDeleteResponse = DeleteResponse;
 // export type CategoryDeleteResponse = DeleteResponse;
 
 // Inventory
-export type InventoryLevelsResponse = ResourceListResponse<IProductVariant>;
-export type LowStockAlertsResponse = ResourceListResponse<IProductVariant>;
+// export type InventoryLevelsResponse = ResourceListResponse<IProductVariant>;
+// export type LowStockAlertsResponse = ResourceListResponse<IProductVariant>;
 
 // Order
 export type OrderResponse = ResourceResponse<IOrder>;

@@ -63,20 +63,20 @@ export interface IStore {
 //   category?: ICategory;
 // }
 
-export interface IProductVariant extends Dates {
-  id?: string;
-  name: string;
-  sku: string;
-  price: number;
-  costPrice: number;
-  stock: number;
-  lowStockThreshold?: number;
-  reorderPoint?: number;
-  reorderQuantity?: number;
-  status: Status;
-  product?: IProduct;
-  variants?: IProductVariant;
-}
+// export interface IProductVariant extends Dates {
+//   id?: string;
+//   name: string;
+//   sku: string;
+//   price: number;
+//   costPrice: number;
+//   stock: number;
+//   lowStockThreshold?: number;
+//   reorderPoint?: number;
+//   reorderQuantity?: number;
+//   status: Status;
+//   product?: IProduct;
+//   variants?: IProductVariant;
+// }
 
 export interface IOrder extends Dates {
   id?: string;

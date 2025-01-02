@@ -1,7 +1,7 @@
 import { CircleMinus, CirclePlus, Info } from 'lucide-react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { IProduct, ProductStatus } from '@repo/shared';
+import { IProduct } from '@repo/shared';
 
 import { Button } from '@/components/ui/button';
 import { DialogActions } from '@/components/ui/dialog';
@@ -78,6 +78,7 @@ export const ProductForm = ({ product, isPending, onSubmit, onClose }: ProductFo
   return (
     <Form {...form}>
       <form onSubmit={handleSubmit}>
+        {JSON.stringify(form.formState.errors)}
         <FieldGroup>
           <div className="flex gap-4 w-full flex-col md:flex-row">
             <FormField

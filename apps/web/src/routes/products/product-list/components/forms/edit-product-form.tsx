@@ -1,5 +1,5 @@
 import { toast } from 'sonner';
-import { IProduct, Status } from '@repo/shared';
+import { IProduct, IProductVariant, Status } from '@repo/shared';
 
 import { useUpdateProduct } from '@/hooks/api/products.hooks';
 
@@ -14,10 +14,7 @@ export const EditProductForm = (props: { product: IProduct; onClose: () => void 
       {
         ...data,
         categoryId: data.categoryId ? data.categoryId : undefined,
-        variants: data.variants.map((variant) => ({
-          ...variant,
-          status: 'active' as Status,
-        })),
+        variants: data.variants as IProductVariant[],
       },
       {
         onSuccess: () => {
