@@ -44,18 +44,13 @@ export type ProductVariantListResponse = ResourceListResponse<IProductVariant>;
 export type ProductVariantDeleteResponse = DeleteResponse;
 
 // Category
-export type CategoryResponse = ResourceResponse<ICategory>;
-export type CategoryListResponse = ResourceListResponse<ICategory>;
-export type CategoryDeleteResponse = DeleteResponse;
+// export type CategoryResponse = ResourceResponse<ICategory>;
+// export type CategoryListResponse = ResourceListResponse<ICategory>;
+// export type CategoryDeleteResponse = DeleteResponse;
 
 // Inventory
 export type InventoryLevelsResponse = ResourceListResponse<IProductVariant>;
 export type LowStockAlertsResponse = ResourceListResponse<IProductVariant>;
-
-// Supplier
-// export type SupplierResponse = ResourceResponse<ISupplier>;
-// export type SupplierListResponse = ResourceListResponse<ISupplier>;
-// export type SupplierDeleteResponse = DeleteResponse;
 
 // Order
 export type OrderResponse = ResourceResponse<IOrder>;

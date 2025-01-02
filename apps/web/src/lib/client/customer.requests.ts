@@ -1,9 +1,9 @@
-import { BaseCustomer, CreateCustomerReq, CustomerListResponse, UpdateCustomerReq } from '@repo/shared';
+import { CreateCustomerReq, CustomerListResponse, CustomerResponse, UpdateCustomerReq } from '@repo/shared';
 
 import { deleteRequest, getRequest, patchRequest, postRequest } from './common';
 
 async function retrieveCustomer(id: string, query?: Record<string, any>) {
-  return getRequest<BaseCustomer>(`/v1/customers/${id}`, query);
+  return getRequest<CustomerResponse>(`/v1/customers/${id}`, query);
 }
 
 async function listCustomers(query?: Record<string, any>) {
@@ -11,11 +11,11 @@ async function listCustomers(query?: Record<string, any>) {
 }
 
 async function createCustomer(payload: CreateCustomerReq) {
-  return postRequest<BaseCustomer>('/v1/customers', payload);
+  return postRequest<CustomerResponse>('/v1/customers', payload);
 }
 
 async function updateCustomer(id: string, payload: UpdateCustomerReq) {
-  return patchRequest<BaseCustomer>(`/v1/customers/${id}`, payload);
+  return patchRequest<CustomerResponse>(`/v1/customers/${id}`, payload);
 }
 
 async function deleteCustomer(id: string) {

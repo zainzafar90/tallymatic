@@ -15,9 +15,9 @@ export interface BaseCustomer {
  * LIST VIEW TYPES
  * ---------------------------- */
 export interface ICustomer extends BaseCustomer {
-  totalOrders: number;
-  lastOrderDate?: Date;
-  lifetimeValue: number;
+  // totalOrders: number;
+  // lastOrderDate?: Date;
+  // lifetimeValue: number;
   createdAt: Date;
 }
 
@@ -38,6 +38,7 @@ export interface UpdateCustomerReq extends Partial<CreateCustomerReq> {
 /* ----------------------------
  * RESPONSES
  * ---------------------------- */
+export type CustomerResponse = BaseCustomer;
 export type CustomerListResponse = ResourceListResponse<ICustomer>;
 
 // Analytics and Metrics

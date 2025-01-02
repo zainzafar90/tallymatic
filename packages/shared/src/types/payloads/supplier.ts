@@ -16,13 +16,16 @@ export interface BaseSupplier {
 }
 
 /* ----------------------------
- * LIST VIEW TYPES
+ * LIST VIEW RESPONSE TYPES
  * ---------------------------- */
 export interface ISupplier extends BaseSupplier {
-  totalPurchases: number;
-  lastPurchaseDate?: Date;
-  totalSpent: number;
+  // totalPurchases: number;
+  // lastPurchaseDate?: Date;
+  // totalSpent: number;
 }
+
+export type SupplierListResponse = ResourceListResponse<ISupplier>;
+export type SupplierResponse = BaseSupplier;
 
 /* ----------------------------
  * CREATE/UPDATE OPERATION TYPES
@@ -38,11 +41,6 @@ export interface CreateSupplierReq {
 export interface UpdateSupplierReq extends Partial<CreateSupplierReq> {
   status?: Status;
 }
-
-/* ----------------------------
- * RESPONSES
- * ---------------------------- */
-export type SupplierListResponse = ResourceListResponse<ISupplier>;
 
 // Analytics and Metrics
 // export interface SupplierMetrics {

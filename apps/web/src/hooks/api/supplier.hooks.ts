@@ -1,4 +1,4 @@
-import { BaseSupplier, CreateSupplierReq, SupplierListResponse, UpdateSupplierReq } from '@repo/shared';
+import { CreateSupplierReq, SupplierListResponse, SupplierResponse, UpdateSupplierReq } from '@repo/shared';
 import { QueryKey, useMutation, UseMutationOptions, useQuery, UseQueryOptions } from '@tanstack/react-query';
 
 import { client } from '@/lib/client';
@@ -22,7 +22,7 @@ export const useSuppliers = (
   return { ...data, ...rest };
 };
 
-export const useSupplier = (id: string, options?: UseQueryOptions<BaseSupplier, FetchError>) => {
+export const useSupplier = (id: string, options?: UseQueryOptions<SupplierResponse, FetchError>) => {
   return useQuery({
     queryFn: () => client.suppliers.retrieve(id),
     queryKey: suppliersQueryKeys.detail(id),
@@ -30,7 +30,7 @@ export const useSupplier = (id: string, options?: UseQueryOptions<BaseSupplier, 
   });
 };
 
-export const useCreateSupplier = (options?: UseMutationOptions<BaseSupplier, Error, CreateSupplierReq>) => {
+export const useCreateSupplier = (options?: UseMutationOptions<SupplierResponse, Error, CreateSupplierReq>) => {
   return useMutation({
     mutationFn: (payload: CreateSupplierReq) => client.suppliers.create(payload),
     onSuccess: (data: any, variables: any, context: any) => {
@@ -41,7 +41,7 @@ export const useCreateSupplier = (options?: UseMutationOptions<BaseSupplier, Err
   });
 };
 
-export const useUpdateSupplier = (id: string, options?: UseMutationOptions<BaseSupplier, Error, UpdateSupplierReq>) => {
+export const useUpdateSupplier = (id: string, options?: UseMutationOptions<SupplierResponse, Error, UpdateSupplierReq>) => {
   return useMutation({
     mutationFn: (payload: UpdateSupplierReq) => client.suppliers.update(id, payload),
     onSuccess: (data: any, variables: any, context: any) => {
