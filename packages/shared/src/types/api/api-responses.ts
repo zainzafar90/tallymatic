@@ -1,14 +1,4 @@
-import {
-  IAccessAndRefreshTokens,
-  IOrder,
-  IOrganization,
-  // IProduct,
-  // IProductVariant,
-  IPurchase,
-  IStore,
-  IUser,
-} from '../interfaces/resources';
-import { ICategory } from '../payloads/category';
+import { IAccessAndRefreshTokens, IOrganization, IPurchase, IStore, IUser } from '../interfaces/resources';
 import { DeleteResponse, ResourceListResponse, ResourceResponse } from './api-operations';
 
 // Auth
@@ -32,30 +22,6 @@ export type OrganizationDeleteResponse = DeleteResponse;
 export type StoreResponse = ResourceResponse<IStore>;
 export type StoreListResponse = ResourceListResponse<IStore>;
 export type StoreDeleteResponse = DeleteResponse;
-
-// Product
-// export type ProductResponse = ResourceResponse<IProduct>;
-// export type ProductListResponse = ResourceListResponse<IProduct & { category: ICategory }>;
-// export type ProductDeleteResponse = DeleteResponse;
-
-// ProductVariant
-// export type ProductVariantResponse = ResourceResponse<IProductVariant>;
-// export type ProductVariantListResponse = ResourceListResponse<IProductVariant>;
-// export type ProductVariantDeleteResponse = DeleteResponse;
-
-// Category
-// export type CategoryResponse = ResourceResponse<ICategory>;
-// export type CategoryListResponse = ResourceListResponse<ICategory>;
-// export type CategoryDeleteResponse = DeleteResponse;
-
-// Inventory
-// export type InventoryLevelsResponse = ResourceListResponse<IProductVariant>;
-// export type LowStockAlertsResponse = ResourceListResponse<IProductVariant>;
-
-// Order
-// export type OrderResponse = ResourceResponse<IOrder>;
-// export type OrderListResponse = ResourceListResponse<IOrder>;
-// export type OrderDeleteResponse = DeleteResponse;
 
 // Purchase
 export type PurchaseResponse = ResourceResponse<IPurchase>;

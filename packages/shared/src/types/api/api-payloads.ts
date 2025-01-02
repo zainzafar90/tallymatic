@@ -23,13 +23,6 @@ export type AdjustStockReq = {
   quantity: number;
 };
 
-// Order
-// export type CreateOrderReq = Omit<
-//   IOrder,
-//   'id' | 'orderNumber' | 'closedAt' | 'createdAt' | 'updatedAt' | 'totalAmount' | 'subtotal'
-// >;
-// export type UpdateOrderReq = Partial<IOrder>;
-
 // Purchase
 export type CreatePurchaseReq = Omit<IPurchase, 'id' | 'purchaseNumber'> & {
   items: Omit<IPurchaseItem, 'id' | 'purchaseId'>[];
