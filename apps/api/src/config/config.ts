@@ -24,6 +24,7 @@ const envVarsSchema = Joi.object()
     CLIENT_URL: Joi.string().required().description('Client url'),
     REDIS_HOST: Joi.string().description('Redis host').default('localhost'),
     REDIS_PORT: Joi.number().description('Redis port').default(6379),
+    REDIS_PASSWORD: Joi.string().description('Redis password'),
   })
   .unknown();
 
@@ -66,6 +67,7 @@ const config = {
   redis: {
     host: envVars.REDIS_HOST,
     port: envVars.REDIS_PORT,
+    password: envVars.REDIS_PASSWORD,
   },
 };
 
