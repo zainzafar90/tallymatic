@@ -39,10 +39,6 @@ export const useCustomerTableColumns = () => {
       header: () => <TextHeader text="Phone" />,
       cell: ({ getValue }) => <TextCell text={getValue()} />,
     }),
-    columnHelper.accessor('address', {
-      header: () => <TextHeader text="Address" />,
-      cell: ({ getValue }) => <TextCell text={getValue()} />,
-    }),
     columnHelper.display({
       id: 'actions',
       enableHiding: false,

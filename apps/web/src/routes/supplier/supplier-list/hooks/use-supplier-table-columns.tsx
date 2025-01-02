@@ -46,10 +46,6 @@ export const useSupplierTableColumns = () => {
       ),
       enableHiding: false,
     }),
-    columnHelper.accessor('address', {
-      header: () => <TextHeader text="Address" />,
-      cell: ({ getValue }) => <TextCell text={getValue()} />,
-    }),
     columnHelper.display({
       id: 'actions',
       enableHiding: false,
