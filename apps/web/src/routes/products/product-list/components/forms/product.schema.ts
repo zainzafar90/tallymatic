@@ -2,7 +2,7 @@ import * as z from 'zod';
 import { ProductStatus } from '@repo/shared';
 
 export const BaseProductSchema = z.object({
-  name: z.string().min(3, 'Name is required'),
+  name: z.string().min(2, 'Name is required'),
   description: z.string().optional(),
   categoryId: z.string().optional(),
   variants: z
