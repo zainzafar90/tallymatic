@@ -317,6 +317,8 @@ const OrderItems = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
     name: 'items',
   });
 
+  const watchFields = form.watch('items'); 
+
   const handleSelectProductVariant = (variant: IProductVariantWithProduct) => {
     if (!variant?.id) return;
 
@@ -327,6 +329,10 @@ const OrderItems = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
       totalDiscount: 0,
       variant,
     });
+  };
+
+  const calculateTotal = (quantity: number, price: number) => {
+    return quantity * price;
   };
 
   const removeItem = (index: number) => {
@@ -344,7 +350,7 @@ const OrderItems = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
           <CirclePlus className="w-6 h-6" />
         </Button>
       </Fieldset>
-  
+
       <Table>
         <TableHead>
           <TableRow>
@@ -355,28 +361,25 @@ const OrderItems = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
             >
               Cost
               <button type="button">
-                {showPrices ? (
-                  <Eye className="h-3 w-3" /> // Eye icon when prices are visible
-                ) : (
-                  <EyeOff className="h-3 w-3" /> // Eye-off icon when prices are hidden
-                )}
+                {showPrices ? <Eye className="h-3 w-3" /> : <EyeOff className="h-3 w-3" />}
               </button>
             </TableHeader>
             <TableHeader>Price</TableHeader>
-            <TableHeader>Quantity</TableHeader> {/* Added Quantity column */}
+            <TableHeader>Quantity</TableHeader>
+            <TableHeader>Total</TableHeader>
             <TableHeader>Actions</TableHeader>
           </TableRow>
         </TableHead>
-  
+
         <TableBody>
           {fields.length === 0 && (
             <TableRow>
-              <TableCell colSpan={5} className="text-center">
+              <TableCell colSpan={6} className="text-center">
                 No items added yet.
               </TableCell>
             </TableRow>
           )}
-  
+
           {fields.map((field, index) => (
             <TableRow key={field.id}>
               <TableCell>
@@ -392,54 +395,60 @@ const OrderItems = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
                   <span className="text-sm text-muted-foreground">{field.variant?.name}</span>
                 </div>
               </TableCell>
-  
+
               <TableCell>
                 {showPrices ? field.variant?.costPrice : '*****'}
               </TableCell>
-  
+
               <TableCell>
                 <FormField
                   control={form.control}
                   name={`items.${index}.price`}
-                  render={({ field }) => (
+                  render={({ field: priceField }) => (
                     <FormItem>
                       <FormControl>
                         <Input
-                          {...field}
+                          {...priceField}
                           type="number"
                           inputMode="decimal"
                           step="0.01"
                           min={0}
-                          onChange={(e) => field.onChange(parseFloat(e.target.value))}
+                          onChange={(e) => priceField.onChange(parseFloat(e.target.value))}
                         />
                       </FormControl>
                     </FormItem>
                   )}
                 />
               </TableCell>
-  
+
               <TableCell>
-                {/* Added Quantity Input field */}
                 <FormField
                   control={form.control}
                   name={`items.${index}.quantity`}
-                  render={({ field }) => (
+                  render={({ field: quantityField }) => (
                     <FormItem>
                       <FormControl>
                         <Input
-                          {...field}
+                          {...quantityField}
                           type="number"
                           inputMode="decimal"
                           step="1"
                           min={1}
-                          onChange={(e) => field.onChange(parseInt(e.target.value))}
+                          onChange={(e) => quantityField.onChange(parseInt(e.target.value))}
                         />
                       </FormControl>
                     </FormItem>
                   )}
                 />
               </TableCell>
-  
+
+              <TableCell>
+                {`Rs. ${calculateTotal(
+                  watchFields[index]?.quantity || 0,
+                  watchFields[index]?.price || 0
+                )}`}
+              </TableCell>
+
               <TableCell>
                 <Button type="button" plain onClick={() => removeItem(index)}>
                   <CircleMinus className="text-red-500 w-6 h-6" />
@@ -449,7 +458,7 @@ const OrderItems = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
           ))}
         </TableBody>
       </Table>
-  
+
       <ChooseProductVariantDialog
         priceField="price"
         priceLabel="Price"
@@ -458,5 +467,5 @@ const OrderItems = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
         onSelectVariant={handleSelectProductVariant}
       />
     </FieldGroup>
-  )};
-  
+  );
+};
