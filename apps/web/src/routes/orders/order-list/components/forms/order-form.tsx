@@ -77,9 +77,6 @@ export const OrderForm: React.FC<OrderFormProps> = ({ order, isPending, onSubmit
                 </Button>
               </div>
             </div>
-
-             
-
               <div className="flex gap-4 w-full flex-row">
                 <CustomerSummary form={form} />
 
@@ -101,7 +98,6 @@ export const OrderForm: React.FC<OrderFormProps> = ({ order, isPending, onSubmit
                       </FormItem>
                     )}
                   />
-
                   <FormField
                     control={form.control}
                     name="paymentMethod"
@@ -119,7 +115,6 @@ export const OrderForm: React.FC<OrderFormProps> = ({ order, isPending, onSubmit
                       </FormItem>
                     )}
                   />
-
                   <FormField
                     control={form.control}
                     name="paymentType"
@@ -147,7 +142,6 @@ export const OrderForm: React.FC<OrderFormProps> = ({ order, isPending, onSubmit
     </div>
   );
 };
-
 const OrderSummary = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
   const items = useWatch({ control: form.control, name: 'items' }) as IOrderItem[];
   const discountAmount = useWatch({ control: form.control, name: 'discountAmount' });
