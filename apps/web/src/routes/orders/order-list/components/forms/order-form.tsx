@@ -57,14 +57,28 @@ export const OrderForm: React.FC<OrderFormProps> = ({ order, isPending, onSubmit
 
   return (
     <div className="">
-      <Form {...form}>
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          <Card className="bg-muted/50 p-6">
-            <FieldGroup>
-              <div className="grid gap-0.5">
-                <CardTitle className="group flex items-center gap-2 text-lg">Order Details</CardTitle>
-                <CardDescription>Date: {new Date().toLocaleDateString()}</CardDescription>
+    <Form {...form}>
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <Card className="bg-muted/50 p-6">
+          <FieldGroup>
+            <div className="flex justify-between items-center p-4">
+              <div>
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  Order Details
+                </CardTitle>
+                <CardDescription>
+                  Date: {new Date().toLocaleDateString()}
+                </CardDescription>
               </div>
+              <div className="flex space-x-2 gap-2">
+                <Button onClick={onClose}>Cancel</Button>
+                <Button type="submit" color="blue" disabled={isPending}>
+                  {order ? 'Update' : 'Create'} Order
+                </Button>
+              </div>
+            </div>
+
+             
 
               <div className="flex gap-4 w-full flex-row">
                 <CustomerSummary form={form} />
@@ -126,15 +140,7 @@ export const OrderForm: React.FC<OrderFormProps> = ({ order, isPending, onSubmit
           </Card>
           <Card className="bg-muted/50 row-start-2 lg:row-start-1 lg:col-span-2 p-6">
             <OrderItems form={form} />
-
             <OrderSummary form={form} />
-
-            <div className="flex justify-end space-x-2 mt-4">
-              <Button onClick={onClose}>Cancel</Button>
-              <Button type="submit" color="blue" disabled={isPending}>
-                {order ? 'Update' : 'Create'} Order
-              </Button>
-            </div>
           </Card>
         </form>
       </Form>
