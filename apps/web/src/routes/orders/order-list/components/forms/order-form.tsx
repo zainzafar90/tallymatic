@@ -317,7 +317,10 @@ const OrderItems = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
     name: 'items',
   });
 
-  const watchFields = form.watch('items'); 
+  const watchFields = useWatch({
+    control: form.control,
+    name: 'items',
+  });
 
   const handleSelectProductVariant = (variant: IProductVariantWithProduct) => {
     if (!variant?.id) return;
@@ -444,8 +447,8 @@ const OrderItems = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
 
               <TableCell>
                 {`Rs. ${calculateTotal(
-                  watchFields[index]?.quantity || 0,
-                  watchFields[index]?.price || 0
+                  watchFields?.[index]?.quantity || 0,
+                  watchFields?.[index]?.price || 0
                 )}`}
               </TableCell>
 
