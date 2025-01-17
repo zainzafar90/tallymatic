@@ -317,10 +317,7 @@ const OrderItems = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
     name: 'items',
   });
 
-  const watchFields = useWatch({
-    control: form.control,
-    name: 'items',
-  });
+  const items = form.watch('items') as IOrderItem[];
 
   const handleSelectProductVariant = (variant: IProductVariantWithProduct) => {
     if (!variant?.id) return;
@@ -334,13 +331,7 @@ const OrderItems = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
     });
   };
 
-  const calculateTotal = (quantity: number, price: number) => {
-    return quantity * price;
-  };
-
-  const removeItem = (index: number) => {
-    remove(index);
-  };
+  const formatCurrency = (amount: number) => `Rs. ${amount.toFixed(2)}`;
 
   return (
     <FieldGroup>
@@ -446,14 +437,13 @@ const OrderItems = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
               </TableCell>
 
               <TableCell>
-                {`Rs. ${calculateTotal(
-                  watchFields?.[index]?.quantity || 0,
-                  watchFields?.[index]?.price || 0
-                )}`}
+                {formatCurrency(
+                  (items[index]?.quantity || 0) * (items[index]?.price || 0)
+                )}
               </TableCell>
 
               <TableCell>
-                <Button type="button" plain onClick={() => removeItem(index)}>
+                <Button type="button" plain onClick={() => remove(index)}>
                   <CircleMinus className="text-red-500 w-6 h-6" />
                 </Button>
               </TableCell>
