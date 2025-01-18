@@ -12,7 +12,7 @@ export const BaseProductSchema = z.object({
         sku: z.string().min(1, 'SKU is required'),
         price: z.number().min(1, 'Price must be non-negative'),
         costPrice: z.number().min(1, 'Cost price must be non-negative'),
-        stock: z.number().int().min(1, 'Stock must be non-negative'),
+        stock: z.number().int().min(0,'Stock must be non-negative'),
       })
     )
     .min(1, 'At least one variant is required'),
