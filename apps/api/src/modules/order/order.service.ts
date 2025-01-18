@@ -60,6 +60,7 @@ export const createOrder = async (orderData: CreateOrderReq, organizationId: str
       where: eq(orders.id, order.id),
       with: {
         items: true,
+        customer: true, // Ensure customer data is included
       },
     });
 
@@ -104,6 +105,7 @@ export const queryOrders = async (
     orderBy: orderByClause,
     with: {
       items: true,
+      customer: true, // Include customer data
     },
   });
 
@@ -179,6 +181,7 @@ export const updateOrderById = async (orderId: string, updateBody: UpdateOrderRe
       where: eq(orders.id, updatedOrder.id),
       with: {
         items: true,
+        customer: true,
       },
     });
 

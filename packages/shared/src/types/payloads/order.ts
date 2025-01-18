@@ -5,6 +5,7 @@ type BaseOrder = {
   id: string;
   orderNumber: string;
   customerId: string;
+  customerName: string;
   closedAt?: Date;
   currency: string;
   status: OrderStatus;
@@ -27,9 +28,18 @@ type BaseOrderItem = {
   totalDiscount: number;
 };
 
+export interface ICustomer {
+  id: string;
+  name: string;
+  email?: string;
+  phone?: string;
+  address?: string;
+}
+
 export interface IOrder extends BaseOrder {
   items: BaseOrderItem[];
   createdAt: Date;
+  customer?: ICustomer;
 }
 
 export interface IOrderItem extends BaseOrderItem {
@@ -51,5 +61,5 @@ export interface CreateOrderReq {
 }
 
 export interface UpdateOrderReq extends Partial<CreateOrderReq> {
-  closedAt?: Date;
+  closedAt?: Date; // Optionally close the order with a date
 }

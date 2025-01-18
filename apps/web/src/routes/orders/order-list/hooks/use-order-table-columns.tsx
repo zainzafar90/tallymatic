@@ -18,6 +18,14 @@ export const useOrderTableColumns = () => {
       header: ({ column }) => <SortedHeader text="Order #" column={column} />,
       cell: ({ row }) => <TextCell text={row.getValue('orderNumber')} />,
     }),
+    columnHelper.accessor('customerName', {
+      header: () => <TextHeader text="Customer" />,
+      cell: ({ row }) => {
+        const customerName = row.original.customer?.name || 'Unknown Customer';
+        return <TextCell text={customerName} />;
+      },
+    }),
+
     columnHelper.accessor('status', {
       header: () => <TextHeader text="Status" />,
       cell: ({ getValue }) => {
