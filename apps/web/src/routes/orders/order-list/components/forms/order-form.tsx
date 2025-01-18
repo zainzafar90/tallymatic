@@ -65,7 +65,6 @@ export const OrderForm: React.FC<OrderFormProps> = ({ order, isPending, onSubmit
                 <CardTitle className="group flex items-center gap-2 text-lg">Order Details</CardTitle>
                 <CardDescription>Date: {new Date().toLocaleDateString()}</CardDescription>
               </div>
-
               <div className="flex gap-4 w-full flex-row">
                 <CustomerSummary form={form} />
 
@@ -87,7 +86,6 @@ export const OrderForm: React.FC<OrderFormProps> = ({ order, isPending, onSubmit
                       </FormItem>
                     )}
                   />
-
                   <FormField
                     control={form.control}
                     name="paymentMethod"
@@ -105,7 +103,6 @@ export const OrderForm: React.FC<OrderFormProps> = ({ order, isPending, onSubmit
                       </FormItem>
                     )}
                   />
-
                   <FormField
                     control={form.control}
                     name="paymentType"
@@ -140,7 +137,6 @@ export const OrderForm: React.FC<OrderFormProps> = ({ order, isPending, onSubmit
     </div>
   );
 };
-
 const OrderSummary = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
   const items = useWatch({ control: form.control, name: 'items' }) as IOrderItem[];
   const discountAmount = useWatch({ control: form.control, name: 'discountAmount' });
@@ -316,10 +312,7 @@ const OrderItems = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
     name: 'items',
   });
 
-  const watchFields = useWatch({
-    control: form.control,
-    name: 'items',
-  });
+  const items = form.watch('items') as IOrderItem[];
 
   const handleSelectProductVariant = (variant: IProductVariantWithProduct) => {
     if (!variant?.id) return;
@@ -333,13 +326,7 @@ const OrderItems = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
     });
   };
 
-  const calculateTotal = (quantity: number, price: number) => {
-    return quantity * price;
-  };
-
-  const removeItem = (index: number) => {
-    remove(index);
-  };
+  const formatCurrency = (amount: number) => `Rs. ${amount.toFixed(2)}`;
 
   return (
     <FieldGroup>
@@ -399,16 +386,16 @@ const OrderItems = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
                 <FormField
                   control={form.control}
                   name={`items.${index}.price`}
-                  render={({ field: priceField }) => (
+                  render={({ field }) => (
                     <FormItem>
                       <FormControl>
                         <Input
-                          {...priceField}
+                          {...field}
                           type="number"
                           inputMode="decimal"
                           step="0.01"
                           min={0}
-                          onChange={(e) => priceField.onChange(parseFloat(e.target.value))}
+                          onChange={(e) => field.onChange(parseFloat(e.target.value))}
                         />
                       </FormControl>
                     </FormItem>
@@ -420,16 +407,16 @@ const OrderItems = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
                 <FormField
                   control={form.control}
                   name={`items.${index}.quantity`}
-                  render={({ field: quantityField }) => (
+                  render={({ field }) => (
                     <FormItem>
                       <FormControl>
                         <Input
-                          {...quantityField}
+                          {...field}
                           type="number"
                           inputMode="decimal"
                           step="1"
                           min={1}
-                          onChange={(e) => quantityField.onChange(parseInt(e.target.value))}
+                          onChange={(e) => field.onChange(parseInt(e.target.value))}
                         />
                       </FormControl>
                     </FormItem>
@@ -437,12 +424,10 @@ const OrderItems = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
                 />
               </TableCell>
 
-              <TableCell>
-                {`Rs. ${calculateTotal(watchFields?.[index]?.quantity || 0, watchFields?.[index]?.price || 0).toFixed(2)}`}
-              </TableCell>
+              <TableCell>{formatCurrency((items[index]?.quantity || 0) * (items[index]?.price || 0))}</TableCell>
 
               <TableCell>
-                <Button type="button" plain onClick={() => removeItem(index)}>
+                <Button type="button" plain onClick={() => remove(index)}>
                   <CircleMinus className="text-red-500 w-6 h-6" />
                 </Button>
               </TableCell>
