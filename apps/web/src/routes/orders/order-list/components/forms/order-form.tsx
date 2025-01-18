@@ -56,9 +56,9 @@ export const OrderForm: React.FC<OrderFormProps> = ({ order, isPending, onSubmit
   });
 
   return (
-    <div className="">
+    <div className="relative">
       <Form {...form}>
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4 pb-16">
           <Card className="bg-muted/50 p-6">
             <FieldGroup>
               <div className="grid gap-0.5">
@@ -126,16 +126,15 @@ export const OrderForm: React.FC<OrderFormProps> = ({ order, isPending, onSubmit
           </Card>
           <Card className="bg-muted/50 row-start-2 lg:row-start-1 lg:col-span-2 p-6">
             <OrderItems form={form} />
-
             <OrderSummary form={form} />
-
-            <div className="flex justify-end space-x-2 mt-4">
-              <Button onClick={onClose}>Cancel</Button>
-              <Button type="submit" color="blue" disabled={isPending}>
-                {order ? 'Update' : 'Create'} Order
-              </Button>
-            </div>
           </Card>
+
+          <div className="fixed bottom-0 left-0 right-0 bg-background border-t p-4 flex justify-end space-x-2">
+            <Button onClick={onClose}>Cancel</Button>
+            <Button type="submit" color="blue" disabled={isPending}>
+              {order ? 'Update' : 'Create'} Order
+            </Button>
+          </div>
         </form>
       </Form>
     </div>
@@ -358,14 +357,9 @@ const OrderItems = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
         <TableHead>
           <TableRow>
             <TableHeader>Product</TableHeader>
-            <TableHeader
-              className="flex items-center gap-2 cursor-pointer"
-              onClick={() => setShowPrices(!showPrices)}
-            >
+            <TableHeader className="flex items-center gap-2 cursor-pointer" onClick={() => setShowPrices(!showPrices)}>
               Cost
-              <button type="button">
-                {showPrices ? <Eye className="h-3 w-3" /> : <EyeOff className="h-3 w-3" />}
-              </button>
+              <button type="button">{showPrices ? <Eye className="h-3 w-3" /> : <EyeOff className="h-3 w-3" />}</button>
             </TableHeader>
             <TableHeader>Price</TableHeader>
             <TableHeader>Quantity</TableHeader>
@@ -399,9 +393,7 @@ const OrderItems = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
                 </div>
               </TableCell>
 
-              <TableCell>
-                {showPrices ? field.variant?.costPrice : '*****'}
-              </TableCell>
+              <TableCell>{showPrices ? field.variant?.costPrice : '*****'}</TableCell>
 
               <TableCell>
                 <FormField
@@ -446,10 +438,7 @@ const OrderItems = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
               </TableCell>
 
               <TableCell>
-                {`Rs. ${calculateTotal(
-                  watchFields?.[index]?.quantity || 0,
-                  watchFields?.[index]?.price || 0
-                )}`}
+                {`Rs. ${calculateTotal(watchFields?.[index]?.quantity || 0, watchFields?.[index]?.price || 0).toFixed(2)}`}
               </TableCell>
 
               <TableCell>
