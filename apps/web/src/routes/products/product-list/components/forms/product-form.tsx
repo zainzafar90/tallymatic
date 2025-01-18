@@ -1,5 +1,5 @@
 import { CircleMinus, CirclePlus, Info } from 'lucide-react';
-import { useFieldArray, useForm } from 'react-hook-form';
+import { useFieldArray, useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { IProduct } from '@repo/shared';
 
@@ -75,6 +75,10 @@ export const ProductForm = ({ product, isPending, onSubmit, onClose }: ProductFo
     }
   };
 
+  const variants = useWatch({ control: form.control, name: 'variants' });
+  const totalStock = variants?.reduce((sum, variant) => sum + (variant.stock || 0), 0) || 0;
+  const totalValue = variants?.reduce((sum, variant) => sum + (variant.stock || 0) * (variant.costPrice || 0), 0) || 0;
+
   return (
     <Form {...form}>
       <form onSubmit={handleSubmit}>
@@ -149,6 +153,12 @@ export const ProductForm = ({ product, isPending, onSubmit, onClose }: ProductFo
               <Description>
                 Add variants for different options like size, color, etc. Each variant can have its own price, cost
               </Description>
+              <div className="mt-2 text-sm">
+                <span className="text-muted-foreground">Total Stock: </span>
+                <span className="font-medium">{totalStock}</span>
+                <span className="ml-4 text-muted-foreground">Total Value: </span>
+                <span className="font-medium">₨ {totalValue.toFixed(2)}</span>
+              </div>
             </div>
             <Button color="dark/zinc" onClick={addVariant}>
               <CirclePlus className="w-6 h-6" />
