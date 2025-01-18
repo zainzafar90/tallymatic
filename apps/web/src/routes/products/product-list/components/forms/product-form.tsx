@@ -30,7 +30,7 @@ export const ProductForm = ({ product, isPending, onSubmit, onClose }: ProductFo
     resolver: zodResolver(product ? UpdateProductSchema : CreateProductSchema),
     defaultValues: {
       name: product?.name || '',
-       categoryId: product?.categoryId || '',
+      categoryId: product?.categoryId || '',
       description: product?.description || '',
       ...(product && { status: product.status }),
       variants: product?.variants.map((variant) => ({
@@ -103,31 +103,30 @@ export const ProductForm = ({ product, isPending, onSubmit, onClose }: ProductFo
                 );
               }}
             />
-          <FormField
-  control={form.control}
-  name="categoryId"
-  render={({ field }) => {
-    return (
-      <FormItem className="w-full">
-        <FormLabel>Category</FormLabel>
-        <FormControl>
-          <Select {...field} disabled={isCategoriesLoading}>
-            <option value="">Select a category&hellip;</option>
-            {categories?.map((category) => (
-              <option key={category.id} value={category.id}>
-                {category.name}
-              </option>
-            ))}
-          </Select>
-        </FormControl>
-        {form.formState.errors.categoryId && (
-          <FormMessage>{form.formState.errors.categoryId.message}</FormMessage>
-        )}
-      </FormItem>
-    );
-  }}
-/>
-
+            <FormField
+              control={form.control}
+              name="categoryId"
+              render={({ field }) => {
+                return (
+                  <FormItem className="w-full">
+                    <FormLabel>Category</FormLabel>
+                    <FormControl>
+                      <Select {...field} disabled={isCategoriesLoading}>
+                        <option value="">Select a category&hellip;</option>
+                        {categories?.map((category) => (
+                          <option key={category.id} value={category.id}>
+                            {category.name}
+                          </option>
+                        ))}
+                      </Select>
+                    </FormControl>
+                    {form.formState.errors.categoryId && (
+                      <FormMessage>{form.formState.errors.categoryId.message}</FormMessage>
+                    )}
+                  </FormItem>
+                );
+              }}
+            />
           </div>
           <FormField
             control={form.control}
@@ -185,70 +184,69 @@ export const ProductForm = ({ product, isPending, onSubmit, onClose }: ProductFo
                   }}
                 />
 
-<FormField
-  control={form.control}
-  name={`variants.${index}.costPrice`}
-  render={({ field }) => {
-    return (
-      <FormItem>
-        <FormLabel>Cost Price</FormLabel>
-        <FormControl>
-          <Input
-            {...field}
-            inputMode="decimal"
-            type="number"
-            placeholder="$0.00"
-            value={typeof field.value === 'string' ? field.value : field.value.toString()}
-            onChange={(e) => {
-              const value = e.target.value;
-              field.onChange(parseFloat(value) || 0);
-            }}
-          />
-        </FormControl>
-        <FormMessage />
-      </FormItem>
-    );
-  }}
-/>
+                <FormField
+                  control={form.control}
+                  name={`variants.${index}.costPrice`}
+                  render={({ field }) => {
+                    return (
+                      <FormItem>
+                        <FormLabel>Cost Price</FormLabel>
+                        <FormControl>
+                          <Input
+                            {...field}
+                            inputMode="decimal"
+                            type="number"
+                            placeholder="$0.00"
+                            value={typeof field.value === 'string' ? field.value : field.value.toString()}
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              field.onChange(parseFloat(value) || 0);
+                            }}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    );
+                  }}
+                />
 
-<FormField
-  control={form.control}
-  name={`variants.${index}.price`}
-  render={({ field }) => {
-    return (
-      <FormItem>
-        <FormLabel>
-          Price
-          <Tooltip>
-            <TooltipTrigger className="inline-flex ml-2 align-text-top text-muted-foreground" tabIndex={-1}>
-              <Info className="w-4 h-4" />
-            </TooltipTrigger>
-            <TooltipContent>
-              <span className="text-pretty">
-                Price is the amount of money that the customer pays for the product.
-              </span>
-            </TooltipContent>
-          </Tooltip>
-        </FormLabel>
-        <FormControl>
-          <Input
-            {...field}
-            inputMode="decimal"
-            type="number"
-            placeholder="$0.00"
-            value={typeof field.value === 'string' ? field.value : field.value.toString()}
-            onChange={(e) => {
-              const value = e.target.value;
-              field.onChange(parseFloat(value) || 0);
-            }}
-          />
-        </FormControl>
-        <FormMessage />
-      </FormItem>
-    );
-  }}
-/>
-
+                <FormField
+                  control={form.control}
+                  name={`variants.${index}.price`}
+                  render={({ field }) => {
+                    return (
+                      <FormItem>
+                        <FormLabel>
+                          Price
+                          <Tooltip>
+                            <TooltipTrigger className="inline-flex ml-2 align-text-top text-muted-foreground" tabIndex={-1}>
+                              <Info className="w-4 h-4" />
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <span className="text-pretty">
+                                Price is the amount of money that the customer pays for the product.
+                              </span>
+                            </TooltipContent>
+                          </Tooltip>
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            {...field}
+                            inputMode="decimal"
+                            type="number"
+                            placeholder="$0.00"
+                            value={typeof field.value === 'string' ? field.value : field.value.toString()}
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              field.onChange(parseFloat(value) || 0);
+                            }}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    );
+                  }}
+                />
 
                 <FormField
                   control={form.control}

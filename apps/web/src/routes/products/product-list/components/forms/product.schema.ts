@@ -4,7 +4,7 @@ import { ProductStatus } from '@repo/shared';
 export const BaseProductSchema = z.object({
   name: z.string().min(2, 'Name is required'),
   description: z.string().optional(),
-  categoryId: z.string().min(1,"Category is required"),
+  categoryId: z.string().min(1, 'Category is required'),
   variants: z
     .array(
       z.object({

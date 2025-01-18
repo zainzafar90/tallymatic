@@ -38,7 +38,7 @@ export const getProduct = {
 const updateProductBody: Record<keyof UpdateProductReq, any> = {
   name: Joi.string().optional(),
   description: Joi.string().allow('').optional(),
-  categoryId: Joi.string().custom(uuid).required(), // Changed from optional() to required()
+  categoryId: Joi.string().custom(uuid).required(),
   status: Joi.string().valid(ProductStatus.ACTIVE, ProductStatus.ARCHIVED, ProductStatus.DRAFT).optional(),
   variants: Joi.array().items(Joi.object().keys(createProductVariantBody)).min(1).optional(),
 };
