@@ -398,16 +398,16 @@ const OrderItems = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
                 <FormField
                   control={form.control}
                   name={`items.${index}.price`}
-                  render={({ field: priceField }) => (
+                  render={({ field }) => (
                     <FormItem>
                       <FormControl>
                         <Input
-                          {...priceField}
+                          {...field}
                           type="number"
                           inputMode="decimal"
                           step="0.01"
                           min={0}
-                          onChange={(e) => priceField.onChange(parseFloat(e.target.value))}
+                          onChange={(e) =>field.onChange(parseFloat(e.target.value))}
                         />
                       </FormControl>
                     </FormItem>
@@ -419,16 +419,16 @@ const OrderItems = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
                 <FormField
                   control={form.control}
                   name={`items.${index}.quantity`}
-                  render={({ field: quantityField }) => (
+                  render={({ field }) => (
                     <FormItem>
                       <FormControl>
                         <Input
-                          {...quantityField}
+                          {...field}
                           type="number"
                           inputMode="decimal"
                           step="1"
                           min={1}
-                          onChange={(e) => quantityField.onChange(parseInt(e.target.value))}
+                          onChange={(e) => field.onChange(parseInt(e.target.value))}
                         />
                       </FormControl>
                     </FormItem>
