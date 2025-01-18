@@ -8,7 +8,7 @@ import { createProductVariantBody } from '../product-variant/product-variant.val
 const createProductBody: Record<keyof CreateProductReq, any> = {
   name: Joi.string().required(),
   description: Joi.string().allow('').optional(),
-  categoryId: Joi.string().custom(uuid).optional(),
+  categoryId: Joi.string().custom(uuid).required(),
   variants: Joi.array().items(Joi.object().keys(createProductVariantBody)).min(1).required(),
 };
 
@@ -38,7 +38,7 @@ export const getProduct = {
 const updateProductBody: Record<keyof UpdateProductReq, any> = {
   name: Joi.string().optional(),
   description: Joi.string().allow('').optional(),
-  categoryId: Joi.string().custom(uuid).optional(),
+  categoryId: Joi.string().custom(uuid).required(), // Changed from optional() to required()
   status: Joi.string().valid(ProductStatus.ACTIVE, ProductStatus.ARCHIVED, ProductStatus.DRAFT).optional(),
   variants: Joi.array().items(Joi.object().keys(createProductVariantBody)).min(1).optional(),
 };

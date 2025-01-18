@@ -30,7 +30,7 @@ export const ProductForm = ({ product, isPending, onSubmit, onClose }: ProductFo
     resolver: zodResolver(product ? UpdateProductSchema : CreateProductSchema),
     defaultValues: {
       name: product?.name || '',
-      categoryId: product?.categoryId ? product?.categoryId : undefined,
+       categoryId: product?.categoryId || '',
       description: product?.description || '',
       ...(product && { status: product.status }),
       variants: product?.variants.map((variant) => ({
@@ -103,27 +103,31 @@ export const ProductForm = ({ product, isPending, onSubmit, onClose }: ProductFo
                 );
               }}
             />
-            <FormField
-              control={form.control}
-              name="categoryId"
-              render={({ field }) => {
-                return (
-                  <FormItem className="w-full">
-                    <FormLabel>Category</FormLabel>
-                    <FormControl>
-                      <Select {...field} disabled={isCategoriesLoading}>
-                        <option value="">Select a category&hellip;</option>
-                        {categories?.map((category) => (
-                          <option key={category.id} value={category.id}>
-                            {category.name}
-                          </option>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  </FormItem>
-                );
-              }}
-            />
+          <FormField
+  control={form.control}
+  name="categoryId"
+  render={({ field }) => {
+    return (
+      <FormItem className="w-full">
+        <FormLabel>Category</FormLabel>
+        <FormControl>
+          <Select {...field} disabled={isCategoriesLoading}>
+            <option value="">Select a category&hellip;</option>
+            {categories?.map((category) => (
+              <option key={category.id} value={category.id}>
+                {category.name}
+              </option>
+            ))}
+          </Select>
+        </FormControl>
+        {form.formState.errors.categoryId && (
+          <FormMessage>{form.formState.errors.categoryId.message}</FormMessage>
+        )}
+      </FormItem>
+    );
+  }}
+/>
+
           </div>
           <FormField
             control={form.control}
