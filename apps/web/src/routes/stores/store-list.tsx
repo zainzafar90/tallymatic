@@ -28,6 +28,7 @@ export const StoreList = () => {
   }
 
   if (stores.length === 1) {
+    localStorage.setItem(SELECTED_STORE_KEY, stores[0].id);
     return <Navigate to={`/stores/${stores[0].id}/dashboard`} replace />;
   }
 

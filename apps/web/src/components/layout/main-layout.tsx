@@ -48,7 +48,7 @@ import { useMe } from '@/hooks/api/users.hooks';
 import { API_TOKEN_KEY } from '@/utils/common.utils';
 import { useTheme } from '@/providers/theme/theme-provider';
 
-import { StoreSwitcher } from '../store-switcher';
+import { StoreSwitcher } from '../../routes/stores/store-switcher';
 
 function AccountDropdownMenu({ anchor }: { anchor: 'top start' | 'bottom end' }) {
   const navigate = useNavigate();

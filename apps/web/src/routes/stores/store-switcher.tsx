@@ -6,10 +6,17 @@ import { useMe } from '@/hooks/api/users.hooks';
 import { SELECTED_STORE_KEY } from '@/utils/common.utils';
 import { getInitials } from '@/utils/string.utils';
 
-import { LetterBox } from './common/letter-box/letter-box';
-import { Avatar } from './ui/avatar';
-import { Dropdown, DropdownButton, DropdownDivider, DropdownItem, DropdownLabel, DropdownMenu } from './ui/dropdown';
-import { SidebarItem, SidebarLabel } from './ui/sidebar';
+import { LetterBox } from '../../components/common/letter-box/letter-box';
+import { Avatar } from '../../components/ui/avatar';
+import {
+  Dropdown,
+  DropdownButton,
+  DropdownDivider,
+  DropdownItem,
+  DropdownLabel,
+  DropdownMenu,
+} from '../../components/ui/dropdown';
+import { SidebarItem, SidebarLabel } from '../../components/ui/sidebar';
 
 export const StoreSwitcher = () => {
   const { storeId } = useParams();
