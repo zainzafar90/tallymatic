@@ -14,26 +14,29 @@ export const createSupplier = catchAsync(async (req: Request, res: Response) => 
   if (!isAllowed) {
     throw new ApiError(httpStatus.FORBIDDEN, 'You do not have permission to create suppliers');
   }
-  const supplier = await supplierService.createSupplier(req.body, req.user.organizationId);
+  const storeId = req.store.id;
+  const supplier = await supplierService.createSupplier(req.body, req.user.organizationId, storeId);
   res.status(httpStatus.CREATED).send(supplier);
 });
 
 export const getSuppliers = catchAsync(async (req: Request, res: Response) => {
   const filter = pick(req.query, ['companyName', 'contactName', 'email']);
-  const options: IOptions = pick(req.query, ['sortBy', 'sortOrder', 'limit', 'offset', 'projectBy', 'includeDeleted']);
+  const options: IOptions = pick(req.query, ['sortBy', 'sortOrder', 'limit', 'offset', 'projectBy']);
   const isAllowed = permissionService.checkPermissions(req.user.role, 'list', 'suppliers');
   if (!isAllowed) {
     throw new ApiError(httpStatus.FORBIDDEN, 'You do not have permission to list suppliers');
   }
 
+  const storeId = req.store.id;
   const wildcardFields = ['companyName'];
-  const result = await supplierService.querySuppliers(filter, options, req.user.organizationId, wildcardFields);
+  const result = await supplierService.querySuppliers(filter, options, req.user.organizationId, storeId, wildcardFields);
   res.send(result);
 });
 
 export const getSupplier = catchAsync(async (req: Request, res: Response) => {
   if (typeof req.params['supplierId'] === 'string') {
-    const supplier = await supplierService.getSupplierById(req.params['supplierId'], req.user.organizationId);
+    const storeId = req.store.id;
+    const supplier = await supplierService.getSupplierById(req.params['supplierId'], req.user.organizationId, storeId);
     if (!supplier) {
       throw new ApiError(httpStatus.NOT_FOUND, 'Supplier not found');
     }
@@ -47,7 +50,13 @@ export const updateSupplier = catchAsync(async (req: Request, res: Response) => 
     if (!isAllowed) {
       throw new ApiError(httpStatus.FORBIDDEN, 'You do not have permission to update supplier');
     }
-    const supplier = await supplierService.updateSupplierById(req.params['supplierId'], req.body, req.user.organizationId);
+    const storeId = req.store.id;
+    const supplier = await supplierService.updateSupplierById(
+      req.params['supplierId'],
+      req.body,
+      req.user.organizationId,
+      storeId
+    );
     res.send(supplier);
   }
 });
@@ -58,7 +67,8 @@ export const deleteSupplier = catchAsync(async (req: Request, res: Response) => 
     if (!isAllowed) {
       throw new ApiError(httpStatus.FORBIDDEN, 'You do not have permission to delete supplier');
     }
-    await supplierService.deleteSupplierById(req.params['supplierId'], req.user.organizationId);
+    const storeId = req.store.id;
+    await supplierService.deleteSupplierById(req.params['supplierId'], req.user.organizationId, storeId);
     res.status(httpStatus.NO_CONTENT).send();
   }
 });
@@ -74,6 +84,7 @@ export const bulkDeleteSuppliers = catchAsync(async (req: Request, res: Response
     throw new ApiError(httpStatus.BAD_REQUEST, 'Invalid input: supplierIds must be a non-empty array');
   }
 
-  await supplierService.bulkDeleteSuppliers(supplierIds, req.user.organizationId);
+  const storeId = req.store.id;
+  await supplierService.bulkDeleteSuppliers(supplierIds, req.user.organizationId, storeId);
   res.status(httpStatus.NO_CONTENT).send();
 });
