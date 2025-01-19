@@ -1,4 +1,4 @@
-import { and, asc, count, desc, eq, inArray } from 'drizzle-orm';
+import { and, asc, count, desc, eq, ilike, inArray } from 'drizzle-orm';
 import httpStatus from 'http-status';
 import { CreatePurchaseReq, IOptions, ListResponse, PurchaseStatus, TransactionType } from '@repo/shared';
 
@@ -97,6 +97,9 @@ export const queryPurchases = async (
   }
   if (filter.supplierId) {
     conditions.push(eq(purchases.supplierId, filter.supplierId));
+  }
+  if (filter.purchaseNumber) {
+    conditions.push(ilike(purchases.purchaseNumber, `%${filter.purchaseNumber}%`));
   }
 
   const whereClause = and(...conditions);

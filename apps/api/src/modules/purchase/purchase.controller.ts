@@ -27,7 +27,7 @@ export const getPurchases = catchAsync(async (req: Request, res: Response) => {
   }
 
   const storeId = req.store.id;
-  const filter = pick(req.query, ['status', 'supplierId']);
+  const filter = pick(req.query, ['status', 'supplierId', 'purchaseNumber']);
   const options: IOptions = pick(req.query, ['sortBy', 'sortOrder', 'limit', 'offset', 'projectBy']);
   const result = await purchaseService.queryPurchases(filter, options, req.user.organizationId, storeId);
   res.send(result);

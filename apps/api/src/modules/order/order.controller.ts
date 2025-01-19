@@ -29,8 +29,7 @@ export const getOrders = catchAsync(async (req: Request, res: Response) => {
   const storeId = req.store.id;
   const filter = pick(req.query, ['orderNumber', 'status']);
   const options: IOptions = pick(req.query, ['sortBy', 'sortOrder', 'limit', 'offset', 'projectBy']);
-  const wildcardFields = ['orderNumber'];
-  const result = await orderService.queryOrders(filter, options, req.user.organizationId, storeId, wildcardFields);
+  const result = await orderService.queryOrders(filter, options, req.user.organizationId, storeId);
   res.send(result);
 });
 

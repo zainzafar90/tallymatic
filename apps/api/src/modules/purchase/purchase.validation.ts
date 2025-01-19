@@ -53,6 +53,7 @@ export const getPurchases = {
     projectBy: Joi.string(),
     limit: Joi.number().integer(),
     offset: Joi.number().integer(),
+    purchaseNumber: Joi.string(),
   }),
 };
 

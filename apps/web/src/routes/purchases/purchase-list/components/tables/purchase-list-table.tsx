@@ -38,7 +38,7 @@ export const PurchaseListTable = (props: PurchaseListTableProps) => {
     enableFiltering: true,
     enablePagination: true,
     enableRowSelection: true,
-    globalFilterField: 'id',
+    globalFilterField: 'purchaseNumber',
   });
 
   const onClearFilters = () => {

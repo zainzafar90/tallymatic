@@ -1,4 +1,4 @@
-import { and, asc, count, desc, eq, inArray } from 'drizzle-orm';
+import { and, asc, count, desc, eq, ilike, inArray } from 'drizzle-orm';
 import { CreateOrderReq, IOptions, ListResponse, UpdateOrderReq } from '@repo/shared';
 
 import { ApiError } from '@/common/errors/api-error';
@@ -72,15 +72,15 @@ export const queryOrders = async (
   filter: Record<string, any>,
   options: IOptions,
   organizationId: string,
-  storeId: string,
-  wildcardFields: string[] = []
+  storeId: string
 ): Promise<ListResponse<typeof orders.$inferSelect>> => {
   const { limit, offset } = getPaginationConfig(options);
 
   const conditions = [eq(orders.organizationId, organizationId), eq(orders.storeId, storeId)];
   if (filter.orderNumber) {
-    conditions.push(eq(orders.orderNumber, filter.orderNumber));
+    conditions.push(ilike(orders.orderNumber, `%${filter.orderNumber}%`));
   }
+
   if (filter.status) {
     conditions.push(eq(orders.status, filter.status));
   }
