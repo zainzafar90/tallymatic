@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 import { ShoppingCart } from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
@@ -42,9 +44,11 @@ export const Dashboard = () => {
       <Heading>Good afternoon, Zain</Heading>
       <div className="mt-8 flex items-end justify-between">
         <Subheading>Overview</Subheading>
-        <Button>
-          <ShoppingCart className="w-4 h-4" /> New Sale
-        </Button>
+        <Link to="/orders/create">
+          <Button>
+            <ShoppingCart className="w-4 h-4" /> New Sale
+          </Button>
+        </Link>
       </div>
       <div className="mt-4 grid gap-8 sm:grid-cols-2 xl:grid-cols-4">
         <Stat title="Today's Sales" subtitle="from yesterday" value="&#8360; 455" change="+4.5%" />

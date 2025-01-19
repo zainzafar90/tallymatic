@@ -56,16 +56,15 @@ export const OrderForm: React.FC<OrderFormProps> = ({ order, isPending, onSubmit
   });
 
   return (
-    <div className="">
+    <div className="relative">
       <Form {...form}>
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4 pb-16">
           <Card className="bg-muted/50 p-6">
             <FieldGroup>
               <div className="grid gap-0.5">
                 <CardTitle className="group flex items-center gap-2 text-lg">Order Details</CardTitle>
                 <CardDescription>Date: {new Date().toLocaleDateString()}</CardDescription>
               </div>
-
               <div className="flex gap-4 w-full flex-row">
                 <CustomerSummary form={form} />
 
@@ -87,7 +86,6 @@ export const OrderForm: React.FC<OrderFormProps> = ({ order, isPending, onSubmit
                       </FormItem>
                     )}
                   />
-
                   <FormField
                     control={form.control}
                     name="paymentMethod"
@@ -105,7 +103,6 @@ export const OrderForm: React.FC<OrderFormProps> = ({ order, isPending, onSubmit
                       </FormItem>
                     )}
                   />
-
                   <FormField
                     control={form.control}
                     name="paymentType"
@@ -126,22 +123,20 @@ export const OrderForm: React.FC<OrderFormProps> = ({ order, isPending, onSubmit
           </Card>
           <Card className="bg-muted/50 row-start-2 lg:row-start-1 lg:col-span-2 p-6">
             <OrderItems form={form} />
-
             <OrderSummary form={form} />
-
-            <div className="flex justify-end space-x-2 mt-4">
-              <Button onClick={onClose}>Cancel</Button>
-              <Button type="submit" color="blue" disabled={isPending}>
-                {order ? 'Update' : 'Create'} Order
-              </Button>
-            </div>
           </Card>
+
+          <div className="fixed bottom-0 left-0 right-0 bg-background border-t p-4 flex justify-end space-x-2">
+            <Button onClick={onClose}>Cancel</Button>
+            <Button type="submit" color="blue" disabled={isPending}>
+              {order ? 'Update' : 'Create'} Order
+            </Button>
+          </div>
         </form>
       </Form>
     </div>
   );
 };
-
 const OrderSummary = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
   const items = useWatch({ control: form.control, name: 'items' }) as IOrderItem[];
   const discountAmount = useWatch({ control: form.control, name: 'discountAmount' });
@@ -317,6 +312,8 @@ const OrderItems = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
     name: 'items',
   });
 
+  const items = form.watch('items') as IOrderItem[];
+
   const handleSelectProductVariant = (variant: IProductVariantWithProduct) => {
     if (!variant?.id) return;
 
@@ -329,9 +326,7 @@ const OrderItems = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
     });
   };
 
-  const removeItem = (index: number) => {
-    remove(index);
-  };
+  const formatCurrency = (amount: number) => `Rs. ${amount.toFixed(2)}`;
 
   return (
     <FieldGroup>
@@ -349,12 +344,13 @@ const OrderItems = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
         <TableHead>
           <TableRow>
             <TableHeader>Product</TableHeader>
-            <TableHeader>Quantity</TableHeader>
-            <TableHeader>Price</TableHeader>
             <TableHeader className="flex items-center gap-2 cursor-pointer" onClick={() => setShowPrices(!showPrices)}>
               Cost
               <button type="button">{showPrices ? <Eye className="h-3 w-3" /> : <EyeOff className="h-3 w-3" />}</button>
             </TableHeader>
+            <TableHeader>Price</TableHeader>
+            <TableHeader>Quantity</TableHeader>
+            <TableHeader>Total</TableHeader>
             <TableHeader>Actions</TableHeader>
           </TableRow>
         </TableHead>
@@ -362,7 +358,7 @@ const OrderItems = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
         <TableBody>
           {fields.length === 0 && (
             <TableRow>
-              <TableCell colSpan={4} className="text-center">
+              <TableCell colSpan={6} className="text-center">
                 No items added yet.
               </TableCell>
             </TableRow>
@@ -383,25 +379,9 @@ const OrderItems = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
                   <span className="text-sm text-muted-foreground">{field.variant?.name}</span>
                 </div>
               </TableCell>
-              <TableCell>
-                <FormField
-                  control={form.control}
-                  name={`items.${index}.quantity`}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <Input
-                          {...field}
-                          type="number"
-                          inputMode="numeric"
-                          min={1}
-                          onChange={(e) => field.onChange(parseInt(e.target.value, 10))}
-                        />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-              </TableCell>
+
+              <TableCell>{showPrices ? field.variant?.costPrice : '*****'}</TableCell>
+
               <TableCell>
                 <FormField
                   control={form.control}
@@ -422,9 +402,32 @@ const OrderItems = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
                   )}
                 />
               </TableCell>
-              <TableCell>{showPrices ? field.variant?.costPrice : '*****'}</TableCell>
+
               <TableCell>
-                <Button type="button" plain onClick={() => removeItem(index)}>
+                <FormField
+                  control={form.control}
+                  name={`items.${index}.quantity`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          type="number"
+                          inputMode="decimal"
+                          step="1"
+                          min={1}
+                          onChange={(e) => field.onChange(parseInt(e.target.value))}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+              </TableCell>
+
+              <TableCell>{formatCurrency((items[index]?.quantity || 0) * (items[index]?.price || 0))}</TableCell>
+
+              <TableCell>
+                <Button type="button" plain onClick={() => remove(index)}>
                   <CircleMinus className="text-red-500 w-6 h-6" />
                 </Button>
               </TableCell>
