@@ -28,6 +28,7 @@ const corsOptions = {
   origin: '*',
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   optionsSuccessStatus: 204,
+  allowedHeaders: ['x-store-id'],
 };
 app.use(cors(corsOptions));
 app.options('*', cors(corsOptions));
