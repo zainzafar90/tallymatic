@@ -1,4 +1,4 @@
-import { and, asc, count, desc, eq } from 'drizzle-orm';
+import { and, asc, count, desc, eq, inArray } from 'drizzle-orm';
 import { CreateOrderReq, IOptions, ListResponse, UpdateOrderReq } from '@repo/shared';
 
 import { ApiError } from '@/common/errors/api-error';
@@ -71,11 +71,13 @@ export const createOrder = async (orderData: CreateOrderReq, organizationId: str
 export const queryOrders = async (
   filter: Record<string, any>,
   options: IOptions,
-  organizationId: string
+  organizationId: string,
+  storeId: string,
+  wildcardFields: string[] = []
 ): Promise<ListResponse<typeof orders.$inferSelect>> => {
   const { limit, offset } = getPaginationConfig(options);
 
-  const conditions = [eq(orders.organizationId, organizationId)];
+  const conditions = [eq(orders.organizationId, organizationId), eq(orders.storeId, storeId)];
   if (filter.orderNumber) {
     conditions.push(eq(orders.orderNumber, filter.orderNumber));
   }
@@ -171,7 +173,7 @@ export const updateOrderById = async (
     const [updatedOrder] = await tx
       .update(orders)
       .set(updateBodyNew)
-      .where(and(eq(orders.id, orderId), eq(orders.organizationId, organizationId)))
+      .where(and(eq(orders.id, orderId), eq(orders.organizationId, organizationId), eq(orders.storeId, storeId)))
       .returning();
 
     if (updateBody.items) {
@@ -192,16 +194,24 @@ export const updateOrderById = async (
   });
 };
 
-export const deleteOrderById = async (orderId: string, organizationId: string, storeId: string): Promise<void> => {
-  const order = await db.query.orders.findFirst({
-    where: and(eq(orders.id, orderId), eq(orders.organizationId, organizationId), eq(orders.storeId, storeId)),
-  });
+export const deleteOrderById = async (orderId: string, organizationId: string, storeId: string) => {
+  const [order] = await db
+    .delete(orders)
+    .where(and(eq(orders.id, orderId), eq(orders.organizationId, organizationId), eq(orders.storeId, storeId)))
+    .returning();
 
   if (!order) {
     throw new ApiError(404, 'Order not found');
   }
 
-  await db
+  return order;
+};
+
+export const bulkDeleteOrders = async (orderIds: string[], organizationId: string, storeId: string) => {
+  const [deletedOrders] = await db
     .delete(orders)
-    .where(and(eq(orders.id, orderId), eq(orders.organizationId, organizationId), eq(orders.storeId, storeId)));
+    .where(and(inArray(orders.id, orderIds), eq(orders.organizationId, organizationId), eq(orders.storeId, storeId)))
+    .returning();
+
+  return deletedOrders;
 };
