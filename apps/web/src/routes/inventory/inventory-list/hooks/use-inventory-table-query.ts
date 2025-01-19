@@ -18,8 +18,8 @@ export const useInventoryTableQuery = ({ pageSize = DEFAULT_PAGE_SIZE }: UseInve
     offset: offset ? Number(offset) : 0,
     sortBy: sortBy || 'createdAt',
     sortOrder: sortOrder || 'desc',
-    created_at: createdAt ? JSON.parse(createdAt) : undefined,
-    updated_at: updatedAt ? JSON.parse(updatedAt) : undefined,
+    createdAt: createdAt ? JSON.parse(createdAt) : undefined,
+    updatedAt: updatedAt ? JSON.parse(updatedAt) : undefined,
     status: status?.split(',') as Status[],
     name,
   };

@@ -10,8 +10,8 @@ const CACHE_TTL = {
 } as const;
 
 export const cacheManager = {
-  async getProductCount(organizationId: string): Promise<number | null> {
-    const key = CACHE_KEYS.productCount(organizationId);
+  async getProductCount(storeId: string): Promise<number | null> {
+    const key = CACHE_KEYS.productCount(storeId);
     const cached = await redis.get(key);
 
     if (cached) {
@@ -23,14 +23,14 @@ export const cacheManager = {
     return null;
   },
 
-  async setProductCount(organizationId: string, count: number): Promise<void> {
-    const key = CACHE_KEYS.productCount(organizationId);
+  async setProductCount(storeId: string, count: number): Promise<void> {
+    const key = CACHE_KEYS.productCount(storeId);
     await redis.setex(key, CACHE_TTL.productCount, count.toString());
     logger.info(`Cache SET: ${key}, value: ${count}, TTL: ${CACHE_TTL.productCount}s`);
   },
 
-  async invalidateProductCount(organizationId: string): Promise<void> {
-    const key = CACHE_KEYS.productCount(organizationId);
+  async invalidateProductCount(storeId: string): Promise<void> {
+    const key = CACHE_KEYS.productCount(storeId);
     await redis.del(key);
     logger.info(`Cache INVALIDATED: ${key}`);
   },

@@ -4,6 +4,7 @@ import { OrderStatus, PaymentMethod, PaymentType } from '@repo/shared';
 
 import { customers } from './customer.schema';
 import { organizations } from './organization.schema';
+import { stores } from './store.schema';
 import { variants } from './variant.schema';
 
 const EnumOrderStatus = customType<{
@@ -47,6 +48,9 @@ export const orders = pgTable(
     paymentType: EnumPaymentType('payment_type').default(PaymentType.CREDIT),
     amountPaid: numeric('amount_paid').default('0').notNull(),
     lastPaymentDate: timestamp('last_payment_date'),
+    storeId: uuid('store_id')
+      .notNull()
+      .references(() => stores.id),
   },
   (table) => ({
     fk_organization: foreignKey({
@@ -59,6 +63,8 @@ export const orders = pgTable(
     orderNumberIdx: index('idx_orders_order_number').on(table.orderNumber),
     statusIdx: index('idx_orders_status').on(table.status),
     organizationStatusIdx: index('idx_orders_organization_id_status').on(table.organizationId, table.status),
+    storeIdIdx: index('idx_orders_store_id').on(table.storeId),
+    storeStatusIdx: index('idx_orders_store_id_status').on(table.storeId, table.status),
   })
 );
 
@@ -105,6 +111,10 @@ export const ordersRelations = relations(orders, ({ one, many }) => ({
     references: [customers.id],
   }),
   items: many(orderItems),
+  store: one(stores, {
+    fields: [orders.storeId],
+    references: [stores.id],
+  }),
 }));
 
 export const orderItemsRelations = relations(orderItems, ({ one }) => ({

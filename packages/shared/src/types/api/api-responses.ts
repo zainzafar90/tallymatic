@@ -6,7 +6,7 @@ export type AuthResponse = ResourceResponse<IAccessAndRefreshTokens>;
 export type UserAuthResponse = ResourceResponse<{ tokens: IAccessAndRefreshTokens } & { user: IUser }>;
 
 // Profile
-export type UserProfileResponse = ResourceResponse<IUser & { organization: IOrganization }>;
+export type UserProfileResponse = ResourceResponse<IUser & { organization: IOrganization } & { stores: IStore[] }>;
 
 // Users
 export type UserResponse = ResourceResponse<IUser>;

@@ -46,8 +46,9 @@ import { SidebarLayout } from '@/components/ui/sidebar-layout';
 import { useLogout } from '@/hooks/api/auth.hooks';
 import { useMe } from '@/hooks/api/users.hooks';
 import { API_TOKEN_KEY } from '@/utils/common.utils';
-import { getInitials } from '@/utils/string.utils';
 import { useTheme } from '@/providers/theme/theme-provider';
+
+import { StoreSwitcher } from '../store-switcher';
 
 function AccountDropdownMenu({ anchor }: { anchor: 'top start' | 'bottom end' }) {
   const navigate = useNavigate();
@@ -103,6 +104,9 @@ export const MainLayout = () => {
     <SidebarLayout
       navbar={
         <Navbar>
+          <NavbarSection>
+            <StoreSwitcher />
+          </NavbarSection>
           <NavbarSpacer />
           <NavbarSection>
             <Dropdown>
@@ -117,52 +121,40 @@ export const MainLayout = () => {
       sidebar={
         <Sidebar>
           <SidebarHeader>
-            <Dropdown>
-              <DropdownButton as={SidebarItem}>
-                <Avatar slot="icon" initials={getInitials(user?.organization?.name)} className="bg-blue-600 text-white" />
-                <SidebarLabel>{user?.organization?.name}</SidebarLabel>
-                <ChevronDownIcon />
-              </DropdownButton>
-              <DropdownMenu className="min-w-80 lg:min-w-64" anchor="bottom start">
-                <DropdownItem href="/settings">
-                  <Cog8ToothIcon />
-                  <DropdownLabel>Settings</DropdownLabel>
-                </DropdownItem>
-              </DropdownMenu>
-            </Dropdown>
+            <StoreSwitcher />
           </SidebarHeader>
 
           <SidebarBody>
             <SidebarSection>
-              <SidebarItem href="/dashboard" current={pathname === '/dashboard'}>
+              <SidebarItem href="dashboard" current={pathname === '/dashboard'}>
                 <HomeIcon />
                 <SidebarLabel>Home</SidebarLabel>
               </SidebarItem>
-              <SidebarItem href="/orders" current={pathname.startsWith('/orders')}>
+              <SidebarItem href="orders" current={pathname.startsWith('/orders')}>
                 <ShoppingBagIcon />
                 <SidebarLabel>Sale</SidebarLabel>
               </SidebarItem>
-              <SidebarItem href="/products" current={pathname.startsWith('/products')}>
+              <SidebarItem href="products" current={pathname.startsWith('/products')}>
                 <Square2StackIcon />
                 <SidebarLabel>Products</SidebarLabel>
               </SidebarItem>
-              <SidebarItem href="/categories" current={pathname.startsWith('/categories')}>
+              <SidebarItem href="categories" current={pathname.startsWith('/categories')}>
                 <WalletIcon />
                 <SidebarLabel>Categories</SidebarLabel>
               </SidebarItem>
-              <SidebarItem href="/inventory" current={pathname.startsWith('/inventory')}>
+              <SidebarItem href="inventory" current={pathname.startsWith('/inventory')}>
                 <BuildingLibraryIcon />
                 <SidebarLabel>Inventory</SidebarLabel>
               </SidebarItem>
-              <SidebarItem href="/purchases" current={pathname.startsWith('/purchases')}>
+              <SidebarItem href="purchases" current={pathname.startsWith('/purchases')}>
                 <CurrencyDollarIcon />
                 <SidebarLabel>Purchases</SidebarLabel>
               </SidebarItem>
-              <SidebarItem href="/customers" current={pathname.startsWith('/customers')}>
+              <SidebarItem href="customers" current={pathname.startsWith('/customers')}>
                 <UsersIcon />
                 <SidebarLabel>Customers</SidebarLabel>
               </SidebarItem>
-              <SidebarItem href="/suppliers" current={pathname.startsWith('/suppliers')}>
+              <SidebarItem href="suppliers" current={pathname.startsWith('/suppliers')}>
                 <TruckIcon />
                 <SidebarLabel>Suppliers</SidebarLabel>
               </SidebarItem>

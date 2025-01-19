@@ -1,6 +1,7 @@
 import express, { Router } from 'express';
 
 import { validate } from '@/common/validate';
+import { validateStore } from '@/middleware/validate-store';
 import { auth } from '@/modules/auth';
 import { productController, productValidation } from '@/modules/product';
 
@@ -8,15 +9,15 @@ const router: Router = express.Router();
 
 router
   .route('/')
-  .post(auth(), validate(productValidation.createProduct), productController.createProduct)
-  .get(auth(), validate(productValidation.getProducts), productController.getProducts)
-  .delete(auth(), validate(productValidation.bulkDeleteProducts), productController.bulkDeleteProducts);
+  .post(auth(), validateStore, validate(productValidation.createProduct), productController.createProduct)
+  .get(auth(), validateStore, validate(productValidation.getProducts), productController.getProducts)
+  .delete(auth(), validateStore, validate(productValidation.bulkDeleteProducts), productController.bulkDeleteProducts);
 
 router
   .route('/:productId')
-  .get(auth(), validate(productValidation.getProduct), productController.getProduct)
-  .patch(auth(), validate(productValidation.updateProduct), productController.updateProduct)
-  .delete(auth(), validate(productValidation.deleteProduct), productController.deleteProduct);
+  .get(auth(), validateStore, validate(productValidation.getProduct), productController.getProduct)
+  .patch(auth(), validateStore, validate(productValidation.updateProduct), productController.updateProduct)
+  .delete(auth(), validateStore, validate(productValidation.deleteProduct), productController.deleteProduct);
 
 export default router;
 

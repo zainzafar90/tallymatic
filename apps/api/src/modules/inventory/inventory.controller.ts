@@ -21,6 +21,7 @@ export const adjustStock = catchAsync(async (req: Request, res: Response) => {
     quantity,
     type as TransactionType,
     req.user.organizationId,
+    req.store.id,
     notes
   );
   res.status(httpStatus.OK).send(transaction);
@@ -46,6 +47,7 @@ export const getLowStockAlerts = catchAsync(async (req: Request, res: Response) 
     throw new ApiError(httpStatus.FORBIDDEN, 'You do not have permission to view low stock alerts');
   }
 
-  const alerts = await inventoryService.checkLowStockAlerts(req.user.organizationId);
+  const storeId = req.store.id;
+  const alerts = await inventoryService.checkLowStockAlerts(req.user.organizationId, storeId);
   res.status(httpStatus.OK).send(alerts);
 });

@@ -26,12 +26,12 @@ export const useSupplierTableQuery = ({ pageSize = DEFAULT_PAGE_SIZE }: UseSuppl
     offset: offset ? Number(offset) : 0,
     sortBy: sortBy || 'createdAt',
     sortOrder: sortOrder || 'desc',
-    company_name: companyName,
-    contact_name: contactName,
+    companyName: companyName,
+    contactName: contactName,
     email,
     phone,
-    created_at: createdAt ? JSON.parse(createdAt) : undefined,
-    updated_at: updatedAt ? JSON.parse(updatedAt) : undefined,
+    createdAt: createdAt ? JSON.parse(createdAt) : undefined,
+    updatedAt: updatedAt ? JSON.parse(updatedAt) : undefined,
   };
 
   return {

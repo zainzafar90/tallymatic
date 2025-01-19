@@ -31,6 +31,7 @@ export interface IUser {
   organizationId: string;
   contact?: string;
   role: RoleType;
+  organization?: IOrganization;
 }
 
 export interface IOrganization {
@@ -38,11 +39,27 @@ export interface IOrganization {
   name: string;
   description?: string;
   status: Status;
+  stores?: IStore[];
 }
 
 export interface IStore {
-  id?: string;
+  id: string;
   name: string;
-  location: string;
   organizationId: string;
+  address?: string;
+  status: Status;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface IStoreResponse {
+  store: IStore;
+}
+
+export interface IStoreListResponse {
+  results: IStore[];
+  count: number;
+  limit: number;
+  offset: number;
+  pages: number;
 }

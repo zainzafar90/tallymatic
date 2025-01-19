@@ -4,6 +4,7 @@ import { Status } from '@repo/shared';
 
 import { orders } from './order.schema';
 import { organizations } from './organization.schema';
+import { stores } from './store.schema';
 
 const EnumStatus = customType<{
   data: Status;
@@ -18,6 +19,9 @@ export const customers = pgTable(
     organizationId: uuid('organization_id')
       .notNull()
       .references(() => organizations.id),
+    storeId: uuid('store_id')
+      .notNull()
+      .references(() => stores.id),
     name: varchar('name', { length: 255 }).notNull(),
     email: varchar('email', { length: 255 }),
     phone: varchar('phone', { length: 255 }),
@@ -29,9 +33,10 @@ export const customers = pgTable(
   },
   (table) => ({
     organizationIdIdx: index('idx_customers_organization_id').on(table.organizationId),
+    storeIdIdx: index('idx_customers_store_id').on(table.storeId),
     emailIdx: index('idx_customers_email').on(table.email),
     nameIdx: index('idx_customers_name').on(table.name),
-    organizationNameIdx: index('idx_customers_organization_id_name').on(table.organizationId, table.name),
+    storeNameIdx: index('idx_customers_store_id_name').on(table.storeId, table.name),
   })
 );
 
@@ -41,6 +46,10 @@ export const customersRelations = relations(customers, ({ one, many }) => ({
   organization: one(organizations, {
     fields: [customers.organizationId],
     references: [organizations.id],
+  }),
+  store: one(stores, {
+    fields: [customers.storeId],
+    references: [stores.id],
   }),
   orders: many(orders),
 }));

@@ -23,9 +23,13 @@ const supplierDTO = (supplier: Supplier) => {
   };
 };
 
-export const createSupplier = async (supplierBody: CreateSupplierReq, organizationId: string) => {
+export const createSupplier = async (supplierBody: CreateSupplierReq, organizationId: string, storeId: string) => {
   const existingSupplier = await db.query.suppliers.findFirst({
-    where: and(eq(suppliers.email, supplierBody.email), eq(suppliers.organizationId, organizationId)),
+    where: and(
+      eq(suppliers.email, supplierBody.email),
+      eq(suppliers.organizationId, organizationId),
+      eq(suppliers.storeId, storeId)
+    ),
   });
 
   if (existingSupplier) {
@@ -37,6 +41,7 @@ export const createSupplier = async (supplierBody: CreateSupplierReq, organizati
     .values({
       ...supplierBody,
       organizationId,
+      storeId,
     })
     .returning();
 
@@ -47,11 +52,12 @@ export const querySuppliers = async (
   filter: Record<string, any>,
   options: IOptions,
   organizationId: string,
+  storeId: string,
   wildcardFields: string[] = []
 ) => {
   const { limit, offset } = getPaginationConfig(options);
 
-  const conditions = [eq(suppliers.organizationId, organizationId)];
+  const conditions = [eq(suppliers.organizationId, organizationId), eq(suppliers.storeId, storeId)];
   if (filter.companyName && wildcardFields.includes('companyName')) {
     conditions.push(ilike(suppliers.companyName, `%${filter.companyName}%`));
   }
@@ -90,9 +96,9 @@ export const querySuppliers = async (
   };
 };
 
-export const getSupplierById = async (id: string, organizationId: string) => {
+export const getSupplierById = async (id: string, organizationId: string, storeId: string) => {
   const supplier = await db.query.suppliers.findFirst({
-    where: and(eq(suppliers.id, id), eq(suppliers.organizationId, organizationId)),
+    where: and(eq(suppliers.id, id), eq(suppliers.organizationId, organizationId), eq(suppliers.storeId, storeId)),
   });
 
   if (!supplier) {
@@ -102,11 +108,17 @@ export const getSupplierById = async (id: string, organizationId: string) => {
   return supplierDTO(supplier);
 };
 
-export const updateSupplierById = async (supplierId: string, updateBody: UpdateSupplierReq, organizationId: string) => {
+export const updateSupplierById = async (
+  supplierId: string,
+  updateBody: UpdateSupplierReq,
+  organizationId: string,
+  storeId: string
+) => {
   const existingSupplier = await db.query.suppliers.findFirst({
     where: and(
       eq(suppliers.email, updateBody.email),
       eq(suppliers.organizationId, organizationId),
+      eq(suppliers.storeId, storeId),
       ne(suppliers.id, supplierId)
     ),
   });
@@ -120,7 +132,7 @@ export const updateSupplierById = async (supplierId: string, updateBody: UpdateS
     .set({
       ...updateBody,
     })
-    .where(and(eq(suppliers.id, supplierId), eq(suppliers.organizationId, organizationId), isNull(suppliers.deletedAt)))
+    .where(and(eq(suppliers.id, supplierId), eq(suppliers.organizationId, organizationId), eq(suppliers.storeId, storeId)))
     .returning();
 
   if (!supplier) {
@@ -130,32 +142,26 @@ export const updateSupplierById = async (supplierId: string, updateBody: UpdateS
   return supplierDTO(supplier);
 };
 
-export const deleteSupplierById = async (supplierId: string, organizationId: string) => {
-  const supplier = await getSupplierById(supplierId, organizationId);
+export const deleteSupplierById = async (supplierId: string, organizationId: string, storeId: string) => {
+  const [supplier] = await db
+    .delete(suppliers)
+    .where(and(eq(suppliers.id, supplierId), eq(suppliers.organizationId, organizationId), eq(suppliers.storeId, storeId)))
+    .returning();
+
   if (!supplier) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Supplier not found');
   }
 
-  const [deletedSupplier] = await db
-    .delete(suppliers)
-    .where(and(eq(suppliers.id, supplierId), eq(suppliers.organizationId, organizationId)))
-    .returning();
-
-  return supplierDTO(deletedSupplier);
+  return supplierDTO(supplier);
 };
 
-export const bulkDeleteSuppliers = async (supplierIds: string[], organizationId: string) => {
-  return db.transaction(async (tx) => {
-    const existingSuppliers = await tx
-      .select()
-      .from(suppliers)
-      .where(and(inArray(suppliers.id, supplierIds), eq(suppliers.organizationId, organizationId)));
+export const bulkDeleteSuppliers = async (supplierIds: string[], organizationId: string, storeId: string) => {
+  const [deletedSuppliers] = await db
+    .delete(suppliers)
+    .where(
+      and(inArray(suppliers.id, supplierIds), eq(suppliers.organizationId, organizationId), eq(suppliers.storeId, storeId))
+    )
+    .returning();
 
-    if (existingSuppliers.length !== supplierIds.length) {
-      throw new ApiError(httpStatus.NOT_FOUND, 'One or more suppliers not found');
-    }
-
-    await tx.delete(suppliers).where(and(inArray(suppliers.id, supplierIds), eq(suppliers.organizationId, organizationId)));
-    return existingSuppliers.map(supplierDTO);
-  });
+  return deletedSuppliers;
 };

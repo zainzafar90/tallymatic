@@ -1,4 +1,4 @@
-import { and, asc, desc, eq, inArray, sql } from 'drizzle-orm';
+import { and, asc, desc, eq, ilike, inArray, sql } from 'drizzle-orm';
 import httpStatus from 'http-status';
 import { CreateCategoryReq, ICategory, IOptions, ListResponse, UpdateCategoryReq } from '@repo/shared';
 
@@ -16,12 +16,17 @@ interface OrderParams {
   direction: OrderDirection;
 }
 
-export const createCategory = async (categoryBody: CreateCategoryReq, organizationId: string): Promise<ICategory> => {
+export const createCategory = async (
+  categoryBody: CreateCategoryReq,
+  organizationId: string,
+  storeId: string
+): Promise<ICategory> => {
   const [category] = await db
     .insert(categories)
     .values({
       name: categoryBody.name,
       organizationId,
+      storeId,
     })
     .returning();
 
@@ -31,13 +36,14 @@ export const createCategory = async (categoryBody: CreateCategoryReq, organizati
 export const queryCategories = async (
   filter: Record<string, any>,
   options: IOptions,
-  organizationId: string
+  organizationId: string,
+  storeId: string
 ): Promise<ListResponse<Category>> => {
   const { limit, offset } = getPaginationConfig(options);
 
-  const conditions = [eq(categories.organizationId, organizationId)];
+  const conditions = [eq(categories.organizationId, organizationId), eq(categories.storeId, storeId)];
   if (filter.name) {
-    conditions.push(eq(categories.name, filter.name));
+    conditions.push(ilike(categories.name, `%${filter.name}%`));
   }
 
   const whereClause = and(...conditions);
@@ -66,16 +72,14 @@ export const queryCategories = async (
   };
 };
 
-export const getCategoryById = async (
-  id: string,
-  includeDeleted = false,
-  organizationId: string
-): Promise<ICategory | null> => {
-  const [category] = await db
-    .select()
-    .from(categories)
-    .where(and(eq(categories.id, id), eq(categories.organizationId, organizationId)))
-    .limit(1);
+export const getCategoryById = async (id: string, organizationId: string, storeId: string) => {
+  const category = await db.query.categories.findFirst({
+    where: and(eq(categories.id, id), eq(categories.organizationId, organizationId), eq(categories.storeId, storeId)),
+  });
+
+  if (!category) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Category not found');
+  }
 
   return category;
 };
@@ -83,55 +87,52 @@ export const getCategoryById = async (
 export const updateCategoryById = async (
   categoryId: string,
   updateBody: UpdateCategoryReq,
-  organizationId: string
-): Promise<ICategory | null> => {
-  return await db.transaction(async (tx) => {
-    const category = await getCategoryById(categoryId, false, organizationId);
-    if (!category) {
-      throw new ApiError(httpStatus.NOT_FOUND, 'Category not found');
-    }
-
-    const updatedBody = {
+  organizationId: string,
+  storeId: string
+) => {
+  const [category] = await db
+    .update(categories)
+    .set({
       ...updateBody,
-      updatedAt: new Date(),
-    };
+    })
+    .where(
+      and(eq(categories.id, categoryId), eq(categories.organizationId, organizationId), eq(categories.storeId, storeId))
+    )
+    .returning();
 
-    const [updatedCategory] = await tx
-      .update(categories)
-      .set(updatedBody)
-      .where(and(eq(categories.id, categoryId), eq(categories.organizationId, organizationId)))
-      .returning();
-
-    return updatedCategory;
-  });
-};
-
-export const deleteCategoryById = async (categoryId: string, organizationId: string): Promise<ICategory | null> => {
-  const category = await getCategoryById(categoryId, false, organizationId);
   if (!category) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Category not found');
   }
 
-  await db.delete(categories).where(and(eq(categories.id, categoryId), eq(categories.organizationId, organizationId)));
   return category;
 };
 
-export const bulkDeleteCategories = async (categoryIds: string[], organizationId: string): Promise<ICategory[]> => {
-  await db.transaction(async (tx) => {
-    const existingCategories = await tx
-      .select()
-      .from(categories)
-      .where(and(inArray(categories.id, categoryIds), eq(categories.organizationId, organizationId)));
+export const deleteCategoryById = async (categoryId: string, organizationId: string, storeId: string) => {
+  const [category] = await db
+    .delete(categories)
+    .where(
+      and(eq(categories.id, categoryId), eq(categories.organizationId, organizationId), eq(categories.storeId, storeId))
+    )
+    .returning();
 
-    if (existingCategories.length !== categoryIds.length) {
-      throw new ApiError(httpStatus.NOT_FOUND, 'One or more categories not found');
-    }
+  if (!category) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Category not found');
+  }
 
-    await tx
-      .delete(categories)
-      .where(and(inArray(categories.id, categoryIds), eq(categories.organizationId, organizationId)));
-    return existingCategories;
-  });
+  return category;
+};
 
-  return [];
+export const bulkDeleteCategories = async (categoryIds: string[], organizationId: string, storeId: string) => {
+  const [deletedCategories] = await db
+    .delete(categories)
+    .where(
+      and(
+        inArray(categories.id, categoryIds),
+        eq(categories.organizationId, organizationId),
+        eq(categories.storeId, storeId)
+      )
+    )
+    .returning();
+
+  return deletedCategories;
 };

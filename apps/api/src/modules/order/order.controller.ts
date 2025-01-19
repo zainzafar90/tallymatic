@@ -15,7 +15,8 @@ export const createOrder = catchAsync(async (req: Request, res: Response) => {
     throw new ApiError(httpStatus.FORBIDDEN, 'You do not have permission to create orders');
   }
 
-  const order = await orderService.createOrder(req.body, req.user.organizationId);
+  const storeId = req.store.id;
+  const order = await orderService.createOrder(req.body, req.user.organizationId, storeId);
   res.status(httpStatus.CREATED).send(order);
 });
 
@@ -25,9 +26,10 @@ export const getOrders = catchAsync(async (req: Request, res: Response) => {
     throw new ApiError(httpStatus.FORBIDDEN, 'You do not have permission to list orders');
   }
 
+  const storeId = req.store.id;
   const filter = pick(req.query, ['orderNumber', 'status']);
   const options: IOptions = pick(req.query, ['sortBy', 'sortOrder', 'limit', 'offset', 'projectBy']);
-  const result = await orderService.queryOrders(filter, options, req.user.organizationId);
+  const result = await orderService.queryOrders(filter, options, req.user.organizationId, storeId);
   res.send(result);
 });
 
@@ -37,7 +39,8 @@ export const getOrder = catchAsync(async (req: Request, res: Response) => {
     throw new ApiError(httpStatus.FORBIDDEN, 'You do not have permission to read orders');
   }
 
-  const order = await orderService.getOrderById(req.params.orderId, req.user.organizationId);
+  const storeId = req.store.id;
+  const order = await orderService.getOrderById(req.params.orderId, req.user.organizationId, storeId);
   if (!order) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Order not found');
   }
@@ -50,7 +53,8 @@ export const updateOrder = catchAsync(async (req: Request, res: Response) => {
     throw new ApiError(httpStatus.FORBIDDEN, 'You do not have permission to update orders');
   }
 
-  const order = await orderService.updateOrderById(req.params.orderId, req.body, req.user.organizationId);
+  const storeId = req.store.id;
+  const order = await orderService.updateOrderById(req.params.orderId, req.body, req.user.organizationId, storeId);
   res.send(order);
 });
 
@@ -60,6 +64,23 @@ export const deleteOrder = catchAsync(async (req: Request, res: Response) => {
     throw new ApiError(httpStatus.FORBIDDEN, 'You do not have permission to delete orders');
   }
 
-  await orderService.deleteOrderById(req.params.orderId, req.user.organizationId);
+  const storeId = req.store.id;
+  await orderService.deleteOrderById(req.params.orderId, req.user.organizationId, storeId);
+  res.status(httpStatus.NO_CONTENT).send();
+});
+
+export const bulkDeleteOrders = catchAsync(async (req: Request, res: Response) => {
+  const isAllowed = permissionService.checkPermissions(req.user.role, 'delete', 'orders');
+  if (!isAllowed) {
+    throw new ApiError(httpStatus.FORBIDDEN, 'You do not have permission to delete orders');
+  }
+
+  const orderIds = req.body.orderIds;
+  if (!Array.isArray(orderIds) || orderIds.length === 0) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Invalid input: orderIds must be a non-empty array');
+  }
+
+  const storeId = req.store.id;
+  await orderService.bulkDeleteOrders(orderIds, req.user.organizationId, storeId);
   res.status(httpStatus.NO_CONTENT).send();
 });

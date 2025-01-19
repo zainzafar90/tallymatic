@@ -10,8 +10,13 @@ import { cacheManager } from './product.cache';
 type OrderDirection = 'asc' | 'desc';
 type OrderField = keyof (typeof products)['_']['columns'];
 
-export function buildQueryConditions(filter: Record<string, any>, organizationId: string, wildcardFields: string[]) {
-  const conditions = [eq(products.organizationId, organizationId)];
+export function buildQueryConditions(
+  filter: Record<string, any>,
+  organizationId: string,
+  storeId: string,
+  wildcardFields: string[]
+) {
+  const conditions = [eq(products.organizationId, organizationId), eq(products.storeId, storeId)];
 
   if (filter.name && wildcardFields.includes('name')) {
     conditions.push(ilike(products.name, `%${filter.name}%`));
@@ -31,11 +36,7 @@ export function buildOrderByClause(options: IOptions) {
   return orderFn(products[field]);
 }
 
-export async function getProductCount(
-  conditions: any,
-  organizationId: string,
-  filter: Record<string, any>
-): Promise<number> {
+export async function getProductCount(conditions: any, storeId: string, filter: Record<string, any>): Promise<number> {
   const hasFilters = Boolean(filter.name || filter.status);
 
   if (hasFilters) {
@@ -43,20 +44,20 @@ export async function getProductCount(
   }
 
   if (!hasFilters) {
-    const cachedCount = await cacheManager.getProductCount(organizationId);
+    const cachedCount = await cacheManager.getProductCount(storeId);
     if (cachedCount !== null) {
       return cachedCount;
     }
   }
 
-  logger.info(`Fetching fresh count from database for org: ${organizationId}`);
+  logger.info(`Fetching fresh count from database for store: ${storeId}`);
   const [{ count: freshCount }] = await db
     .select({ count: count(products.id) })
     .from(products)
     .where(conditions);
 
   if (!hasFilters) {
-    await cacheManager.setProductCount(organizationId, freshCount);
+    await cacheManager.setProductCount(storeId, freshCount);
   }
 
   return freshCount;

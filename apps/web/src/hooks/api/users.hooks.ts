@@ -4,7 +4,8 @@ import { QueryKey, useMutation, UseMutationOptions, useQuery, UseQueryOptions } 
 import { client } from '@/lib/client';
 import { queryClient } from '@/lib/query-client';
 import { queryKeysFactory } from '@/lib/query-key-factory';
-import { UpdateUserReq } from '@/types/api-payloads';
+
+// import { UpdateUserReq } from '@/types/api-payloads';
 
 const USERS_QUERY_KEY = 'users' as const;
 export const usersQueryKeys = queryKeysFactory(USERS_QUERY_KEY);
@@ -49,21 +50,21 @@ export const useUsers = (
   return { ...data, ...rest };
 };
 
-export const useUpdateUser = (id: string, options?: UseMutationOptions<UserResponse, Error, UpdateUserReq>) => {
-  return useMutation({
-    mutationFn: (payload) => client.users.update(id, payload),
-    onSuccess: (data, variables, context) => {
-      queryClient.invalidateQueries({ queryKey: usersQueryKeys.detail(id) });
-      queryClient.invalidateQueries({ queryKey: usersQueryKeys.list() });
+// export const useUpdateUser = (id: string, options?: UseMutationOptions<UserResponse, Error, UpdateUserReq>) => {
+//   return useMutation({
+//     mutationFn: (payload) => client.users.update(id, payload),
+//     onSuccess: (data, variables, context) => {
+//       queryClient.invalidateQueries({ queryKey: usersQueryKeys.detail(id) });
+//       queryClient.invalidateQueries({ queryKey: usersQueryKeys.list() });
 
-      // We invalidate the me query in case the user updates their own profile
-      queryClient.invalidateQueries({ queryKey: usersQueryKeys.detail('me') });
+//       // We invalidate the me query in case the user updates their own profile
+//       queryClient.invalidateQueries({ queryKey: usersQueryKeys.detail('me') });
 
-      options?.onSuccess?.(data, variables, context);
-    },
-    ...options,
-  });
-};
+//       options?.onSuccess?.(data, variables, context);
+//     },
+//     ...options,
+//   });
+// };
 
 export const useDeleteUser = (id: string, options?: UseMutationOptions<UserDeleteResponse, Error, void>) => {
   return useMutation({

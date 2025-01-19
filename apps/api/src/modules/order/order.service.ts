@@ -1,4 +1,4 @@
-import { and, asc, count, desc, eq } from 'drizzle-orm';
+import { and, asc, count, desc, eq, ilike, inArray } from 'drizzle-orm';
 import { CreateOrderReq, IOptions, ListResponse, UpdateOrderReq } from '@repo/shared';
 
 import { ApiError } from '@/common/errors/api-error';
@@ -21,7 +21,7 @@ const generateOrderNumber = async (organizationId: string) => {
   return `ORD-${orderNumber}`;
 };
 
-export const createOrder = async (orderData: CreateOrderReq, organizationId: string) => {
+export const createOrder = async (orderData: CreateOrderReq, organizationId: string, storeId: string) => {
   return await db.transaction(async (tx) => {
     const subtotalValue = orderData.items.reduce(
       (sum, item) => sum + item.price * item.quantity - (item.totalDiscount || 0),
@@ -34,6 +34,7 @@ export const createOrder = async (orderData: CreateOrderReq, organizationId: str
       ...orderData,
       orderNumber,
       organizationId,
+      storeId,
       status: orderData.status,
       totalAmount: totalValue,
       subtotal: subtotalValue,
@@ -70,14 +71,16 @@ export const createOrder = async (orderData: CreateOrderReq, organizationId: str
 export const queryOrders = async (
   filter: Record<string, any>,
   options: IOptions,
-  organizationId: string
+  organizationId: string,
+  storeId: string
 ): Promise<ListResponse<typeof orders.$inferSelect>> => {
   const { limit, offset } = getPaginationConfig(options);
 
-  const conditions = [eq(orders.organizationId, organizationId)];
+  const conditions = [eq(orders.organizationId, organizationId), eq(orders.storeId, storeId)];
   if (filter.orderNumber) {
-    conditions.push(eq(orders.orderNumber, filter.orderNumber));
+    conditions.push(ilike(orders.orderNumber, `%${filter.orderNumber}%`));
   }
+
   if (filter.status) {
     conditions.push(eq(orders.status, filter.status));
   }
@@ -116,9 +119,9 @@ export const queryOrders = async (
   };
 };
 
-export const getOrderById = async (id: string, organizationId: string) => {
+export const getOrderById = async (id: string, organizationId: string, storeId: string) => {
   const order = await db.query.orders.findFirst({
-    where: and(eq(orders.id, id), eq(orders.organizationId, organizationId)),
+    where: and(eq(orders.id, id), eq(orders.organizationId, organizationId), eq(orders.storeId, storeId)),
     with: {
       items: {
         with: {
@@ -136,10 +139,15 @@ export const getOrderById = async (id: string, organizationId: string) => {
   return order;
 };
 
-export const updateOrderById = async (orderId: string, updateBody: UpdateOrderReq, organizationId: string) => {
+export const updateOrderById = async (
+  orderId: string,
+  updateBody: UpdateOrderReq,
+  organizationId: string,
+  storeId: string
+) => {
   return await db.transaction(async (tx) => {
     const order = await tx.query.orders.findFirst({
-      where: and(eq(orders.id, orderId), eq(orders.organizationId, organizationId)),
+      where: and(eq(orders.id, orderId), eq(orders.organizationId, organizationId), eq(orders.storeId, storeId)),
     });
 
     if (!order) {
@@ -165,7 +173,7 @@ export const updateOrderById = async (orderId: string, updateBody: UpdateOrderRe
     const [updatedOrder] = await tx
       .update(orders)
       .set(updateBodyNew)
-      .where(and(eq(orders.id, orderId), eq(orders.organizationId, organizationId)))
+      .where(and(eq(orders.id, orderId), eq(orders.organizationId, organizationId), eq(orders.storeId, storeId)))
       .returning();
 
     if (updateBody.items) {
@@ -186,14 +194,24 @@ export const updateOrderById = async (orderId: string, updateBody: UpdateOrderRe
   });
 };
 
-export const deleteOrderById = async (orderId: string, organizationId: string): Promise<void> => {
-  const order = await db.query.orders.findFirst({
-    where: and(eq(orders.id, orderId), eq(orders.organizationId, organizationId)),
-  });
+export const deleteOrderById = async (orderId: string, organizationId: string, storeId: string) => {
+  const [order] = await db
+    .delete(orders)
+    .where(and(eq(orders.id, orderId), eq(orders.organizationId, organizationId), eq(orders.storeId, storeId)))
+    .returning();
 
   if (!order) {
     throw new ApiError(404, 'Order not found');
   }
 
-  await db.delete(orders).where(and(eq(orders.id, orderId), eq(orders.organizationId, organizationId)));
+  return order;
+};
+
+export const bulkDeleteOrders = async (orderIds: string[], organizationId: string, storeId: string) => {
+  const [deletedOrders] = await db
+    .delete(orders)
+    .where(and(inArray(orders.id, orderIds), eq(orders.organizationId, organizationId), eq(orders.storeId, storeId)))
+    .returning();
+
+  return deletedOrders;
 };

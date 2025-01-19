@@ -9,13 +9,14 @@ import { Product, products, variants } from '@/db/schema';
 import { getPaginationConfig } from '../paginate/pagination';
 import { buildOrderByClause, buildQueryConditions, getProductCount } from './utils/product.utils';
 
-export const createProduct = async (productBody: CreateProductReq, organizationId: string) => {
+export const createProduct = async (productBody: CreateProductReq, organizationId: string, storeId: string) => {
   return await db.transaction(async (tx) => {
     const { variants: productVariants, ...productData } = productBody;
 
     const productNew = {
       ...productData,
       organizationId,
+      storeId,
       status: Status.ACTIVE,
       categoryId: productData.categoryId ?? null,
     };
@@ -30,6 +31,7 @@ export const createProduct = async (productBody: CreateProductReq, organizationI
         productId: product.id,
         organizationId,
         status: Status.ACTIVE,
+        storeId,
       }));
 
       await tx.insert(variants).values(variantsNew);
@@ -51,13 +53,14 @@ export const queryProducts = async (
   filter: Record<string, any>,
   options: IOptions,
   organizationId: string,
+  storeId: string,
   wildcardFields: string[] = []
 ): Promise<ListResponse<typeof products.$inferSelect>> => {
   const { limit, offset } = getPaginationConfig(options);
-  const conditions = buildQueryConditions(filter, organizationId, wildcardFields);
+  const conditions = buildQueryConditions(filter, organizationId, storeId, wildcardFields);
   const orderByClause = buildOrderByClause(options);
 
-  const count = await getProductCount(conditions, organizationId, filter);
+  const count = await getProductCount(conditions, storeId, filter);
 
   const results = await db.query.products.findMany({
     where: conditions,
@@ -79,9 +82,9 @@ export const queryProducts = async (
   };
 };
 
-export const getProductById = async (id: string, organizationId: string) => {
+export const getProductById = async (id: string, organizationId: string, storeId: string) => {
   const product = await db.query.products.findFirst({
-    where: and(eq(products.id, id), eq(products.organizationId, organizationId)),
+    where: and(eq(products.id, id), eq(products.organizationId, organizationId), eq(products.storeId, storeId)),
     with: {
       variants: true,
       category: true,
@@ -90,10 +93,15 @@ export const getProductById = async (id: string, organizationId: string) => {
   return product;
 };
 
-export const updateProductById = async (productId: string, updateBody: UpdateProductReq, organizationId: string) => {
+export const updateProductById = async (
+  productId: string,
+  updateBody: UpdateProductReq,
+  organizationId: string,
+  storeId: string
+) => {
   return await db.transaction(async (tx) => {
     const product = await tx.query.products.findFirst({
-      where: and(eq(products.id, productId), eq(products.organizationId, organizationId)),
+      where: and(eq(products.id, productId), eq(products.organizationId, organizationId), eq(products.storeId, storeId)),
     });
 
     if (!product) {
@@ -109,7 +117,7 @@ export const updateProductById = async (productId: string, updateBody: UpdatePro
         organizationId,
         categoryId: productData.categoryId ?? null,
       } as Product)
-      .where(and(eq(products.id, productId), eq(products.organizationId, organizationId)))
+      .where(and(eq(products.id, productId), eq(products.organizationId, organizationId), eq(products.storeId, storeId)))
       .returning();
 
     if (productVariants?.length > 0) {
@@ -121,6 +129,7 @@ export const updateProductById = async (productId: string, updateBody: UpdatePro
           price: variant.price.toString(),
           productId,
           organizationId,
+          storeId,
           status: Status.ACTIVE,
         }))
       );
@@ -136,25 +145,26 @@ export const updateProductById = async (productId: string, updateBody: UpdatePro
   });
 };
 
-export const deleteProductById = async (productId: string, organizationId: string) => {
-  const product = await getProductById(productId, organizationId);
+export const deleteProductById = async (productId: string, organizationId: string, storeId: string) => {
+  const product = await getProductById(productId, organizationId, storeId);
   if (!product) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Product not found');
   }
 
   const [deletedProduct] = await db
     .delete(products)
-    .where(and(eq(products.id, productId), eq(products.organizationId, organizationId)))
+    .where(and(eq(products.id, productId), eq(products.organizationId, organizationId), eq(products.storeId, storeId)))
     .returning();
 
   return deletedProduct;
 };
 
-export const bulkDeleteProducts = async (productIds: string[], organizationId: string) => {
+export const bulkDeleteProducts = async (productIds: string[], organizationId: string, storeId: string) => {
   return await db.transaction(async (tx) => {
     const existingProducts = await tx.query.products.findMany({
       where: and(
         eq(products.organizationId, organizationId),
+        eq(products.storeId, storeId),
         // @ts-expect-error: Type inference issue with array of strings
         products.id.in(productIds)
       ),

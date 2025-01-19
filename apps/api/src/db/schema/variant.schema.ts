@@ -7,6 +7,7 @@ import { orderItems } from './order.schema';
 import { organizations } from './organization.schema';
 import { products } from './product.schema';
 import { purchaseItems } from './purchase.schema';
+import { stores } from './store.schema';
 
 const EnumStatus = customType<{
   data: Status;
@@ -24,6 +25,9 @@ export const variants = pgTable(
     productId: uuid('product_id')
       .notNull()
       .references(() => products.id),
+    storeId: uuid('store_id')
+      .notNull()
+      .references(() => stores.id),
     name: varchar('name', { length: 255 }).notNull(),
     sku: varchar('sku', { length: 255 }).notNull(),
     barcode: varchar('barcode', { length: 255 }),
@@ -49,7 +53,8 @@ export const variants = pgTable(
     productIdIdx: index('idx_variants_product_id').on(table.productId),
     skuIdx: index('idx_variants_sku').on(table.sku),
     nameIdx: index('idx_variants_name').on(table.name),
-    organizationNameIdx: index('idx_variants_organization_id_name').on(table.organizationId, table.name),
+    storeIdIdx: index('idx_variants_store_id').on(table.storeId),
+    storeNameIdx: index('idx_variants_store_id_name').on(table.storeId, table.name),
   })
 );
 
@@ -61,6 +66,10 @@ export const variantsRelations = relations(variants, ({ one, many }) => ({
   product: one(products, {
     fields: [variants.productId],
     references: [products.id],
+  }),
+  store: one(stores, {
+    fields: [variants.storeId],
+    references: [stores.id],
   }),
   inventory: many(inventory),
   orderItems: many(orderItems),

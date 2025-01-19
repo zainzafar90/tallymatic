@@ -19,7 +19,7 @@ const COLORS = [
 
 interface LetterBoxProps {
   text: string;
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'xs' | 'sm' | 'md' | 'lg';
 }
 
 export const LetterBox = ({ text, size = 'md' }: LetterBoxProps) => {
@@ -29,6 +29,7 @@ export const LetterBox = ({ text, size = 'md' }: LetterBoxProps) => {
   }, [text]);
 
   const sizeClasses = {
+    xs: 'w-6 h-6 text-xs',
     sm: 'w-8 h-8 text-sm',
     md: 'w-10 h-10 text-base',
     lg: 'w-12 h-12 text-lg',
