@@ -7,6 +7,7 @@ import { LogoBox } from '@/components/common/logo-box';
 import { Heading } from '@/components/ui/heading';
 import { Text } from '@/components/ui/text';
 import { useMe } from '@/hooks/api/users.hooks';
+import { SELECTED_STORE_KEY } from '@/utils/common.utils';
 
 export const StoreList = () => {
   const navigate = useNavigate();
@@ -14,6 +15,7 @@ export const StoreList = () => {
   const stores = user?.stores || [];
 
   const handleStoreSelect = (storeId: string) => {
+    localStorage.setItem(SELECTED_STORE_KEY, storeId);
     navigate(`/stores/${storeId}/dashboard`);
   };
 

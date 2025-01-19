@@ -22,3 +22,8 @@ export const apiUrl = env.VITE_API_URL;
  * API Token Key
  */
 export const API_TOKEN_KEY = 'token';
+
+/**
+ * Selected Store Key
+ */
+export const SELECTED_STORE_KEY = 'store-id';

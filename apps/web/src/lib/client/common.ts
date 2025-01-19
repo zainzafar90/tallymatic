@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { stringify } from 'qs';
 
-import { API_TOKEN_KEY, apiUrl } from '../../utils/common.utils';
+import { API_TOKEN_KEY, apiUrl, SELECTED_STORE_KEY } from '../../utils/common.utils';
 
 const commonHeaders = {
   'Content-Type': 'application/json',
@@ -21,6 +21,7 @@ const getBody = (payload?: Record<string, any>) => {
 
 function getOptions(options?: Omit<RequestInit, 'body'>, payload?: Record<string, any>): RequestInit {
   const body = getBody(payload);
+  const storeId = localStorage.getItem(SELECTED_STORE_KEY);
 
   return {
     ...options,
@@ -28,6 +29,7 @@ function getOptions(options?: Omit<RequestInit, 'body'>, payload?: Record<string
       ...commonHeaders,
       ...options?.headers,
       Authorization: `Bearer ${localStorage.getItem(API_TOKEN_KEY) || ''}`,
+      'x-store-id': storeId || '',
     },
     body,
     // TODO: enable it back when cookies are implemented
@@ -38,7 +40,7 @@ function getOptions(options?: Omit<RequestInit, 'body'>, payload?: Record<string
 async function makeRequest<
   TRes,
   TPayload extends Record<string, any> | undefined,
-  TQuery extends Record<string, any> | undefined = undefined
+  TQuery extends Record<string, any> | undefined = undefined,
 >(path: string, payload?: TPayload, query?: TQuery, options?: Omit<RequestInit, 'body'>): Promise<TRes> {
   const url = getUrl(path, query);
   const requestOptions = getOptions(options, payload);
