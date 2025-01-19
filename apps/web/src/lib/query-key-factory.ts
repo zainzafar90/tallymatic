@@ -10,11 +10,13 @@
 
 import { QueryKey, UseQueryOptions } from '@tanstack/react-query';
 
+import { SELECTED_STORE_KEY } from '@/utils/common.utils';
+
 type TQueryKey<TKey, TListQuery = any, TDetailQuery = string> = {
   all: readonly [TKey];
-  lists: () => readonly [...TQueryKey<TKey>['all'], 'list'];
+  lists: () => readonly [...TQueryKey<TKey>['all'], 'list', string];
   list: (query?: TListQuery) => readonly [...ReturnType<TQueryKey<TKey>['lists']>, { query: TListQuery | undefined }];
-  details: () => readonly [...TQueryKey<TKey>['all'], 'detail'];
+  details: () => readonly [...TQueryKey<TKey>['all'], 'detail', string];
   detail: (
     id: TDetailQuery,
     query?: TListQuery
@@ -27,15 +29,17 @@ export type UseQueryOptionsWrapper<
   // Type thrown in case the queryFn rejects
   E = Error,
   // Query key type
-  TQueryKey extends QueryKey = QueryKey
+  TQueryKey extends QueryKey = QueryKey,
 > = Omit<UseQueryOptions<TQueryFn, E, TQueryFn, TQueryKey>, 'queryKey' | 'queryFn'>;
 
 export const queryKeysFactory = <T, TListQueryType = any, TDetailQueryType = string>(globalKey: T) => {
+  const getStoreId = () => localStorage.getItem(SELECTED_STORE_KEY) || 'no-store';
+  console.log(getStoreId());
   const queryKeyFactory: TQueryKey<T, TListQueryType, TDetailQueryType> = {
     all: [globalKey],
-    lists: () => [...queryKeyFactory.all, 'list'],
+    lists: () => [...queryKeyFactory.all, 'list', getStoreId()],
     list: (query?: TListQueryType) => [...queryKeyFactory.lists(), { query }],
-    details: () => [...queryKeyFactory.all, 'detail'],
+    details: () => [...queryKeyFactory.all, 'detail', getStoreId()],
     detail: (id: TDetailQueryType, query?: TListQueryType) => [...queryKeyFactory.details(), id, { query }],
   };
   return queryKeyFactory;

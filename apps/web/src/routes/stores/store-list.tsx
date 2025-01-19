@@ -46,25 +46,27 @@ export const StoreList = () => {
         </div>
 
         {stores.length > 0 ? (
-          <ul className="divide-y divide-gray-100 overflow-hidden bg-white shadow-sm ring-1 ring-gray-900/5 rounded-xl">
+          <ul className="divide-y divide-gray-100 dark:divide-gray-800 overflow-hidden bg-white dark:bg-gray-900 shadow-sm ring-1 ring-gray-900/5 dark:ring-gray-900/5 rounded-xl">
             {stores.map((store) => (
               <li
                 key={store.id}
-                className="relative flex justify-between gap-x-6 px-4 py-5 hover:bg-gray-50 sm:px-6 cursor-pointer"
+                className="relative flex justify-between gap-x-6 px-4 py-5 hover:bg-gray-50 dark:hover:bg-gray-800 sm:px-6 cursor-pointer"
                 onClick={() => handleStoreSelect(store.id)}
               >
                 <div className="flex min-w-0 gap-x-4">
                   <LetterBox text={store.name} size="lg" />
                   <div className="min-w-0 flex-auto">
-                    <p className="text-sm font-semibold text-gray-900">
+                    <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">
                       <span className="absolute inset-x-0 -top-px bottom-0" />
                       {store.name}
                     </p>
-                    {store.address && <p className="mt-1 truncate text-xs text-gray-500">{store.address}</p>}
+                    {store.address && (
+                      <p className="mt-1 truncate text-xs text-gray-500 dark:text-gray-400">{store.address}</p>
+                    )}
                   </div>
                 </div>
                 <div className="flex shrink-0 items-center gap-x-4">
-                  <ChevronRightIcon className="h-5 w-5 flex-none text-gray-400" aria-hidden="true" />
+                  <ChevronRightIcon className="h-5 w-5 flex-none text-gray-400 dark:text-gray-600" aria-hidden="true" />
                 </div>
               </li>
             ))}
