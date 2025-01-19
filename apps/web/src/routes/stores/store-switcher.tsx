@@ -1,8 +1,9 @@
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import { ChevronDownIcon, Cog8ToothIcon } from '@heroicons/react/16/solid';
 
 import { useMe } from '@/hooks/api/users.hooks';
+import { cn } from '@/utils/cn';
 import { SELECTED_STORE_KEY } from '@/utils/common.utils';
 import { getInitials } from '@/utils/string.utils';
 
@@ -44,7 +45,11 @@ export const StoreSwitcher = () => {
       </DropdownButton>
       <DropdownMenu className="min-w-80 lg:min-w-64" anchor="bottom start">
         {stores.map((store) => (
-          <DropdownItem key={store.id} className="flex items-center gap-2" onClick={() => handleStoreSelect(store.id)}>
+          <DropdownItem
+            key={store.id}
+            className={cn('flex items-center gap-2', store.id === storeId && 'bg-blue-100 dark:bg-blue-900')}
+            onClick={() => handleStoreSelect(store.id)}
+          >
             <LetterBox text={store.name} size="xs" />
             <DropdownLabel>{store.name}</DropdownLabel>
           </DropdownItem>
