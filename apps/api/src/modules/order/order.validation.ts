@@ -79,3 +79,9 @@ export const deleteOrder = {
     orderId: Joi.string().custom(uuid).required(),
   }),
 };
+
+export const bulkDeleteOrders = {
+  body: Joi.object().keys({
+    orderIds: Joi.array().items(Joi.string().custom(uuid)).required(),
+  }),
+};

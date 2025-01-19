@@ -72,22 +72,3 @@ export const queryProductVariants = async (
     count: variantsCount.count,
   };
 };
-
-export const queryProductVariantsGrouped = async (
-  filter: Record<string, any>,
-  options: IOptions,
-  organizationId: string,
-  wildcardFields: string[] = []
-): Promise<ListResponse<typeof products.$inferSelect>> => {
-  const productsWithVariants = await productService.queryProducts(
-    {
-      name: filter.productName,
-      status: filter.status,
-    },
-    options,
-    organizationId,
-    wildcardFields
-  );
-
-  return productsWithVariants;
-};

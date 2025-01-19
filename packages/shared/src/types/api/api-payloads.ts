@@ -4,14 +4,14 @@ import { IOrganization, IStore, IUser } from '../interfaces/resources';
 export type EmailPassReq = { email: string; password: string };
 
 // Users
-export type CreateUserReq = Omit<IUser, 'id' | 'isEmailVerified'>;
+export type CreateUserReq = Omit<IUser, 'id' | 'isEmailVerified' | 'organization'>;
 export type UpdateUserReq = Partial<IUser>;
 export type RegisterUserReq = Omit<IUser, 'id' | 'role' | 'isEmailVerified' | 'organization'>;
 
 // Organization
-export type CreateOrganizationReq = Omit<IOrganization, 'id'>;
+export type CreateOrganizationReq = Omit<IOrganization, 'id' | 'stores'>;
 export type UpdateOrganizationReq = Partial<IOrganization>;
 
 // Store
-export type CreateStoreReq = Omit<IStore, 'id'>;
+export type CreateStoreReq = Omit<IStore, 'id' | 'organization'>;
 export type UpdateStoreReq = Partial<IStore>;

@@ -1,12 +1,13 @@
 import Joi from 'joi';
-import { CreateStoreReq } from '@repo/shared';
+import { CreateStoreReq, Status } from '@repo/shared';
 
 import { uuid } from '@/common/validate/custom.validation';
 
 const createStoreBody: Record<keyof CreateStoreReq, any> = {
   name: Joi.string().required(),
-  location: Joi.string().required(),
+  address: Joi.string().optional(),
   organizationId: Joi.string().custom(uuid),
+  status: Joi.string().valid(Status.ACTIVE, Status.INACTIVE).required(),
 };
 
 export const createStore = {

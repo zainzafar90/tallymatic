@@ -48,8 +48,6 @@ export interface IStore {
   organizationId: string;
   address?: string;
   status: Status;
-  createdAt: Date;
-  updatedAt: Date;
 }
 
 export interface IStoreResponse {

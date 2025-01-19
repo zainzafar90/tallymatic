@@ -79,3 +79,9 @@ export const deletePurchase = {
     purchaseId: Joi.string().custom(uuid),
   }),
 };
+
+export const bulkDeletePurchases = {
+  body: Joi.object().keys({
+    purchaseIds: Joi.array().items(Joi.string().custom(uuid)).required(),
+  }),
+};
