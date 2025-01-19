@@ -126,35 +126,35 @@ export const MainLayout = () => {
 
           <SidebarBody>
             <SidebarSection>
-              <SidebarItem href="/dashboard" current={pathname === '/dashboard'}>
+              <SidebarItem href="dashboard" current={pathname === '/dashboard'}>
                 <HomeIcon />
                 <SidebarLabel>Home</SidebarLabel>
               </SidebarItem>
-              <SidebarItem href="/orders" current={pathname.startsWith('/orders')}>
+              <SidebarItem href="orders" current={pathname.startsWith('/orders')}>
                 <ShoppingBagIcon />
                 <SidebarLabel>Sale</SidebarLabel>
               </SidebarItem>
-              <SidebarItem href="/products" current={pathname.startsWith('/products')}>
+              <SidebarItem href="products" current={pathname.startsWith('/products')}>
                 <Square2StackIcon />
                 <SidebarLabel>Products</SidebarLabel>
               </SidebarItem>
-              <SidebarItem href="/categories" current={pathname.startsWith('/categories')}>
+              <SidebarItem href="categories" current={pathname.startsWith('/categories')}>
                 <WalletIcon />
                 <SidebarLabel>Categories</SidebarLabel>
               </SidebarItem>
-              <SidebarItem href="/inventory" current={pathname.startsWith('/inventory')}>
+              <SidebarItem href="inventory" current={pathname.startsWith('/inventory')}>
                 <BuildingLibraryIcon />
                 <SidebarLabel>Inventory</SidebarLabel>
               </SidebarItem>
-              <SidebarItem href="/purchases" current={pathname.startsWith('/purchases')}>
+              <SidebarItem href="purchases" current={pathname.startsWith('/purchases')}>
                 <CurrencyDollarIcon />
                 <SidebarLabel>Purchases</SidebarLabel>
               </SidebarItem>
-              <SidebarItem href="/customers" current={pathname.startsWith('/customers')}>
+              <SidebarItem href="customers" current={pathname.startsWith('/customers')}>
                 <UsersIcon />
                 <SidebarLabel>Customers</SidebarLabel>
               </SidebarItem>
-              <SidebarItem href="/suppliers" current={pathname.startsWith('/suppliers')}>
+              <SidebarItem href="suppliers" current={pathname.startsWith('/suppliers')}>
                 <TruckIcon />
                 <SidebarLabel>Suppliers</SidebarLabel>
               </SidebarItem>

@@ -5,7 +5,7 @@ export const Home = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    navigate('/dashboard', { replace: true });
+    navigate('/stores', { replace: true });
   }, [navigate]);
 
   return <div />;

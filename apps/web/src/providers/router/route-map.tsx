@@ -3,6 +3,7 @@ import { RouteObject } from 'react-router-dom';
 import { ProtectedRoute } from '@/components/common/protected-route';
 import { MainLayout } from '@/components/layout/main-layout';
 import { Dashboard } from '@/routes/dashboard/dashboard';
+import { StoreGuard } from '@/routes/stores/store-guard';
 
 import { ErrorBoundary } from '../../components/common/error-boundary';
 
@@ -24,85 +25,95 @@ export const RouteMap: RouteObject[] = [
     errorElement: <ErrorBoundary />,
     children: [
       {
-        path: '',
-        element: <MainLayout />,
+        path: '/stores',
+        lazy: () => import('../../routes/stores'),
+      },
+      {
+        path: '/stores/:storeId',
+        element: <StoreGuard />,
         children: [
           {
-            path: '/dashboard',
-            element: <Dashboard />,
-          },
-          {
-            path: '/settings',
-            lazy: () => import('../../routes/settings'),
-          },
-          {
-            path: '/products',
+            path: '',
+            element: <MainLayout />,
             children: [
               {
-                path: '',
-                lazy: () => import('../../routes/products'),
+                path: 'dashboard',
+                element: <Dashboard />,
               },
-            ],
-          },
-          {
-            path: '/categories',
-            children: [
               {
-                path: '',
-                lazy: () => import('../../routes/categories'),
+                path: 'settings',
+                lazy: () => import('../../routes/settings'),
               },
-            ],
-          },
-          {
-            path: '/inventory',
-            children: [
               {
-                path: '',
-                lazy: () => import('../../routes/inventory'),
+                path: 'products',
+                children: [
+                  {
+                    path: '',
+                    lazy: () => import('../../routes/products'),
+                  },
+                ],
               },
-            ],
-          },
-          {
-            path: '/purchases',
-            children: [
               {
-                path: '',
-                lazy: () => import('../../routes/purchases/purchase-list'),
+                path: 'categories',
+                children: [
+                  {
+                    path: '',
+                    lazy: () => import('../../routes/categories'),
+                  },
+                ],
               },
-            ],
-          },
-          {
-            path: '/customers',
-            children: [
               {
-                path: '',
-                lazy: () => import('../../routes/customers'),
+                path: 'inventory',
+                children: [
+                  {
+                    path: '',
+                    lazy: () => import('../../routes/inventory'),
+                  },
+                ],
               },
-            ],
-          },
+              {
+                path: 'purchases',
+                children: [
+                  {
+                    path: '',
+                    lazy: () => import('../../routes/purchases/purchase-list'),
+                  },
+                ],
+              },
+              {
+                path: 'customers',
+                children: [
+                  {
+                    path: '',
+                    lazy: () => import('../../routes/customers'),
+                  },
+                ],
+              },
 
-          {
-            path: '/suppliers',
-            children: [
               {
-                path: '',
-                lazy: () => import('../../routes/supplier'),
-              },
-            ],
-          },
-          {
-            path: '/orders',
-            handle: {
-              crumb: () => 'Orders',
-            },
-            children: [
-              {
-                path: '',
-                lazy: () => import('../../routes/orders/order-list'),
+                path: 'suppliers',
+                children: [
+                  {
+                    path: '',
+                    lazy: () => import('../../routes/supplier'),
+                  },
+                ],
               },
               {
-                path: 'create',
-                lazy: () => import('../../routes/orders/order-create'),
+                path: 'orders',
+                handle: {
+                  crumb: () => 'Orders',
+                },
+                children: [
+                  {
+                    path: '',
+                    lazy: () => import('../../routes/orders/order-list'),
+                  },
+                  {
+                    path: 'create',
+                    lazy: () => import('../../routes/orders/order-create'),
+                  },
+                ],
               },
             ],
           },
