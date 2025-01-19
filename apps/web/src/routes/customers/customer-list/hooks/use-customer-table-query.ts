@@ -19,8 +19,8 @@ export const useCustomerTableQuery = ({ pageSize = DEFAULT_PAGE_SIZE }: UseCusto
     name,
     email,
     phone,
-    created_at: createdAt ? JSON.parse(createdAt) : undefined,
-    updated_at: updatedAt ? JSON.parse(updatedAt) : undefined,
+    createdAt: createdAt ? JSON.parse(createdAt) : undefined,
+    updatedAt: updatedAt ? JSON.parse(updatedAt) : undefined,
   };
 
   return {
