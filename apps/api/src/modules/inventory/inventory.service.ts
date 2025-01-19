@@ -118,6 +118,7 @@ export const adjustStock = async (
   quantity: number,
   type: TransactionType,
   organizationId: string,
+  storeId: string,
   notes?: string
 ) => {
   return db.transaction(async (tx) => {
@@ -153,6 +154,7 @@ export const adjustStock = async (
         variantId,
         quantity,
         type,
+        storeId,
       })
       .returning();
 

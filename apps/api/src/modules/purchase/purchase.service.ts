@@ -1,4 +1,4 @@
-import { and, asc, count, desc, eq } from 'drizzle-orm';
+import { and, asc, count, desc, eq, inArray } from 'drizzle-orm';
 import httpStatus from 'http-status';
 import { CreatePurchaseReq, IOptions, ListResponse, PurchaseStatus, TransactionType } from '@repo/shared';
 
@@ -26,21 +26,23 @@ const generatePurchaseNumber = async (organizationId: string) => {
   return `PO-${paddedPurchaseNumber}`;
 };
 
-export const createPurchase = async (purchaseData: CreatePurchaseReq, organizationId: string) => {
+export const createPurchase = async (purchaseData: CreatePurchaseReq, organizationId: string, storeId: string) => {
   return await db.transaction(async (tx) => {
-    const { items, ...purchaseBody } = purchaseData;
-    const totalAmount = items.reduce((sum, item) => sum + item.unitCost * item.quantity, 0);
-    const totalQuantity = items.reduce((sum, item) => sum + item.quantity, 0);
+    const subtotalValue = purchaseData.items.reduce((sum, item) => sum + item.unitCost * item.quantity, 0);
+    const totalValue = subtotalValue;
 
     const purchaseNumber = await generatePurchaseNumber(organizationId);
     const purchaseNew = {
-      ...purchaseBody,
+      ...purchaseData,
       purchaseNumber,
       organizationId,
-      totalAmount: totalAmount.toString(),
-      totalQuantity,
-      receivedQuantity: 0,
-      status: PurchaseStatus.ORDERED,
+      storeId,
+      status: purchaseData.status,
+      totalAmount: totalValue,
+      subtotal: subtotalValue,
+      taxAmount: 0,
+      discountAmount: 0,
+      currency: 'PKR',
       paymentMethod: purchaseData.paymentMethod,
       amountPaid: purchaseData.amountPaid || 0,
       lastPaymentDate: purchaseData.amountPaid ? new Date() : null,
@@ -48,20 +50,31 @@ export const createPurchase = async (purchaseData: CreatePurchaseReq, organizati
 
     const [purchase] = await tx.insert(purchases).values(purchaseNew).returning();
 
-    if (items?.length > 0) {
-      const purchaseItemsNew = items.map((item) => ({
+    if (purchaseData.items?.length > 0) {
+      const purchaseItemsNew = purchaseData.items.map((item) => ({
         ...item,
         purchaseId: purchase.id,
-        organizationId,
         unitCost: item.unitCost.toString(),
       }));
       await tx.insert(purchaseItems).values(purchaseItemsNew);
+
+      for (const item of purchaseData.items) {
+        await adjustStock(item.variantId, item.quantity, TransactionType.RECEIVED, organizationId, storeId);
+      }
     }
 
     const createdPurchase = await tx.query.purchases.findFirst({
       where: eq(purchases.id, purchase.id),
       with: {
-        items: true,
+        items: {
+          with: {
+            variant: {
+              with: {
+                product: true,
+              },
+            },
+          },
+        },
         supplier: true,
       },
     });
@@ -73,11 +86,12 @@ export const createPurchase = async (purchaseData: CreatePurchaseReq, organizati
 export const queryPurchases = async (
   filter: Record<string, any>,
   options: IOptions,
-  organizationId: string
+  organizationId: string,
+  storeId: string
 ): Promise<ListResponse<typeof purchases.$inferSelect>> => {
   const { limit, offset } = getPaginationConfig(options);
 
-  const conditions = [eq(purchases.organizationId, organizationId)];
+  const conditions = [eq(purchases.organizationId, organizationId), eq(purchases.storeId, storeId)];
   if (filter.status) {
     conditions.push(eq(purchases.status, filter.status));
   }
@@ -125,21 +139,39 @@ export const queryPurchases = async (
   };
 };
 
-export const getPurchaseById = async (id: string, organizationId: string) => {
+export const getPurchaseById = async (id: string, organizationId: string, storeId: string) => {
   const purchase = await db.query.purchases.findFirst({
-    where: and(eq(purchases.id, id), eq(purchases.organizationId, organizationId)),
+    where: and(eq(purchases.id, id), eq(purchases.organizationId, organizationId), eq(purchases.storeId, storeId)),
     with: {
-      items: true,
+      items: {
+        with: {
+          variant: {
+            with: {
+              product: true,
+            },
+          },
+        },
+      },
       supplier: true,
     },
   });
+
+  if (!purchase) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Purchase not found');
+  }
+
   return purchase;
 };
 
-export const updatePurchaseById = async (purchaseId: string, updateBody: any, organizationId: string) => {
+export const updatePurchaseById = async (
+  purchaseId: string,
+  updateBody: CreatePurchaseReq,
+  organizationId: string,
+  storeId: string
+) => {
   return await db.transaction(async (tx) => {
     const purchase = await tx.query.purchases.findFirst({
-      where: and(eq(purchases.id, purchaseId), eq(purchases.organizationId, organizationId)),
+      where: and(eq(purchases.id, purchaseId), eq(purchases.organizationId, organizationId), eq(purchases.storeId, storeId)),
       with: {
         items: true,
       },
@@ -149,91 +181,50 @@ export const updatePurchaseById = async (purchaseId: string, updateBody: any, or
       throw new ApiError(httpStatus.NOT_FOUND, 'Purchase not found');
     }
 
-    const { items } = updateBody;
-    const totalAmount = items.reduce((sum, item) => sum + item.unitCost * item.quantity, 0);
-    const totalQuantity = items.reduce((sum, item) => sum + item.quantity, 0);
-
-    // Map existing items by variantId for comparison
-    const existingItemsMap = purchase.items.reduce((acc, item) => {
-      acc[item.variantId] = item;
-      return acc;
-    }, {});
-
-    // Process each item's received quantity changes
-    for (const newItem of items) {
-      const existingItem = existingItemsMap[newItem.variantId];
-      const previousReceivedQty = existingItem?.receivedQuantity || 0;
-      const newReceivedQty = newItem.receivedQuantity || 0;
-      const receivedDifference = newReceivedQty - previousReceivedQty;
-
-      if (receivedDifference !== 0) {
-        await adjustStock(
-          newItem.variantId,
-          receivedDifference,
-          receivedDifference > 0 ? TransactionType.RECEIVED : TransactionType.ADJUSTED,
-          `Purchase ${purchase.purchaseNumber} - ${receivedDifference > 0 ? 'Received' : 'Adjusted'} ${Math.abs(
-            receivedDifference
-          )} units`
-        );
+    // If status is being changed to RECEIVED, adjust stock
+    if (purchase.status !== PurchaseStatus.RECEIVED && updateBody.status === PurchaseStatus.RECEIVED) {
+      for (const item of purchase.items) {
+        await adjustStock(item.variantId, item.quantity, TransactionType.RECEIVED, organizationId, storeId);
       }
     }
 
-    // Calculate total received quantity
-    const newTotalReceivedQty = items.reduce((sum, item) => sum + (item.receivedQuantity || 0), 0);
+    const subtotalValue = updateBody.items.reduce((sum, item) => sum + item.unitCost * item.quantity, 0);
+    const totalValue = subtotalValue;
 
-    // Validate status change
-    if (updateBody.status === PurchaseStatus.CLOSED) {
-      if (newTotalReceivedQty !== totalQuantity) {
-        throw new ApiError(httpStatus.BAD_REQUEST, 'Cannot close purchase order until all items are received');
-      }
-    }
-
-    // If already closed, prevent any changes except notes
-    if (purchase.status === PurchaseStatus.CLOSED && updateBody.status !== PurchaseStatus.CLOSED) {
-      throw new ApiError(httpStatus.BAD_REQUEST, 'Cannot modify a closed purchase order');
-    }
-
-    // Update purchase items
-    await tx.delete(purchaseItems).where(eq(purchaseItems.purchaseId, purchaseId));
-
-    const purchaseItemsNew = items.map((item) => ({
-      ...item,
-      purchaseId,
-      organizationId,
-      unitCost: item.unitCost.toString(),
-    }));
-    await tx.insert(purchaseItems).values(purchaseItemsNew);
-
-    // Determine status based on received quantity
-    let status = updateBody.status;
-    if (!status || status !== PurchaseStatus.CLOSED) {
-      if (newTotalReceivedQty === 0) {
-        status = PurchaseStatus.ORDERED;
-      } else if (newTotalReceivedQty === totalQuantity) {
-        status = PurchaseStatus.RECEIVED;
-      } else if (newTotalReceivedQty > 0 && newTotalReceivedQty < totalQuantity) {
-        status = PurchaseStatus.PARTIAL;
-      }
-    }
-
-    const purchaseUpdate = {
+    const updateBodyNew = {
       ...updateBody,
-      status,
-      totalAmount: totalAmount.toString(),
-      totalQuantity,
-      receivedQuantity: newTotalReceivedQty,
+      totalAmount: totalValue,
+      subtotal: subtotalValue,
+      taxAmount: 0,
+      discountAmount: 0,
+      organizationId,
     };
 
     const [updatedPurchase] = await tx
       .update(purchases)
-      .set(purchaseUpdate)
-      .where(and(eq(purchases.id, purchaseId), eq(purchases.organizationId, organizationId)))
+      .set(updateBodyNew)
+      .where(and(eq(purchases.id, purchaseId), eq(purchases.organizationId, organizationId), eq(purchases.storeId, storeId)))
       .returning();
+
+    if (updateBody.items) {
+      await tx.delete(purchaseItems).where(eq(purchaseItems.purchaseId, purchaseId));
+      await tx
+        .insert(purchaseItems)
+        .values(updateBody.items.map((item) => ({ ...item, purchaseId, unitCost: item.unitCost.toString() })));
+    }
 
     const result = await tx.query.purchases.findFirst({
       where: eq(purchases.id, updatedPurchase.id),
       with: {
-        items: true,
+        items: {
+          with: {
+            variant: {
+              with: {
+                product: true,
+              },
+            },
+          },
+        },
         supplier: true,
       },
     });
@@ -242,16 +233,26 @@ export const updatePurchaseById = async (purchaseId: string, updateBody: any, or
   });
 };
 
-export const deletePurchaseById = async (purchaseId: string, organizationId: string) => {
-  const purchase = await getPurchaseById(purchaseId, organizationId);
+export const deletePurchaseById = async (purchaseId: string, organizationId: string, storeId: string) => {
+  const [purchase] = await db
+    .delete(purchases)
+    .where(and(eq(purchases.id, purchaseId), eq(purchases.organizationId, organizationId), eq(purchases.storeId, storeId)))
+    .returning();
+
   if (!purchase) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Purchase not found');
   }
 
-  const [deletedPurchase] = await db
+  return purchase;
+};
+
+export const bulkDeletePurchases = async (purchaseIds: string[], organizationId: string, storeId: string) => {
+  const [deletedPurchases] = await db
     .delete(purchases)
-    .where(and(eq(purchases.id, purchaseId), eq(purchases.organizationId, organizationId)))
+    .where(
+      and(inArray(purchases.id, purchaseIds), eq(purchases.organizationId, organizationId), eq(purchases.storeId, storeId))
+    )
     .returning();
 
-  return deletedPurchase;
+  return deletedPurchases;
 };
