@@ -20,9 +20,13 @@ const customerDTO = (customer: Customer) => {
   return customer;
 };
 
-export const createCustomer = async (customerBody: CreateCustomerReq, organizationId: string) => {
+export const createCustomer = async (customerBody: CreateCustomerReq, organizationId: string, storeId: string) => {
   const existingCustomer = await db.query.customers.findFirst({
-    where: and(eq(customers.email, customerBody.email), eq(customers.organizationId, organizationId)),
+    where: and(
+      eq(customers.email, customerBody.email),
+      eq(customers.organizationId, organizationId),
+      eq(customers.storeId, storeId)
+    ),
   });
 
   if (existingCustomer) {
@@ -34,6 +38,7 @@ export const createCustomer = async (customerBody: CreateCustomerReq, organizati
     .values({
       ...customerBody,
       organizationId,
+      storeId,
     })
     .returning();
 
@@ -44,11 +49,12 @@ export const queryCustomers = async (
   filter: Record<string, any>,
   options: IOptions,
   organizationId: string,
+  storeId: string,
   wildcardFields: string[] = []
 ) => {
   const { limit, offset } = getPaginationConfig(options);
 
-  const conditions = [eq(customers.organizationId, organizationId)];
+  const conditions = [eq(customers.organizationId, organizationId), eq(customers.storeId, storeId)];
 
   if (!options.includeDeleted) {
     conditions.push(isNull(customers.deletedAt));
@@ -95,9 +101,14 @@ export const queryCustomers = async (
   };
 };
 
-export const getCustomerById = async (id: string, organizationId: string) => {
+export const getCustomerById = async (id: string, organizationId: string, storeId: string) => {
   const customer = await db.query.customers.findFirst({
-    where: and(eq(customers.id, id), eq(customers.organizationId, organizationId), isNull(customers.deletedAt)),
+    where: and(
+      eq(customers.id, id),
+      eq(customers.organizationId, organizationId),
+      eq(customers.storeId, storeId),
+      isNull(customers.deletedAt)
+    ),
   });
 
   if (!customer) return null;
@@ -105,11 +116,17 @@ export const getCustomerById = async (id: string, organizationId: string) => {
   return customerDTO(customer);
 };
 
-export const updateCustomerById = async (customerId: string, updateBody: UpdateCustomerReq, organizationId: string) => {
+export const updateCustomerById = async (
+  customerId: string,
+  updateBody: UpdateCustomerReq,
+  organizationId: string,
+  storeId: string
+) => {
   const existingCustomer = await db.query.customers.findFirst({
     where: and(
       eq(customers.email, updateBody.email),
       eq(customers.organizationId, organizationId),
+      eq(customers.storeId, storeId),
       ne(customers.id, customerId)
     ),
   });
@@ -123,7 +140,14 @@ export const updateCustomerById = async (customerId: string, updateBody: UpdateC
     .set({
       ...updateBody,
     })
-    .where(and(eq(customers.id, customerId), eq(customers.organizationId, organizationId), isNull(customers.deletedAt)))
+    .where(
+      and(
+        eq(customers.id, customerId),
+        eq(customers.organizationId, organizationId),
+        eq(customers.storeId, storeId),
+        isNull(customers.deletedAt)
+      )
+    )
     .returning();
 
   if (!customer) {
@@ -133,27 +157,22 @@ export const updateCustomerById = async (customerId: string, updateBody: UpdateC
   return customerDTO(customer);
 };
 
-export const deleteCustomerById = async (customerId: string, organizationId: string) => {
+export const deleteCustomerById = async (customerId: string, organizationId: string, storeId: string) => {
   const [deletedCustomer] = await db
     .delete(customers)
-    .where(and(eq(customers.id, customerId), eq(customers.organizationId, organizationId)))
+    .where(and(eq(customers.id, customerId), eq(customers.organizationId, organizationId), eq(customers.storeId, storeId)))
     .returning();
 
   return customerDTO(deletedCustomer);
 };
 
-export const bulkDeleteCustomers = async (customerIds: string[], organizationId: string) => {
-  return db.transaction(async (tx) => {
-    const existingCustomers = await tx
-      .select()
-      .from(customers)
-      .where(and(inArray(customers.id, customerIds), eq(customers.organizationId, organizationId)));
+export const bulkDeleteCustomers = async (customerIds: string[], organizationId: string, storeId: string) => {
+  const [deletedCustomers] = await db
+    .delete(customers)
+    .where(
+      and(inArray(customers.id, customerIds), eq(customers.organizationId, organizationId), eq(customers.storeId, storeId))
+    )
+    .returning();
 
-    if (existingCustomers.length !== customerIds.length) {
-      throw new ApiError(httpStatus.NOT_FOUND, 'One or more customers not found');
-    }
-
-    await tx.delete(customers).where(and(inArray(customers.id, customerIds), eq(customers.organizationId, organizationId)));
-    return existingCustomers.map(customerDTO);
-  });
+  return deletedCustomers;
 };
