@@ -83,7 +83,7 @@ export const getAllInventoryLevels = async (
   };
 };
 
-export const checkLowStockAlerts = async (organizationId: string) => {
+export const checkLowStockAlerts = async (organizationId: string, storeId: string) => {
   const LIMIT = 10;
 
   const results = await db
@@ -98,7 +98,13 @@ export const checkLowStockAlerts = async (organizationId: string) => {
     })
     .from(variants)
     .innerJoin(products, eq(variants.productId, products.id))
-    .where(and(eq(products.organizationId, organizationId), lte(variants.stock, variants.lowStockThreshold)))
+    .where(
+      and(
+        eq(products.organizationId, organizationId),
+        eq(variants.storeId, storeId),
+        lte(variants.stock, variants.lowStockThreshold)
+      )
+    )
     .orderBy(variants.stock)
     .limit(LIMIT)
     .offset(0)
