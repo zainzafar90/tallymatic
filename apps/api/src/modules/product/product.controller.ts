@@ -15,7 +15,8 @@ export const createProduct = catchAsync(async (req: Request, res: Response) => {
     throw new ApiError(httpStatus.FORBIDDEN, 'You do not have permission to create products');
   }
 
-  const product = await productService.createProduct(req.body, req.user.organizationId);
+  const storeId = req.store.id;
+  const product = await productService.createProduct(req.body, req.user.organizationId, storeId);
   res.status(httpStatus.CREATED).send(product);
 });
 
@@ -25,16 +26,18 @@ export const getProducts = catchAsync(async (req: Request, res: Response) => {
     throw new ApiError(httpStatus.FORBIDDEN, 'You do not have permission to list products');
   }
 
+  const storeId = req.store.id;
   const filter = pick(req.query, ['name', 'status']);
   const options: IOptions = pick(req.query, ['sortBy', 'sortOrder', 'limit', 'offset', 'projectBy']);
   const wildcardFields = ['name'];
-  const result = await productService.queryProducts(filter, options, req.user.organizationId, wildcardFields);
+  const result = await productService.queryProducts(filter, options, req.user.organizationId, storeId, wildcardFields);
   res.send(result);
 });
 
 export const getProduct = catchAsync(async (req: Request, res: Response) => {
   if (typeof req.params['productId'] === 'string') {
-    const product = await productService.getProductById(req.params['productId'], req.user.organizationId);
+    const storeId = req.store.id;
+    const product = await productService.getProductById(req.params['productId'], req.user.organizationId, storeId);
     if (!product) {
       throw new ApiError(httpStatus.NOT_FOUND, 'Product not found');
     }
@@ -48,7 +51,13 @@ export const updateProduct = catchAsync(async (req: Request, res: Response) => {
     if (!isAllowed) {
       throw new ApiError(httpStatus.FORBIDDEN, 'You do not have permission to update product');
     }
-    const product = await productService.updateProductById(req.params['productId'], req.body, req.user.organizationId);
+    const storeId = req.store.id;
+    const product = await productService.updateProductById(
+      req.params['productId'],
+      req.body,
+      req.user.organizationId,
+      storeId
+    );
     res.send(product);
   }
 });
@@ -59,7 +68,8 @@ export const deleteProduct = catchAsync(async (req: Request, res: Response) => {
     if (!isAllowed) {
       throw new ApiError(httpStatus.FORBIDDEN, 'You do not have permission to delete product');
     }
-    await productService.deleteProductById(req.params['productId'], req.user.organizationId);
+    const storeId = req.store.id;
+    await productService.deleteProductById(req.params['productId'], req.user.organizationId, storeId);
     res.status(httpStatus.NO_CONTENT).send();
   }
 });
@@ -75,6 +85,7 @@ export const bulkDeleteProducts = catchAsync(async (req: Request, res: Response)
     throw new ApiError(httpStatus.BAD_REQUEST, 'Invalid input: productIds must be a non-empty array');
   }
 
-  await productService.bulkDeleteProducts(productIds, req.user.organizationId);
+  const storeId = req.store.id;
+  await productService.bulkDeleteProducts(productIds, req.user.organizationId, storeId);
   res.status(httpStatus.NO_CONTENT).send();
 });
