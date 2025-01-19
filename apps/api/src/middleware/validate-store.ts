@@ -24,13 +24,3 @@ export const validateStore = async (req: Request, res: Response, next: NextFunct
   req.store = store;
   next();
 };
-
-// Optional middleware for routes that don't require store context
-export const optionalValidateStore = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    await validateStore(req, res, next);
-  } catch (error) {
-    // Continue without store context
-    next();
-  }
-};
