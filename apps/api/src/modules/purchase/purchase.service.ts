@@ -69,7 +69,7 @@ export const createPurchase = async (
           quantity: item.quantity,
           type: TransactionType.RECEIVED,
           organizationId,
-          storeId,
+          storeId: purchase.storeId,
           userId,
           referenceId: purchase.id,
           notes: 'Purchase received',
@@ -215,7 +215,7 @@ export const updatePurchaseById = async (
               variantId: item.variantId,
               quantity: itemReceivedQuantity,
               organizationId,
-              storeId,
+              storeId: existingPurchase.storeId,
               userId,
               purchaseId,
               notes: 'Purchase items received',
@@ -228,26 +228,37 @@ export const updatePurchaseById = async (
     const subtotalValue = updateBody.items.reduce((sum, item) => sum + item.unitCost * item.quantity, 0);
     const totalValue = subtotalValue;
 
-    const updateBodyNew = {
-      ...updateBody,
-      totalAmount: totalValue,
-      subtotal: subtotalValue,
-      taxAmount: 0,
-      discountAmount: 0,
-      organizationId,
-    };
-
     const [updatedPurchase] = await tx
       .update(purchases)
-      .set(updateBodyNew)
-      .where(and(eq(purchases.id, purchaseId), eq(purchases.organizationId, organizationId), eq(purchases.storeId, storeId)))
+      .set({
+        status: updateBody.status,
+        receivedQuantity: updateBody.receivedQuantity,
+        totalAmount: totalValue,
+        subtotal: subtotalValue,
+        amountPaid: updateBody.amountPaid || 0,
+        paymentMethod: updateBody.paymentMethod,
+        paymentType: updateBody.paymentType,
+        expectedArrivalDate: updateBody.expectedArrivalDate ? new Date(updateBody.expectedArrivalDate) : null,
+        notes: updateBody.notes,
+        lastPaymentDate: updateBody.amountPaid ? new Date() : null,
+      } as any)
+      .where(and(eq(purchases.id, purchaseId), eq(purchases.organizationId, organizationId)))
       .returning();
+
+    if (!updatedPurchase) {
+      throw new ApiError(httpStatus.NOT_FOUND, 'Purchase not found');
+    }
 
     if (updateBody.items) {
       await tx.delete(purchaseItems).where(eq(purchaseItems.purchaseId, purchaseId));
-      await tx
-        .insert(purchaseItems)
-        .values(updateBody.items.map((item) => ({ ...item, purchaseId, unitCost: item.unitCost.toString() })));
+      await tx.insert(purchaseItems).values(
+        updateBody.items.map((item) => ({
+          purchaseId,
+          variantId: item.variantId,
+          quantity: item.quantity,
+          unitCost: item.unitCost.toString(),
+        }))
+      );
     }
 
     const result = await tx.query.purchases.findFirst({

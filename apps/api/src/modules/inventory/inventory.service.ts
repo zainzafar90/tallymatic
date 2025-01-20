@@ -40,15 +40,18 @@ export const adjustStock = async ({
   notes?: string;
 }) => {
   return db.transaction(async (tx) => {
-    const productVariant = await tx.query.variants.findFirst({
-      where: and(eq(variants.id, variantId), eq(variants.organizationId, organizationId), eq(variants.storeId, storeId)),
-    });
+    const [productVariant] = await tx
+      .select()
+      .from(variants)
+      .innerJoin(products, eq(variants.productId, products.id))
+      .where(and(eq(variants.id, variantId), eq(products.organizationId, organizationId)))
+      .limit(1);
 
     if (!productVariant) {
       throw new ApiError(httpStatus.NOT_FOUND, 'Product variant not found');
     }
 
-    const currentStock = Number(productVariant.stock);
+    const currentStock = Number(productVariant.variants.stock);
     const newStock = currentStock + quantity;
 
     if (newStock < 0) {
@@ -68,7 +71,7 @@ export const adjustStock = async ({
         type,
         storeId,
         notes,
-      } as any)
+      } as typeof inventory.$inferInsert)
       .returning();
 
     let adjustmentType: InventoryAdjustmentType;
@@ -96,7 +99,7 @@ export const adjustStock = async ({
       referenceId,
       notes,
       createdBy: userId,
-    } as any);
+    } as typeof inventoryHistory.$inferInsert);
 
     return inventoryDTO(inventoryCreated);
   });
