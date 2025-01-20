@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 
 import { ShoppingCart } from 'lucide-react';
 
@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Divider } from '@/components/ui/divider';
 import { Heading, Subheading } from '@/components/ui/heading';
+import { useMe } from '@/hooks/api/users.hooks';
 
 import { LowStockWarnings } from './components/low-stock-warnings';
 import { PendingPurchaseOrders } from './components/pending-purchase-orders';
@@ -39,12 +40,21 @@ export function Stat({
 }
 
 export const Dashboard = () => {
+  const { data: user } = useMe();
+  const stores = user?.stores || [];
+  const { storeId } = useParams();
+  const store = stores.find((store) => store.id === storeId);
+
+  if (!store) {
+    return <div>Store not found</div>;
+  }
+
   return (
     <>
-      <Heading>Good afternoon, Zain</Heading>
+      <Heading>Good afternoon, {user?.name}</Heading>
       <div className="mt-8 flex items-end justify-between">
         <Subheading>Overview</Subheading>
-        <Link to="/orders/create">
+        <Link to={`/stores/${storeId}/orders/create`}>
           <Button>
             <ShoppingCart className="w-4 h-4" /> New Sale
           </Button>
