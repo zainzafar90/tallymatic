@@ -199,32 +199,6 @@ export const updatePurchaseById = async (
       throw new ApiError(httpStatus.NOT_FOUND, 'Purchase not found');
     }
 
-    const oldReceivedQuantity = existingPurchase.receivedQuantity || 0;
-    const newReceivedQuantity = updateBody.receivedQuantity || 0;
-    const receivedDifference = newReceivedQuantity - oldReceivedQuantity;
-
-    if (receivedDifference > 0) {
-      const totalQuantity = existingPurchase.totalQuantity;
-      await Promise.all(
-        existingPurchase.items.map(async (item) => {
-          const itemProportion = item.quantity / totalQuantity;
-          const itemReceivedQuantity = Math.round(receivedDifference * itemProportion);
-
-          if (itemReceivedQuantity > 0) {
-            await recordPurchaseReceived({
-              variantId: item.variantId,
-              quantity: itemReceivedQuantity,
-              organizationId,
-              storeId: existingPurchase.storeId,
-              userId,
-              purchaseId,
-              notes: 'Purchase items received',
-            });
-          }
-        })
-      );
-    }
-
     const subtotalValue = updateBody.items.reduce((sum, item) => sum + item.unitCost * item.quantity, 0);
     const totalValue = subtotalValue;
 
@@ -232,7 +206,6 @@ export const updatePurchaseById = async (
       .update(purchases)
       .set({
         status: updateBody.status,
-        receivedQuantity: updateBody.receivedQuantity,
         totalAmount: totalValue,
         subtotal: subtotalValue,
         amountPaid: updateBody.amountPaid || 0,
@@ -249,16 +222,32 @@ export const updatePurchaseById = async (
       throw new ApiError(httpStatus.NOT_FOUND, 'Purchase not found');
     }
 
-    if (updateBody.items) {
+    if (updateBody.items?.length > 0) {
       await tx.delete(purchaseItems).where(eq(purchaseItems.purchaseId, purchaseId));
       await tx.insert(purchaseItems).values(
         updateBody.items.map((item) => ({
           purchaseId,
           variantId: item.variantId,
           quantity: item.quantity,
+          acceptedQuantity: item.acceptedQuantity || 0,
+          rejectedQuantity: item.rejectedQuantity || 0,
           unitCost: item.unitCost.toString(),
         }))
       );
+
+      for (const item of updateBody.items) {
+        if (item.acceptedQuantity && item.acceptedQuantity > 0) {
+          await recordPurchaseReceived({
+            variantId: item.variantId,
+            quantity: item.acceptedQuantity,
+            organizationId,
+            storeId: updatedPurchase.storeId,
+            userId,
+            purchaseId,
+            notes: 'Purchase items received and accepted',
+          });
+        }
+      }
     }
 
     const result = await tx.query.purchases.findFirst({

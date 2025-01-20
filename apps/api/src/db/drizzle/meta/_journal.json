@@ -15,6 +15,20 @@
       "when": 1737396047672,
       "tag": "0001_windy_tyger_tiger",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1737408060257,
+      "tag": "0002_gorgeous_silver_fox",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1737410022046,
+      "tag": "0003_bouncy_scarlet_witch",
+      "breakpoints": true
     }
   ]
 }

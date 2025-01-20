@@ -10,8 +10,6 @@ type BasePurchase = {
   totalAmount?: number;
   notes?: string;
   orderNumber?: string;
-  totalQuantity?: number;
-  receivedQuantity?: number;
   expectedArrivalDate?: Date;
   paymentMethod?: PaymentMethod;
   paymentType?: PaymentType;
@@ -24,6 +22,8 @@ type BasePurchaseItem = {
   purchaseId: string;
   variantId: string;
   quantity: number;
+  acceptedQuantity?: number;
+  rejectedQuantity?: number;
   unitCost: number;
 };
 
@@ -40,8 +40,6 @@ export interface CreatePurchaseReq {
   status: PurchaseStatus;
   notes?: string;
   expectedArrivalDate?: Date;
-  receivedQuantity?: number;
-  totalQuantity?: number;
   items: BasePurchaseItem[];
   paymentMethod?: PaymentMethod;
   paymentType?: PaymentType;

@@ -6,6 +6,8 @@ import { uuid } from '@/common/validate/custom.validation';
 const purchaseItemSchema = Joi.object().keys({
   variantId: Joi.string().custom(uuid).required(),
   quantity: Joi.number().integer().min(1).required(),
+  acceptedQuantity: Joi.number().integer().min(0).optional(),
+  rejectedQuantity: Joi.number().integer().min(0).optional(),
   unitCost: Joi.number().positive().required(),
 });
 
@@ -22,8 +24,6 @@ const createPurchaseBody: Record<keyof CreatePurchaseReq, any> = {
     .required(),
   notes: Joi.string().allow(null, ''),
   expectedArrivalDate: Joi.date().allow(null),
-  receivedQuantity: Joi.number().integer().min(0),
-  totalQuantity: Joi.number().integer().min(0),
   items: Joi.array().items(purchaseItemSchema).min(1).required(),
   paymentMethod: Joi.string()
     .valid(

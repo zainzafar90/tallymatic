@@ -349,14 +349,6 @@ async function main() {
             minDate: '2023-01-01',
             maxDate: '2024-12-16',
           }),
-          receivedQuantity: funcs.int({
-            minValue: 1,
-            maxValue: 100,
-          }),
-          totalQuantity: funcs.int({
-            minValue: 1,
-            maxValue: 100,
-          }),
           notes: funcs.loremIpsum({ sentencesCount: 2 }),
         },
       },
@@ -370,6 +362,14 @@ async function main() {
           unitCost: funcs.number({
             minValue: 100,
             maxValue: 1000,
+          }),
+          acceptedQuantity: funcs.int({
+            minValue: 0,
+            maxValue: 50,
+          }),
+          rejectedQuantity: funcs.int({
+            minValue: 0,
+            maxValue: 50,
           }),
         },
       },

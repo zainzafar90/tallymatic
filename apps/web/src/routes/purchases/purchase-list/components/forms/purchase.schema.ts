@@ -19,6 +19,16 @@ export const PurchaseSchema = z.object({
           .union([z.string(), z.number()])
           .transform((val) => Number(val || 0))
           .pipe(z.number().int().min(1, 'Quantity must be at least 1')),
+        acceptedQuantity: z
+          .union([z.string(), z.number()])
+          .transform((val) => Number(val || 0))
+          .pipe(z.number().int().min(0, 'Accepted quantity must be non-negative'))
+          .optional(),
+        rejectedQuantity: z
+          .union([z.string(), z.number()])
+          .transform((val) => Number(val || 0))
+          .pipe(z.number().int().min(0, 'Rejected quantity must be non-negative'))
+          .optional(),
         unitCost: z
           .union([z.string(), z.number()])
           .transform((val) => Number(val || 0))
@@ -26,8 +36,6 @@ export const PurchaseSchema = z.object({
       })
     )
     .min(1, 'At least one item is required'),
-  totalQuantity: z.number().min(0).optional(),
-  receivedQuantity: z.number().min(0).optional(),
   paymentMethod: z
     .nativeEnum(PaymentMethod, {
       errorMap: () => ({
