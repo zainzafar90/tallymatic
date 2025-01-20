@@ -1,10 +1,10 @@
-import { and, asc, desc, eq, lte, sql } from 'drizzle-orm';
+import { and, asc, desc, eq, inArray, sql } from 'drizzle-orm';
 import httpStatus from 'http-status';
-import { IOptions, TransactionType } from '@repo/shared';
+import { InventoryAdjustmentType, IOptions, TransactionType } from '@repo/shared';
 
 import { ApiError } from '@/common/errors/api-error';
 import { db } from '@/db';
-import { Inventory, inventory, products, variants } from '@/db/schema';
+import { Inventory, inventory, inventoryHistory, products, variants } from '@/db/schema';
 
 import { getPaginationConfig } from '../paginate/pagination';
 
@@ -20,19 +20,188 @@ const inventoryDTO = (inventory: Inventory) => {
   return inventory;
 };
 
+export const adjustStock = async ({
+  variantId,
+  quantity,
+  type,
+  organizationId,
+  storeId,
+  userId,
+  referenceId,
+  notes,
+}: {
+  variantId: string;
+  quantity: number;
+  type: TransactionType;
+  organizationId: string;
+  storeId: string;
+  userId: string;
+  referenceId?: string;
+  notes?: string;
+}) => {
+  return db.transaction(async (tx) => {
+    const productVariant = await tx.query.variants.findFirst({
+      where: and(eq(variants.id, variantId), eq(variants.organizationId, organizationId), eq(variants.storeId, storeId)),
+    });
+
+    if (!productVariant) {
+      throw new ApiError(httpStatus.NOT_FOUND, 'Product variant not found');
+    }
+
+    const currentStock = Number(productVariant.stock);
+    const newStock = currentStock + quantity;
+
+    if (newStock < 0) {
+      throw new ApiError(httpStatus.BAD_REQUEST, 'Insufficient stock');
+    }
+
+    await tx
+      .update(variants)
+      .set({ stock: newStock } as any)
+      .where(eq(variants.id, variantId));
+
+    const [inventoryCreated] = await tx
+      .insert(inventory)
+      .values({
+        variantId,
+        quantity,
+        type,
+        storeId,
+        notes,
+      } as any)
+      .returning();
+
+    let adjustmentType: InventoryAdjustmentType;
+    switch (type) {
+      case TransactionType.SOLD:
+        adjustmentType = InventoryAdjustmentType.SALE;
+        break;
+      case TransactionType.RECEIVED:
+        adjustmentType = InventoryAdjustmentType.PURCHASE;
+        break;
+      case TransactionType.ADJUSTED:
+        adjustmentType = InventoryAdjustmentType.MANUAL_ADJUSTMENT;
+        break;
+      default:
+        adjustmentType = InventoryAdjustmentType.MANUAL_ADJUSTMENT;
+    }
+
+    await tx.insert(inventoryHistory).values({
+      variantId,
+      storeId,
+      quantity,
+      previousQuantity: currentStock,
+      newQuantity: newStock,
+      adjustmentType,
+      referenceId,
+      notes,
+      createdBy: userId,
+    } as any);
+
+    return inventoryDTO(inventoryCreated);
+  });
+};
+
 export const createClaimAdjustment = async (variantId: string, quantity: number, organizationId: string, notes?: string) => {
-  return adjustStock(variantId, quantity, TransactionType.ADJUSTED, organizationId, notes);
+  return adjustStock({
+    variantId,
+    quantity,
+    type: TransactionType.ADJUSTED,
+    organizationId,
+    storeId: '',
+    userId: '',
+    notes,
+  });
+};
+
+export const recordPurchaseReceived = async ({
+  variantId,
+  quantity,
+  organizationId,
+  storeId,
+  userId,
+  purchaseId,
+  notes,
+}: {
+  variantId: string;
+  quantity: number;
+  organizationId: string;
+  storeId: string;
+  userId: string;
+  purchaseId: string;
+  notes?: string;
+}) => {
+  return adjustStock({
+    variantId,
+    quantity,
+    type: TransactionType.RECEIVED,
+    organizationId,
+    storeId,
+    userId,
+    referenceId: purchaseId,
+    notes: notes || 'Purchase received',
+  });
+};
+
+export const recordSale = async ({
+  variantId,
+  quantity,
+  organizationId,
+  storeId,
+  userId,
+  orderId,
+  notes,
+}: {
+  variantId: string;
+  quantity: number;
+  organizationId: string;
+  storeId: string;
+  userId: string;
+  orderId: string;
+  notes?: string;
+}) => {
+  return adjustStock({
+    variantId,
+    quantity: -Math.abs(quantity), // Ensure negative quantity for sales
+    type: TransactionType.SOLD,
+    organizationId,
+    storeId,
+    userId,
+    referenceId: orderId,
+    notes: notes || 'Sale completed',
+  });
+};
+
+export const recordManualAdjustment = async (
+  variantId: string,
+  quantity: number,
+  organizationId: string,
+  storeId: string,
+  userId: string,
+  notes?: string
+) => {
+  return adjustStock({
+    variantId,
+    quantity,
+    type: TransactionType.ADJUSTED,
+    organizationId,
+    storeId,
+    userId,
+    referenceId: undefined,
+    notes: notes || 'Manual stock adjustment',
+  });
 };
 
 export const getAllInventoryLevels = async (
   filter: Record<string, any>,
   options: IOptions,
   organizationId: string,
+  storeId: string,
   wildcardFields: string[] = []
 ) => {
   const { limit, offset } = getPaginationConfig(options);
 
-  const conditions = [eq(products.organizationId, organizationId)];
+  const conditions = [eq(products.organizationId, organizationId), eq(products.storeId, storeId)];
 
   if (filter.name) {
     conditions.push(
@@ -74,60 +243,46 @@ export const getAllInventoryLevels = async (
     .offset(offset)
     .orderBy(orderByClause);
 
+  const variantIds = results.map((variant) => variant.id);
+
+  const inventoryHistoryResults = await db
+    .select({
+      id: inventoryHistory.id,
+      variantId: inventoryHistory.variantId,
+      quantity: inventoryHistory.quantity,
+      previousQuantity: inventoryHistory.previousQuantity,
+      newQuantity: inventoryHistory.newQuantity,
+      adjustmentType: inventoryHistory.adjustmentType,
+      referenceId: inventoryHistory.referenceId,
+      notes: inventoryHistory.notes,
+      createdAt: inventoryHistory.createdAt,
+      createdBy: inventoryHistory.createdBy,
+    })
+    .from(inventoryHistory)
+    .where(inArray(inventoryHistory.variantId, variantIds))
+    .orderBy(desc(inventoryHistory.createdAt));
+
+  const historyByVariant = inventoryHistoryResults.reduce(
+    (acc, history) => {
+      if (!acc[history.variantId]) {
+        acc[history.variantId] = [];
+      }
+      acc[history.variantId].push(history);
+      return acc;
+    },
+    {} as Record<string, typeof inventoryHistoryResults>
+  );
+
+  const resultsWithHistory = results.map((variant) => ({
+    ...variant,
+    history: historyByVariant[variant.id] || [],
+  }));
+
   return {
-    results,
+    results: resultsWithHistory,
     limit,
     offset,
     pages: Math.ceil(variantsCount.count / limit),
     count: variantsCount.count,
   };
-};
-
-export const adjustStock = async (
-  variantId: string,
-  quantity: number,
-  type: TransactionType,
-  organizationId: string,
-  storeId: string,
-  notes?: string
-) => {
-  return db.transaction(async (tx) => {
-    const [productsAndVariants] = await tx
-      .select()
-      .from(variants)
-      .innerJoin(products, eq(variants.productId, products.id))
-      .where(and(eq(variants.id, variantId), eq(products.organizationId, organizationId)))
-      .limit(1);
-
-    if (!productsAndVariants) {
-      throw new ApiError(httpStatus.NOT_FOUND, 'Product variant not found');
-    }
-
-    const newStock = Number(productsAndVariants.variants.stock) + quantity;
-    if (newStock < 0) {
-      throw new ApiError(httpStatus.BAD_REQUEST, 'Insufficient stock');
-    }
-
-    const updateStock = {
-      stock: newStock,
-    };
-
-    await tx
-      .update(variants)
-      // TODO: Fix this type error
-      .set(updateStock as any)
-      .where(eq(variants.id, variantId));
-
-    const [inventoryCreated] = await tx
-      .insert(inventory)
-      .values({
-        variantId,
-        quantity,
-        type,
-        storeId,
-      })
-      .returning();
-
-    return inventoryDTO(inventoryCreated);
-  });
 };

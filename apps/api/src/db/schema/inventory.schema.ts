@@ -1,12 +1,18 @@
 import { relations } from 'drizzle-orm';
 import { customType, foreignKey, integer, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core';
-import { TransactionType } from '@repo/shared';
+import { InventoryAdjustmentType, TransactionType } from '@repo/shared';
 
 import { stores } from './store.schema';
 import { variants } from './variant.schema';
 
 const EnumTransactionType = customType<{
   data: TransactionType;
+}>({
+  dataType: () => 'text',
+});
+
+const EnumInventoryAdjustmentType = customType<{
+  data: InventoryAdjustmentType;
 }>({
   dataType: () => 'text',
 });
@@ -54,6 +60,55 @@ export const inventoryRelations = relations(inventory, ({ one }) => ({
   }),
   store: one(stores, {
     fields: [inventory.storeId],
+    references: [stores.id],
+  }),
+}));
+
+export const inventoryHistory = pgTable(
+  'inventory_history',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    variantId: uuid('variant_id')
+      .notNull()
+      .references(() => variants.id),
+    storeId: uuid('store_id')
+      .notNull()
+      .references(() => stores.id),
+    quantity: integer('quantity').notNull(),
+    previousQuantity: integer('previous_quantity').notNull(),
+    newQuantity: integer('new_quantity').notNull(),
+    adjustmentType: EnumInventoryAdjustmentType('adjustment_type').notNull(),
+    referenceId: uuid('reference_id'), // OrderId, PurchaseOrderId, etc.
+    notes: text('notes'),
+    createdAt: timestamp('created_at').defaultNow(),
+    createdBy: uuid('created_by').notNull(),
+  },
+  (table) => ({
+    fk_variant: foreignKey({
+      columns: [table.variantId],
+      foreignColumns: [variants.id],
+    })
+      .onDelete('cascade')
+      .onUpdate('cascade'),
+    fk_store: foreignKey({
+      columns: [table.storeId],
+      foreignColumns: [stores.id],
+    })
+      .onDelete('cascade')
+      .onUpdate('cascade'),
+  })
+);
+
+export type InventoryHistory = typeof inventoryHistory.$inferSelect;
+export type InventoryHistoryInsert = typeof inventoryHistory.$inferInsert;
+
+export const inventoryHistoryRelations = relations(inventoryHistory, ({ one }) => ({
+  variant: one(variants, {
+    fields: [inventoryHistory.variantId],
+    references: [variants.id],
+  }),
+  store: one(stores, {
+    fields: [inventoryHistory.storeId],
     references: [stores.id],
   }),
 }));

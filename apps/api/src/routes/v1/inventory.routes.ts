@@ -13,7 +13,12 @@ router
 
 router
   .route('/levels')
-  .get(auth(), validate(inventoryValidation.getInventoryLevelsSchema), inventoryController.getAllInventoryLevels);
+  .get(
+    auth(),
+    validateStore,
+    validate(inventoryValidation.getInventoryLevelsSchema),
+    inventoryController.getAllInventoryLevels
+  );
 
 // router
 //   .route('/levels/:productId')

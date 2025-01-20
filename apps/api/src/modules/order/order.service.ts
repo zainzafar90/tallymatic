@@ -5,6 +5,7 @@ import { ApiError } from '@/common/errors/api-error';
 import { db } from '@/db';
 import { orderItems, orders } from '@/db/schema';
 
+import { recordSale } from '../inventory/inventory.service';
 import { getPaginationConfig } from '../paginate/pagination';
 
 type OrderDirection = 'asc' | 'desc';
@@ -21,7 +22,7 @@ const generateOrderNumber = async (organizationId: string) => {
   return `ORD-${orderNumber}`;
 };
 
-export const createOrder = async (orderData: CreateOrderReq, organizationId: string, storeId: string) => {
+export const createOrder = async (orderData: CreateOrderReq, organizationId: string, storeId: string, userId: string) => {
   return await db.transaction(async (tx) => {
     const subtotalValue = orderData.items.reduce(
       (sum, item) => sum + item.price * item.quantity - (item.totalDiscount || 0),
@@ -48,23 +49,33 @@ export const createOrder = async (orderData: CreateOrderReq, organizationId: str
 
     const [order] = await tx.insert(orders).values(orderNew).returning();
 
-    if (orderData.items?.length > 0) {
-      const orderItemsNew = orderData.items.map((item) => ({
-        ...item,
-        orderId: order.id,
-        price: item.price.toString(),
-      }));
-      await tx.insert(orderItems).values(orderItemsNew);
-    }
+    const orderItemPromises = orderData.items.map(async (item) => {
+      const [orderItem] = await tx
+        .insert(orderItems)
+        .values({
+          orderId: order.id,
+          variantId: item.variantId,
+          quantity: item.quantity,
+          price: item.price.toString(),
+          totalDiscount: item.totalDiscount || 0,
+        } as typeof orderItems.$inferInsert)
+        .returning();
 
-    const createdOrder = await tx.query.orders.findFirst({
-      where: eq(orders.id, order.id),
-      with: {
-        items: true,
-      },
+      await recordSale({
+        variantId: item.variantId,
+        quantity: item.quantity,
+        organizationId,
+        storeId,
+        userId,
+        orderId: order.id,
+        notes: 'Order sale',
+      });
+
+      return orderItem;
     });
 
-    return createdOrder;
+    const createdOrderItems = await Promise.all(orderItemPromises);
+    return { ...order, items: createdOrderItems };
   });
 };
 

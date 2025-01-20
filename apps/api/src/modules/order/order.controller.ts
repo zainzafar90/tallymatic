@@ -16,7 +16,7 @@ export const createOrder = catchAsync(async (req: Request, res: Response) => {
   }
 
   const storeId = req.store.id;
-  const order = await orderService.createOrder(req.body, req.user.organizationId, storeId);
+  const order = await orderService.createOrder(req.body, req.user.organizationId, storeId, req.user.id);
   res.status(httpStatus.CREATED).send(order);
 });
 

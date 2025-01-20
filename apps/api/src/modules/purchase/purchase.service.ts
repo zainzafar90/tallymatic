@@ -1,12 +1,12 @@
 import { and, asc, count, desc, eq, ilike, inArray } from 'drizzle-orm';
 import httpStatus from 'http-status';
-import { CreatePurchaseReq, IOptions, ListResponse, PurchaseStatus, TransactionType } from '@repo/shared';
+import { CreatePurchaseReq, IOptions, ListResponse, PurchaseStatus, TransactionType, UpdatePurchaseReq } from '@repo/shared';
 
 import { ApiError } from '@/common/errors/api-error';
 import { db } from '@/db';
 import { purchaseItems, purchases } from '@/db/schema';
 
-import { adjustStock } from '../inventory/inventory.service';
+import { adjustStock, recordPurchaseReceived } from '../inventory/inventory.service';
 import { getPaginationConfig } from '../paginate/pagination';
 
 type OrderDirection = 'asc' | 'desc';
@@ -26,7 +26,12 @@ const generatePurchaseNumber = async (organizationId: string) => {
   return `PO-${paddedPurchaseNumber}`;
 };
 
-export const createPurchase = async (purchaseData: CreatePurchaseReq, organizationId: string, storeId: string) => {
+export const createPurchase = async (
+  purchaseData: CreatePurchaseReq,
+  organizationId: string,
+  storeId: string,
+  userId: string
+) => {
   return await db.transaction(async (tx) => {
     const subtotalValue = purchaseData.items.reduce((sum, item) => sum + item.unitCost * item.quantity, 0);
     const totalValue = subtotalValue;
@@ -59,7 +64,16 @@ export const createPurchase = async (purchaseData: CreatePurchaseReq, organizati
       await tx.insert(purchaseItems).values(purchaseItemsNew);
 
       for (const item of purchaseData.items) {
-        await adjustStock(item.variantId, item.quantity, TransactionType.RECEIVED, organizationId, storeId);
+        await adjustStock({
+          variantId: item.variantId,
+          quantity: item.quantity,
+          type: TransactionType.RECEIVED,
+          organizationId,
+          storeId,
+          userId,
+          referenceId: purchase.id,
+          notes: 'Purchase received',
+        });
       }
     }
 
@@ -168,27 +182,47 @@ export const getPurchaseById = async (id: string, organizationId: string, storeI
 
 export const updatePurchaseById = async (
   purchaseId: string,
-  updateBody: CreatePurchaseReq,
+  updateBody: UpdatePurchaseReq,
   organizationId: string,
+  userId: string,
   storeId: string
 ) => {
   return await db.transaction(async (tx) => {
-    const purchase = await tx.query.purchases.findFirst({
-      where: and(eq(purchases.id, purchaseId), eq(purchases.organizationId, organizationId), eq(purchases.storeId, storeId)),
+    const existingPurchase = await tx.query.purchases.findFirst({
+      where: and(eq(purchases.id, purchaseId), eq(purchases.organizationId, organizationId)),
       with: {
         items: true,
       },
     });
 
-    if (!purchase) {
+    if (!existingPurchase) {
       throw new ApiError(httpStatus.NOT_FOUND, 'Purchase not found');
     }
 
-    // If status is being changed to RECEIVED, adjust stock
-    if (purchase.status !== PurchaseStatus.RECEIVED && updateBody.status === PurchaseStatus.RECEIVED) {
-      for (const item of purchase.items) {
-        await adjustStock(item.variantId, item.quantity, TransactionType.RECEIVED, organizationId, storeId);
-      }
+    const oldReceivedQuantity = existingPurchase.receivedQuantity || 0;
+    const newReceivedQuantity = updateBody.receivedQuantity || 0;
+    const receivedDifference = newReceivedQuantity - oldReceivedQuantity;
+
+    if (receivedDifference > 0) {
+      const totalQuantity = existingPurchase.totalQuantity;
+      await Promise.all(
+        existingPurchase.items.map(async (item) => {
+          const itemProportion = item.quantity / totalQuantity;
+          const itemReceivedQuantity = Math.round(receivedDifference * itemProportion);
+
+          if (itemReceivedQuantity > 0) {
+            await recordPurchaseReceived({
+              variantId: item.variantId,
+              quantity: itemReceivedQuantity,
+              organizationId,
+              storeId,
+              userId,
+              purchaseId,
+              notes: 'Purchase items received',
+            });
+          }
+        })
+      );
     }
 
     const subtotalValue = updateBody.items.reduce((sum, item) => sum + item.unitCost * item.quantity, 0);

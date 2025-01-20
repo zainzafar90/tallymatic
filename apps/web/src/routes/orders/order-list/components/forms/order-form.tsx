@@ -126,7 +126,7 @@ export const OrderForm: React.FC<OrderFormProps> = ({ order, isPending, onSubmit
             <OrderSummary form={form} />
           </Card>
 
-          <div className="fixed bottom-0 left-0 right-0 bg-background border-t p-4 flex justify-end space-x-2">
+          <div className="fixed bottom-0 left-0 right-0 bg-background border-t border-border p-4 flex justify-end space-x-2">
             <Button onClick={onClose}>Cancel</Button>
             <Button type="submit" color="blue" disabled={isPending}>
               {order ? 'Update' : 'Create'} Order

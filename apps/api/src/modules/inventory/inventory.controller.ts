@@ -16,14 +16,15 @@ export const adjustStock = catchAsync(async (req: Request, res: Response) => {
   }
 
   const { variantId, quantity, type, notes } = req.body;
-  const transaction = await inventoryService.adjustStock(
+  const transaction = await inventoryService.adjustStock({
     variantId,
     quantity,
-    type as TransactionType,
-    req.user.organizationId,
-    req.store.id,
-    notes
-  );
+    type: type as TransactionType,
+    organizationId: req.user.organizationId,
+    storeId: req.store.id,
+    userId: req.user.id,
+    notes,
+  });
   res.status(httpStatus.OK).send(transaction);
 });
 
@@ -37,6 +38,8 @@ export const getAllInventoryLevels = catchAsync(async (req: Request, res: Respon
   const options: IOptions = pick(req.query, ['sortBy', 'sortOrder', 'limit', 'offset', 'projectBy']);
   const wildcardFields = ['name'];
 
-  const levels = await inventoryService.getAllInventoryLevels(filter, options, req.user.organizationId, wildcardFields);
+  const storeId = req.store.id;
+  const organizationId = req.user.organizationId;
+  const levels = await inventoryService.getAllInventoryLevels(filter, options, organizationId, storeId, wildcardFields);
   res.status(httpStatus.OK).send(levels);
 });
