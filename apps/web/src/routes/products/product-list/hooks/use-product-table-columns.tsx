@@ -1,4 +1,4 @@
-import { ProductResponse } from '@repo/shared';
+import { IProductVariant, ProductResponse } from '@repo/shared';
 import { createColumnHelper } from '@tanstack/react-table';
 
 import { LetterBox } from '@/components/common/letter-box/letter-box';
@@ -6,11 +6,39 @@ import { DateCell } from '@/components/table/table-cells/common/date-cell';
 import { SortedHeader } from '@/components/table/table-cells/common/sorted-header';
 import { TextCell, TextHeader } from '@/components/table/table-cells/common/text-cell';
 import { Badge } from '@/components/ui/badge';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { parseFloat } from '@/utils/number-utils';
 
 import { ProductActions } from '../components/tables/product-table-actions';
 
 const columnHelper = createColumnHelper<ProductResponse>();
+
+const VariantPopover = ({ variants }: { variants: IProductVariant[] }) => {
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <button className="text-sm text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 text-left">
+          {variants.length === 1 ? `${variants[0].name || 'Default'} ` : `${variants.length} variants`}
+        </button>
+      </PopoverTrigger>
+      <PopoverContent className="w-80">
+        <div className="space-y-2">
+          {variants.map((variant, index) => (
+            <div key={index} className="flex justify-between items-center py-1">
+              <span className="text-sm">{variant.name || 'Default Variant'}</span>
+              <div className="flex items-center gap-3">
+                <span className="text-sm">
+                  <small>&#x20A8;</small> {parseFloat(variant.price)}
+                </span>
+                <span className="text-sm text-gray-500">Stock: {variant.stock}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </PopoverContent>
+    </Popover>
+  );
+};
 
 export const useProductTableColumns = () => {
   return [
@@ -21,9 +49,11 @@ export const useProductTableColumns = () => {
           <LetterBox text={row.getValue('name')} />
           <div className="flex flex-col">
             <TextCell text={row.getValue('name')} />
-            <div className="text-sm text-gray-400 dark:text-gray-500">
-              {row.original.variants.length > 0 ? `${row.original.variants.length} variants` : <>&mdash;</>}
-            </div>
+            {row.original.variants.length > 0 ? (
+              <VariantPopover variants={row.original.variants || ([] as IProductVariant[])} />
+            ) : (
+              <span className="text-gray-500">&mdash;</span>
+            )}
           </div>
         </div>
       ),
