@@ -41,8 +41,9 @@ export function Stat({
 
 export const Dashboard = () => {
   const { data: user } = useMe();
-  const stores = user?.stores || [];
   const { storeId } = useParams();
+
+  const stores = user?.stores || [];
   const store = stores.find((store) => store.id === storeId);
 
   if (!store) {
