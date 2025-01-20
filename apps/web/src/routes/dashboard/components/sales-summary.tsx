@@ -4,6 +4,8 @@ import { Divider } from '@/components/ui/divider';
 import { useSalesSummary } from '@/hooks/api/analytics.hooks';
 import { formatCurrency } from '@/lib/utils';
 
+import { AnalyticsError } from './analytics-error';
+
 interface SalesCardProps {
   title: string;
   amount: number;
@@ -13,14 +15,13 @@ interface SalesCardProps {
 
 export function SalesSummary() {
   const { data, isLoading, isError, error } = useSalesSummary();
-  console.log(data);
-
-  if (isError) {
-    throw error;
-  }
 
   if (isLoading || !data) {
     return <TableListSkeleton />;
+  }
+
+  if (isError) {
+    return <AnalyticsError error={error} />;
   }
 
   return (

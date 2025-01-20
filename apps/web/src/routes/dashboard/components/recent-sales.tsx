@@ -4,12 +4,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useRecentSales } from '@/hooks/api/analytics.hooks';
 import { formatCurrency } from '@/lib/utils';
 
+import { AnalyticsError } from './analytics-error';
+
 export function RecentSales() {
   const { results = [], isLoading, isError, error } = useRecentSales();
-
-  if (isError) {
-    throw error;
-  }
 
   if (isLoading) {
     return <TableListSkeleton />;
@@ -21,18 +19,22 @@ export function RecentSales() {
         <CardTitle>Recent Sales</CardTitle>
       </CardHeader>
       <CardContent className="grid gap-8">
-        {results.map((sale) => (
-          <div key={sale.id} className="flex items-center gap-4">
-            <LetterBox text={sale.customerName} />
-            <div className="grid gap-1">
-              <p className="text-sm font-medium leading-none">Order #{sale.orderNumber}</p>
-              <p className="text-sm text-muted-foreground">
-                {sale.itemCount} items | {sale.customerName}
-              </p>
+        {isError ? (
+          <AnalyticsError error={error} />
+        ) : (
+          results.map((sale) => (
+            <div key={sale.id} className="flex items-center gap-4">
+              <LetterBox text={sale.customerName} />
+              <div className="grid gap-1">
+                <p className="text-sm font-medium leading-none">Order #{sale.orderNumber}</p>
+                <p className="text-sm text-muted-foreground">
+                  {sale.itemCount} items | {sale.customerName}
+                </p>
+              </div>
+              <div className="ml-auto font-medium">{formatCurrency(sale.totalAmount)}</div>
             </div>
-            <div className="ml-auto font-medium">{formatCurrency(sale.totalAmount)}</div>
-          </div>
-        ))}
+          ))
+        )}
       </CardContent>
     </Card>
   );

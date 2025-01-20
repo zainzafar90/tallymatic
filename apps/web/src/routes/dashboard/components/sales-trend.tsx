@@ -7,6 +7,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import { useSalesTrend } from '@/hooks/api/analytics.hooks';
 
+import { AnalyticsError } from './analytics-error';
+
 const chartConfig = {
   views: {
     label: 'Sales',
@@ -27,10 +29,6 @@ export function SalesTrend() {
 
   const total = React.useMemo(() => chartData.reduce((acc, curr) => acc + Number(curr.sales), 0), [chartData]);
 
-  if (isError) {
-    throw error;
-  }
-
   if (isLoading) {
     return <TableListSkeleton />;
   }
@@ -43,55 +41,63 @@ export function SalesTrend() {
           <CardDescription>Sales trend for the last month</CardDescription>
         </div>
         <div className="flex">
-          <div className="relative z-30 flex flex-1 flex-col justify-center gap-1 border-t px-6 py-4 text-left even:border-l border-zinc-100 dark:border-zinc-800  sm:border-l sm:border-t-0 sm:px-8 sm:py-6">
-            <span className="text-xs text-muted-foreground">{chartConfig['sales'].label}</span>
-            <span className="text-lg font-bold leading-none sm:text-3xl">₨ {total.toFixed(0)}</span>
-          </div>
+          {isError ? (
+            <div />
+          ) : (
+            <div className="relative z-30 flex flex-1 flex-col justify-center gap-1 border-t px-6 py-4 text-left even:border-l border-zinc-100 dark:border-zinc-800  sm:border-l sm:border-t-0 sm:px-8 sm:py-6">
+              <span className="text-xs text-muted-foreground">{chartConfig['sales'].label}</span>
+              <span className="text-lg font-bold leading-none sm:text-3xl">₨ {total.toFixed(0)}</span>
+            </div>
+          )}
         </div>
       </CardHeader>
       <CardContent className="px-2 sm:p-6">
-        <ChartContainer config={chartConfig} className="aspect-auto h-[250px] w-full">
-          <BarChart
-            accessibilityLayer
-            data={chartData}
-            margin={{
-              left: 12,
-              right: 12,
-            }}
-          >
-            <CartesianGrid vertical={false} />
-            <XAxis
-              dataKey="date"
-              tickLine={false}
-              axisLine={false}
-              tickMargin={8}
-              minTickGap={32}
-              tickFormatter={(value) => {
-                const date = new Date(value);
-                return date.toLocaleDateString('en-US', {
-                  month: 'short',
-                  day: 'numeric',
-                });
+        {isError ? (
+          <AnalyticsError error={error} />
+        ) : (
+          <ChartContainer config={chartConfig} className="aspect-auto h-[250px] w-full">
+            <BarChart
+              accessibilityLayer
+              data={chartData}
+              margin={{
+                left: 12,
+                right: 12,
               }}
-            />
-            <ChartTooltip
-              content={
-                <ChartTooltipContent
-                  className="w-[150px]"
-                  nameKey="views"
-                  labelFormatter={(value) => {
-                    return new Date(value).toLocaleDateString('en-US', {
-                      month: 'short',
-                      day: 'numeric',
-                      year: 'numeric',
-                    });
-                  }}
-                />
-              }
-            />
-            <Bar dataKey="sales" fill={`var(--color-sales)`} />
-          </BarChart>
-        </ChartContainer>
+            >
+              <CartesianGrid vertical={false} />
+              <XAxis
+                dataKey="date"
+                tickLine={false}
+                axisLine={false}
+                tickMargin={8}
+                minTickGap={32}
+                tickFormatter={(value) => {
+                  const date = new Date(value);
+                  return date.toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                  });
+                }}
+              />
+              <ChartTooltip
+                content={
+                  <ChartTooltipContent
+                    className="w-[150px]"
+                    nameKey="views"
+                    labelFormatter={(value) => {
+                      return new Date(value).toLocaleDateString('en-US', {
+                        month: 'short',
+                        day: 'numeric',
+                        year: 'numeric',
+                      });
+                    }}
+                  />
+                }
+              />
+              <Bar dataKey="sales" fill={`var(--color-sales)`} />
+            </BarChart>
+          </ChartContainer>
+        )}
       </CardContent>
     </Card>
   );
