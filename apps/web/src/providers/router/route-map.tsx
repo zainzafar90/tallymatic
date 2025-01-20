@@ -100,9 +100,9 @@ export const RouteMap: RouteObject[] = [
                 ],
               },
               {
-                path: 'orders',
+                path: 'sales',
                 handle: {
-                  crumb: () => 'Orders',
+                  crumb: () => 'Sales',
                 },
                 children: [
                   {
