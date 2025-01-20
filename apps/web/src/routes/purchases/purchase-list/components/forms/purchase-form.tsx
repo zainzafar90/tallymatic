@@ -37,10 +37,16 @@ export const PurchaseForm: React.FC<PurchaseFormProps> = ({ purchase, isPending,
       supplierId: purchase?.supplierId || '',
       status: purchase?.status || PurchaseStatus.DRAFT,
       notes: purchase?.notes || '',
-      items: purchase?.items || [],
+      items:
+        purchase?.items?.map((item) => ({
+          variantId: item.variantId,
+          unitCost: item.unitCost,
+          quantity: item.quantity,
+          acceptedQuantity: item.acceptedQuantity ?? 0,
+          rejectedQuantity: item.rejectedQuantity ?? 0,
+          variant: (item as any).variant,
+        })) || [],
       expectedArrivalDate: purchase?.expectedArrivalDate ? new Date(purchase.expectedArrivalDate) : undefined,
-      totalQuantity: purchase?.totalQuantity || 0,
-      receivedQuantity: purchase?.receivedQuantity || 0,
       paymentMethod: purchase?.paymentMethod || PaymentMethod.CASH,
       amountPaid: purchase?.amountPaid || 0,
     },
@@ -48,13 +54,16 @@ export const PurchaseForm: React.FC<PurchaseFormProps> = ({ purchase, isPending,
 
   const handleSubmit = form.handleSubmit(async (data) => {
     try {
-      const totalQuantity = data.items.reduce((sum, item) => sum + Number(item.quantity), 0);
-
       await onSubmit({
         ...data,
         status: data.status || PurchaseStatus.DRAFT,
-        totalQuantity,
-        receivedQuantity: data?.receivedQuantity || 0,
+        items: data.items.map((item) => ({
+          variantId: item.variantId,
+          quantity: item.quantity,
+          acceptedQuantity: item.acceptedQuantity,
+          rejectedQuantity: item.rejectedQuantity,
+          unitCost: item.unitCost,
+        })),
       });
       onClose();
       form.reset();
@@ -87,7 +96,7 @@ export const PurchaseForm: React.FC<PurchaseFormProps> = ({ purchase, isPending,
                 <CardDescription>Date: {new Date().toLocaleDateString()}</CardDescription>
               </div>
 
-              <SupplierSummary form={form} />
+              <SupplierSummary form={form} purchase={purchase} />
 
               <div className="flex gap-4 w-full flex-col md:flex-row">
                 <FormField
@@ -103,11 +112,7 @@ export const PurchaseForm: React.FC<PurchaseFormProps> = ({ purchase, isPending,
                         disabled={field.value === PurchaseStatus.CLOSED}
                       >
                         {Object.entries(purchaseStatusConfig).map(([status, [_, text]]) => (
-                          <option
-                            key={status}
-                            value={status}
-                            disabled={status === PurchaseStatus.CLOSED && !purchase?.receivedQuantity}
-                          >
+                          <option key={status} value={status} disabled={status === PurchaseStatus.CLOSED}>
                             {text}
                           </option>
                         ))}
@@ -119,29 +124,27 @@ export const PurchaseForm: React.FC<PurchaseFormProps> = ({ purchase, isPending,
               </div>
 
               {purchase && (
-                <FormField
-                  control={form.control}
-                  name="receivedQuantity"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Received Quantity</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          {...field}
-                          value={field.value ?? 0}
-                          min={0}
-                          onChange={(e) => {
-                            const quantity = parseInt(e.target.value, 10);
-                            field.onChange(quantity);
-                          }}
-                        />
-                      </FormControl>
-                      <FormDescription>Total Quantity: {form.getValues('totalQuantity')}</FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                <div className="grid gap-4">
+                  <div className="text-sm font-medium">Purchase Summary</div>
+                  <div className="grid grid-cols-3 gap-4">
+                    <div>
+                      <div className="text-sm text-muted-foreground">Total Items</div>
+                      <div className="text-lg font-medium">{form.getValues('items').length}</div>
+                    </div>
+                    <div>
+                      <div className="text-sm text-muted-foreground">Total Accepted</div>
+                      <div className="text-lg font-medium">
+                        {form.getValues('items').reduce((sum, item) => sum + (item.acceptedQuantity ?? 0), 0)}
+                      </div>
+                    </div>
+                    <div>
+                      <div className="text-sm text-muted-foreground">Total Rejected</div>
+                      <div className="text-lg font-medium">
+                        {form.getValues('items').reduce((sum, item) => sum + (item.rejectedQuantity ?? 0), 0)}
+                      </div>
+                    </div>
+                  </div>
+                </div>
               )}
 
               <FormField
@@ -281,10 +284,9 @@ const PurchaseSummary = ({ form }: { form: UseFormReturn<PurchaseFormData> }) =>
   );
 };
 
-const SupplierSummary = ({ form }: { form: UseFormReturn<PurchaseFormData> }) => {
+const SupplierSummary = ({ form, purchase }: { form: UseFormReturn<PurchaseFormData>; purchase?: IPurchase }) => {
   const [isSupplierDialogOpen, openSupplierDialog, closeSupplierDialog] = useToggleState();
-  const supplier = useWatch({ name: 'supplier' }) as ISupplier;
-  const [selectedSupplier, setSelectedSupplier] = useState<ISupplier | undefined>(supplier);
+  const [selectedSupplier, setSelectedSupplier] = useState<ISupplier | undefined>(purchase?.supplier);
 
   const handleSelectSupplier = (supplier: ISupplier) => {
     if (!supplier?.id) return;
@@ -355,6 +357,8 @@ const PurchaseItems = ({ form }: { form: UseFormReturn<PurchaseFormData> }) => {
     append({
       variantId: variant.id,
       quantity: 1,
+      acceptedQuantity: 0,
+      rejectedQuantity: 0,
       unitCost: parseFloat(variant.costPrice.toString()),
       variant,
     });
@@ -377,6 +381,7 @@ const PurchaseItems = ({ form }: { form: UseFormReturn<PurchaseFormData> }) => {
           <TableRow>
             <TableHeader>Product</TableHeader>
             <TableHeader>Quantity</TableHeader>
+            <TableHeader>Received</TableHeader>
             <TableHeader>Unit Cost</TableHeader>
             <TableHeader>Total</TableHeader>
             <TableHeader></TableHeader>
@@ -431,6 +436,30 @@ const PurchaseItems = ({ form }: { form: UseFormReturn<PurchaseFormData> }) => {
                   )}
                 />
               </TableCell>
+              <TableCell>
+                <FormField
+                  control={form.control}
+                  name={`items.${index}.acceptedQuantity`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          type="number"
+                          inputMode="numeric"
+                          min={0}
+                          value={field.value || 0}
+                          onChange={(e) => {
+                            const quantity = parseInt(e.target.value, 10);
+                            field.onChange(quantity);
+                          }}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+              </TableCell>
+
               <TableCell>
                 <FormField
                   control={form.control}

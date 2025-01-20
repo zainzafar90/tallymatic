@@ -52,8 +52,6 @@ export const purchases = pgTable(
     status: EnumPurchaseStatus('status').notNull().default(PurchaseStatus.DRAFT),
     totalAmount: numeric('total_amount'),
     expectedArrivalDate: timestamp('expected_arrival_date'),
-    receivedQuantity: integer('received_quantity').notNull().default(0),
-    totalQuantity: integer('total_quantity').notNull().default(0),
     notes: text('notes'),
     createdAt: timestamp('created_at').defaultNow(),
     updatedAt: timestamp('updated_at').defaultNow(),
@@ -90,6 +88,8 @@ export const purchaseItems = pgTable(
       .notNull()
       .references(() => variants.id),
     quantity: integer('quantity').notNull(),
+    acceptedQuantity: integer('accepted_quantity').notNull().default(0),
+    rejectedQuantity: integer('rejected_quantity').notNull().default(0),
     unitCost: numeric('unit_cost').notNull(),
     createdAt: timestamp('created_at').defaultNow(),
     updatedAt: timestamp('updated_at').defaultNow(),

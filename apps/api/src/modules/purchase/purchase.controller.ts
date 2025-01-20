@@ -16,7 +16,7 @@ export const createPurchase = catchAsync(async (req: Request, res: Response) => 
   }
 
   const storeId = req.store.id;
-  const purchase = await purchaseService.createPurchase(req.body, req.user.organizationId, storeId);
+  const purchase = await purchaseService.createPurchase(req.body, req.user.organizationId, storeId, req.user.id);
   res.status(httpStatus.CREATED).send(purchase);
 });
 
@@ -60,7 +60,8 @@ export const updatePurchase = catchAsync(async (req: Request, res: Response) => 
       req.params['purchaseId'],
       req.body,
       req.user.organizationId,
-      storeId
+      storeId,
+      req.user.id
     );
     res.send(purchase);
   }

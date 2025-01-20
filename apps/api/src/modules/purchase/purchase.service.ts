@@ -1,12 +1,12 @@
 import { and, asc, count, desc, eq, ilike, inArray } from 'drizzle-orm';
 import httpStatus from 'http-status';
-import { CreatePurchaseReq, IOptions, ListResponse, PurchaseStatus, TransactionType } from '@repo/shared';
+import { CreatePurchaseReq, IOptions, ListResponse, PurchaseStatus, TransactionType, UpdatePurchaseReq } from '@repo/shared';
 
 import { ApiError } from '@/common/errors/api-error';
 import { db } from '@/db';
 import { purchaseItems, purchases } from '@/db/schema';
 
-import { adjustStock } from '../inventory/inventory.service';
+import { adjustStock, recordPurchaseReceived } from '../inventory/inventory.service';
 import { getPaginationConfig } from '../paginate/pagination';
 
 type OrderDirection = 'asc' | 'desc';
@@ -26,7 +26,12 @@ const generatePurchaseNumber = async (organizationId: string) => {
   return `PO-${paddedPurchaseNumber}`;
 };
 
-export const createPurchase = async (purchaseData: CreatePurchaseReq, organizationId: string, storeId: string) => {
+export const createPurchase = async (
+  purchaseData: CreatePurchaseReq,
+  organizationId: string,
+  storeId: string,
+  userId: string
+) => {
   return await db.transaction(async (tx) => {
     const subtotalValue = purchaseData.items.reduce((sum, item) => sum + item.unitCost * item.quantity, 0);
     const totalValue = subtotalValue;
@@ -59,7 +64,16 @@ export const createPurchase = async (purchaseData: CreatePurchaseReq, organizati
       await tx.insert(purchaseItems).values(purchaseItemsNew);
 
       for (const item of purchaseData.items) {
-        await adjustStock(item.variantId, item.quantity, TransactionType.RECEIVED, organizationId, storeId);
+        await adjustStock({
+          variantId: item.variantId,
+          quantity: item.quantity,
+          type: TransactionType.RECEIVED,
+          organizationId,
+          storeId: purchase.storeId,
+          userId,
+          referenceId: purchase.id,
+          notes: 'Purchase received',
+        });
       }
     }
 
@@ -168,52 +182,72 @@ export const getPurchaseById = async (id: string, organizationId: string, storeI
 
 export const updatePurchaseById = async (
   purchaseId: string,
-  updateBody: CreatePurchaseReq,
+  updateBody: UpdatePurchaseReq,
   organizationId: string,
+  userId: string,
   storeId: string
 ) => {
   return await db.transaction(async (tx) => {
-    const purchase = await tx.query.purchases.findFirst({
-      where: and(eq(purchases.id, purchaseId), eq(purchases.organizationId, organizationId), eq(purchases.storeId, storeId)),
+    const existingPurchase = await tx.query.purchases.findFirst({
+      where: and(eq(purchases.id, purchaseId), eq(purchases.organizationId, organizationId)),
       with: {
         items: true,
       },
     });
 
-    if (!purchase) {
+    if (!existingPurchase) {
       throw new ApiError(httpStatus.NOT_FOUND, 'Purchase not found');
-    }
-
-    // If status is being changed to RECEIVED, adjust stock
-    if (purchase.status !== PurchaseStatus.RECEIVED && updateBody.status === PurchaseStatus.RECEIVED) {
-      for (const item of purchase.items) {
-        await adjustStock(item.variantId, item.quantity, TransactionType.RECEIVED, organizationId, storeId);
-      }
     }
 
     const subtotalValue = updateBody.items.reduce((sum, item) => sum + item.unitCost * item.quantity, 0);
     const totalValue = subtotalValue;
 
-    const updateBodyNew = {
-      ...updateBody,
-      totalAmount: totalValue,
-      subtotal: subtotalValue,
-      taxAmount: 0,
-      discountAmount: 0,
-      organizationId,
-    };
-
     const [updatedPurchase] = await tx
       .update(purchases)
-      .set(updateBodyNew)
-      .where(and(eq(purchases.id, purchaseId), eq(purchases.organizationId, organizationId), eq(purchases.storeId, storeId)))
+      .set({
+        status: updateBody.status,
+        totalAmount: totalValue,
+        subtotal: subtotalValue,
+        amountPaid: updateBody.amountPaid || 0,
+        paymentMethod: updateBody.paymentMethod,
+        paymentType: updateBody.paymentType,
+        expectedArrivalDate: updateBody.expectedArrivalDate ? new Date(updateBody.expectedArrivalDate) : null,
+        notes: updateBody.notes,
+        lastPaymentDate: updateBody.amountPaid ? new Date() : null,
+      } as any)
+      .where(and(eq(purchases.id, purchaseId), eq(purchases.organizationId, organizationId)))
       .returning();
 
-    if (updateBody.items) {
+    if (!updatedPurchase) {
+      throw new ApiError(httpStatus.NOT_FOUND, 'Purchase not found');
+    }
+
+    if (updateBody.items?.length > 0) {
       await tx.delete(purchaseItems).where(eq(purchaseItems.purchaseId, purchaseId));
-      await tx
-        .insert(purchaseItems)
-        .values(updateBody.items.map((item) => ({ ...item, purchaseId, unitCost: item.unitCost.toString() })));
+      await tx.insert(purchaseItems).values(
+        updateBody.items.map((item) => ({
+          purchaseId,
+          variantId: item.variantId,
+          quantity: item.quantity,
+          acceptedQuantity: item.acceptedQuantity || 0,
+          rejectedQuantity: item.rejectedQuantity || 0,
+          unitCost: item.unitCost.toString(),
+        }))
+      );
+
+      for (const item of updateBody.items) {
+        if (item.acceptedQuantity && item.acceptedQuantity > 0) {
+          await recordPurchaseReceived({
+            variantId: item.variantId,
+            quantity: item.acceptedQuantity,
+            organizationId,
+            storeId: updatedPurchase.storeId,
+            userId,
+            purchaseId,
+            notes: 'Purchase items received and accepted',
+          });
+        }
+      }
     }
 
     const result = await tx.query.purchases.findFirst({

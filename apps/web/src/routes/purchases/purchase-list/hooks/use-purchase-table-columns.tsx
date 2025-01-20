@@ -31,11 +31,13 @@ export const usePurchaseTableColumns = () => {
         );
       },
     }),
-    columnHelper.accessor((row) => ({ received: row.receivedQuantity, total: row.totalQuantity }), {
+    columnHelper.accessor((row) => row.items, {
       id: 'quantity',
       header: () => <TextHeader text="Received / Total" />,
       cell: ({ getValue }) => {
-        const { received = 0, total = 0 } = getValue();
+        const items = getValue();
+        const received = items.reduce((acc, item) => acc + (item.acceptedQuantity || 0), 0);
+        const total = items.reduce((acc, item) => acc + (item.quantity || 0), 0);
         const ratio = `${received}/${total}`;
         const percentage = total ? Math.round((received / total) * 100) : 0;
 
@@ -54,17 +56,17 @@ export const usePurchaseTableColumns = () => {
       cell: ({ row }) => <MoneyAmountCell currencyCode="PKR" amount={row.getValue('totalAmount')} align="right" />,
       enableHiding: false,
     }),
-    columnHelper.accessor('createdAt', {
-      header: ({ column }) => <SortedHeader text="Created" column={column} />,
-      cell: ({ getValue }) => {
-        const value = getValue();
-        return value ? <DateCell date={value} /> : null;
-      },
-      enableSorting: false,
-      meta: {
-        className: 'hidden xl:table-cell',
-      },
-    }),
+    // columnHelper.accessor('createdAt', {
+    //   header: ({ column }) => <SortedHeader text="Created" column={column} />,
+    //   cell: ({ getValue }) => {
+    //     const value = getValue();
+    //     return value ? <DateCell date={value} /> : null;
+    //   },
+    //   enableSorting: false,
+    //   meta: {
+    //     className: 'hidden xl:table-cell',
+    //   },
+    // }),
     columnHelper.display({
       id: 'actions',
       cell: ({ row }) => <PurchaseActions purchase={row.original} />,
