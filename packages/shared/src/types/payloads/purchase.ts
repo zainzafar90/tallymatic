@@ -1,3 +1,4 @@
+import { ISupplier } from '../..';
 import { ResourceListResponse } from '../api/api-operations';
 import { PaymentMethod, PaymentType, PurchaseStatus } from '../enums.types';
 
@@ -28,6 +29,7 @@ type BasePurchaseItem = {
 
 export interface IPurchase extends BasePurchase {
   items: BasePurchaseItem[];
+  supplier?: ISupplier;
 }
 
 export type PurchaseListResponse = ResourceListResponse<IPurchase>;

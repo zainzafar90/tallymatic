@@ -46,6 +46,8 @@ export const PurchaseForm: React.FC<PurchaseFormProps> = ({ purchase, isPending,
     },
   });
 
+  console.log(purchase);
+
   const handleSubmit = form.handleSubmit(async (data) => {
     try {
       const totalQuantity = data.items.reduce((sum, item) => sum + Number(item.quantity), 0);
@@ -87,7 +89,7 @@ export const PurchaseForm: React.FC<PurchaseFormProps> = ({ purchase, isPending,
                 <CardDescription>Date: {new Date().toLocaleDateString()}</CardDescription>
               </div>
 
-              <SupplierSummary form={form} />
+              <SupplierSummary form={form} purchase={purchase} />
 
               <div className="flex gap-4 w-full flex-col md:flex-row">
                 <FormField
@@ -281,10 +283,9 @@ const PurchaseSummary = ({ form }: { form: UseFormReturn<PurchaseFormData> }) =>
   );
 };
 
-const SupplierSummary = ({ form }: { form: UseFormReturn<PurchaseFormData> }) => {
+const SupplierSummary = ({ form, purchase }: { form: UseFormReturn<PurchaseFormData>; purchase?: IPurchase }) => {
   const [isSupplierDialogOpen, openSupplierDialog, closeSupplierDialog] = useToggleState();
-  const supplier = useWatch({ name: 'supplier' }) as ISupplier;
-  const [selectedSupplier, setSelectedSupplier] = useState<ISupplier | undefined>(supplier);
+  const [selectedSupplier, setSelectedSupplier] = useState<ISupplier | undefined>(purchase?.supplier);
 
   const handleSelectSupplier = (supplier: ISupplier) => {
     if (!supplier?.id) return;
