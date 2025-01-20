@@ -40,14 +40,3 @@ export const getAllInventoryLevels = catchAsync(async (req: Request, res: Respon
   const levels = await inventoryService.getAllInventoryLevels(filter, options, req.user.organizationId, wildcardFields);
   res.status(httpStatus.OK).send(levels);
 });
-
-export const getLowStockAlerts = catchAsync(async (req: Request, res: Response) => {
-  const isAllowed = permissionService.checkPermissions(req.user.role, 'view', 'inventory');
-  if (!isAllowed) {
-    throw new ApiError(httpStatus.FORBIDDEN, 'You do not have permission to view low stock alerts');
-  }
-
-  const storeId = req.store.id;
-  const alerts = await inventoryService.checkLowStockAlerts(req.user.organizationId, storeId);
-  res.status(httpStatus.OK).send(alerts);
-});

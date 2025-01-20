@@ -1,3 +1,4 @@
+export * from './analytics';
 export * from './category';
 export * from './customer';
 export * from './inventory';

@@ -1,8 +1,10 @@
 import { TrendingUp } from 'lucide-react';
 import { Bar, BarChart, CartesianGrid, LabelList, XAxis, YAxis } from 'recharts';
 
+import { TableListSkeleton } from '@/components/common/table/table-list-selecton';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
+import { useTopSellingProducts } from '@/hooks/api/analytics.hooks';
 
 const chartData = [
   { productName: 'smartphone', itemsSold: 250, fill: 'hsl(var(--chart-1))' },
@@ -39,6 +41,22 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 export function TopSellingProducts() {
+  const { results = [], isLoading, isError, error } = useTopSellingProducts(60);
+
+  if (isError) {
+    throw error;
+  }
+
+  if (isLoading) {
+    return <TableListSkeleton />;
+  }
+
+  const chartData = results.map((item) => ({
+    productName: item.name,
+    itemsSold: item.totalRevenue,
+    fill: `hsl(var(--chart-${Math.floor(Math.random() * 5) + 1}))`,
+  }));
+
   return (
     <Card className="bg-muted/50">
       <CardHeader>
@@ -80,11 +98,6 @@ export function TopSellingProducts() {
           </BarChart>
         </ChartContainer>
       </CardContent>
-      <CardFooter className="flex-col items-start gap-2 text-sm">
-        <div className="flex gap-2 font-medium leading-none">
-          Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-        </div>
-      </CardFooter>
     </Card>
   );
 }

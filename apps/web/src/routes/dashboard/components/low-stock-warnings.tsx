@@ -2,7 +2,7 @@ import { TableListSkeleton } from '@/components/common/table/table-list-selecton
 import { StockStatus } from '@/components/table/table-cells/common/stock-status-cell';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { useLowStockAlerts } from '@/hooks/api/inventory.hooks';
+import { useLowStockAlerts } from '@/hooks/api/analytics.hooks';
 
 export const LowStockWarnings = () => {
   const { results = [], isLoading, isError, error } = useLowStockAlerts();

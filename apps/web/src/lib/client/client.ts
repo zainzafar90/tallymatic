@@ -1,3 +1,4 @@
+import { analytics } from './analytics.requests';
 import { auth } from './auth.requests';
 import { categories } from './category.requests';
 import { customers } from './customer.requests';
@@ -10,6 +11,7 @@ import { suppliers } from './supplier.requests';
 import { users } from './users.requests';
 
 export const client = {
+  analytics,
   auth,
   users,
   stores,

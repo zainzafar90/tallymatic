@@ -19,6 +19,4 @@ router
 //   .route('/levels/:productId')
 //   .get(auth(), validate(inventoryValidation.getInventoryLevelsSchema), inventoryController.getInventoryLevels);
 
-router.route('/low-stock-alerts').get(auth(), validateStore, inventoryController.getLowStockAlerts);
-
 export default router;

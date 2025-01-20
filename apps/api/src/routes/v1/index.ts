@@ -2,6 +2,7 @@ import express, { Router } from 'express';
 
 import { config } from '@/config/config';
 
+import analyticsRoute from './analytics.routes';
 import authRoute from './auth.routes';
 import categoryRoute from './category.routes';
 import customerRoute from './customer.routes';
@@ -71,6 +72,10 @@ const defaultIRoute: IRoute[] = [
   {
     path: '/purchases',
     route: purchaseRoute,
+  },
+  {
+    path: '/analytics',
+    route: analyticsRoute,
   },
 ];
 

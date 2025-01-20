@@ -207,6 +207,17 @@
           "effect": "EFFECT_ALLOW"
         }
       ]
+    },
+    {
+      "version": "default",
+      "resource": "analytics",
+      "rules": [
+        {
+          "actions": ["*"],
+          "roles": ["super-admin", "admin"],
+          "effect": "EFFECT_ALLOW"
+        }
+      ]
     }
   ]
 }

@@ -24,15 +24,6 @@ export type ProductVariantListResponse = ResourceListResponse<IProductVariant>;
 export type ProductVariantResponse = IProductVariant;
 
 export type InventoryLevelsResponse = ResourceListResponse<{ variants: IProductVariant } & { products: IProduct }>;
-export type LowStockAlertsResponse = ResourceListResponse<{
-  id: string;
-  name: string;
-  sku: string;
-  stock: number;
-  lowStockThreshold: number;
-  productName: string;
-  productId: string;
-}>;
 
 /* -----------------------------
  * CREATE/UPDATE OPERATION TYPES

@@ -1,4 +1,4 @@
-import { AdjustStockReq, InventoryLevelsResponse, LowStockAlertsResponse } from '@repo/shared';
+import { AdjustStockReq, InventoryLevelsResponse } from '@repo/shared';
 
 import { getRequest, postRequest } from './common';
 
@@ -10,12 +10,7 @@ async function getAllInventoryLevels(query?: Record<string, any>) {
   return getRequest<InventoryLevelsResponse>('/v1/inventory/levels', query);
 }
 
-async function getLowStockAlerts() {
-  return getRequest<LowStockAlertsResponse>('/v1/inventory/low-stock-alerts');
-}
-
 export const inventory = {
   adjustStock,
   getAllInventoryLevels,
-  getLowStockAlerts,
 };

@@ -34,7 +34,7 @@ export type UseQueryOptionsWrapper<
 
 export const queryKeysFactory = <T, TListQueryType = any, TDetailQueryType = string>(globalKey: T) => {
   const getStoreId = () => localStorage.getItem(SELECTED_STORE_KEY) || 'no-store';
-  console.log(getStoreId());
+
   const queryKeyFactory: TQueryKey<T, TListQueryType, TDetailQueryType> = {
     all: [globalKey],
     lists: () => [...queryKeyFactory.all, 'list', getStoreId()],

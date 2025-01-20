@@ -40,12 +40,3 @@ export const useAllInventoryLevels = (
 
   return { ...data, ...rest };
 };
-
-export const useLowStockAlerts = () => {
-  const { data, ...rest } = useQuery({
-    queryFn: () => client.inventory.getLowStockAlerts(),
-    queryKey: ['lowStockAlerts'],
-  });
-
-  return { ...data, ...rest };
-};
