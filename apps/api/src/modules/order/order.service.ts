@@ -60,7 +60,7 @@ export const createOrder = async (orderData: CreateOrderReq, organizationId: str
       where: eq(orders.id, order.id),
       with: {
         items: true,
-        customer: true, // Ensure customer data is included
+        customer: true,
       },
     });
 
