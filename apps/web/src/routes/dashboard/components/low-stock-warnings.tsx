@@ -22,7 +22,7 @@ export const LowStockWarnings = () => {
         {isError ? (
           <AnalyticsError error={error} />
         ) : (
-          <Table>
+          <Table dense>
             <TableHead>
               <TableRow>
                 <TableHeader>Product Name</TableHeader>
@@ -36,8 +36,8 @@ export const LowStockWarnings = () => {
                 <TableRow key={item.id}>
                   <TableCell>
                     <div className="flex flex-col h-full w-full gap-x-3 overflow-hidden">
-                      <div className="truncate">{item.productName}</div>
-                      <div className="text-sm text-gray-500">{item.name}</div>
+                      <h6 className="truncate text-sm">{item.productName}</h6>
+                      <p className="text-xs text-gray-500">{item.name}</p>
                     </div>
                   </TableCell>
                   <TableCell className="hidden md:table-cell">{item.stock}</TableCell>

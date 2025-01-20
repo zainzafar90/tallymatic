@@ -60,7 +60,7 @@ export const getTopSellingProducts = async (
     .innerJoin(variants, eq(orderItems.variantId, variants.id))
     .innerJoin(products, eq(variants.productId, products.id))
     .where(
-      and(eq(orders.organizationId, organizationId), eq(orders.storeId, storeId), sql`${orders.createdAt} >= ${startDate}`)
+      and(eq(orders.organizationId, organizationId), eq(variants.storeId, storeId), sql`${orders.createdAt} >= ${startDate}`)
     )
     .groupBy(variants.id, variants.name, products.name, variants.sku)
     .orderBy(desc(sql<number>`SUM(${orderItems.quantity})`))
@@ -126,7 +126,11 @@ export const getProfitByCategory = async (organizationId: string, storeId: strin
     .innerJoin(products, eq(variants.productId, products.id))
     .leftJoin(categories, eq(products.categoryId, categories.id))
     .where(
-      and(eq(orders.organizationId, organizationId), eq(orders.storeId, storeId), sql`${orders.createdAt} >= ${startDate}`)
+      and(
+        eq(orders.organizationId, organizationId),
+        eq(categories.storeId, storeId),
+        sql`${orders.createdAt} >= ${startDate}`
+      )
     )
     .groupBy(categories.id, categories.name)
     .orderBy(desc(sql<number>`SUM(${orderItems.quantity} * CAST(${orderItems.price} AS DECIMAL))`))
