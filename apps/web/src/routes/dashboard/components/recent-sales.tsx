@@ -1,65 +1,36 @@
-import { Avatar } from '@/components/ui/avatar';
+import { LetterBox } from '@/components/common/letter-box/letter-box';
+import { TableListSkeleton } from '@/components/common/table/table-list-selecton';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-
-const salesData = [
-  {
-    initials: 'OM',
-    name: 'Olivia Martin',
-    email: 'olivia.martin@email.com',
-    amount: '+₨ 1,999',
-  },
-  {
-    initials: 'JL',
-    name: 'Jackson Lee',
-    email: 'jackson.lee@email.com',
-    amount: '+₨ 39',
-  },
-  {
-    initials: 'IN',
-    name: 'Isabella Nguyen',
-    email: 'isabella.nguyen@email.com',
-    amount: '+₨ 299',
-  },
-  {
-    initials: 'WK',
-    name: 'William Kim',
-    email: 'will@email.com',
-    amount: '+₨ 99',
-  },
-  {
-    initials: 'SD',
-    name: 'Sofia Davis',
-    email: 'sofia.davis@email.com',
-    amount: '+₨ 39',
-  },
-  {
-    initials: 'EM',
-    name: 'Ethan Miller',
-    email: 'ethan.miller@email.com',
-    amount: '+₨ 499',
-  },
-];
+import { useRecentSales } from '@/hooks/api/analytics.hooks';
+import { formatCurrency } from '@/lib/utils';
 
 export function RecentSales() {
+  const { results = [], isLoading, isError, error } = useRecentSales();
+
+  if (isError) {
+    throw error;
+  }
+
+  if (isLoading) {
+    return <TableListSkeleton />;
+  }
+
   return (
     <Card className="bg-muted/50">
       <CardHeader>
         <CardTitle>Recent Sales</CardTitle>
       </CardHeader>
       <CardContent className="grid gap-8">
-        {salesData.map((sale, index) => (
-          <div key={index} className="flex items-center gap-4">
-            <Avatar
-              slot="icon"
-              src="https://ui.shadcn.com/avatars/02.png"
-              initials={sale.initials}
-              className="size-8 bg-blue-900 text-white"
-            />
+        {results.map((sale) => (
+          <div key={sale.id} className="flex items-center gap-4">
+            <LetterBox text={sale.customerName} />
             <div className="grid gap-1">
-              <p className="text-sm font-medium leading-none">{sale.name}</p>
-              <p className="text-sm text-muted-foreground">{sale.email}</p>
+              <p className="text-sm font-medium leading-none">Order #{sale.orderNumber}</p>
+              <p className="text-sm text-muted-foreground">
+                {sale.itemCount} items | {sale.customerName}
+              </p>
             </div>
-            <div className="ml-auto font-medium">{sale.amount}</div>
+            <div className="ml-auto font-medium">{formatCurrency(sale.totalAmount)}</div>
           </div>
         ))}
       </CardContent>

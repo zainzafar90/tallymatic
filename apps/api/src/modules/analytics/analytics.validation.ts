@@ -18,3 +18,22 @@ export const getLowStockAlerts = {
     limit: Joi.number().integer().min(1).max(100).optional(),
   }),
 };
+
+export const getProfitByCategory = {
+  query: Joi.object().keys({
+    days: Joi.number().integer().min(1).max(365).optional(),
+    limit: Joi.number().integer().min(1).max(100).optional(),
+  }),
+};
+
+export const getRecentSales = {
+  query: Joi.object().keys({
+    limit: Joi.number().integer().min(1).max(100).optional(),
+  }),
+};
+
+export const pendingPurchaseOrders = {
+  query: Joi.object().keys({
+    limit: Joi.number().integer().min(1).max(100).optional(),
+  }),
+};

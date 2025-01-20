@@ -46,3 +46,43 @@ export const getLowStockAlerts = catchAsync(async (req: Request, res: Response) 
   const alerts = await analyticsService.getLowStockAlerts(req.user.organizationId, storeId, limit);
   res.status(httpStatus.OK).send(alerts);
 });
+
+export const getProfitByCategory = catchAsync(async (req: Request, res: Response) => {
+  const isAllowed = permissionService.checkPermissions(req.user.role, 'view', 'analytics');
+  if (!isAllowed) {
+    throw new ApiError(httpStatus.FORBIDDEN, 'You do not have permission to view analytics');
+  }
+
+  const days = req.query.days ? parseInt(req.query.days as string, 10) : 30;
+  const limit = req.query.limit ? parseInt(req.query.limit as string, 10) : 5;
+  const storeId = req.store.id;
+
+  const profitData = await analyticsService.getProfitByCategory(req.user.organizationId, storeId, days, limit);
+  res.status(httpStatus.OK).send(profitData);
+});
+
+export const getRecentSales = catchAsync(async (req: Request, res: Response) => {
+  const isAllowed = permissionService.checkPermissions(req.user.role, 'view', 'analytics');
+  if (!isAllowed) {
+    throw new ApiError(httpStatus.FORBIDDEN, 'You do not have permission to view analytics');
+  }
+
+  const limit = req.query.limit ? parseInt(req.query.limit as string, 10) : 10;
+  const storeId = req.store.id;
+
+  const recentSales = await analyticsService.getRecentSales(req.user.organizationId, storeId, limit);
+  res.status(httpStatus.OK).send(recentSales);
+});
+
+export const getPendingPurchaseOrders = catchAsync(async (req: Request, res: Response) => {
+  const isAllowed = permissionService.checkPermissions(req.user.role, 'view', 'analytics');
+  if (!isAllowed) {
+    throw new ApiError(httpStatus.FORBIDDEN, 'You do not have permission to view analytics');
+  }
+
+  const limit = req.query.limit ? parseInt(req.query.limit as string, 10) : 10;
+  const storeId = req.store.id;
+
+  const pendingOrders = await analyticsService.getPendingPurchaseOrders(req.user.organizationId, storeId, limit);
+  res.status(httpStatus.OK).send(pendingOrders);
+});

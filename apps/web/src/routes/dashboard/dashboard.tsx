@@ -10,7 +10,7 @@ import { useMe } from '@/hooks/api/users.hooks';
 
 import { LowStockWarnings } from './components/low-stock-warnings';
 import { PendingPurchaseOrders } from './components/pending-purchase-orders';
-import { RecentInventoryChanges } from './components/recent-inventory-changes';
+import { ProfitByCategory } from './components/profit-by-category';
 import { RecentSales } from './components/recent-sales';
 import { SalesTrend } from './components/sales-trend';
 import { TopSellingProducts } from './components/top-selling-products';
@@ -69,10 +69,10 @@ export const Dashboard = () => {
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-8">
         <SalesTrend />
-        <TopSellingProducts />
-        <RecentSales />
-        <RecentInventoryChanges />
         <LowStockWarnings />
+        <TopSellingProducts />
+        <ProfitByCategory />
+        <RecentSales />
         <PendingPurchaseOrders />
       </div>
     </>

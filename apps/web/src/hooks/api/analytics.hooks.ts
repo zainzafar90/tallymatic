@@ -18,7 +18,7 @@ export const useLowStockAlerts = () => {
 export const useSalesTrend = (days: number = 30) => {
   const { data, ...rest } = useQuery({
     queryFn: () => client.analytics.getSalesTrend(days),
-    queryKey: analyticsQueryKeys.list(['sales-trend']),
+    queryKey: analyticsQueryKeys.list(['sales-trend', days]),
   });
 
   return { ...data, ...rest };
@@ -27,7 +27,34 @@ export const useSalesTrend = (days: number = 30) => {
 export const useTopSellingProducts = (days: number = 30) => {
   const { data, ...rest } = useQuery({
     queryFn: () => client.analytics.getTopSellingProducts(days),
-    queryKey: analyticsQueryKeys.list(['top-selling-products']),
+    queryKey: analyticsQueryKeys.list(['top-selling-products', days]),
+  });
+
+  return { ...data, ...rest };
+};
+
+export const useProfitByCategory = (days: number = 30) => {
+  const { data, ...rest } = useQuery({
+    queryFn: () => client.analytics.getProfitByCategory(days),
+    queryKey: analyticsQueryKeys.list(['profit-by-category', days]),
+  });
+
+  return { ...data, ...rest };
+};
+
+export const useRecentSales = () => {
+  const { data, ...rest } = useQuery({
+    queryFn: () => client.analytics.getRecentSales(),
+    queryKey: analyticsQueryKeys.list(['recent-sales']),
+  });
+
+  return { ...data, ...rest };
+};
+
+export const usePendingPurchaseOrders = () => {
+  const { data, ...rest } = useQuery({
+    queryFn: () => client.analytics.getPendingPurchaseOrders(),
+    queryKey: analyticsQueryKeys.list(['pending-purchase-orders']),
   });
 
   return { ...data, ...rest };

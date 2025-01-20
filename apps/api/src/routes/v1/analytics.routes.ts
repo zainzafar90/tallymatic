@@ -28,5 +28,26 @@ router.get(
   validate(analyticsValidation.getLowStockAlerts),
   analyticsController.getLowStockAlerts
 );
+router.get(
+  '/profit-by-category',
+  auth(),
+  validateStore,
+  validate(analyticsValidation.getProfitByCategory),
+  analyticsController.getProfitByCategory
+);
+router.get(
+  '/recent-sales',
+  auth(),
+  validateStore,
+  validate(analyticsValidation.getRecentSales),
+  analyticsController.getRecentSales
+);
+router.get(
+  '/pending-purchase-orders',
+  auth(),
+  validateStore,
+  validate(analyticsValidation.pendingPurchaseOrders),
+  analyticsController.getPendingPurchaseOrders
+);
 
 export default router;
