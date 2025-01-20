@@ -56,27 +56,15 @@ export const OrderForm: React.FC<OrderFormProps> = ({ order, isPending, onSubmit
   });
 
   return (
-    <div className="">
-    <Form {...form}>
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        <Card className="bg-muted/50 p-6">
-          <FieldGroup>
-            <div className="flex justify-between items-center p-4">
-              <div>
-                <CardTitle className="flex items-center gap-2 text-lg">
-                  Order Details
-                </CardTitle>
-                <CardDescription>
-                  Date: {new Date().toLocaleDateString()}
-                </CardDescription>
+    <div className="relative">
+      <Form {...form}>
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4 pb-16">
+          <Card className="bg-muted/50 p-6">
+            <FieldGroup>
+              <div className="grid gap-0.5">
+                <CardTitle className="group flex items-center gap-2 text-lg">Sale Details</CardTitle>
+                <CardDescription>Date: {new Date().toLocaleDateString()}</CardDescription>
               </div>
-              <div className="flex space-x-2 gap-2">
-                <Button onClick={onClose}>Cancel</Button>
-                <Button type="submit" color="blue" disabled={isPending}>
-                  {order ? 'Update' : 'Create'} Order
-                </Button>
-              </div>
-            </div>
               <div className="flex gap-4 w-full flex-row">
                 <CustomerSummary form={form} />
 
@@ -137,6 +125,13 @@ export const OrderForm: React.FC<OrderFormProps> = ({ order, isPending, onSubmit
             <OrderItems form={form} />
             <OrderSummary form={form} />
           </Card>
+
+          <div className="fixed bottom-0 left-0 right-0 bg-background border-t p-4 flex justify-end space-x-2">
+            <Button onClick={onClose}>Cancel</Button>
+            <Button type="submit" color="blue" disabled={isPending}>
+              {order ? 'Update' : 'Create'} Order
+            </Button>
+          </div>
         </form>
       </Form>
     </div>
@@ -337,8 +332,8 @@ const OrderItems = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
     <FieldGroup>
       <Fieldset className="flex justify-between gap-x-2">
         <Field>
-          <Label>Order Items</Label>
-          <Description>Add items to the order. Each item represents a product variant.</Description>
+          <Label>Sale Items</Label>
+          <Description>Add items to the sale. Each item represents a product variant.</Description>
         </Field>
         <Button type="button" onClick={openProductVariantDialog}>
           <CirclePlus className="w-6 h-6" />
@@ -349,14 +344,9 @@ const OrderItems = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
         <TableHead>
           <TableRow>
             <TableHeader>Product</TableHeader>
-            <TableHeader
-              className="flex items-center gap-2 cursor-pointer"
-              onClick={() => setShowPrices(!showPrices)}
-            >
+            <TableHeader className="flex items-center gap-2 cursor-pointer" onClick={() => setShowPrices(!showPrices)}>
               Cost
-              <button type="button">
-                {showPrices ? <Eye className="h-3 w-3" /> : <EyeOff className="h-3 w-3" />}
-              </button>
+              <button type="button">{showPrices ? <Eye className="h-3 w-3" /> : <EyeOff className="h-3 w-3" />}</button>
             </TableHeader>
             <TableHeader>Price</TableHeader>
             <TableHeader>Quantity</TableHeader>
@@ -390,9 +380,7 @@ const OrderItems = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
                 </div>
               </TableCell>
 
-              <TableCell>
-                {showPrices ? field.variant?.costPrice : '*****'}
-              </TableCell>
+              <TableCell>{showPrices ? field.variant?.costPrice : '*****'}</TableCell>
 
               <TableCell>
                 <FormField
@@ -407,7 +395,7 @@ const OrderItems = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
                           inputMode="decimal"
                           step="0.01"
                           min={0}
-                          onChange={(e) =>field.onChange(parseFloat(e.target.value))}
+                          onChange={(e) => field.onChange(parseFloat(e.target.value))}
                         />
                       </FormControl>
                     </FormItem>
@@ -436,11 +424,7 @@ const OrderItems = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
                 />
               </TableCell>
 
-              <TableCell>
-                {formatCurrency(
-                  (items[index]?.quantity || 0) * (items[index]?.price || 0)
-                )}
-              </TableCell>
+              <TableCell>{formatCurrency((items[index]?.quantity || 0) * (items[index]?.price || 0))}</TableCell>
 
               <TableCell>
                 <Button type="button" plain onClick={() => remove(index)}>
