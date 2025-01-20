@@ -126,7 +126,7 @@ export const MainLayout = () => {
 
           <SidebarBody>
             <SidebarSection>
-              <SidebarItem href="dashboard" current={pathname === '/'}>
+              <SidebarItem href="" current={pathname === '/'}>
                 <HomeIcon />
                 <SidebarLabel>Home</SidebarLabel>
               </SidebarItem>
