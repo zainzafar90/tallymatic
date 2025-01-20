@@ -62,7 +62,7 @@ export const OrderForm: React.FC<OrderFormProps> = ({ order, isPending, onSubmit
           <Card className="bg-muted/50 p-6">
             <FieldGroup>
               <div className="grid gap-0.5">
-                <CardTitle className="group flex items-center gap-2 text-lg">Order Details</CardTitle>
+                <CardTitle className="group flex items-center gap-2 text-lg">Sale Details</CardTitle>
                 <CardDescription>Date: {new Date().toLocaleDateString()}</CardDescription>
               </div>
               <div className="flex gap-4 w-full flex-row">
@@ -332,8 +332,8 @@ const OrderItems = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
     <FieldGroup>
       <Fieldset className="flex justify-between gap-x-2">
         <Field>
-          <Label>Order Items</Label>
-          <Description>Add items to the order. Each item represents a product variant.</Description>
+          <Label>Sale Items</Label>
+          <Description>Add items to the sale. Each item represents a product variant.</Description>
         </Field>
         <Button type="button" onClick={openProductVariantDialog}>
           <CirclePlus className="w-6 h-6" />

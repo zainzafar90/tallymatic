@@ -126,13 +126,13 @@ export const MainLayout = () => {
 
           <SidebarBody>
             <SidebarSection>
-              <SidebarItem href="dashboard" current={pathname === '/dashboard'}>
+              <SidebarItem href="dashboard" current={pathname === '/'}>
                 <HomeIcon />
                 <SidebarLabel>Home</SidebarLabel>
               </SidebarItem>
-              <SidebarItem href="orders" current={pathname.startsWith('/orders')}>
+              <SidebarItem href="sales" current={pathname.startsWith('/sales')}>
                 <ShoppingBagIcon />
-                <SidebarLabel>Sale</SidebarLabel>
+                <SidebarLabel>Sales</SidebarLabel>
               </SidebarItem>
               <SidebarItem href="products" current={pathname.startsWith('/products')}>
                 <Square2StackIcon />

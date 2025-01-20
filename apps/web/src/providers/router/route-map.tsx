@@ -37,7 +37,7 @@ export const RouteMap: RouteObject[] = [
             element: <MainLayout />,
             children: [
               {
-                path: 'dashboard',
+                path: '',
                 element: <Dashboard />,
               },
               {

@@ -55,7 +55,7 @@ export const Dashboard = () => {
       <Heading>Good afternoon, {user?.name}</Heading>
       <div className="mt-8 flex items-end justify-between">
         <Subheading>Overview</Subheading>
-        <Link to={`/stores/${storeId}/orders/create`}>
+        <Link to={`/stores/${storeId}/sales/create`}>
           <Button>
             <ShoppingCart className="w-4 h-4" /> New Sale
           </Button>

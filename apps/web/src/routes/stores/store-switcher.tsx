@@ -29,7 +29,7 @@ export const StoreSwitcher = () => {
 
   const handleStoreSelect = (storeId: string) => {
     localStorage.setItem(SELECTED_STORE_KEY, storeId);
-    navigate(`/stores/${storeId}/dashboard`);
+    navigate(`/stores/${storeId}`);
   };
 
   return (

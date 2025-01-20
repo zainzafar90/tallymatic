@@ -25,9 +25,9 @@ export const OrderList: React.FC = () => {
   return (
     <div>
       <div className="flex items-end justify-between gap-4">
-        <Heading>Orders</Heading>
+        <Heading>Sales</Heading>
         <Button color="blue" href="create">
-          Create Order
+          Create Sale
         </Button>
       </div>
 

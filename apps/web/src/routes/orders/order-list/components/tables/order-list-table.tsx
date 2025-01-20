@@ -42,7 +42,7 @@ export const OrderListTable = (props: OrderListTableProps) => {
   });
 
   const onClearFilters = () => {
-    navigate('/orders');
+    navigate('/sales');
   };
 
   const handleBulkDelete = async (selectedIds: string[]) => {

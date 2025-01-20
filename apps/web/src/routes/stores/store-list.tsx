@@ -16,7 +16,7 @@ export const StoreList = () => {
 
   const handleStoreSelect = (storeId: string) => {
     localStorage.setItem(SELECTED_STORE_KEY, storeId);
-    navigate(`/stores/${storeId}/dashboard`);
+    navigate(`/stores/${storeId}`);
   };
 
   if (isLoading) {
@@ -29,7 +29,7 @@ export const StoreList = () => {
 
   if (stores.length === 1) {
     localStorage.setItem(SELECTED_STORE_KEY, stores[0].id);
-    return <Navigate to={`/stores/${stores[0].id}/dashboard`} replace />;
+    return <Navigate to={`/stores/${stores[0].id}`} replace />;
   }
 
   return (
