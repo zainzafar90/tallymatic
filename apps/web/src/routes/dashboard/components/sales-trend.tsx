@@ -18,7 +18,7 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 export function SalesTrend() {
-  const { results = [], isLoading, isError, error } = useSalesTrend(60);
+  const { results = [], isLoading, isError, error } = useSalesTrend(30);
 
   const chartData = results.map((item) => ({
     date: item.date,

@@ -86,3 +86,14 @@ export const getPendingPurchaseOrders = catchAsync(async (req: Request, res: Res
   const pendingOrders = await analyticsService.getPendingPurchaseOrders(req.user.organizationId, storeId, limit);
   res.status(httpStatus.OK).send(pendingOrders);
 });
+
+export const getSalesSummary = catchAsync(async (req: Request, res: Response) => {
+  const isAllowed = permissionService.checkPermissions(req.user.role, 'view', 'analytics');
+  if (!isAllowed) {
+    throw new ApiError(httpStatus.FORBIDDEN, 'You do not have permission to view analytics');
+  }
+
+  const storeId = req.store.id;
+  const summary = await analyticsService.getSalesSummary(req.user.organizationId, storeId);
+  res.status(httpStatus.OK).send(summary);
+});

@@ -59,3 +59,12 @@ export const usePendingPurchaseOrders = () => {
 
   return { ...data, ...rest };
 };
+
+export const useSalesSummary = () => {
+  const { data, ...rest } = useQuery({
+    queryFn: () => client.analytics.getSalesSummary(),
+    queryKey: analyticsQueryKeys.list(['sales-summary']),
+  });
+
+  return { data, ...rest };
+};

@@ -13,7 +13,7 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 export function ProfitByCategory() {
-  const { results = [], isLoading, isError, error } = useProfitByCategory(60);
+  const { results = [], isLoading, isError, error } = useProfitByCategory(30);
 
   if (isError) {
     throw error;

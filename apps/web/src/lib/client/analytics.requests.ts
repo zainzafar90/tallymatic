@@ -3,6 +3,7 @@ import {
   PendingPurchaseOrdersResponse,
   ProfitByCategoryResponse,
   RecentSalesResponse,
+  SalesSummaryResponse,
   SalesTrendResponse,
   TopSellingProductsResponse,
 } from '@repo/shared';
@@ -38,6 +39,10 @@ async function getPendingPurchaseOrders() {
   return getRequest<PendingPurchaseOrdersResponse>('/v1/analytics/pending-purchase-orders', { limit: 5 });
 }
 
+async function getSalesSummary() {
+  return getRequest<SalesSummaryResponse>('/v1/analytics/sales-summary');
+}
+
 export const analytics = {
   getLowStockAlerts,
   getSalesTrend,
@@ -45,4 +50,5 @@ export const analytics = {
   getProfitByCategory,
   getRecentSales,
   getPendingPurchaseOrders,
+  getSalesSummary,
 };

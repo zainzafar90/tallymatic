@@ -41,7 +41,7 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 export function TopSellingProducts() {
-  const { results = [], isLoading, isError, error } = useTopSellingProducts(60);
+  const { results = [], isLoading, isError, error } = useTopSellingProducts(30);
 
   if (isError) {
     throw error;

@@ -7,6 +7,8 @@ import { auth } from '@/modules/auth';
 
 const router = express.Router();
 
+router.get('/sales-summary', auth(), validateStore, analyticsController.getSalesSummary);
+
 router.get(
   '/sales-trend',
   auth(),

@@ -25,21 +25,19 @@ if (!process.env.DB_URL) {
   throw new Error('DB_URL is not set');
 }
 
-console.log('DB_URL:', process.env.DB_URL);
-
 const NUMBER_OF_ORGANIZATIONS = 1;
 const NUMBER_OF_STORES = 2;
 const NUMBER_OF_USERS = 1;
-const NUMBER_OF_CATEGORIES = 1;
-const NUMBER_OF_PRODUCTS = 1;
-const NUMBER_OF_VARIANTS = 1;
-const NUMBER_OF_INVENTORY = 1;
-const NUMBER_OF_ORDERS = 1;
-const NUMBER_OF_ORDER_ITEMS = 1;
-const NUMBER_OF_PURCHASES = 1;
-const NUMBER_OF_PURCHASE_ITEMS = 1;
-const NUMBER_OF_SUPPLIERS = 1;
-const NUMBER_OF_CUSTOMERS = 1;
+const NUMBER_OF_CATEGORIES = 10;
+const NUMBER_OF_PRODUCTS = 1000;
+const NUMBER_OF_VARIANTS = 1000;
+const NUMBER_OF_INVENTORY = 1000;
+const NUMBER_OF_ORDERS = 1000;
+const NUMBER_OF_ORDER_ITEMS = 1000;
+const NUMBER_OF_PURCHASES = 1000;
+const NUMBER_OF_PURCHASE_ITEMS = 1000;
+const NUMBER_OF_SUPPLIERS = 1000;
+const NUMBER_OF_CUSTOMERS = 1000;
 
 const pool = new Pool({
   connectionString: process.env.DB_URL,
@@ -297,8 +295,8 @@ async function main() {
             values: ['USD', 'EUR', 'GBP', 'JPY', 'CAD', 'AUD', 'CHF', 'CNY', 'INR', 'BRL', 'MXN', 'ZAR'],
           }),
           createdAt: funcs.date({
-            minDate: '2023-01-01',
-            maxDate: '2024-12-16',
+            minDate: '2024-10-10',
+            maxDate: '2025-01-20',
           }),
         },
       },

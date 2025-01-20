@@ -1,4 +1,4 @@
-import { ResourceListResponse } from '../api/api-operations';
+import { ResourceListResponse, ResourceResponse } from '../api/api-operations';
 
 export interface SalesTrendData {
   date: string;
@@ -48,9 +48,23 @@ export interface PendingPurchaseOrder {
   supplierName: string;
 }
 
+export interface SalesSummaryPeriod {
+  amount: number;
+  growth: number;
+  comparedTo: string;
+}
+
+export interface SalesSummary {
+  today: SalesSummaryPeriod;
+  week: SalesSummaryPeriod;
+  month: SalesSummaryPeriod;
+  avgOrderValuePerDayThisMonth: SalesSummaryPeriod;
+}
+
 export type LowStockAlertsResponse = ResourceListResponse<LowStockAlert>;
 export type SalesTrendResponse = ResourceListResponse<SalesTrendData>;
 export type TopSellingProductsResponse = ResourceListResponse<TopSellingProduct>;
 export type ProfitByCategoryResponse = ResourceListResponse<ProfitByCategory>;
 export type RecentSalesResponse = ResourceListResponse<RecentSale>;
 export type PendingPurchaseOrdersResponse = ResourceListResponse<PendingPurchaseOrder>;
+export type SalesSummaryResponse = ResourceResponse<SalesSummary>;

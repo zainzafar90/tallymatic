@@ -196,3 +196,139 @@ export const getPendingPurchaseOrders = async (organizationId: string, storeId: 
     pages: Math.ceil(pendingOrders.length / limit),
   };
 };
+
+const calculateGrowth = (current: number, previous: number) => {
+  if (previous === 0) return current > 0 ? 100 : 0;
+  return ((current - previous) / previous) * 100;
+};
+
+export const getSalesSummary = async (organizationId: string, storeId: string) => {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const yesterday = new Date(today);
+  yesterday.setDate(yesterday.getDate() - 1);
+
+  const startOfWeek = new Date(today);
+  startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
+
+  const startOfLastWeek = new Date(startOfWeek);
+  startOfLastWeek.setDate(startOfLastWeek.getDate() - 7);
+
+  const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+  const startOfLastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+  const endOfLastMonth = new Date(today.getFullYear(), today.getMonth(), 0);
+
+  // Today's sales
+  const [todaySales] = await db
+    .select({
+      total: sql<number>`COALESCE(SUM(${orders.totalAmount}), 0)`,
+    })
+    .from(orders)
+    .where(
+      and(eq(orders.organizationId, organizationId), eq(orders.storeId, storeId), sql`DATE(${orders.createdAt}) = ${today}`)
+    );
+
+  // Yesterday's sales
+  const [yesterdaySales] = await db
+    .select({
+      total: sql<number>`COALESCE(SUM(${orders.totalAmount}), 0)`,
+    })
+    .from(orders)
+    .where(
+      and(
+        eq(orders.organizationId, organizationId),
+        eq(orders.storeId, storeId),
+        sql`DATE(${orders.createdAt}) = ${yesterday}`
+      )
+    );
+
+  // This week's sales
+  const [thisWeekSales] = await db
+    .select({
+      total: sql<number>`COALESCE(SUM(${orders.totalAmount}), 0)`,
+    })
+    .from(orders)
+    .where(
+      and(
+        eq(orders.organizationId, organizationId),
+        eq(orders.storeId, storeId),
+        sql`${orders.createdAt} >= ${startOfWeek}`,
+        sql`${orders.createdAt} < ${today}`
+      )
+    );
+
+  // Last week's sales
+  const [lastWeekSales] = await db
+    .select({
+      total: sql<number>`COALESCE(SUM(${orders.totalAmount}), 0)`,
+    })
+    .from(orders)
+    .where(
+      and(
+        eq(orders.organizationId, organizationId),
+        eq(orders.storeId, storeId),
+        sql`${orders.createdAt} >= ${startOfLastWeek}`,
+        sql`${orders.createdAt} < ${startOfWeek}`
+      )
+    );
+
+  // This month's sales
+  const [thisMonthSales] = await db
+    .select({
+      total: sql<number>`COALESCE(SUM(${orders.totalAmount}), 0)`,
+    })
+    .from(orders)
+    .where(
+      and(
+        eq(orders.organizationId, organizationId),
+        eq(orders.storeId, storeId),
+        sql`${orders.createdAt} >= ${startOfMonth}`,
+        sql`${orders.createdAt} < ${today}`
+      )
+    );
+
+  // Last month's sales
+  const [lastMonthSales] = await db
+    .select({
+      total: sql<number>`COALESCE(SUM(${orders.totalAmount}), 0)`,
+    })
+    .from(orders)
+    .where(
+      and(
+        eq(orders.organizationId, organizationId),
+        eq(orders.storeId, storeId),
+        sql`${orders.createdAt} >= ${startOfLastMonth}`,
+        sql`${orders.createdAt} <= ${endOfLastMonth}`
+      )
+    );
+
+  // Average orders value per day this month
+  const daysInLastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 0).getDate();
+  const daysInThisMonth = new Date(today.getFullYear(), today.getMonth(), 0).getDate();
+  const avgOrdersPerDayThisMonth = thisMonthSales.total / daysInThisMonth;
+  const avgOrdersPerDayLastMonth = lastMonthSales.total / daysInLastMonth;
+
+  return {
+    today: {
+      amount: todaySales.total,
+      growth: calculateGrowth(todaySales.total, yesterdaySales.total) || 0,
+      comparedTo: 'yesterday',
+    },
+    week: {
+      amount: thisWeekSales.total,
+      growth: calculateGrowth(thisWeekSales.total, lastWeekSales.total) || 0,
+      comparedTo: 'last week',
+    },
+    month: {
+      amount: thisMonthSales.total,
+      growth: calculateGrowth(thisMonthSales.total, lastMonthSales.total) || 0,
+      comparedTo: 'last month',
+    },
+    avgOrderValuePerDayThisMonth: {
+      amount: avgOrdersPerDayThisMonth,
+      growth: calculateGrowth(avgOrdersPerDayThisMonth, avgOrdersPerDayLastMonth) || 0,
+      comparedTo: 'last month',
+    },
+  };
+};
