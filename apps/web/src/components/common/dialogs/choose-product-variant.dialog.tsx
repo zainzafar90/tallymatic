@@ -132,13 +132,25 @@ export function ChooseProductVariantDialog({
                       )}
                     </TableCell>
                     <TableCell className="text-center">
-                      {product.variants.length > 0 && (
+                      {product.variants.length <= 1 ? (
+                        <Button
+                          onClick={() =>
+                            handleSelectVariant({
+                              ...product.variants[0],
+                              product,
+                            })
+                          }
+                          color="zinc"
+                        >
+                          Select
+                        </Button>
+                      ) : (
                         <button
                           className={cn(
-                            'uppercase text-xs font-bold px-2 py-1 rounded-md',
                             expandedProducts[product.id]
                               ? 'text-zinc-500 hover:text-zinc-700 bg-zinc-500/10'
-                              : 'text-blue-500 hover:text-blue-700 bg-blue-500/10'
+                              : 'text-blue-500 hover:text-blue-700 bg-blue-500/10',
+                            'uppercase text-xs font-bold px-2 py-1 rounded-md'
                           )}
                           onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
                             e.stopPropagation();
