@@ -1,5 +1,4 @@
 import { useState } from 'react';
-
 import { CheckCircleIcon } from '@heroicons/react/16/solid';
 import { IProductVariant, IProductWithCategory } from '@repo/shared';
 import { keepPreviousData } from '@tanstack/react-query';
@@ -82,6 +81,7 @@ export function ChooseProductVariantDialog({
               <TableRow>
                 <TableHeader>Product / Variant</TableHeader>
                 <TableHeader>Category</TableHeader>
+                <TableHeader className="text-right">Cost Price</TableHeader>
                 <TableHeader className="text-right">{priceLabel}</TableHeader>
                 <TableHeader className="text-center">Action</TableHeader>
               </TableRow>
@@ -89,7 +89,7 @@ export function ChooseProductVariantDialog({
             <TableBody>
               {products?.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={4} className="text-center">
+                  <TableCell colSpan={5} className="text-center">
                     No products found
                   </TableCell>
                 </TableRow>
@@ -110,6 +110,27 @@ export function ChooseProductVariantDialog({
                       </div>
                     </TableCell>
                     <TableCell>{product.category?.name || '—'}</TableCell>
+                    <TableCell className="text-right">
+                      {product.variants.length > 0 ? (
+                        <>
+                          {(() => {
+                            const costPrices = product.variants.map((v) => v.costPrice);
+                            const hasCostPrices = costPrices.length > 0;
+                            const minCost = hasCostPrices ? Math.min(...costPrices) : 0;
+                            const maxCost = hasCostPrices ? Math.max(...costPrices) : 0;
+                            const formattedCostPrice = minCost === maxCost ? `${minCost}` : `${minCost} - ${maxCost}`;
+
+                            return (
+                              <span className="text-right">
+                                <small>&#x20A8;</small> {formattedCostPrice}
+                              </span>
+                            );
+                          })()}
+                        </>
+                      ) : (
+                        <span className="text-gray-500">&mdash;</span>
+                      )}
+                    </TableCell>
                     <TableCell className="text-right">
                       {product.variants.length > 0 ? (
                         <>
@@ -174,6 +195,9 @@ export function ChooseProductVariantDialog({
                         </TableCell>
                         <TableCell>
                           <div />
+                        </TableCell>
+                        <TableCell className="text-right">
+                          {formatPrice(parseFloat(variant.costPrice.toString()))}
                         </TableCell>
                         <TableCell className="text-right">
                           {formatPrice(parseFloat(variant[priceField].toString()))}
