@@ -1,4 +1,5 @@
 import { useState } from 'react';
+
 import { CheckCircleIcon } from '@heroicons/react/16/solid';
 import { IProductVariant, IProductWithCategory } from '@repo/shared';
 import { keepPreviousData } from '@tanstack/react-query';
@@ -104,7 +105,13 @@ export function ChooseProductVariantDialog({
                         <div className="flex flex-col">
                           <div className="font-medium">{product.name}</div>
                           <div className="text-sm text-gray-400 dark:text-gray-500">
-                            {product.variants.length > 0 ? `${product.variants.length} variants` : <>&mdash;</>}
+                            {product.variants.length > 1 ? (
+                              `${product.variants.length} variants`
+                            ) : product.variants.length === 1 ? (
+                              product.variants[0].name
+                            ) : (
+                              <>&mdash;</>
+                            )}
                           </div>
                         </div>
                       </div>
@@ -196,9 +203,7 @@ export function ChooseProductVariantDialog({
                         <TableCell>
                           <div />
                         </TableCell>
-                        <TableCell className="text-right">
-                          {formatPrice(parseFloat(variant.costPrice.toString()))}
-                        </TableCell>
+                        <TableCell className="text-right">{formatPrice(parseFloat(variant.costPrice.toString()))}</TableCell>
                         <TableCell className="text-right">
                           {formatPrice(parseFloat(variant[priceField].toString()))}
                         </TableCell>
