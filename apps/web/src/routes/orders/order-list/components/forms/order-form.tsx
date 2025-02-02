@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 import { CircleMinus, CirclePlus, Eye, EyeOff } from 'lucide-react';
 import { useFieldArray, useForm, UseFormReturn, useWatch } from 'react-hook-form';
@@ -55,6 +55,16 @@ export const OrderForm: React.FC<OrderFormProps> = ({ order, isPending, onSubmit
     form.reset();
   });
 
+  const [currentTime, setCurrentTime] = useState(new Date());
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div className="relative">
       <Form {...form}>
@@ -63,7 +73,9 @@ export const OrderForm: React.FC<OrderFormProps> = ({ order, isPending, onSubmit
             <FieldGroup>
               <div className="grid gap-0.5">
                 <CardTitle className="group flex items-center gap-2 text-lg">Sale Details</CardTitle>
-                <CardDescription>Date: {new Date().toLocaleDateString()}</CardDescription>
+                <CardDescription>
+                  Date: {currentTime.toLocaleDateString()} | Time: {currentTime.toLocaleTimeString()}
+                </CardDescription>
               </div>
               <div className="flex gap-4 w-full flex-row">
                 <CustomerSummary form={form} />
@@ -137,6 +149,7 @@ export const OrderForm: React.FC<OrderFormProps> = ({ order, isPending, onSubmit
     </div>
   );
 };
+
 const OrderSummary = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
   const items = useWatch({ control: form.control, name: 'items' }) as IOrderItem[];
   const discountAmount = useWatch({ control: form.control, name: 'discountAmount' });
