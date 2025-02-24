@@ -19,6 +19,7 @@ export const createProduct = async (productBody: CreateProductReq, organizationI
       storeId,
       status: Status.ACTIVE,
       categoryId: productData.categoryId ?? null,
+      productCompany: productData.productCompany ?? null,
     };
 
     const [product] = await tx.insert(products).values(productNew).returning();
@@ -116,6 +117,7 @@ export const updateProductById = async (
         ...productData,
         organizationId,
         categoryId: productData.categoryId ?? null,
+        productCompany: productData.productCompany ?? null,
       } as Product)
       .where(and(eq(products.id, productId), eq(products.organizationId, organizationId), eq(products.storeId, storeId)))
       .returning();

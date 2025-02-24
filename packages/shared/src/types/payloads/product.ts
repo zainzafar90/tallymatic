@@ -15,6 +15,7 @@ type BaseProduct = {
  * ---------------------------- */
 export interface IProduct extends BaseProduct {
   variants: IProductVariant[];
+  productCompany:string;
   categoryId?: string;
   createdAt: Date;
 }
@@ -32,10 +33,12 @@ export type ProductResponse = IProductWithCategory;
 export interface CreateProductReq {
   name: string;
   description?: string;
+  productCompany?: string;
   categoryId?: string;
   variants: IProductVariant[];
 }
 
 export interface UpdateProductReq extends Partial<CreateProductReq> {
   status?: ProductStatus;
+  productCompany?: string; // Add this field
 }

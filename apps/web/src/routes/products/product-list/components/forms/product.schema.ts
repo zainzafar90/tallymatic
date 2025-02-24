@@ -4,6 +4,7 @@ import { ProductStatus } from '@repo/shared';
 export const BaseProductSchema = z.object({
   name: z.string().min(2, 'Name is required'),
   description: z.string().optional(),
+  productCompany: z.string().min(1, 'Product company is required'),
   categoryId: z.string().min(1, 'Category is required'),
   variants: z
     .array(
@@ -23,6 +24,7 @@ export const CreateProductSchema = BaseProductSchema;
 export const UpdateProductSchema = BaseProductSchema.extend({
   status: z.enum([ProductStatus.ACTIVE, ProductStatus.ARCHIVED, ProductStatus.DRAFT]),
 });
+
 
 export type CreateProductFormData = z.infer<typeof CreateProductSchema>;
 export type UpdateProductFormData = z.infer<typeof UpdateProductSchema>;

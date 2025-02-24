@@ -164,7 +164,12 @@ async function main() {
       products: {
         count: NUMBER_OF_PRODUCTS,
         columns: {
+          name: funcs.valuesFromArray({
+            values: generateProducts(NUMBER_OF_PRODUCTS),
+            isUnique: true,
+          }),
           description: funcs.loremIpsum({ sentencesCount: 1 }),
+          productCompany: funcs.companyName(), // Add this field
           price: funcs.number({
             minValue: 100,
             maxValue: 1000,

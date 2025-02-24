@@ -32,6 +32,7 @@ export const ProductForm = ({ product, isPending, onSubmit, onClose }: ProductFo
       name: product?.name || '',
       categoryId: product?.categoryId || '',
       description: product?.description || '',
+      productCompany: product?.productCompany || '',
       ...(product && { status: product.status }),
       variants: product?.variants.map((variant) => ({
         name: variant.name,
@@ -50,6 +51,7 @@ export const ProductForm = ({ product, isPending, onSubmit, onClose }: ProductFo
   });
 
   const handleSubmit = form.handleSubmit(async (data) => {
+    console.log('Main ho data', data);
     await onSubmit(data);
     onClose();
     form.reset();
@@ -106,6 +108,19 @@ export const ProductForm = ({ product, isPending, onSubmit, onClose }: ProductFo
                   </FormItem>
                 );
               }}
+            />
+            <FormField
+              name="productCompany"
+              control={form.control}
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormLabel>Product Company</FormLabel>
+                  <FormControl>
+                    <Input {...field} placeholder="Enter product company" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
             <FormField
               control={form.control}
