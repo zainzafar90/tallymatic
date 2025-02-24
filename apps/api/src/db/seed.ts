@@ -169,7 +169,7 @@ async function main() {
             isUnique: true,
           }),
           description: funcs.loremIpsum({ sentencesCount: 1 }),
-          productCompany: funcs.companyName(), // Add this field
+          productCompany: funcs.companyName(),
           price: funcs.number({
             minValue: 100,
             maxValue: 1000,

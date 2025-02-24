@@ -40,5 +40,5 @@ export interface CreateProductReq {
 
 export interface UpdateProductReq extends Partial<CreateProductReq> {
   status?: ProductStatus;
-  productCompany?: string; // Add this field
+  productCompany?: string;
 }
