@@ -81,6 +81,7 @@ export function ChooseProductVariantDialog({
             <TableHead>
               <TableRow>
                 <TableHeader>Product / Variant</TableHeader>
+                <TableHeader>Company</TableHeader> {/* Add this column */}
                 <TableHeader>Category</TableHeader>
                 <TableHeader className="text-right">{priceLabel}</TableHeader>
                 <TableHeader className="text-center">Action</TableHeader>
@@ -89,7 +90,7 @@ export function ChooseProductVariantDialog({
             <TableBody>
               {products?.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={4} className="text-center">
+                  <TableCell colSpan={5} className="text-center">
                     No products found
                   </TableCell>
                 </TableRow>
@@ -109,6 +110,7 @@ export function ChooseProductVariantDialog({
                         </div>
                       </div>
                     </TableCell>
+                    <TableCell>{product.productCompany || '—'}</TableCell> {/* Add this cell */}
                     <TableCell>{product.category?.name || '—'}</TableCell>
                     <TableCell className="text-right">
                       {product.variants.length > 0 ? (
@@ -172,6 +174,7 @@ export function ChooseProductVariantDialog({
                             <div className="text-xs text-muted-foreground">{variant.sku}</div>
                           </div>
                         </TableCell>
+                        <TableCell>{product.productCompany || '—'}</TableCell> {/* Add this cell */}
                         <TableCell>
                           <div />
                         </TableCell>
