@@ -24,7 +24,9 @@ interface ProductFormProps {
 }
 
 export const ProductForm = ({ product, isPending, onSubmit, onClose }: ProductFormProps) => {
-  const { results: categories, isLoading: isCategoriesLoading } = useCategories();
+  const { results: categories, isLoading: isCategoriesLoading } = useCategories({
+    limit: 100,
+  });
 
   const form = useForm({
     resolver: zodResolver(product ? UpdateProductSchema : CreateProductSchema),
