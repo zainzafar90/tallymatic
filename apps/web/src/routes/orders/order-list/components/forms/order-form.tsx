@@ -344,6 +344,7 @@ const OrderItems = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
         <TableHead>
           <TableRow>
             <TableHeader>Product</TableHeader>
+            <TableHeader>Company</TableHeader>
             <TableHeader className="flex items-center gap-2 cursor-pointer" onClick={() => setShowPrices(!showPrices)}>
               Cost
               <button type="button">{showPrices ? <Eye className="h-3 w-3" /> : <EyeOff className="h-3 w-3" />}</button>
@@ -358,7 +359,9 @@ const OrderItems = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
         <TableBody>
           {fields.length === 0 && (
             <TableRow>
-              <TableCell colSpan={6} className="text-center">
+              <TableCell colSpan={7} className="text-center">
+                {' '}
+                {/* Updated colSpan to 7 */}
                 No items added yet.
               </TableCell>
             </TableRow>
@@ -378,6 +381,11 @@ const OrderItems = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
                   </div>
                   <span className="text-sm text-muted-foreground">{field.variant?.name}</span>
                 </div>
+              </TableCell>
+              <TableCell>
+                {field?.variant?.product?.productCompany && (
+                  <span className="text-sm text-muted-foreground">{field?.variant?.product?.productCompany}</span>
+                )}
               </TableCell>
 
               <TableCell>{showPrices ? field.variant?.costPrice : '*****'}</TableCell>

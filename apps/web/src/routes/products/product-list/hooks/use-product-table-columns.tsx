@@ -59,6 +59,17 @@ export const useProductTableColumns = () => {
       ),
       enableHiding: false,
     }),
+    columnHelper.accessor('productCompany', {
+      header: () => <TextHeader text="Company" />,
+      cell: ({ getValue }) => {
+        const productCompany = getValue();
+        return <TextCell text={productCompany} />;
+      },
+      enableSorting: false,
+      meta: {
+        className: 'hidden sm:table-cell',
+      },
+    }),
     columnHelper.accessor((row) => row.category, {
       id: 'category',
       header: () => <TextHeader text="Category" />,

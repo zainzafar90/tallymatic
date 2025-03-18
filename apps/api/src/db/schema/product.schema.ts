@@ -22,6 +22,7 @@ export const products = pgTable(
       .references(() => organizations.id),
     categoryId: uuid('category_id').references(() => categories.id),
     name: varchar('name', { length: 255 }).notNull(),
+    productCompany: varchar('product_company', { length: 255 }),
     description: text('description'),
     status: EnumProductStatus('status').notNull().default(ProductStatus.ACTIVE),
     createdAt: timestamp('created_at').defaultNow(),
