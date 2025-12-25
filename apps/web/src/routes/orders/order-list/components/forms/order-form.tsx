@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 import { CircleMinus, CirclePlus, Eye, EyeOff } from 'lucide-react';
 import { useFieldArray, useForm, UseFormReturn, useWatch } from 'react-hook-form';
@@ -55,6 +55,16 @@ export const OrderForm: React.FC<OrderFormProps> = ({ order, isPending, onSubmit
     form.reset();
   });
 
+  const [currentTime, setCurrentTime] = useState(new Date());
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div className="relative">
       <Form {...form}>
@@ -63,7 +73,9 @@ export const OrderForm: React.FC<OrderFormProps> = ({ order, isPending, onSubmit
             <FieldGroup>
               <div className="grid gap-0.5">
                 <CardTitle className="group flex items-center gap-2 text-lg">Sale Details</CardTitle>
-                <CardDescription>Date: {new Date().toLocaleDateString()}</CardDescription>
+                <CardDescription>
+                  Date: {currentTime.toLocaleDateString()} | Time: {currentTime.toLocaleTimeString()}
+                </CardDescription>
               </div>
               <div className="flex gap-4 w-full flex-row">
                 <CustomerSummary form={form} />
@@ -137,6 +149,7 @@ export const OrderForm: React.FC<OrderFormProps> = ({ order, isPending, onSubmit
     </div>
   );
 };
+
 const OrderSummary = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
   const items = useWatch({ control: form.control, name: 'items' }) as IOrderItem[];
   const discountAmount = useWatch({ control: form.control, name: 'discountAmount' });
@@ -364,75 +377,78 @@ const OrderItems = ({ form }: { form: UseFormReturn<OrderFormData> }) => {
             </TableRow>
           )}
 
-          {fields.map((field, index) => (
-            <TableRow key={field.id}>
-              <TableCell>
-                <div className="flex flex-col">
-                  <div className="flex items-center gap-2">
-                    <span className="font-medium">{field?.variant?.product?.name}</span>
-                    {field?.variant?.product?.category?.name && (
-                      <span className="text-xs font-semibold text-muted-foreground bg-muted px-1 rounded-md">
-                        {field?.variant?.product?.category?.name}
-                      </span>
-                    )}
+          {fields
+            .slice()
+            .reverse()
+            .map((field, index) => (
+              <TableRow key={field.id}>
+                <TableCell>
+                  <div className="flex flex-col">
+                    <div className="flex items-center gap-2">
+                      <span className="font-medium">{field?.variant?.product?.name}</span>
+                      {field?.variant?.product?.category?.name && (
+                        <span className="text-xs font-semibold text-muted-foreground bg-muted px-1 rounded-md">
+                          {field?.variant?.product?.category?.name}
+                        </span>
+                      )}
+                    </div>
+                    <span className="text-sm text-muted-foreground">{field.variant?.name}</span>
                   </div>
-                  <span className="text-sm text-muted-foreground">{field.variant?.name}</span>
-                </div>
-              </TableCell>
+                </TableCell>
 
-              <TableCell>{showPrices ? field.variant?.costPrice : '*****'}</TableCell>
+                <TableCell>{showPrices ? field.variant?.costPrice : '*****'}</TableCell>
 
-              <TableCell>
-                <FormField
-                  control={form.control}
-                  name={`items.${index}.price`}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <Input
-                          {...field}
-                          type="number"
-                          inputMode="decimal"
-                          step="0.01"
-                          min={0}
-                          onChange={(e) => field.onChange(parseFloat(e.target.value))}
-                        />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-              </TableCell>
+                <TableCell>
+                  <FormField
+                    control={form.control}
+                    name={`items.${index}.price`}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input
+                            {...field}
+                            type="number"
+                            inputMode="decimal"
+                            step="0.01"
+                            min={0}
+                            onChange={(e) => field.onChange(parseFloat(e.target.value))}
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                </TableCell>
 
-              <TableCell>
-                <FormField
-                  control={form.control}
-                  name={`items.${index}.quantity`}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormControl>
-                        <Input
-                          {...field}
-                          type="number"
-                          inputMode="decimal"
-                          step="1"
-                          min={1}
-                          onChange={(e) => field.onChange(parseInt(e.target.value))}
-                        />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-              </TableCell>
+                <TableCell>
+                  <FormField
+                    control={form.control}
+                    name={`items.${index}.quantity`}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input
+                            {...field}
+                            type="number"
+                            inputMode="decimal"
+                            step="1"
+                            min={1}
+                            onChange={(e) => field.onChange(parseInt(e.target.value))}
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                </TableCell>
 
-              <TableCell>{formatCurrency((items[index]?.quantity || 0) * (items[index]?.price || 0))}</TableCell>
+                <TableCell>{formatCurrency((items[index]?.quantity || 0) * (items[index]?.price || 0))}</TableCell>
 
-              <TableCell>
-                <Button type="button" plain onClick={() => remove(index)}>
-                  <CircleMinus className="text-red-500 w-6 h-6" />
-                </Button>
-              </TableCell>
-            </TableRow>
-          ))}
+                <TableCell>
+                  <Button type="button" plain onClick={() => remove(index)}>
+                    <CircleMinus className="text-red-500 w-6 h-6" />
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
         </TableBody>
       </Table>
 
