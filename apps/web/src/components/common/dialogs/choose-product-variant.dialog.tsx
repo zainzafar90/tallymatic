@@ -82,6 +82,7 @@ export function ChooseProductVariantDialog({
               <TableRow>
                 <TableHeader>Product / Variant</TableHeader>
                 <TableHeader>Category</TableHeader>
+                <TableHeader className="text-right">Cost Price</TableHeader>
                 <TableHeader className="text-right">{priceLabel}</TableHeader>
                 <TableHeader className="text-center">Action</TableHeader>
               </TableRow>
@@ -89,7 +90,7 @@ export function ChooseProductVariantDialog({
             <TableBody>
               {products?.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={4} className="text-center">
+                  <TableCell colSpan={5} className="text-center">
                     No products found
                   </TableCell>
                 </TableRow>
@@ -104,12 +105,39 @@ export function ChooseProductVariantDialog({
                         <div className="flex flex-col">
                           <div className="font-medium">{product.name}</div>
                           <div className="text-sm text-gray-400 dark:text-gray-500">
-                            {product.variants.length > 0 ? `${product.variants.length} variants` : <>&mdash;</>}
+                            {product.variants.length > 1 ? (
+                              `${product.variants.length} variants`
+                            ) : product.variants.length === 1 ? (
+                              product.variants[0].name
+                            ) : (
+                              <>&mdash;</>
+                            )}
                           </div>
                         </div>
                       </div>
                     </TableCell>
                     <TableCell>{product.category?.name || '—'}</TableCell>
+                    <TableCell className="text-right">
+                      {product.variants.length > 0 ? (
+                        <>
+                          {(() => {
+                            const costPrices = product.variants.map((v) => v.costPrice);
+                            const hasCostPrices = costPrices.length > 0;
+                            const minCost = hasCostPrices ? Math.min(...costPrices) : 0;
+                            const maxCost = hasCostPrices ? Math.max(...costPrices) : 0;
+                            const formattedCostPrice = minCost === maxCost ? `${minCost}` : `${minCost} - ${maxCost}`;
+
+                            return (
+                              <span className="text-right">
+                                <small>&#x20A8;</small> {formattedCostPrice}
+                              </span>
+                            );
+                          })()}
+                        </>
+                      ) : (
+                        <span className="text-gray-500">&mdash;</span>
+                      )}
+                    </TableCell>
                     <TableCell className="text-right">
                       {product.variants.length > 0 ? (
                         <>
@@ -175,6 +203,7 @@ export function ChooseProductVariantDialog({
                         <TableCell>
                           <div />
                         </TableCell>
+                        <TableCell className="text-right">{formatPrice(parseFloat(variant.costPrice.toString()))}</TableCell>
                         <TableCell className="text-right">
                           {formatPrice(parseFloat(variant[priceField].toString()))}
                         </TableCell>
